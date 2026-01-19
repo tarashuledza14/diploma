@@ -1,0 +1,10 @@
+{
+  "title": "Languages",
+  "loading": "Loading...",
+  "error": "Failed to load languages",
+  "switchLanguage": "Switch Language",
+  "languages": {
+    "english": "English",
+    "ukrainian": "Ukrainian"
+  }
+}
