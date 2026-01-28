@@ -1,4 +1,3 @@
-// Мокові дані для замовлень
 export const mockOrders = [
 	{
 		id: 'ORD-001',

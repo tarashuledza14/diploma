@@ -1,4 +1,4 @@
-export { LoginPage } from './components/LoginPage';
+export { LoginCard } from './components/LoginCard';
 export { ProtectedRoute } from './components/ProtectedRoutes';
 export {
 	getAccessToken,

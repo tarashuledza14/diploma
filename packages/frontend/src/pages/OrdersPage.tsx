@@ -1,13 +1,16 @@
+import {
+	mockOrders,
+	OrdersFilters,
+	OrdersSummary,
+	OrdersTable,
+	PageHeader,
+	priorityColors,
+	statusColors,
+} from '@/modules/orders';
 import { Card, CardContent } from '@/shared/components/ui';
 import { useState } from 'react';
-import { mockOrders } from './mockOrders';
-import { priorityColors, statusColors } from './orderColors';
-import { OrdersFilters } from './OrdersFilters';
-import { OrdersSummary } from './OrdersSummary';
-import { OrdersTable } from './OrdersTable';
-import { PageHeader } from './PageHeader';
 
-export function OrdersList() {
+export function OrdersPage() {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [statusFilter, setStatusFilter] = useState('all');
 	const [priorityFilter, setPriorityFilter] = useState('all');
@@ -26,13 +29,10 @@ export function OrdersList() {
 
 	return (
 		<div className='flex flex-col gap-6'>
-			{/* Page Header */}
 			<PageHeader
 				title='Orders'
 				subtitle='Manage and track all service orders'
 			/>
-
-			{/* Filters */}
 			<OrdersFilters
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery}
@@ -41,8 +41,6 @@ export function OrdersList() {
 				priorityFilter={priorityFilter}
 				setPriorityFilter={setPriorityFilter}
 			/>
-
-			{/* Orders Table */}
 			<Card>
 				<CardContent className='p-0'>
 					<OrdersTable
@@ -52,8 +50,6 @@ export function OrdersList() {
 					/>
 				</CardContent>
 			</Card>
-
-			{/* Summary */}
 			<OrdersSummary
 				filteredCount={filteredOrders.length}
 				totalCount={mockOrders.length}

@@ -1,11 +1,14 @@
+import {
+	InventoryFilters,
+	InventoryHeader,
+	InventoryStats,
+	InventoryTable,
+	categories,
+	mockParts,
+} from '@/modules/inventory';
 import { useState } from 'react';
-import { InventoryFilters } from './InventoryFilters';
-import { InventoryHeader } from './InventoryHeader';
-import { InventoryStats } from './InventoryStats';
-import { InventoryTable } from './InventoryTable';
-import { categories, mockParts } from './mockData';
 
-export function Inventory() {
+export function InventoryPage() {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [categoryFilter, setCategoryFilter] = useState('all');
 	const [stockFilter, setStockFilter] = useState('all');
@@ -17,7 +20,6 @@ export function Inventory() {
 		const matchesCategory =
 			categoryFilter === 'all' || part.category === categoryFilter;
 
-		// getStockStatus logic is now in InventoryTable
 		const status = (() => {
 			if (part.quantity === 0) return 'Out of Stock';
 			if (part.quantity < part.minStock) return 'Low Stock';
@@ -33,7 +35,7 @@ export function Inventory() {
 	});
 
 	const totalValue = mockParts.reduce(
-		(sum: number, p) => sum + p.quantity * p.unitPrice,
+		(sum, p) => sum + p.quantity * p.unitPrice,
 		0,
 	);
 	const lowStockCount = mockParts.filter(

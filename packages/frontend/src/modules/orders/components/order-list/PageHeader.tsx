@@ -1,7 +1,8 @@
 import { Button } from '@/shared/components/ui';
-import { Kanban, Plus } from 'lucide-react';
+import { Kanban } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { NewOrderModal } from './add-order/AddOrder';
 
 interface PageHeaderProps {
 	title: string;
@@ -34,12 +35,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
 					</Button>
 				</Link>
 			)}
-			{showNewOrder && (
-				<Button onClick={newOrderHandler}>
-					<Plus className='mr-2 h-4 w-4' />
-					New Order
-				</Button>
-			)}
+			{showNewOrder && <NewOrderModal />}
 		</div>
 	</div>
 );

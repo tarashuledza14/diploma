@@ -2,15 +2,18 @@ import { createBrowserRouter } from 'react-router-dom';
 // import { DashboardLayout } from '@/components/layouts/DashboardLayout';
 // import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { MainLayout } from '@/layouts';
-import { LoginPage, ProtectedRoute } from '@/modules/auth';
-import { ClientsPage } from '@/modules/clients';
-import { DashboardPage } from '@/modules/dashboard';
-import { InventoryPage } from '@/modules/inventory';
-import { KanbanPage } from '@/modules/kanban';
+import { ProtectedRoute } from '@/modules/auth';
 import { OrderDetailsPage } from '@/modules/orders';
-import { OrdersPage } from '@/modules/orders/pages/OrderPage';
-import { ServicesPage } from '@/modules/services';
 import { VehiclesPage } from '@/modules/vehicles';
+import {
+	ClientsPage,
+	DashboardPage,
+	InventoryPage,
+	KanbanPage,
+	LoginPage,
+	OrdersPage,
+	ServicesPage,
+} from '@/pages';
 import { Suspense } from 'react';
 
 // Ліниве завантаження сторінок (Code Splitting)

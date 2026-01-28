@@ -2,12 +2,12 @@
 // TODO: Import OrderService, ServiceCatalogService, PartsService from services/
 
 import { Tabs, TabsContent } from '@/shared/components/ui';
-import { GeneralInfoTab } from '../components/order-details/general-info/GeneralInfoTab';
-import { MediaGallery } from '../components/order-details/media/MediaGallery';
-import { OrderDetailsHeader } from '../components/order-details/OrderDetailsHeader';
-import { PartsTab } from '../components/order-details/parts/PartsTab';
-import { ServicesTab } from '../components/order-details/services/ServicesTab';
-import { TabsNav } from '../components/order-details/tabs/TabsNav';
+import { GeneralInfoTab } from '../modules/orders/components/order-details/general-info/GeneralInfoTab';
+import { MediaGallery } from '../modules/orders/components/order-details/media/MediaGallery';
+import { OrderDetailsHeader } from '../modules/orders/components/order-details/OrderDetailsHeader';
+import { PartsTab } from '../modules/orders/components/order-details/parts/PartsTab';
+import { ServicesTab } from '../modules/orders/components/order-details/services/ServicesTab';
+import { TabsNav } from '../modules/orders/components/order-details/tabs/TabsNav';
 
 /**
  * Mock order data - Replace with useQuery(['orders', orderId])

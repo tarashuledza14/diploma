@@ -73,7 +73,7 @@ export function Sidebar({ className }: SidebarProps) {
 		if (href === '/') {
 			return pathname === '/';
 		}
-		return pathname === href || pathname.startsWith(`${href}/`);
+		return pathname === href;
 	};
 
 	return (
