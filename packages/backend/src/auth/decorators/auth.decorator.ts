@@ -1,6 +1,6 @@
 import { UseGuards, applyDecorators } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
-import { Role } from '@shared'
+import { Role } from 'prisma/generated/prisma/enums'
 import { RolesGuard } from '../roles/roles.guard'
 
 export const Auth = (role: Role = Role.CLIENT) =>

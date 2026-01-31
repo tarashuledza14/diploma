@@ -5,9 +5,9 @@ import {
 	UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@shared';
 import { hash, verify } from 'argon2';
 import { Response } from 'express';
+import { User } from 'prisma/generated/prisma/client';
 import { UserService } from 'src/user/user.service';
 import { AuthDto, RegisterDto } from './dto/auth.dto';
 
@@ -82,7 +82,7 @@ export class AuthService {
 		});
 	}
 
-	private async issueTokens(userId: number) {
+	private async issueTokens(userId: string) {
 		const data = { id: userId };
 
 		const accessToken = this.jwtService.sign(data, {
@@ -108,10 +108,9 @@ export class AuthService {
 	private returnUserFields(user: User) {
 		return {
 			id: user.id,
-			firstName: user.firstName,
-			lastName: user.lastName,
+			fullName: user.fullName,
 			email: user.email,
-			roles: user.roles,
+			roles: user.role,
 		};
 	}
 }

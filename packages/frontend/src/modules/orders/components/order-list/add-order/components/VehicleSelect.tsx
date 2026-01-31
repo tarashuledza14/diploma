@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import {
 	Button,
+	Command,
 	CommandEmpty,
 	CommandGroup,
 	CommandInput,
@@ -11,7 +12,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/shared/components/ui';
-import { Car, Check, ChevronsUpDown, Command } from 'lucide-react';
+import { Car, Check, ChevronsUpDown } from 'lucide-react';
 import React from 'react';
 
 export interface VehicleSelectProps {
@@ -67,7 +68,7 @@ export const VehicleSelect: React.FC<VehicleSelectProps> = ({
 						<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
 					</Button>
 				</PopoverTrigger>
-				<PopoverContent className='w-[500px] p-0' align='start'>
+				<PopoverContent className='w-125 p-0' align='start'>
 					<Command>
 						<CommandInput placeholder='Search vehicles...' />
 						<CommandList>

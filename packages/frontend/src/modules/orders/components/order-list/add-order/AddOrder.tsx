@@ -1,5 +1,4 @@
-import React from 'react';
-
+import { NewOrder } from '@/modules/orders/interfaces/new-order.interface';
 import {
 	Button,
 	Dialog,
@@ -13,7 +12,9 @@ import {
 	Separator,
 } from '@/shared/components/ui';
 import { Loader2, Plus } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { OrderStatus } from '../../../interfaces/order-status.enum';
 import { ClientSelect } from './components/ClientSelect';
 import { DueDateInput } from './components/DueDateInput';
 import { MechanicSelect } from './components/MechanicSelect';
@@ -23,7 +24,6 @@ import { SelectedServicesTags } from './components/SelectedServicesTags';
 import { ServicesSelect } from './components/ServicesSelect';
 import { ServicesSummary } from './components/ServicesSummary';
 import { VehicleSelect } from './components/VehicleSelect';
-
 // TODO: Replace with actual data from API
 const mockClients = [
 	{
@@ -120,76 +120,79 @@ const mockMechanics = [
 
 interface NewOrderModalProps {
 	trigger?: React.ReactNode;
-	defaultStatus?: string;
+	defaultStatus?: OrderStatus;
 }
 
 export function NewOrderModal({
 	trigger,
-	// defaultStatus = 'new',
+	defaultStatus = OrderStatus.NEW,
 }: NewOrderModalProps) {
 	const [open, setOpen] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-
-	// Form state
-	const [selectedClient, setSelectedClient] = useState<string>('');
-	const [selectedVehicle, setSelectedVehicle] = useState<string>('');
-	const [selectedServices, setSelectedServices] = useState<string[]>([]);
-	const [priority, setPriority] = useState<string>('medium');
-	const [assignedMechanic, setAssignedMechanic] = useState<string>('');
-	const [dueDate, setDueDate] = useState<string>('');
-	const [notes, setNotes] = useState<string>('');
-
 	const [clientOpen, setClientOpen] = useState(false);
 	const [vehicleOpen, setVehicleOpen] = useState(false);
 	const [servicesOpen, setServicesOpen] = useState(false);
+	const [dueDateOpen, setDueDateOpen] = useState(false);
+	const {
+		control,
+		setValue,
+		handleSubmit,
+		watch,
+		reset,
+		formState: { isValid },
+	} = useForm<NewOrder>({
+		mode: 'onChange',
+		defaultValues: {
+			clientId: '',
+			vehicleId: '',
+			services: [],
+			priority: 'medium',
+			assignedMechanic: '',
+			dueDate: undefined,
+			notes: '',
+			status: defaultStatus,
+		},
+	});
 
-	const clientVehicles = selectedClient
-		? mockVehicles.filter(v => v.clientId === selectedClient)
+	const clientId = watch('clientId');
+	const vehicleId = watch('vehicleId');
+	const services = watch('services');
+
+	const clientVehicles = clientId
+		? mockVehicles.filter(v => v.clientId === clientId)
 		: mockVehicles;
 
-	const selectedClientData = mockClients.find(c => c.id === selectedClient);
-	const selectedVehicleData = mockVehicles.find(v => v.id === selectedVehicle);
-	const selectedServicesData = mockServices.filter(s =>
-		selectedServices.includes(s.id),
-	);
+	const clientData = mockClients.find(c => c.id === clientId);
+	const vehicleData = mockVehicles.find(v => v.id === vehicleId);
+	const servicesData = mockServices.filter(s => services.includes(s.id));
 
-	const totalPrice = selectedServicesData.reduce((sum, s) => sum + s.price, 0);
-	const totalDuration = selectedServicesData.reduce(
-		(sum, s) => sum + s.duration,
-		0,
-	);
+	const totalPrice = servicesData.reduce((sum, s) => sum + s.price, 0);
+	const totalDuration = servicesData.reduce((sum, s) => sum + s.duration, 0);
 
 	const handleServiceToggle = (serviceId: string) => {
-		setSelectedServices(prev =>
-			prev.includes(serviceId)
-				? prev.filter(id => id !== serviceId)
-				: [...prev, serviceId],
-		);
+		const current = watch('services');
+		const updated = current.includes(serviceId)
+			? current.filter((id: string) => id !== serviceId)
+			: [...current, serviceId];
+		setValue('services', updated as any);
 	};
 
 	const removeService = (serviceId: string) => {
-		setSelectedServices(prev => prev.filter(id => id !== serviceId));
+		const current = watch('services');
+		setValue(
+			'services',
+			current.filter((id: string) => id !== serviceId) as any,
+		);
 	};
 
-	const handleSubmit = async () => {
+	const onSubmit = async (data: NewOrder) => {
+		console.log('data', data);
 		setIsSubmitting(true);
-
 		await new Promise(resolve => setTimeout(resolve, 1000));
-
 		setIsSubmitting(false);
 		setOpen(false);
-
-		setSelectedClient('');
-		setSelectedVehicle('');
-		setSelectedServices([]);
-		setPriority('medium');
-		setAssignedMechanic('');
-		setDueDate('');
-		setNotes('');
+		reset();
 	};
-
-	const isFormValid =
-		selectedClient && selectedVehicle && selectedServices.length > 0 && dueDate;
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -211,33 +214,54 @@ export function NewOrderModal({
 
 				<ScrollArea className='max-h-[60vh] pr-4'>
 					<div className='space-y-6 py-4'>
-						<ClientSelect
-							clients={mockClients}
-							selectedClient={selectedClient}
-							setSelectedClient={setSelectedClient}
-							setSelectedVehicle={setSelectedVehicle}
-							open={clientOpen}
-							setOpen={setClientOpen}
+						<Controller
+							name='clientId'
+							control={control}
+							render={({ field }) => (
+								<ClientSelect
+									clients={mockClients}
+									selectedClient={field.value}
+									setSelectedClient={value => {
+										field.onChange(value);
+										setValue('vehicleId', '');
+									}}
+									setSelectedVehicle={value => setValue('vehicleId', value)}
+									open={clientOpen}
+									setOpen={setClientOpen}
+								/>
+							)}
 						/>
-						<VehicleSelect
-							vehicles={clientVehicles}
-							selectedVehicle={selectedVehicle}
-							setSelectedVehicle={setSelectedVehicle}
-							open={vehicleOpen}
-							setOpen={setVehicleOpen}
-							disabled={!selectedClient && clientVehicles.length === 0}
-							selectedClient={selectedClient}
+						<Controller
+							name='vehicleId'
+							control={control}
+							render={({ field }) => (
+								<VehicleSelect
+									vehicles={clientVehicles}
+									selectedVehicle={field.value}
+									setSelectedVehicle={field.onChange}
+									open={vehicleOpen}
+									setOpen={setVehicleOpen}
+									disabled={!clientId && clientVehicles.length === 0}
+									selectedClient={clientId}
+								/>
+							)}
 						/>
 						<Separator />
-						<ServicesSelect
-							services={mockServices}
-							selectedServices={selectedServices}
-							handleServiceToggle={handleServiceToggle}
-							open={servicesOpen}
-							setOpen={setServicesOpen}
+						<Controller
+							name='services'
+							control={control}
+							render={({ field }) => (
+								<ServicesSelect
+									services={mockServices}
+									selectedServices={field.value}
+									handleServiceToggle={handleServiceToggle}
+									open={servicesOpen}
+									setOpen={setServicesOpen}
+								/>
+							)}
 						/>
 						<SelectedServicesTags
-							selectedServicesData={selectedServicesData}
+							selectedServicesData={servicesData}
 							removeService={removeService}
 						/>
 						<ServicesSummary
@@ -246,15 +270,47 @@ export function NewOrderModal({
 						/>
 						<Separator />
 						<div className='grid grid-cols-2 gap-4'>
-							<PrioritySelect priority={priority} setPriority={setPriority} />
-							<MechanicSelect
-								mechanics={mockMechanics}
-								assignedMechanic={assignedMechanic}
-								setAssignedMechanic={setAssignedMechanic}
+							<Controller
+								name='priority'
+								control={control}
+								render={({ field }) => (
+									<PrioritySelect
+										priority={field.value}
+										setPriority={field.onChange}
+									/>
+								)}
+							/>
+							<Controller
+								name='assignedMechanic'
+								control={control}
+								render={({ field }) => (
+									<MechanicSelect
+										mechanics={mockMechanics}
+										assignedMechanic={field.value}
+										setAssignedMechanic={field.onChange}
+									/>
+								)}
 							/>
 						</div>
-						<DueDateInput dueDate={dueDate} setDueDate={setDueDate} />
-						<NotesInput notes={notes} setNotes={setNotes} />
+						<Controller
+							name='dueDate'
+							control={control}
+							render={({ field }) => (
+								<DueDateInput
+									dueDate={field.value}
+									setDueDate={field.onChange}
+									dueDateOpen={dueDateOpen}
+									setDueDateOpen={setDueDateOpen}
+								/>
+							)}
+						/>
+						<Controller
+							name='notes'
+							control={control}
+							render={({ field }) => (
+								<NotesInput notes={field.value} setNotes={field.onChange} />
+							)}
+						/>
 					</div>
 				</ScrollArea>
 
@@ -267,8 +323,8 @@ export function NewOrderModal({
 						Cancel
 					</Button>
 					<Button
-						onClick={handleSubmit}
-						disabled={!isFormValid || isSubmitting}
+						onClick={handleSubmit(onSubmit)}
+						disabled={!isValid || isSubmitting}
 					>
 						{isSubmitting ? (
 							<>

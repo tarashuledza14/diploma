@@ -1,4 +1,3 @@
 packages:
   - 'packages/frontend'
   - 'packages/backend'
-  - 'packages/shared'

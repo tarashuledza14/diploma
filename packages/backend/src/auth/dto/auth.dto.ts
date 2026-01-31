@@ -1,30 +1,27 @@
-import { IsEmail, IsString, MinLength } from 'class-validator'
+import { IsEmail, IsString, MinLength } from 'class-validator';
 
 export class AuthDto {
 	@IsEmail()
 	@IsString()
-	email: string
+	email: string;
 
 	@MinLength(8, {
-		message: 'Password must be at least 6 symbols long'
+		message: 'Password must be at least 6 symbols long',
 	})
 	@IsString()
-	password: string
+	password: string;
 }
 export class RegisterDto {
 	@IsEmail()
 	@IsString()
-	email: string
+	email: string;
 
 	@MinLength(8, {
-		message: 'Password must be at least 6 symbols long'
+		message: 'Password must be at least 6 symbols long',
 	})
 	@IsString()
-	password: string
+	password: string;
 
 	@IsString()
-	firstName: string
-	
-	@IsString()
-	lastName: string
+	fullName: string;
 }

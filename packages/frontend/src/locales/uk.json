@@ -1,10 +1,10 @@
 {
-  "title": "Мови",
-  "loading": "Завантаження...",
-  "error": "Не вдалося завантажити мови",
-  "switchLanguage": "Змінити мову",
-  "languages": {
-    "english": "Англійська",
-    "ukrainian": "Українська"
-  }
+	"title": "Мови",
+	"loading": "Завантаження...",
+	"error": "Не вдалося завантажити мови",
+	"switchLanguage": "Змінити мову",
+	"languages": {
+		"english": "EN",
+		"ukrainian": "UA"
+	}
 }
