@@ -1,20 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from 'prisma/generated/prisma/client';
+import { FilterService } from 'src/filter/filter.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateClientDto } from './dto/create-client.dto';
-import {
-	FilterItem,
-	FilterOperators,
-	GetClientsDto,
-	SortItem,
-} from './dto/get-clients.dto';
+import { GetClientsDto } from './dto/get-clients.dto';
 
 @Injectable()
 export class ClientsService {
 	constructor(
 		private readonly db: PrismaService,
-		private paginationService: PaginationService,
+		private readonly paginationService: PaginationService,
+		private readonly filterService: FilterService,
 	) {}
 
 	async create(data: CreateClientDto) {
@@ -29,13 +25,17 @@ export class ClientsService {
 				page: input.page,
 				perPage: input.perPage,
 			});
-			const filters = this.createFilter(input.filters);
+			const filters = this.filterService.createFilter(
+				input.filters,
+				input.joinOperator,
+			);
+			const sorts = this.filterService.getSortFilter(input.sort || []);
 			const [clients, total] = await Promise.all([
 				this.db.client.findMany({
 					skip: offset,
 					where: filters,
 					take: input.perPage,
-					orderBy: this.getSortFilter(input.sort || []),
+					orderBy: sorts,
 					select: {
 						id: true,
 						fullName: true,
@@ -130,89 +130,5 @@ export class ClientsService {
 				latestVisit: latestOrder?.startDate || null,
 			},
 		});
-	}
-
-	private getSortFilter(
-		sort: SortItem[],
-	): Prisma.ClientOrderByWithRelationInput[] {
-		if (!sort || sort.length === 0) {
-			return [{ createdAt: 'desc' }];
-		}
-
-		const validClientFields = Object.values(
-			Prisma.ClientScalarFieldEnum,
-		) as string[];
-
-		return sort.map(sortItem => {
-			const direction = sortItem.desc ? 'desc' : 'asc';
-
-			if (validClientFields.includes(sortItem.id)) {
-				return { [sortItem.id]: direction };
-			}
-
-			return { createdAt: 'desc' };
-		});
-	}
-
-	private createFilter(filtersData?: FilterItem[]) {
-		let filters: Prisma.ClientWhereInput[] = [];
-		for (let item of filtersData) {
-			console.log('item', item);
-			switch (item.operator) {
-				case FilterOperators.CONTAINS:
-					filters.push(this.getContainsFilter(item.id, item.value));
-					break;
-				case FilterOperators.NOT_CONTAIN:
-					filters.push(this.getNotContainFilter(item.id, item.value));
-					break;
-				case FilterOperators.EQUALS:
-					filters.push(this.getEqualsFilter(item.id, item.value));
-					break;
-				case FilterOperators.NOT_EQUALS:
-					filters.push(this.getNotEquals(item.id, item.value));
-					break;
-			}
-		}
-		return filters.length ? { AND: filters } : {};
-	}
-	private getContainsFilter(
-		field: string,
-		value: string,
-	): Prisma.ClientWhereInput {
-		console.log('CONTAINS');
-		return {
-			[field]: {
-				contains: value,
-				mode: 'insensitive',
-			},
-		};
-	}
-	private getNotContainFilter(
-		field: string,
-		value: string,
-	): Prisma.ClientWhereInput {
-		return {
-			NOT: {
-				[field]: {
-					contains: value,
-					mode: 'insensitive',
-				},
-			},
-		};
-	}
-	private getEqualsFilter(
-		field: string,
-		value: string,
-	): Prisma.ClientWhereInput {
-		return {
-			[field]: { equals: value, mode: 'insensitive' },
-		};
-	}
-	private getNotEquals(field: string, value: string): Prisma.ClientWhereInput {
-		return {
-			NOT: {
-				[field]: { equals: value, mode: 'insensitive' },
-			},
-		};
 	}
 }
