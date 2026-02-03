@@ -1,4 +1,3 @@
-import { cn } from '@/lib/utils';
 import {
 	Button,
 	Command,
@@ -12,6 +11,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/shared/components/ui';
+import { cn } from '@/shared/lib/utils';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import React from 'react';
 

@@ -20,8 +20,22 @@ export type ClientModel = runtime.Types.Result.DefaultSelection<Prisma.$ClientPa
 
 export type AggregateClient = {
   _count: ClientCountAggregateOutputType | null
+  _avg: ClientAvgAggregateOutputType | null
+  _sum: ClientSumAggregateOutputType | null
   _min: ClientMinAggregateOutputType | null
   _max: ClientMaxAggregateOutputType | null
+}
+
+export type ClientAvgAggregateOutputType = {
+  totalSpent: runtime.Decimal | null
+  totalOrders: number | null
+  vehicleCount: number | null
+}
+
+export type ClientSumAggregateOutputType = {
+  totalSpent: runtime.Decimal | null
+  totalOrders: number | null
+  vehicleCount: number | null
 }
 
 export type ClientMinAggregateOutputType = {
@@ -30,6 +44,10 @@ export type ClientMinAggregateOutputType = {
   phone: string | null
   email: string | null
   notes: string | null
+  totalSpent: runtime.Decimal | null
+  totalOrders: number | null
+  vehicleCount: number | null
+  latestVisit: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -40,6 +58,10 @@ export type ClientMaxAggregateOutputType = {
   phone: string | null
   email: string | null
   notes: string | null
+  totalSpent: runtime.Decimal | null
+  totalOrders: number | null
+  vehicleCount: number | null
+  latestVisit: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,11 +72,27 @@ export type ClientCountAggregateOutputType = {
   phone: number
   email: number
   notes: number
+  totalSpent: number
+  totalOrders: number
+  vehicleCount: number
+  latestVisit: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type ClientAvgAggregateInputType = {
+  totalSpent?: true
+  totalOrders?: true
+  vehicleCount?: true
+}
+
+export type ClientSumAggregateInputType = {
+  totalSpent?: true
+  totalOrders?: true
+  vehicleCount?: true
+}
 
 export type ClientMinAggregateInputType = {
   id?: true
@@ -62,6 +100,10 @@ export type ClientMinAggregateInputType = {
   phone?: true
   email?: true
   notes?: true
+  totalSpent?: true
+  totalOrders?: true
+  vehicleCount?: true
+  latestVisit?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -72,6 +114,10 @@ export type ClientMaxAggregateInputType = {
   phone?: true
   email?: true
   notes?: true
+  totalSpent?: true
+  totalOrders?: true
+  vehicleCount?: true
+  latestVisit?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -82,6 +128,10 @@ export type ClientCountAggregateInputType = {
   phone?: true
   email?: true
   notes?: true
+  totalSpent?: true
+  totalOrders?: true
+  vehicleCount?: true
+  latestVisit?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -125,6 +175,18 @@ export type ClientAggregateArgs<ExtArgs extends runtime.Types.Extensions.Interna
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ClientAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ClientSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ClientMinAggregateInputType
@@ -155,6 +217,8 @@ export type ClientGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   _count?: ClientCountAggregateInputType | true
+  _avg?: ClientAvgAggregateInputType
+  _sum?: ClientSumAggregateInputType
   _min?: ClientMinAggregateInputType
   _max?: ClientMaxAggregateInputType
 }
@@ -165,9 +229,15 @@ export type ClientGroupByOutputType = {
   phone: string
   email: string | null
   notes: string | null
+  totalSpent: runtime.Decimal
+  totalOrders: number
+  vehicleCount: number
+  latestVisit: Date | null
   createdAt: Date
   updatedAt: Date
   _count: ClientCountAggregateOutputType | null
+  _avg: ClientAvgAggregateOutputType | null
+  _sum: ClientSumAggregateOutputType | null
   _min: ClientMinAggregateOutputType | null
   _max: ClientMaxAggregateOutputType | null
 }
@@ -196,6 +266,10 @@ export type ClientWhereInput = {
   phone?: Prisma.StringFilter<"Client"> | string
   email?: Prisma.StringNullableFilter<"Client"> | string | null
   notes?: Prisma.StringNullableFilter<"Client"> | string | null
+  totalSpent?: Prisma.DecimalFilter<"Client"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: Prisma.IntFilter<"Client"> | number
+  vehicleCount?: Prisma.IntFilter<"Client"> | number
+  latestVisit?: Prisma.DateTimeNullableFilter<"Client"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   vehicles?: Prisma.VehicleListRelationFilter
@@ -208,6 +282,10 @@ export type ClientOrderByWithRelationInput = {
   phone?: Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  totalSpent?: Prisma.SortOrder
+  totalOrders?: Prisma.SortOrder
+  vehicleCount?: Prisma.SortOrder
+  latestVisit?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   vehicles?: Prisma.VehicleOrderByRelationAggregateInput
@@ -223,6 +301,10 @@ export type ClientWhereUniqueInput = Prisma.AtLeast<{
   fullName?: Prisma.StringFilter<"Client"> | string
   email?: Prisma.StringNullableFilter<"Client"> | string | null
   notes?: Prisma.StringNullableFilter<"Client"> | string | null
+  totalSpent?: Prisma.DecimalFilter<"Client"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: Prisma.IntFilter<"Client"> | number
+  vehicleCount?: Prisma.IntFilter<"Client"> | number
+  latestVisit?: Prisma.DateTimeNullableFilter<"Client"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   vehicles?: Prisma.VehicleListRelationFilter
@@ -235,11 +317,17 @@ export type ClientOrderByWithAggregationInput = {
   phone?: Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  totalSpent?: Prisma.SortOrder
+  totalOrders?: Prisma.SortOrder
+  vehicleCount?: Prisma.SortOrder
+  latestVisit?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ClientCountOrderByAggregateInput
+  _avg?: Prisma.ClientAvgOrderByAggregateInput
   _max?: Prisma.ClientMaxOrderByAggregateInput
   _min?: Prisma.ClientMinOrderByAggregateInput
+  _sum?: Prisma.ClientSumOrderByAggregateInput
 }
 
 export type ClientScalarWhereWithAggregatesInput = {
@@ -251,6 +339,10 @@ export type ClientScalarWhereWithAggregatesInput = {
   phone?: Prisma.StringWithAggregatesFilter<"Client"> | string
   email?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
+  totalSpent?: Prisma.DecimalWithAggregatesFilter<"Client"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: Prisma.IntWithAggregatesFilter<"Client"> | number
+  vehicleCount?: Prisma.IntWithAggregatesFilter<"Client"> | number
+  latestVisit?: Prisma.DateTimeNullableWithAggregatesFilter<"Client"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Client"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Client"> | Date | string
 }
@@ -261,6 +353,10 @@ export type ClientCreateInput = {
   phone: string
   email?: string | null
   notes?: string | null
+  totalSpent?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: number
+  vehicleCount?: number
+  latestVisit?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -273,6 +369,10 @@ export type ClientUncheckedCreateInput = {
   phone: string
   email?: string | null
   notes?: string | null
+  totalSpent?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: number
+  vehicleCount?: number
+  latestVisit?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -285,6 +385,10 @@ export type ClientUpdateInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalSpent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: Prisma.IntFieldUpdateOperationsInput | number
+  vehicleCount?: Prisma.IntFieldUpdateOperationsInput | number
+  latestVisit?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -297,6 +401,10 @@ export type ClientUncheckedUpdateInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalSpent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: Prisma.IntFieldUpdateOperationsInput | number
+  vehicleCount?: Prisma.IntFieldUpdateOperationsInput | number
+  latestVisit?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -309,6 +417,10 @@ export type ClientCreateManyInput = {
   phone: string
   email?: string | null
   notes?: string | null
+  totalSpent?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: number
+  vehicleCount?: number
+  latestVisit?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -319,6 +431,10 @@ export type ClientUpdateManyMutationInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalSpent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: Prisma.IntFieldUpdateOperationsInput | number
+  vehicleCount?: Prisma.IntFieldUpdateOperationsInput | number
+  latestVisit?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -329,6 +445,10 @@ export type ClientUncheckedUpdateManyInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalSpent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: Prisma.IntFieldUpdateOperationsInput | number
+  vehicleCount?: Prisma.IntFieldUpdateOperationsInput | number
+  latestVisit?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -339,8 +459,18 @@ export type ClientCountOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   email?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  totalSpent?: Prisma.SortOrder
+  totalOrders?: Prisma.SortOrder
+  vehicleCount?: Prisma.SortOrder
+  latestVisit?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ClientAvgOrderByAggregateInput = {
+  totalSpent?: Prisma.SortOrder
+  totalOrders?: Prisma.SortOrder
+  vehicleCount?: Prisma.SortOrder
 }
 
 export type ClientMaxOrderByAggregateInput = {
@@ -349,6 +479,10 @@ export type ClientMaxOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   email?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  totalSpent?: Prisma.SortOrder
+  totalOrders?: Prisma.SortOrder
+  vehicleCount?: Prisma.SortOrder
+  latestVisit?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -359,13 +493,43 @@ export type ClientMinOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   email?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  totalSpent?: Prisma.SortOrder
+  totalOrders?: Prisma.SortOrder
+  vehicleCount?: Prisma.SortOrder
+  latestVisit?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ClientSumOrderByAggregateInput = {
+  totalSpent?: Prisma.SortOrder
+  totalOrders?: Prisma.SortOrder
+  vehicleCount?: Prisma.SortOrder
 }
 
 export type ClientScalarRelationFilter = {
   is?: Prisma.ClientWhereInput
   isNot?: Prisma.ClientWhereInput
+}
+
+export type DecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type ClientCreateNestedOneWithoutVehiclesInput = {
@@ -402,6 +566,10 @@ export type ClientCreateWithoutVehiclesInput = {
   phone: string
   email?: string | null
   notes?: string | null
+  totalSpent?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: number
+  vehicleCount?: number
+  latestVisit?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   orders?: Prisma.OrderCreateNestedManyWithoutClientInput
@@ -413,6 +581,10 @@ export type ClientUncheckedCreateWithoutVehiclesInput = {
   phone: string
   email?: string | null
   notes?: string | null
+  totalSpent?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: number
+  vehicleCount?: number
+  latestVisit?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutClientInput
@@ -440,6 +612,10 @@ export type ClientUpdateWithoutVehiclesInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalSpent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: Prisma.IntFieldUpdateOperationsInput | number
+  vehicleCount?: Prisma.IntFieldUpdateOperationsInput | number
+  latestVisit?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orders?: Prisma.OrderUpdateManyWithoutClientNestedInput
@@ -451,6 +627,10 @@ export type ClientUncheckedUpdateWithoutVehiclesInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalSpent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: Prisma.IntFieldUpdateOperationsInput | number
+  vehicleCount?: Prisma.IntFieldUpdateOperationsInput | number
+  latestVisit?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orders?: Prisma.OrderUncheckedUpdateManyWithoutClientNestedInput
@@ -462,6 +642,10 @@ export type ClientCreateWithoutOrdersInput = {
   phone: string
   email?: string | null
   notes?: string | null
+  totalSpent?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: number
+  vehicleCount?: number
+  latestVisit?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -473,6 +657,10 @@ export type ClientUncheckedCreateWithoutOrdersInput = {
   phone: string
   email?: string | null
   notes?: string | null
+  totalSpent?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: number
+  vehicleCount?: number
+  latestVisit?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -500,6 +688,10 @@ export type ClientUpdateWithoutOrdersInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalSpent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: Prisma.IntFieldUpdateOperationsInput | number
+  vehicleCount?: Prisma.IntFieldUpdateOperationsInput | number
+  latestVisit?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -511,6 +703,10 @@ export type ClientUncheckedUpdateWithoutOrdersInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalSpent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalOrders?: Prisma.IntFieldUpdateOperationsInput | number
+  vehicleCount?: Prisma.IntFieldUpdateOperationsInput | number
+  latestVisit?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -562,6 +758,10 @@ export type ClientSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   phone?: boolean
   email?: boolean
   notes?: boolean
+  totalSpent?: boolean
+  totalOrders?: boolean
+  vehicleCount?: boolean
+  latestVisit?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vehicles?: boolean | Prisma.Client$vehiclesArgs<ExtArgs>
@@ -575,6 +775,10 @@ export type ClientSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   phone?: boolean
   email?: boolean
   notes?: boolean
+  totalSpent?: boolean
+  totalOrders?: boolean
+  vehicleCount?: boolean
+  latestVisit?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["client"]>
@@ -585,6 +789,10 @@ export type ClientSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   phone?: boolean
   email?: boolean
   notes?: boolean
+  totalSpent?: boolean
+  totalOrders?: boolean
+  vehicleCount?: boolean
+  latestVisit?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["client"]>
@@ -595,11 +803,15 @@ export type ClientSelectScalar = {
   phone?: boolean
   email?: boolean
   notes?: boolean
+  totalSpent?: boolean
+  totalOrders?: boolean
+  vehicleCount?: boolean
+  latestVisit?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ClientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fullName" | "phone" | "email" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
+export type ClientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fullName" | "phone" | "email" | "notes" | "totalSpent" | "totalOrders" | "vehicleCount" | "latestVisit" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
 export type ClientInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vehicles?: boolean | Prisma.Client$vehiclesArgs<ExtArgs>
   orders?: boolean | Prisma.Client$ordersArgs<ExtArgs>
@@ -620,6 +832,10 @@ export type $ClientPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     phone: string
     email: string | null
     notes: string | null
+    totalSpent: runtime.Decimal
+    totalOrders: number
+    vehicleCount: number
+    latestVisit: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["client"]>
@@ -1052,6 +1268,10 @@ export interface ClientFieldRefs {
   readonly phone: Prisma.FieldRef<"Client", 'String'>
   readonly email: Prisma.FieldRef<"Client", 'String'>
   readonly notes: Prisma.FieldRef<"Client", 'String'>
+  readonly totalSpent: Prisma.FieldRef<"Client", 'Decimal'>
+  readonly totalOrders: Prisma.FieldRef<"Client", 'Int'>
+  readonly vehicleCount: Prisma.FieldRef<"Client", 'Int'>
+  readonly latestVisit: Prisma.FieldRef<"Client", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Client", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Client", 'DateTime'>
 }

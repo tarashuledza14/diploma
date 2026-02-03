@@ -1,5 +1,5 @@
-import { cn } from '@/lib/utils';
 import { Badge } from '@/shared/components/ui';
+import { cn } from '@/shared/lib/utils';
 
 export interface KanbanColumnHeaderProps {
 	title: string;

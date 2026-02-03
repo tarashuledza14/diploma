@@ -1,4 +1,3 @@
-import { cn } from '@/lib/utils';
 import {
 	Badge,
 	Button,
@@ -7,6 +6,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/shared/components/ui';
+import { cn } from '@/shared/lib/utils';
 import { MoreVertical } from 'lucide-react';
 import { Order } from './OrderCard';
 

@@ -71,8 +71,11 @@ model Client {
 
   notes String? // Нотатки про клієнта ("Любить каву", "Проблемний")
 
-  // Клієнт не має ролі, він просто Клієнт.
-  // Клієнт не має пароля.
+  // Денормалізовані поля для швидкого сортування
+  totalSpent   Decimal   @default(0) @map("total_spent") // Загальна сума всіх замовлень
+  totalOrders  Int       @default(0) @map("total_orders") // Кількість замовлень
+  vehicleCount Int       @default(0) @map("vehicle_count") // Кількість автомобілів
+  latestVisit  DateTime? @map("latest_visit") // Дата останнього замовлення
 
   // Зв'язки клієнта
   vehicles Vehicle[]
@@ -81,6 +84,10 @@ model Client {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([totalSpent])
+  @@index([totalOrders])
+  @@index([vehicleCount])
+  @@index([latestVisit])
   @@map("clients")
 }
 

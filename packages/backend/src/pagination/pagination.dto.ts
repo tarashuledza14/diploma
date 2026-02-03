@@ -1,9 +1,9 @@
-import { IsOptional } from 'class-validator'
+import { IsOptional } from 'class-validator';
 
 export class PaginationDto {
 	@IsOptional()
-	page?: string
+	page?: number;
 
 	@IsOptional()
-	perPage?: string
+	perPage?: number;
 }

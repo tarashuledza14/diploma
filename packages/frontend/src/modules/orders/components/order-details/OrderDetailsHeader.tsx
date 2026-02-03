@@ -1,4 +1,3 @@
-import { cn } from '@/lib/utils';
 import {
 	Badge,
 	Button,
@@ -8,6 +7,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/shared/components/ui';
+import { cn } from '@/shared/lib/utils';
 import { ArrowLeft, CheckCircle2, Edit } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { priorityColors, statusColors } from '../order-list/orderColors';

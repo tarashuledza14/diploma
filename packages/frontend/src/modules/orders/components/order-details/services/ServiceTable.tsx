@@ -1,4 +1,3 @@
-import { cn } from '@/lib/utils';
 import {
 	Button,
 	Table,
@@ -8,6 +7,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/shared/components/ui';
+import { cn } from '@/shared/lib/utils';
 import { Badge, Trash2 } from 'lucide-react';
 
 interface Props {

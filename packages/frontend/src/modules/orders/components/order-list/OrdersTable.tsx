@@ -1,4 +1,3 @@
-import { cn } from '@/lib/utils';
 import {
 	Avatar,
 	AvatarFallback,
@@ -16,6 +15,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/shared/components/ui';
+import { cn } from '@/shared/lib/utils';
 import { Edit, Eye, MoreVertical, Trash2 } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';

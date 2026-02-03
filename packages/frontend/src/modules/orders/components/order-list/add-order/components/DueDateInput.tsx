@@ -1,4 +1,3 @@
-import { cn } from '@/lib/utils';
 import {
 	Button,
 	Calendar,
@@ -7,6 +6,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/shared/components/ui';
+import { cn } from '@/shared/lib/utils';
 import dayjs from 'dayjs';
 import { CalendarIcon } from 'lucide-react';
 import React from 'react';

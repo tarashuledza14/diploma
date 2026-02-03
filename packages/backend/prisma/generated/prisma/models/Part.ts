@@ -439,14 +439,6 @@ export type PartScalarRelationFilter = {
   isNot?: Prisma.PartWhereInput
 }
 
-export type DecimalFieldUpdateOperationsInput = {
-  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
-}
-
 export type PartCreateNestedOneWithoutOrderPartsInput = {
   create?: Prisma.XOR<Prisma.PartCreateWithoutOrderPartsInput, Prisma.PartUncheckedCreateWithoutOrderPartsInput>
   connectOrCreate?: Prisma.PartCreateOrConnectWithoutOrderPartsInput

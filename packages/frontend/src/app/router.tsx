@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 // import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { MainLayout } from '@/layouts';
 import { ProtectedRoute } from '@/modules/auth';
+import { ClientPageDemo } from '@/modules/client-table/ClientPage';
 import { OrderDetailsPage } from '@/modules/orders';
 import { VehiclesPage } from '@/modules/vehicles';
 import {
@@ -108,6 +109,7 @@ export const router = createBrowserRouter([
 				element: <VehiclesPage />,
 			},
 			{ path: '/clients', element: <ClientsPage /> },
+			{ path: '/settings', element: <ClientPageDemo /> },
 		],
 	},
 	//

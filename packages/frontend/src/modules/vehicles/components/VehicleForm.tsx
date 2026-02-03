@@ -1,4 +1,3 @@
-import { cn } from '@/lib/utils';
 import { mockClients } from '@/modules/clients';
 import {
 	Button,
@@ -21,6 +20,7 @@ import {
 	SelectValue,
 	Textarea,
 } from '@/shared/components/ui';
+import { cn } from '@/shared/lib/utils';
 import { Check, ChevronsUpDown, User } from 'lucide-react';
 import { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';

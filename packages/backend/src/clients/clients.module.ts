@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ClientsService } from './clients.service';
+import { PaginationModule } from 'src/pagination/pagination.module';
 import { ClientsController } from './clients.controller';
+import { ClientsService } from './clients.service';
 
 @Module({
-  controllers: [ClientsController],
-  providers: [ClientsService],
+	controllers: [ClientsController],
+	providers: [ClientsService],
+	imports: [PaginationModule],
 })
 export class ClientsModule {}
