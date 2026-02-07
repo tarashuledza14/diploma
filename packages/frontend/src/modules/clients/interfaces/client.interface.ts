@@ -8,5 +8,6 @@ export interface Client {
 	totalOrders: number;
 	totalSpent: number;
 	status: string;
-	lastVisit: string;
+	latestVisit: string;
+	notes?: string;
 }

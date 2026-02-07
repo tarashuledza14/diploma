@@ -1,4 +1,4 @@
-export { ClientsPage } from './ClientsPage';
+export { ClientsPage } from './ClientsPage.tsx';
 export { DashboardPage } from './DashboardPage';
 export { InventoryPage } from './InventoryPage';
 export { KanbanPage } from './KanbanPage';

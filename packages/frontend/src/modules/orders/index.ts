@@ -1,5 +1,5 @@
 export { OrderDetailsPage } from '../../pages/OrderDetailsPage';
-export { OrdersPage as OrdersPage } from '../../pages/OrdersPage';
+export { OrdersPage } from '../../pages/OrdersPage';
 
 export { mockOrders } from './components/order-list/mockOrders';
 export {
@@ -10,3 +10,4 @@ export { OrdersFilters } from './components/order-list/OrdersFilters';
 export { OrdersSummary } from './components/order-list/OrdersSummary';
 export { OrdersTable } from './components/order-list/OrdersTable';
 export { PageHeader } from './components/order-list/PageHeader';
+export * from './interfaces/order.interface';

@@ -1,3 +1,4 @@
+export * from './action-bar.tsx';
 export * from './avatar';
 export * from './badge';
 export * from './button';
@@ -9,9 +10,11 @@ export * from './command';
 export * from './dialog';
 export * from './dropdown-menu';
 export * from './input';
+export * from './kanban';
 export * from './label';
 export * from './popover';
 export * from './progress';
+export * from './responsive-dialog.tsx';
 export * from './scroll-area';
 export * from './select';
 export * from './separator';

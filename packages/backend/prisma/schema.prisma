@@ -52,6 +52,8 @@ model User {
   fullName String
   avatar   String?
 
+  deletedAt DateTime?
+
   // Зв'язки співробітника
   managerOrders  Order[] @relation("ManagerOrders")
   mechanicOrders Order[] @relation("MechanicOrders")
@@ -81,6 +83,8 @@ model Client {
   vehicles Vehicle[]
   orders   Order[]
 
+  deletedAt DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -109,6 +113,7 @@ model Vehicle {
   status        VehicleStatus @default(OUT)
   totalServices Int           @default(0) @map("total_services")
   orders        Order[]
+  deletedAt     DateTime?
 
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -157,8 +162,9 @@ model Order {
   priority    OrderPriority @default(MEDIUM)
 
   // Зв'язки з людьми
-  vehicleId String  @map("vehicle_id")
-  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+  vehicleId String    @map("vehicle_id")
+  vehicle   Vehicle   @relation(fields: [vehicleId], references: [id])
+  deletedAt DateTime?
 
   // Хто прийняв замовлення? (Менеджер - User)
   managerId String? @map("manager_id")

@@ -1,5 +1,3 @@
-'use client';
-
 import { Button } from '@/shared/components/ui/button';
 import {
 	Command,
@@ -37,11 +35,12 @@ export function DataTableViewOptions<TData>({
 				.getAllColumns()
 				.filter(
 					column =>
-						typeof column.accessorFn !== 'undefined' && column.getCanHide(),
+						typeof column.accessorFn !== 'undefined' &&
+						column.getCanHide() &&
+						column.getIsVisible(),
 				),
 		[table],
 	);
-
 	return (
 		<Popover>
 			<PopoverTrigger asChild>

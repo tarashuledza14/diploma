@@ -1,4 +1,4 @@
-import { mockClients } from '@/modules/clients';
+// import { mockClients } from '@/modules/clients';
 import {
 	Button,
 	Command,
@@ -34,6 +34,7 @@ const statusOptions = [
 
 export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 	const [clientOpen, setClientOpen] = useState(false);
+	const mockClients = getMockClients();
 	const selectedClient = mockClients.find(c => c.id === form.watch('ownerId'));
 
 	return (
@@ -54,7 +55,7 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 								{selectedClient ? (
 									<div className='flex items-center gap-2'>
 										<User className='h-4 w-4 text-muted-foreground' />
-										<span>{selectedClient.name}</span>
+										<span>{selectedClient.fullName}</span>
 									</div>
 								) : (
 									<span className='text-muted-foreground'>
@@ -73,7 +74,7 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 										{mockClients.map(client => (
 											<CommandItem
 												key={client.id}
-												value={client.name}
+												value={client.fullName}
 												onSelect={() => {
 													form.setValue('ownerId', client.id, {
 														shouldValidate: true,
@@ -90,7 +91,7 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 													)}
 												/>
 												<div className='flex flex-col'>
-													<span>{client.name}</span>
+													<span>{client.fullName}</span>
 													<span className='text-xs text-muted-foreground'>
 														{client.email}
 													</span>
@@ -202,4 +203,80 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 			</div>
 		</ScrollArea>
 	);
+}
+function getMockClients() {
+	return [
+		{
+			id: 'CLI-001',
+			fullName: 'John Smith',
+			email: 'john.smith@email.com',
+			phone: '+1 (555) 111-1111',
+			avatar: '/avatars/client1.jpg',
+			vehicleCount: 2,
+			totalOrders: 8,
+			totalSpent: 2450.0,
+			status: 'active',
+			lastVisit: '2026-01-15',
+		},
+		{
+			id: 'CLI-002',
+			fullName: 'Sarah Davis',
+			email: 'sarah.davis@email.com',
+			phone: '+1 (555) 222-2222',
+			avatar: '/avatars/client2.jpg',
+			vehicleCount: 1,
+			totalOrders: 5,
+			totalSpent: 1200.0,
+			status: 'active',
+			lastVisit: '2026-01-14',
+		},
+		{
+			id: 'CLI-003',
+			fullName: 'Robert Brown',
+			email: 'robert.brown@email.com',
+			phone: '+1 (555) 333-3333',
+			avatar: '/avatars/client3.jpg',
+			vehicleCount: 3,
+			totalOrders: 12,
+			totalSpent: 4500.0,
+			status: 'vip',
+			lastVisit: '2026-01-18',
+		},
+		{
+			id: 'CLI-004',
+			fullName: 'Emily Chen',
+			email: 'emily.chen@email.com',
+			phone: '+1 (555) 444-4444',
+			avatar: '/avatars/client4.jpg',
+			vehicleCount: 1,
+			totalOrders: 3,
+			totalSpent: 650.0,
+			status: 'active',
+			lastVisit: '2026-01-10',
+		},
+		{
+			id: 'CLI-005',
+			fullName: 'Michael Lee',
+			email: 'michael.lee@email.com',
+			phone: '+1 (555) 555-5555',
+			avatar: '/avatars/client5.jpg',
+			vehicleCount: 2,
+			totalOrders: 6,
+			totalSpent: 1800.0,
+			status: 'active',
+			lastVisit: '2026-01-08',
+		},
+		{
+			id: 'CLI-006',
+			fullName: 'Lisa Wang',
+			email: 'lisa.wang@email.com',
+			phone: '+1 (555) 666-6666',
+			avatar: '/avatars/client6.jpg',
+			vehicleCount: 1,
+			totalOrders: 4,
+			totalSpent: 980.0,
+			status: 'inactive',
+			lastVisit: '2025-12-20',
+		},
+	];
 }

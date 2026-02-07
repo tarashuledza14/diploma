@@ -1,5 +1,3 @@
-'use client';
-
 import { AuthAPI } from '@/modules/auth/api/auth.api';
 import { useUserStore } from '@/modules/auth/store/user.store';
 import { Button } from '@/shared/components/ui/button';

@@ -10,7 +10,6 @@ import {
 import { parseAsStringEnum, useQueryState } from 'nuqs';
 import * as React from 'react';
 
-import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
 import { DataTableRangeFilter } from '@/shared/components/data-table/data-table-range-filter';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
@@ -55,6 +54,7 @@ import {
 	SortableOverlay,
 } from '@/shared/components/ui/sortable';
 import { dataTableConfig } from '@/shared/config/data-table';
+import { useDebouncedCallback } from '@/shared/hooks/use-debounced-callback';
 import {
 	getDefaultFilterOperator,
 	getFilterOperators,
@@ -103,7 +103,6 @@ export function DataTableFilterList<TData>({
 			.getAllColumns()
 			.filter(column => column.columnDef.enableColumnFilter);
 	}, [table]);
-
 	const [filters, setFilters] = useQueryState(
 		table.options.meta?.queryKeys?.filters ?? 'filters',
 		getFiltersStateParser<TData>(columns.map(field => field.id))
@@ -114,6 +113,7 @@ export function DataTableFilterList<TData>({
 				throttleMs,
 			}),
 	);
+
 	const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);
 
 	const [joinOperator, setJoinOperator] = useQueryState(
@@ -126,7 +126,6 @@ export function DataTableFilterList<TData>({
 
 	const onFilterAdd = React.useCallback(() => {
 		const column = columns[0];
-
 		if (!column) return;
 
 		debouncedSetFilters([
@@ -216,7 +215,6 @@ export function DataTableFilterList<TData>({
 		},
 		[filters, onFilterRemove],
 	);
-
 	return (
 		<Sortable
 			value={filters}

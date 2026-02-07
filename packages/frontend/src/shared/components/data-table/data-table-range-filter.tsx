@@ -1,11 +1,9 @@
-'use client';
-
 import type { Column } from '@tanstack/react-table';
 import * as React from 'react';
 
-import type { ExtendedColumnFilter } from '@/shared/components/data-table/data-table';
 import { Input } from '@/shared/components/ui/input';
 import { cn } from '@/shared/lib/utils';
+import { ExtendedColumnFilter } from '@/types/data-table';
 
 interface DataTableRangeFilterProps<TData> extends React.ComponentProps<'div'> {
 	filter: ExtendedColumnFilter<TData>;
@@ -65,8 +63,11 @@ export function DataTableRangeFilter<TData>({
 				? (currentValues[1] ?? '')
 				: (currentValues[0] ?? '');
 
+			const noRangeProvided =
+				(min === undefined && max === undefined) || (min === 0 && max === 0);
 			if (
 				value === '' ||
+				noRangeProvided ||
 				(!Number.isNaN(numValue) &&
 					(isMin
 						? numValue >= min && numValue <= (Number(otherValue) || max)

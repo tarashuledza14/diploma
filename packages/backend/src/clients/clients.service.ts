@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { FilterService } from 'src/filter/filter.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -14,14 +14,58 @@ export class ClientsService {
 	) {}
 
 	async create(data: CreateClientDto) {
-		return this.db.client.create({
-			data,
+		try {
+			return this.db.client.create({
+				data,
+			});
+		} catch (error) {
+			console.error('Error creating client:', error);
+			throw error;
+		}
+	}
+
+	async update(clientId: string, data: Partial<CreateClientDto>) {
+		try {
+			return this.db.client.update({
+				where: { id: clientId },
+				data,
+			});
+		} catch (error) {
+			console.error('Error updating client:', error);
+			throw new BadRequestException('Failed to update client');
+		}
+	}
+	async getClientDetails(clientId: string) {
+		try {
+			return this.db.client.findUnique({
+				where: { id: clientId },
+				include: {
+					vehicles: true,
+					orders: true,
+				},
+			});
+		} catch (error) {
+			console.error('Error fetching client details:', error);
+			throw new BadRequestException('Failed to fetch client details');
+		}
+	}
+
+	async delete(clientId: string) {
+		return this.db.client.update({
+			where: { id: clientId },
+			data: { deletedAt: new Date() },
+		});
+	}
+	async deleteBulk(clientIds: string[]) {
+		return this.db.client.updateMany({
+			where: { id: { in: clientIds } },
+			data: { deletedAt: new Date() },
 		});
 	}
 
 	async getClients(input: GetClientsDto) {
 		try {
-			const { skip: offset } = this.paginationService.getPagination({
+			const { skip: offset, perPage } = this.paginationService.getPagination({
 				page: input.page,
 				perPage: input.perPage,
 			});
@@ -50,10 +94,10 @@ export class ClientsService {
 						latestVisit: true,
 					},
 				}),
-				this.db.client.count(),
+				this.db.client.count({ where: filters }),
 			]);
 
-			const pageCount = Math.ceil(total / input.perPage);
+			const pageCount = this.paginationService.getPageCount(total, perPage);
 
 			return {
 				data: clients.map(client => ({

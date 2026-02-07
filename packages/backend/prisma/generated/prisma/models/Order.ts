@@ -41,6 +41,7 @@ export type OrderMinAggregateOutputType = {
   totalAmount: runtime.Decimal | null
   priority: $Enums.OrderPriority | null
   vehicleId: string | null
+  deletedAt: Date | null
   managerId: string | null
   mechanicId: string | null
   clientId: string | null
@@ -55,6 +56,7 @@ export type OrderMaxAggregateOutputType = {
   totalAmount: runtime.Decimal | null
   priority: $Enums.OrderPriority | null
   vehicleId: string | null
+  deletedAt: Date | null
   managerId: string | null
   mechanicId: string | null
   clientId: string | null
@@ -69,6 +71,7 @@ export type OrderCountAggregateOutputType = {
   totalAmount: number
   priority: number
   vehicleId: number
+  deletedAt: number
   managerId: number
   mechanicId: number
   clientId: number
@@ -93,6 +96,7 @@ export type OrderMinAggregateInputType = {
   totalAmount?: true
   priority?: true
   vehicleId?: true
+  deletedAt?: true
   managerId?: true
   mechanicId?: true
   clientId?: true
@@ -107,6 +111,7 @@ export type OrderMaxAggregateInputType = {
   totalAmount?: true
   priority?: true
   vehicleId?: true
+  deletedAt?: true
   managerId?: true
   mechanicId?: true
   clientId?: true
@@ -121,6 +126,7 @@ export type OrderCountAggregateInputType = {
   totalAmount?: true
   priority?: true
   vehicleId?: true
+  deletedAt?: true
   managerId?: true
   mechanicId?: true
   clientId?: true
@@ -222,6 +228,7 @@ export type OrderGroupByOutputType = {
   totalAmount: runtime.Decimal
   priority: $Enums.OrderPriority
   vehicleId: string
+  deletedAt: Date | null
   managerId: string | null
   mechanicId: string | null
   clientId: string
@@ -259,6 +266,7 @@ export type OrderWhereInput = {
   totalAmount?: Prisma.DecimalFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFilter<"Order"> | $Enums.OrderPriority
   vehicleId?: Prisma.StringFilter<"Order"> | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   managerId?: Prisma.StringNullableFilter<"Order"> | string | null
   mechanicId?: Prisma.StringNullableFilter<"Order"> | string | null
   clientId?: Prisma.StringFilter<"Order"> | string
@@ -279,6 +287,7 @@ export type OrderOrderByWithRelationInput = {
   totalAmount?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   vehicleId?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   managerId?: Prisma.SortOrderInput | Prisma.SortOrder
   mechanicId?: Prisma.SortOrderInput | Prisma.SortOrder
   clientId?: Prisma.SortOrder
@@ -302,6 +311,7 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   totalAmount?: Prisma.DecimalFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFilter<"Order"> | $Enums.OrderPriority
   vehicleId?: Prisma.StringFilter<"Order"> | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   managerId?: Prisma.StringNullableFilter<"Order"> | string | null
   mechanicId?: Prisma.StringNullableFilter<"Order"> | string | null
   clientId?: Prisma.StringFilter<"Order"> | string
@@ -322,6 +332,7 @@ export type OrderOrderByWithAggregationInput = {
   totalAmount?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   vehicleId?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   managerId?: Prisma.SortOrderInput | Prisma.SortOrder
   mechanicId?: Prisma.SortOrderInput | Prisma.SortOrder
   clientId?: Prisma.SortOrder
@@ -344,6 +355,7 @@ export type OrderScalarWhereWithAggregatesInput = {
   totalAmount?: Prisma.DecimalWithAggregatesFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityWithAggregatesFilter<"Order"> | $Enums.OrderPriority
   vehicleId?: Prisma.StringWithAggregatesFilter<"Order"> | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
   managerId?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   mechanicId?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   clientId?: Prisma.StringWithAggregatesFilter<"Order"> | string
@@ -357,6 +369,7 @@ export type OrderCreateInput = {
   description?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   vehicle: Prisma.VehicleCreateNestedOneWithoutOrdersInput
@@ -374,6 +387,7 @@ export type OrderUncheckedCreateInput = {
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
+  deletedAt?: Date | string | null
   managerId?: string | null
   mechanicId?: string | null
   clientId: string
@@ -389,6 +403,7 @@ export type OrderUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutOrdersNestedInput
@@ -406,6 +421,7 @@ export type OrderUncheckedUpdateInput = {
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -422,6 +438,7 @@ export type OrderCreateManyInput = {
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
+  deletedAt?: Date | string | null
   managerId?: string | null
   mechanicId?: string | null
   clientId: string
@@ -435,6 +452,7 @@ export type OrderUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -446,6 +464,7 @@ export type OrderUncheckedUpdateManyInput = {
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -470,6 +489,7 @@ export type OrderCountOrderByAggregateInput = {
   totalAmount?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   vehicleId?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
   mechanicId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
@@ -488,6 +508,7 @@ export type OrderMaxOrderByAggregateInput = {
   totalAmount?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   vehicleId?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
   mechanicId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
@@ -502,6 +523,7 @@ export type OrderMinOrderByAggregateInput = {
   totalAmount?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   vehicleId?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
   mechanicId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
@@ -728,6 +750,7 @@ export type OrderCreateWithoutManagerInput = {
   description?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   vehicle: Prisma.VehicleCreateNestedOneWithoutOrdersInput
@@ -744,6 +767,7 @@ export type OrderUncheckedCreateWithoutManagerInput = {
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
+  deletedAt?: Date | string | null
   mechanicId?: string | null
   clientId: string
   startDate?: Date | string
@@ -768,6 +792,7 @@ export type OrderCreateWithoutMechanicInput = {
   description?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   vehicle: Prisma.VehicleCreateNestedOneWithoutOrdersInput
@@ -784,6 +809,7 @@ export type OrderUncheckedCreateWithoutMechanicInput = {
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
+  deletedAt?: Date | string | null
   managerId?: string | null
   clientId: string
   startDate?: Date | string
@@ -828,6 +854,7 @@ export type OrderScalarWhereInput = {
   totalAmount?: Prisma.DecimalFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFilter<"Order"> | $Enums.OrderPriority
   vehicleId?: Prisma.StringFilter<"Order"> | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   managerId?: Prisma.StringNullableFilter<"Order"> | string | null
   mechanicId?: Prisma.StringNullableFilter<"Order"> | string | null
   clientId?: Prisma.StringFilter<"Order"> | string
@@ -857,6 +884,7 @@ export type OrderCreateWithoutClientInput = {
   description?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   vehicle: Prisma.VehicleCreateNestedOneWithoutOrdersInput
@@ -873,6 +901,7 @@ export type OrderUncheckedCreateWithoutClientInput = {
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
+  deletedAt?: Date | string | null
   managerId?: string | null
   mechanicId?: string | null
   startDate?: Date | string
@@ -913,6 +942,7 @@ export type OrderCreateWithoutVehicleInput = {
   description?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   manager?: Prisma.UserCreateNestedOneWithoutManagerOrdersInput
@@ -928,6 +958,7 @@ export type OrderUncheckedCreateWithoutVehicleInput = {
   description?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
+  deletedAt?: Date | string | null
   managerId?: string | null
   mechanicId?: string | null
   clientId: string
@@ -969,6 +1000,7 @@ export type OrderCreateWithoutPartsInput = {
   description?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   vehicle: Prisma.VehicleCreateNestedOneWithoutOrdersInput
@@ -985,6 +1017,7 @@ export type OrderUncheckedCreateWithoutPartsInput = {
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
+  deletedAt?: Date | string | null
   managerId?: string | null
   mechanicId?: string | null
   clientId: string
@@ -1015,6 +1048,7 @@ export type OrderUpdateWithoutPartsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutOrdersNestedInput
@@ -1031,6 +1065,7 @@ export type OrderUncheckedUpdateWithoutPartsInput = {
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1045,6 +1080,7 @@ export type OrderCreateWithoutServicesInput = {
   description?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   vehicle: Prisma.VehicleCreateNestedOneWithoutOrdersInput
@@ -1061,6 +1097,7 @@ export type OrderUncheckedCreateWithoutServicesInput = {
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
+  deletedAt?: Date | string | null
   managerId?: string | null
   mechanicId?: string | null
   clientId: string
@@ -1091,6 +1128,7 @@ export type OrderUpdateWithoutServicesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutOrdersNestedInput
@@ -1107,6 +1145,7 @@ export type OrderUncheckedUpdateWithoutServicesInput = {
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1122,6 +1161,7 @@ export type OrderCreateManyManagerInput = {
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
+  deletedAt?: Date | string | null
   mechanicId?: string | null
   clientId: string
   startDate?: Date | string
@@ -1135,6 +1175,7 @@ export type OrderCreateManyMechanicInput = {
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
+  deletedAt?: Date | string | null
   managerId?: string | null
   clientId: string
   startDate?: Date | string
@@ -1147,6 +1188,7 @@ export type OrderUpdateWithoutManagerInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutOrdersNestedInput
@@ -1163,6 +1205,7 @@ export type OrderUncheckedUpdateWithoutManagerInput = {
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1178,6 +1221,7 @@ export type OrderUncheckedUpdateManyWithoutManagerInput = {
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1190,6 +1234,7 @@ export type OrderUpdateWithoutMechanicInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutOrdersNestedInput
@@ -1206,6 +1251,7 @@ export type OrderUncheckedUpdateWithoutMechanicInput = {
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1221,6 +1267,7 @@ export type OrderUncheckedUpdateManyWithoutMechanicInput = {
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1234,6 +1281,7 @@ export type OrderCreateManyClientInput = {
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
+  deletedAt?: Date | string | null
   managerId?: string | null
   mechanicId?: string | null
   startDate?: Date | string
@@ -1246,6 +1294,7 @@ export type OrderUpdateWithoutClientInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutOrdersNestedInput
@@ -1262,6 +1311,7 @@ export type OrderUncheckedUpdateWithoutClientInput = {
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1277,6 +1327,7 @@ export type OrderUncheckedUpdateManyWithoutClientInput = {
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1289,6 +1340,7 @@ export type OrderCreateManyVehicleInput = {
   description?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
+  deletedAt?: Date | string | null
   managerId?: string | null
   mechanicId?: string | null
   clientId: string
@@ -1302,6 +1354,7 @@ export type OrderUpdateWithoutVehicleInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   manager?: Prisma.UserUpdateOneWithoutManagerOrdersNestedInput
@@ -1317,6 +1370,7 @@ export type OrderUncheckedUpdateWithoutVehicleInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1332,6 +1386,7 @@ export type OrderUncheckedUpdateManyWithoutVehicleInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1386,6 +1441,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   totalAmount?: boolean
   priority?: boolean
   vehicleId?: boolean
+  deletedAt?: boolean
   managerId?: boolean
   mechanicId?: boolean
   clientId?: boolean
@@ -1407,6 +1463,7 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   totalAmount?: boolean
   priority?: boolean
   vehicleId?: boolean
+  deletedAt?: boolean
   managerId?: boolean
   mechanicId?: boolean
   clientId?: boolean
@@ -1425,6 +1482,7 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   totalAmount?: boolean
   priority?: boolean
   vehicleId?: boolean
+  deletedAt?: boolean
   managerId?: boolean
   mechanicId?: boolean
   clientId?: boolean
@@ -1443,6 +1501,7 @@ export type OrderSelectScalar = {
   totalAmount?: boolean
   priority?: boolean
   vehicleId?: boolean
+  deletedAt?: boolean
   managerId?: boolean
   mechanicId?: boolean
   clientId?: boolean
@@ -1450,7 +1509,7 @@ export type OrderSelectScalar = {
   endDate?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "description" | "totalAmount" | "priority" | "vehicleId" | "managerId" | "mechanicId" | "clientId" | "startDate" | "endDate", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "description" | "totalAmount" | "priority" | "vehicleId" | "deletedAt" | "managerId" | "mechanicId" | "clientId" | "startDate" | "endDate", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
   manager?: boolean | Prisma.Order$managerArgs<ExtArgs>
@@ -1490,6 +1549,7 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     totalAmount: runtime.Decimal
     priority: $Enums.OrderPriority
     vehicleId: string
+    deletedAt: Date | null
     managerId: string | null
     mechanicId: string | null
     clientId: string
@@ -1930,6 +1990,7 @@ export interface OrderFieldRefs {
   readonly totalAmount: Prisma.FieldRef<"Order", 'Decimal'>
   readonly priority: Prisma.FieldRef<"Order", 'OrderPriority'>
   readonly vehicleId: Prisma.FieldRef<"Order", 'String'>
+  readonly deletedAt: Prisma.FieldRef<"Order", 'DateTime'>
   readonly managerId: Prisma.FieldRef<"Order", 'String'>
   readonly mechanicId: Prisma.FieldRef<"Order", 'String'>
   readonly clientId: Prisma.FieldRef<"Order", 'String'>

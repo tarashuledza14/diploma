@@ -19,11 +19,14 @@ export class FilterDto {
 	filters?: FilterItem[] = [];
 
 	@IsOptional()
-	@IsEnum(['and', 'or'])
-	joinOperator?: JoinOperator = 'and';
+	@IsEnum(['AND', 'OR'])
+	@Transform(({ value }) => {
+		return value?.toUpperCase?.() ?? value;
+	})
+	joinOperator?: JoinOperator = 'AND';
 }
 
-export type JoinOperator = 'and' | 'or';
+export type JoinOperator = 'AND' | 'OR';
 
 export class SortDto {
 	@IsOptional()
@@ -52,25 +55,18 @@ export class SortItem {
 	desc?: boolean;
 }
 
+export type FilterVariant = 'text' | 'number' | 'date';
 export class FilterItem {
 	@IsString()
 	id: string;
 
-	@Transform(({ value }) => {
-		const num = Number(value);
-		if (
-			!isNaN(num) &&
-			typeof value !== 'boolean' &&
-			value !== null &&
-			value !== ''
-		) {
-			return num;
-		}
-		return value;
-	})
-	value: any;
+	@IsString({ each: true })
+	value: string | string[];
 
 	@IsOptional()
 	@IsString()
 	operator?: FilterOperators;
+
+	@IsString()
+	variant: FilterVariant;
 }

@@ -13,8 +13,24 @@ const adapter = new PrismaPg({
 	connectionString: process.env.DATABASE_URL as string,
 });
 const prisma = new PrismaClient({ adapter });
+
+async function clearDatabase() {
+	// Delete in order of dependencies
+	await prisma.orderPart.deleteMany({});
+	await prisma.orderService.deleteMany({});
+	await prisma.order.deleteMany({});
+	await prisma.vehicle.deleteMany({});
+	await prisma.service.deleteMany({});
+	await prisma.part.deleteMany({});
+	await prisma.document.deleteMany({});
+	await prisma.client.deleteMany({});
+	await prisma.user.deleteMany({});
+}
+
 async function main() {
-	console.log('🌱 Starting seed...');
+	console.log('🧹 Clearing existing data...');
+	await clearDatabase();
+	console.log('✅ Database cleared');
 
 	// 1. Create Users (Staff) - 15 users
 	const users = await Promise.all([

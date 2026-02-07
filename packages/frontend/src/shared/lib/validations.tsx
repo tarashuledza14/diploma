@@ -4,7 +4,7 @@ import {
 } from '@/shared/lib/parsers';
 import { CommandIcon, FileSpreadsheetIcon } from 'lucide-react';
 import { parseAsInteger, parseAsString, parseAsStringEnum } from 'nuqs/server';
-import { Client } from '../clients/interfaces/client.interface';
+import { Client } from '../../../modules/clients/interfaces/client.interface';
 
 export type FlagConfig = typeof flagConfig;
 

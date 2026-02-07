@@ -1,5 +1,4 @@
-export { ClientsCount } from './components/ClientsCount';
+export { ClientService } from './api/client.service';
 export { ClientsHeader } from './components/ClientsHeader';
-export { ClientsSearch } from './components/ClientsSearch';
-export { ClientsTable } from './components/ClientsTable';
-export { mockClients } from './components/mockClients';
+export { ClientTable } from './components/ClientTable';
+export { clientKeys } from './queries/keys';

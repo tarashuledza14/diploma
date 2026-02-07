@@ -1,5 +1,3 @@
-'use client';
-
 import { useComposedRefs } from '@/shared/lib/compose-refs';
 import { cn } from '@/shared/lib/utils';
 import {

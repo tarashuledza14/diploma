@@ -48,6 +48,7 @@ export type ClientMinAggregateOutputType = {
   totalOrders: number | null
   vehicleCount: number | null
   latestVisit: Date | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -62,6 +63,7 @@ export type ClientMaxAggregateOutputType = {
   totalOrders: number | null
   vehicleCount: number | null
   latestVisit: Date | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -76,6 +78,7 @@ export type ClientCountAggregateOutputType = {
   totalOrders: number
   vehicleCount: number
   latestVisit: number
+  deletedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -104,6 +107,7 @@ export type ClientMinAggregateInputType = {
   totalOrders?: true
   vehicleCount?: true
   latestVisit?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -118,6 +122,7 @@ export type ClientMaxAggregateInputType = {
   totalOrders?: true
   vehicleCount?: true
   latestVisit?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -132,6 +137,7 @@ export type ClientCountAggregateInputType = {
   totalOrders?: true
   vehicleCount?: true
   latestVisit?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -233,6 +239,7 @@ export type ClientGroupByOutputType = {
   totalOrders: number
   vehicleCount: number
   latestVisit: Date | null
+  deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: ClientCountAggregateOutputType | null
@@ -270,6 +277,7 @@ export type ClientWhereInput = {
   totalOrders?: Prisma.IntFilter<"Client"> | number
   vehicleCount?: Prisma.IntFilter<"Client"> | number
   latestVisit?: Prisma.DateTimeNullableFilter<"Client"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"Client"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   vehicles?: Prisma.VehicleListRelationFilter
@@ -286,6 +294,7 @@ export type ClientOrderByWithRelationInput = {
   totalOrders?: Prisma.SortOrder
   vehicleCount?: Prisma.SortOrder
   latestVisit?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   vehicles?: Prisma.VehicleOrderByRelationAggregateInput
@@ -305,6 +314,7 @@ export type ClientWhereUniqueInput = Prisma.AtLeast<{
   totalOrders?: Prisma.IntFilter<"Client"> | number
   vehicleCount?: Prisma.IntFilter<"Client"> | number
   latestVisit?: Prisma.DateTimeNullableFilter<"Client"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"Client"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   vehicles?: Prisma.VehicleListRelationFilter
@@ -321,6 +331,7 @@ export type ClientOrderByWithAggregationInput = {
   totalOrders?: Prisma.SortOrder
   vehicleCount?: Prisma.SortOrder
   latestVisit?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ClientCountOrderByAggregateInput
@@ -343,6 +354,7 @@ export type ClientScalarWhereWithAggregatesInput = {
   totalOrders?: Prisma.IntWithAggregatesFilter<"Client"> | number
   vehicleCount?: Prisma.IntWithAggregatesFilter<"Client"> | number
   latestVisit?: Prisma.DateTimeNullableWithAggregatesFilter<"Client"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Client"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Client"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Client"> | Date | string
 }
@@ -357,6 +369,7 @@ export type ClientCreateInput = {
   totalOrders?: number
   vehicleCount?: number
   latestVisit?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -373,6 +386,7 @@ export type ClientUncheckedCreateInput = {
   totalOrders?: number
   vehicleCount?: number
   latestVisit?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -389,6 +403,7 @@ export type ClientUpdateInput = {
   totalOrders?: Prisma.IntFieldUpdateOperationsInput | number
   vehicleCount?: Prisma.IntFieldUpdateOperationsInput | number
   latestVisit?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -405,6 +420,7 @@ export type ClientUncheckedUpdateInput = {
   totalOrders?: Prisma.IntFieldUpdateOperationsInput | number
   vehicleCount?: Prisma.IntFieldUpdateOperationsInput | number
   latestVisit?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -421,6 +437,7 @@ export type ClientCreateManyInput = {
   totalOrders?: number
   vehicleCount?: number
   latestVisit?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -435,6 +452,7 @@ export type ClientUpdateManyMutationInput = {
   totalOrders?: Prisma.IntFieldUpdateOperationsInput | number
   vehicleCount?: Prisma.IntFieldUpdateOperationsInput | number
   latestVisit?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -449,6 +467,7 @@ export type ClientUncheckedUpdateManyInput = {
   totalOrders?: Prisma.IntFieldUpdateOperationsInput | number
   vehicleCount?: Prisma.IntFieldUpdateOperationsInput | number
   latestVisit?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -463,6 +482,7 @@ export type ClientCountOrderByAggregateInput = {
   totalOrders?: Prisma.SortOrder
   vehicleCount?: Prisma.SortOrder
   latestVisit?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -483,6 +503,7 @@ export type ClientMaxOrderByAggregateInput = {
   totalOrders?: Prisma.SortOrder
   vehicleCount?: Prisma.SortOrder
   latestVisit?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -497,6 +518,7 @@ export type ClientMinOrderByAggregateInput = {
   totalOrders?: Prisma.SortOrder
   vehicleCount?: Prisma.SortOrder
   latestVisit?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -526,10 +548,6 @@ export type IntFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
-}
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
 }
 
 export type ClientCreateNestedOneWithoutVehiclesInput = {
@@ -570,6 +588,7 @@ export type ClientCreateWithoutVehiclesInput = {
   totalOrders?: number
   vehicleCount?: number
   latestVisit?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   orders?: Prisma.OrderCreateNestedManyWithoutClientInput
@@ -585,6 +604,7 @@ export type ClientUncheckedCreateWithoutVehiclesInput = {
   totalOrders?: number
   vehicleCount?: number
   latestVisit?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutClientInput
@@ -616,6 +636,7 @@ export type ClientUpdateWithoutVehiclesInput = {
   totalOrders?: Prisma.IntFieldUpdateOperationsInput | number
   vehicleCount?: Prisma.IntFieldUpdateOperationsInput | number
   latestVisit?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orders?: Prisma.OrderUpdateManyWithoutClientNestedInput
@@ -631,6 +652,7 @@ export type ClientUncheckedUpdateWithoutVehiclesInput = {
   totalOrders?: Prisma.IntFieldUpdateOperationsInput | number
   vehicleCount?: Prisma.IntFieldUpdateOperationsInput | number
   latestVisit?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orders?: Prisma.OrderUncheckedUpdateManyWithoutClientNestedInput
@@ -646,6 +668,7 @@ export type ClientCreateWithoutOrdersInput = {
   totalOrders?: number
   vehicleCount?: number
   latestVisit?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicles?: Prisma.VehicleCreateNestedManyWithoutOwnerInput
@@ -661,6 +684,7 @@ export type ClientUncheckedCreateWithoutOrdersInput = {
   totalOrders?: number
   vehicleCount?: number
   latestVisit?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOwnerInput
@@ -692,6 +716,7 @@ export type ClientUpdateWithoutOrdersInput = {
   totalOrders?: Prisma.IntFieldUpdateOperationsInput | number
   vehicleCount?: Prisma.IntFieldUpdateOperationsInput | number
   latestVisit?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicles?: Prisma.VehicleUpdateManyWithoutOwnerNestedInput
@@ -707,6 +732,7 @@ export type ClientUncheckedUpdateWithoutOrdersInput = {
   totalOrders?: Prisma.IntFieldUpdateOperationsInput | number
   vehicleCount?: Prisma.IntFieldUpdateOperationsInput | number
   latestVisit?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOwnerNestedInput
@@ -762,6 +788,7 @@ export type ClientSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   totalOrders?: boolean
   vehicleCount?: boolean
   latestVisit?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vehicles?: boolean | Prisma.Client$vehiclesArgs<ExtArgs>
@@ -779,6 +806,7 @@ export type ClientSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   totalOrders?: boolean
   vehicleCount?: boolean
   latestVisit?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["client"]>
@@ -793,6 +821,7 @@ export type ClientSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   totalOrders?: boolean
   vehicleCount?: boolean
   latestVisit?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["client"]>
@@ -807,11 +836,12 @@ export type ClientSelectScalar = {
   totalOrders?: boolean
   vehicleCount?: boolean
   latestVisit?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ClientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fullName" | "phone" | "email" | "notes" | "totalSpent" | "totalOrders" | "vehicleCount" | "latestVisit" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
+export type ClientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fullName" | "phone" | "email" | "notes" | "totalSpent" | "totalOrders" | "vehicleCount" | "latestVisit" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
 export type ClientInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vehicles?: boolean | Prisma.Client$vehiclesArgs<ExtArgs>
   orders?: boolean | Prisma.Client$ordersArgs<ExtArgs>
@@ -836,6 +866,7 @@ export type $ClientPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     totalOrders: number
     vehicleCount: number
     latestVisit: Date | null
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["client"]>
@@ -1272,6 +1303,7 @@ export interface ClientFieldRefs {
   readonly totalOrders: Prisma.FieldRef<"Client", 'Int'>
   readonly vehicleCount: Prisma.FieldRef<"Client", 'Int'>
   readonly latestVisit: Prisma.FieldRef<"Client", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"Client", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Client", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Client", 'DateTime'>
 }

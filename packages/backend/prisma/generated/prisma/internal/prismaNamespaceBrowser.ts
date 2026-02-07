@@ -85,6 +85,7 @@ export const UserScalarFieldEnum = {
   role: 'role',
   fullName: 'fullName',
   avatar: 'avatar',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -102,6 +103,7 @@ export const ClientScalarFieldEnum = {
   totalOrders: 'totalOrders',
   vehicleCount: 'vehicleCount',
   latestVisit: 'latestVisit',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -122,6 +124,7 @@ export const VehicleScalarFieldEnum = {
   color: 'color',
   status: 'status',
   totalServices: 'totalServices',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt'
 } as const
 
@@ -159,6 +162,7 @@ export const OrderScalarFieldEnum = {
   totalAmount: 'totalAmount',
   priority: 'priority',
   vehicleId: 'vehicleId',
+  deletedAt: 'deletedAt',
   managerId: 'managerId',
   mechanicId: 'mechanicId',
   clientId: 'clientId',

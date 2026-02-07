@@ -1,5 +1,3 @@
-'use client';
-
 import type { ColumnSort, SortDirection, Table } from '@tanstack/react-table';
 import {
 	ArrowDownUp,
@@ -366,7 +364,6 @@ function DataTableSortItem({
 				>
 					<SelectTrigger
 						aria-controls={directionListboxId}
-						size='sm'
 						className='w-24 rounded'
 					>
 						<SelectValue />

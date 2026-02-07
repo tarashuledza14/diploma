@@ -1,5 +1,3 @@
-'use client';
-
 import type { Column, Table } from '@tanstack/react-table';
 import {
 	BadgeCheck,
@@ -12,15 +10,9 @@ import {
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
-import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
-import type {
-	ExtendedColumnFilter,
-	FilterOperator,
-} from '@/shared/components/data-table/data-table';
-import {
-	getDefaultFilterOperator,
-	getFilterOperators,
-} from '@/shared/components/data-table/data-table';
+import { useDebouncedCallback } from '@/shared/hooks/use-debounced-callback';
+
+import { getDefaultFilterOperator, getFilterOperators } from '@/shared';
 import { DataTableRangeFilter } from '@/shared/components/data-table/data-table-range-filter';
 import { Button } from '@/shared/components/ui/button';
 import { Calendar } from '@/shared/components/ui/calendar';
@@ -49,6 +41,7 @@ import { formatDate } from '@/shared/lib/format';
 import { generateId } from '@/shared/lib/id';
 import { getFiltersStateParser } from '@/shared/lib/parsers';
 import { cn } from '@/shared/lib/utils';
+import { ExtendedColumnFilter, FilterOperator } from '@/types/data-table';
 
 const DEBOUNCE_MS = 300;
 const THROTTLE_MS = 50;
@@ -227,7 +220,7 @@ export function DataTableFilterMenu<TData>({
 		},
 		[filters, onFilterRemove],
 	);
-
+	console.log('filters', filters);
 	return (
 		<div role='list' className='flex flex-wrap items-center gap-2'>
 			{filters.map(filter => (

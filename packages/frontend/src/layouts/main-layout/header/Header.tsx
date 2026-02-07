@@ -1,5 +1,3 @@
-'use client';
-
 import { ThemeSwitcher } from '@/shared';
 import { LangSwitcher } from './LangSwitcher';
 import { NotificationButton } from './NotificationButton';
