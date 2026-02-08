@@ -1,5 +1,4 @@
 import { Card, CardContent } from '@/shared/components/ui';
-import { Link } from 'react-router-dom';
 import { OrderCardFooter } from './OrderCardFooter';
 import { OrderCardHeader } from './OrderCardHeader';
 import { OrderCardServices } from './OrderCardServices';
@@ -33,18 +32,16 @@ export interface OrderCardProps {
 
 export function OrderCard({ order }: OrderCardProps) {
 	return (
-		<Link to={`/orders/${order.id}`}>
-			<Card className='cursor-pointer transition-all hover:shadow-md hover:border-primary/50'>
-				<CardContent className='p-4'>
-					<OrderCardHeader order={order} />
-					<OrderCardVehicle order={order} />
-					<p className='mb-3 text-sm text-muted-foreground'>
-						Plate: {order.vehicle.plate}
-					</p>
-					<OrderCardServices order={order} />
-					<OrderCardFooter order={order} />
-				</CardContent>
-			</Card>
-		</Link>
+		<Card className='transition-all hover:shadow-md hover:border-primary/50'>
+			<CardContent className='p-4'>
+				<OrderCardHeader order={order} />
+				<OrderCardVehicle order={order} />
+				<p className='mb-3 text-sm text-muted-foreground'>
+					Plate: {order.vehicle.plate}
+				</p>
+				<OrderCardServices order={order} />
+				<OrderCardFooter order={order} />
+			</CardContent>
+		</Card>
 	);
 }
