@@ -5,3 +5,4 @@ export * from './use-debounced-callback';
 export * from './use-isomorphic-layout-effect';
 export * from './use-lazy-ref';
 export * from './use-mobile';
+export * from './use-table-search-params';

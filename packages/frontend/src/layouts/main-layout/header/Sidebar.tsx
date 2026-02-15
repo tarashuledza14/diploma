@@ -1,4 +1,3 @@
-import { cn } from '@/shared/lib/utils';
 import {
 	Bot,
 	Car,
@@ -9,117 +8,131 @@ import {
 	Settings,
 	Users,
 	Wrench,
+	type LucideIcon,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import { Button } from '../../../shared/components/ui/button';
-import { ScrollArea } from '../../../shared/components/ui/scroll-area';
 
-const navigationItems = [
+import {
+	Sidebar,
+	SidebarContent,
+	SidebarGroup,
+	SidebarGroupContent,
+	SidebarGroupLabel,
+	SidebarHeader,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+	SidebarRail,
+} from '@/shared';
+
+interface NavItem {
+	title: string;
+	url: string;
+	icon: LucideIcon;
+}
+
+interface NavGroup {
+	label: string;
+	items: NavItem[];
+}
+
+const NAV_GROUPS: NavGroup[] = [
 	{
-		title: 'Dashboard',
-		href: '/',
-		icon: LayoutDashboard,
+		label: 'Platform',
+		items: [
+			{ title: 'Dashboard', url: '/', icon: LayoutDashboard },
+			{ title: 'AI Assistant', url: '/assistant', icon: Bot },
+		],
 	},
 	{
-		title: 'Orders',
-		href: '/orders',
-		icon: ClipboardList,
+		label: 'Management',
+		items: [
+			{ title: 'Orders', url: '/orders', icon: ClipboardList },
+			{ title: 'Kanban Board', url: '/orders/board', icon: Kanban },
+			{ title: 'Clients', url: '/clients', icon: Users },
+		],
 	},
 	{
-		title: 'Kanban Board',
-		href: '/orders/board',
-		icon: Kanban,
-	},
-	{
-		title: 'Clients',
-		href: '/clients',
-		icon: Users,
-	},
-	{
-		title: 'Vehicles',
-		href: '/vehicles',
-		icon: Car,
-	},
-	{
-		title: 'Services',
-		href: '/services',
-		icon: Wrench,
-	},
-	{
-		title: 'Parts Inventory',
-		href: '/inventory',
-		icon: Package,
-	},
-	{
-		title: 'AI Assistant',
-		href: '/assistant',
-		icon: Bot,
-	},
-	{
-		title: 'Settings',
-		href: '/settings',
-		icon: Settings,
+		label: 'Inventory & Service',
+		items: [
+			{ title: 'Vehicles', url: '/vehicles', icon: Car },
+			{ title: 'Services', url: '/services', icon: Wrench },
+			{ title: 'Parts Inventory', url: '/inventory', icon: Package },
+		],
 	},
 ];
 
-interface SidebarProps {
-	className?: string;
-}
-
-export function Sidebar({ className }: SidebarProps) {
+export function AppSidebar() {
 	const { pathname } = useLocation();
 
-	const isActive = (href: string) => {
-		if (href === '/') {
-			return pathname === '/';
-		}
-		return pathname === href;
-	};
+	const isActive = (url: string) => pathname === url;
 
 	return (
-		<aside
-			className={cn(
-				'flex h-screen w-64 flex-col border-r border-border bg-sidebar',
-				className,
-			)}
-		>
-			{/* Logo / Brand */}
-			<div className='flex h-16 items-center gap-2 border-b border-sidebar-border px-6'>
-				<Car className='h-8 w-8 text-sidebar-primary' />
-				<span className='text-xl font-bold text-sidebar-foreground'>
-					AutoCRM
-				</span>
-			</div>
-
-			{/* Navigation */}
-			<ScrollArea className='flex-1 px-3 py-4'>
-				<nav className='flex flex-col gap-1'>
-					{navigationItems.map(item => {
-						const active = isActive(item.href);
-						return (
-							<Link key={item.href} to={item.href}>
-								<Button
-									variant={active ? 'secondary' : 'ghost'}
-									className={cn(
-										'w-full justify-start gap-3',
-										active
-											? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
-											: 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
-									)}
-								>
-									<item.icon className='h-5 w-5' />
-									{item.title}
-								</Button>
+		<Sidebar collapsible='icon'>
+			<SidebarHeader>
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarMenuButton size='lg' asChild>
+							<Link to='/'>
+								<div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground'>
+									<Car className='size-4' />
+								</div>
+								<div className='grid flex-1 text-left text-sm leading-tight'>
+									<span className='truncate font-semibold'>AutoCRM</span>
+									<span className='truncate text-xs'>Enterprise</span>
+								</div>
 							</Link>
-						);
-					})}
-				</nav>
-			</ScrollArea>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+				</SidebarMenu>
+			</SidebarHeader>
 
-			{/* Footer */}
-			<div className='border-t border-sidebar-border p-4'>
-				<p className='text-xs text-muted-foreground'>© 2026 AutoCRM v1.0</p>
-			</div>
-		</aside>
+			<SidebarContent>
+				{NAV_GROUPS.map(group => (
+					<SidebarGroup key={group.label}>
+						<SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+						<SidebarGroupContent>
+							<SidebarMenu>
+								{group.items.map(item => (
+									<SidebarMenuItem key={item.url}>
+										<SidebarMenuButton
+											asChild
+											isActive={isActive(item.url)}
+											tooltip={item.title}
+										>
+											<Link to={item.url}>
+												<item.icon />
+												<span>{item.title}</span>
+											</Link>
+										</SidebarMenuButton>
+									</SidebarMenuItem>
+								))}
+							</SidebarMenu>
+						</SidebarGroupContent>
+					</SidebarGroup>
+				))}
+
+				<SidebarGroup className='mt-auto'>
+					<SidebarGroupContent>
+						<SidebarMenu>
+							<SidebarMenuItem>
+								<SidebarMenuButton
+									asChild
+									isActive={isActive('/settings')}
+									tooltip='Settings'
+								>
+									<Link to='/settings'>
+										<Settings />
+										<span>Settings</span>
+									</Link>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+						</SidebarMenu>
+					</SidebarGroupContent>
+				</SidebarGroup>
+			</SidebarContent>
+
+			<SidebarRail />
+		</Sidebar>
 	);
 }

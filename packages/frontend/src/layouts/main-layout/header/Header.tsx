@@ -1,4 +1,4 @@
-import { ThemeSwitcher } from '@/shared';
+import { SidebarTrigger, ThemeSwitcher } from '@/shared';
 import { LangSwitcher } from './LangSwitcher';
 import { NotificationButton } from './NotificationButton';
 import { SearchBar } from './SearchBar';
@@ -18,6 +18,7 @@ export function Header() {
 
 	return (
 		<header className='flex h-16 items-center justify-between border-b border-border bg-background px-6'>
+			<SidebarTrigger />
 			<SearchBar />
 			<div className='flex items-center gap-4'>
 				<LangSwitcher />

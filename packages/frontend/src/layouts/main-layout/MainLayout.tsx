@@ -1,38 +1,29 @@
-import { Header } from '@/layouts/main-layout/header/Header';
-import { Sidebar } from '@/layouts/main-layout/header/Sidebar';
+import { SidebarInset, SidebarProvider } from '@/shared'; // Імпорти з твоєї бібліотеки компонентів
 import { Outlet } from 'react-router-dom';
-
-// TODO: Import useAuthStore to check if user is authenticated
-// TODO: If not authenticated, redirect to /login
+import { Header } from './header/Header';
+import { AppSidebar } from './header/Sidebar';
 
 export function MainLayout() {
-	// TODO: Check authentication status
-	// const { isAuthenticated, isLoading } = useAuthStore()
-	// const router = useRouter()
-
-	// useEffect(() => {
-	//   if (!isLoading && !isAuthenticated) {
-	//     router.push('/login')
-	//   }
-	// }, [isAuthenticated, isLoading, router])
-
-	// TODO: Show loading skeleton while checking auth
-	// if (isLoading) return <LayoutSkeleton />
-
 	return (
-		<div className='flex h-screen overflow-hidden bg-background'>
-			<Sidebar />
+		<div className='flex min-h-dvh w-full bg-background'>
+			<SidebarProvider>
+				{/* 1. Сайдбар */}
+				<AppSidebar />
+				<SidebarInset>
+					{/* 2. Основна область (SidebarInset замінює div flex-1) */}
+					{/* <SidebarInset> */}
+					{/* <SidebarInset className='max-w-full'> */}
+					{/* <div className='flex flex-1 flex-col'> */}
+					<Header />
 
-			<div className='flex flex-1 flex-col overflow-hidden'>
-				<Header />
-
-				<main className='flex-1 overflow-auto p-6'>
-					<Outlet />
-				</main>
-			</div>
-
-			{/* AI Assistant Floating Widget */}
-			{/* <AIAssistantWidget /> */}
+					{/* Основний контент сторінки */}
+					<main className='flex-1 p-4 sm:px-6 py-6 overflow-auto'>
+						<Outlet />
+					</main>
+					{/* </div> */}
+				</SidebarInset>
+				{/* </SidebarInset> */}
+			</SidebarProvider>
 		</div>
 	);
 }
