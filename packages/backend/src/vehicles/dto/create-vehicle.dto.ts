@@ -1,5 +1,5 @@
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
-import { VehicleStatus } from 'prisma/generated/prisma/enums'
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { VehicleStatus } from 'prisma/generated/prisma/enums';
 
 export class CreateVehicleDto {
 	@IsString()
@@ -18,7 +18,7 @@ export class CreateVehicleDto {
 	color: string;
 
 	@IsString()
-	plate: string;
+	plateNumber: string;
 
 	@IsString()
 	vin: string;

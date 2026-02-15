@@ -121,9 +121,10 @@ export const VehicleScalarFieldEnum = {
   mileage: 'mileage',
   ownerId: 'ownerId',
   lastService: 'lastService',
+  totalServices: 'totalServices',
+  notes: 'notes',
   color: 'color',
   status: 'status',
-  totalServices: 'totalServices',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt'
 } as const

@@ -1,14 +1,14 @@
-import { type VehicleStatusType } from '../enums/vehicle-status.enum';
+import { VehicleStatus } from '../enums/vehicle-status.enum';
 
 export interface AddVehicleData {
 	ownerId: string;
 	brand: string;
 	model: string;
-	year: string;
+	year: number;
 	color: string;
-	plate: string;
+	plateNumber: string;
 	vin: string;
 	mileage: string;
-	status: VehicleStatusType;
+	status: VehicleStatus;
 	notes: string;
 }

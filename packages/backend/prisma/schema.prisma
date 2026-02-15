@@ -107,13 +107,15 @@ model Vehicle {
   ownerId     String  @map("owner_id")
   owner       Client  @relation(fields: [ownerId], references: [id])
 
-  lastService DateTime? @map("last_service_date")
+  lastService   DateTime? @map("last_service_date")
+  totalServices Int       @default(0) @map("total_services") // Кількість виконаних робіт
 
-  color         String?
-  status        VehicleStatus @default(OUT)
-  totalServices Int           @default(0) @map("total_services")
-  orders        Order[]
-  deletedAt     DateTime?
+  notes String? // Нотатки про авто ("Потрібна заміна ременя ГРМ", "Любить дизель")
+
+  color     String?
+  status    VehicleStatus @default(OUT)
+  orders    Order[]
+  deletedAt DateTime?
 
   createdAt DateTime @default(now()) @map("created_at")
 

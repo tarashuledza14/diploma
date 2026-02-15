@@ -7,7 +7,6 @@ import {
 	Post,
 	Put,
 	Query,
-	ValidationPipe,
 } from '@nestjs/common';
 import { ClientsService } from './clients.service';
 import { CreateClientDto } from './dto/create-client.dto';
@@ -19,7 +18,7 @@ export class ClientsController {
 
 	@Get()
 	async getClients(
-		@Query(new ValidationPipe({ transform: true }))
+		@Query()
 		query: GetClientsDto,
 	) {
 		return this.clientsService.getClients(query);

@@ -1,4 +1,4 @@
-import type { DataTableConfig } from '@/shared/components/data-table/data-table';
+import { DataTableConfig } from '@/shared';
 import type { FilterItemSchema } from '@/shared/lib/parsers';
 import type { ColumnSort, Row, RowData } from '@tanstack/react-table';
 

@@ -1,16 +1,7 @@
-import { ExtendedColumnFilter, ExtendedColumnSort } from '@/types/data-table';
+import { PaginationFilterSortOptions } from '@/shared';
 import { Client } from './client.interface';
 
-export interface GetClientsParams {
-	filters: ExtendedColumnFilter<Client>[];
-	page: number;
-	perPage: number;
-	sort: ExtendedColumnSort<Client>[];
-	fullName: string;
-	email: string;
-	phone: string;
-	joinOperator: NonNullable<'and' | 'or' | null>;
-}
+export interface GetClientsParams extends PaginationFilterSortOptions<Client> {}
 
 export interface GetClientsResponse {
 	data: Client[];

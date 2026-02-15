@@ -64,6 +64,7 @@ export class ClientsService {
 	}
 
 	async getClients(input: GetClientsDto) {
+		console.log('client data', input);
 		try {
 			const { skip: offset, perPage } = this.paginationService.getPagination({
 				page: input.page,
@@ -73,6 +74,7 @@ export class ClientsService {
 				input.filters,
 				input.joinOperator,
 			);
+			console.log('filters', JSON.stringify(filters));
 			const sorts = this.filterService.getSortFilter(input.sort || []);
 			const [clients, total] = await Promise.all([
 				this.db.client.findMany({
@@ -80,25 +82,11 @@ export class ClientsService {
 					where: filters,
 					take: input.perPage,
 					orderBy: sorts,
-					select: {
-						id: true,
-						fullName: true,
-						email: true,
-						phone: true,
-						notes: true,
-						createdAt: true,
-						updatedAt: true,
-						totalSpent: true,
-						totalOrders: true,
-						vehicleCount: true,
-						latestVisit: true,
-					},
 				}),
 				this.db.client.count({ where: filters }),
 			]);
 
 			const pageCount = this.paginationService.getPageCount(total, perPage);
-
 			return {
 				data: clients.map(client => ({
 					...client,

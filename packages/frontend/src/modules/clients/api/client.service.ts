@@ -9,7 +9,7 @@ import {
 export class ClientService {
 	private static prefix: string = 'clients';
 
-	static async getClients(params: GetClientsParams) {
+	static async getClients(params?: GetClientsParams) {
 		const response = await instance.get<GetClientsResponse>(`${this.prefix}`, {
 			params,
 		});

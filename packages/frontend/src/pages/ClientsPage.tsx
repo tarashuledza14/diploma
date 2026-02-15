@@ -1,28 +1,27 @@
 import {
-	clientKeys,
-	ClientService,
+	Client,
 	ClientsHeader,
 	ClientTable,
+	useClientsQuery,
 } from '@/modules/clients';
-import { getValidFilters, searchParamsParsers } from '@/shared';
-import { useQuery } from '@tanstack/react-query';
+import {
+	getSearchParamsParsers,
+	getValidFilters,
+	PaginationFilterSortOptions,
+} from '@/shared';
 import { useQueryStates } from 'nuqs';
 
 export function ClientsPage() {
-	const [search] = useQueryStates(searchParamsParsers);
+	const [search] = useQueryStates(getSearchParamsParsers());
 
 	const validFilters = getValidFilters(search.filters);
 
-	const searchParams = {
+	const searchParams: PaginationFilterSortOptions<Client> = {
 		...search,
 		filters: validFilters,
 	};
-
-	const { data, isLoading } = useQuery({
-		queryKey: clientKeys.list(searchParams),
-		queryFn: () => ClientService.getClients(searchParams),
-		placeholderData: previousData => previousData,
-	});
+	console.log('fil', JSON.stringify(searchParams));
+	const { data, isLoading } = useClientsQuery(searchParams);
 
 	return (
 		<div className='flex flex-col gap-6'>

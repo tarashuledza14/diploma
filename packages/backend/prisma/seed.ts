@@ -1182,7 +1182,7 @@ async function main() {
 	console.log('✅ Created 15 orders with parts and services');
 
 	// 7. Update denormalized fields for all clients
-	console.log('🔄 Syncing denormalized data...');
+	console.log('🔄 Syncing denormalized data for clients...');
 
 	for (const client of clients) {
 		const [vehicleCount, orderStats, latestOrder] = await Promise.all([
@@ -1211,6 +1211,32 @@ async function main() {
 	}
 
 	console.log('✅ Synced denormalized data for all 15 clients');
+
+	// 8. Update denormalized fields for all vehicles
+	console.log('🔄 Syncing denormalized data for vehicles...');
+
+	for (const vehicle of vehicles) {
+		const [totalServices, latestService] = await Promise.all([
+			prisma.order.count({
+				where: { vehicleId: vehicle.id, status: OrderStatus.COMPLETED },
+			}),
+			prisma.order.findFirst({
+				where: { vehicleId: vehicle.id, endDate: { not: null } },
+				orderBy: { endDate: 'desc' },
+				select: { endDate: true },
+			}),
+		]);
+
+		await prisma.vehicle.update({
+			where: { id: vehicle.id },
+			data: {
+				totalServices,
+				lastService: latestService?.endDate || null,
+			},
+		});
+	}
+
+	console.log('✅ Synced denormalized data for all 15 vehicles');
 
 	// 8. Create Documents (optional)
 	await prisma.document.create({

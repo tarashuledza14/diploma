@@ -1,7 +1,9 @@
-import { DataTable } from '@/shared/components/data-table/data-table';
-import { DataTableAdvancedToolbar } from '@/shared/components/data-table/data-table-advanced-toolbar';
-import { DataTableFilterList } from '@/shared/components/data-table/data-table-filter-list';
-import { DataTableSortList } from '@/shared/components/data-table/data-table-sort-list';
+import {
+	DataTable,
+	DataTableAdvancedToolbar,
+	DataTableFilterList,
+	DataTableSortList,
+} from '@/shared';
 import { useDataTable } from '@/shared/hooks/use-data-table';
 import { DataTableRowAction } from '@/types/data-table';
 import { useMemo, useState } from 'react';

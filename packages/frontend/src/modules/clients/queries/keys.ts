@@ -1,8 +1,11 @@
+import { PaginationFilterSortOptions } from '@/shared';
+import { Client } from '../interfaces/client.interface';
+
 export const clientKeys = {
 	all: ['clients'] as const,
 	lists: () => [...clientKeys.all, 'list'] as const,
-	list: (params: Record<string, unknown>) =>
-		[...clientKeys.lists(), params] as const,
+	list: (params?: PaginationFilterSortOptions<Client>) =>
+		[...clientKeys.lists(), params || {}] as const,
 	details: () => [...clientKeys.all, 'details'] as const,
 	detail: (id: string) => [...clientKeys.details(), id] as const,
 	mutations: {

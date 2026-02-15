@@ -1,5 +1,8 @@
+import { getClientInitials } from '@/shared';
 import { DataTableColumnHeader } from '@/shared/components/data-table/data-table-column-header';
 import {
+	Avatar,
+	AvatarFallback,
 	Button,
 	Checkbox,
 	DropdownMenu,
@@ -60,6 +63,25 @@ export function getClientTableColumns({
 			enableHiding: false,
 			enableSorting: false,
 			size: 40,
+		},
+		{
+			id: 'avatar',
+			header: ({ column }) => (
+				<DataTableColumnHeader column={column} label='Client' />
+			),
+			cell: ({ row }) => {
+				const fullName = row.original.fullName;
+				const initials = getClientInitials(fullName);
+				return (
+					<Avatar>
+						<AvatarFallback>{initials}</AvatarFallback>
+					</Avatar>
+				);
+			},
+			enableSorting: false,
+			enableColumnFilter: false,
+			enableHiding: false,
+			size: 10,
 		},
 		{
 			id: 'fullName',

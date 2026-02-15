@@ -53,7 +53,7 @@ const filterItemSchema = z.object({
 	value: z.union([z.string(), z.array(z.string())]),
 	variant: z.enum(dataTableConfig.filterVariants),
 	operator: z.enum(dataTableConfig.operators),
-	filterId: z.string(),
+	filterId: z.string().optional(),
 });
 
 export type FilterItemSchema = z.infer<typeof filterItemSchema>;

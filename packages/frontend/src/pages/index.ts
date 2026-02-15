@@ -6,3 +6,4 @@ export { LoginPage } from './LoginPage';
 export { OrderDetailsPage } from './OrderDetailsPage';
 export { OrdersPage } from './OrdersPage';
 export { ServicesPage } from './ServicesPage';
+export { VehiclePage } from './VehiclePage';
