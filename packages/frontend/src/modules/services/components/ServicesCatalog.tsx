@@ -1,11 +1,6 @@
-import { categories } from '@/modules/inventory';
-import { statusColors } from '@/modules/orders';
+// import { categories } from '@/modules/inventory';
 import { useState } from 'react';
 import { mockServices } from './catalog/catalogData';
-import { CatalogFilters } from './catalog/CatalogFilters';
-import { CatalogHeader } from './catalog/CatalogHeader';
-import { CatalogStats } from './catalog/CatalogStats';
-import { CatalogTable } from './catalog/CatalogTable';
 
 export function ServicesCatalog() {
 	const [searchQuery, setSearchQuery] = useState('');
@@ -28,8 +23,8 @@ export function ServicesCatalog() {
 
 	return (
 		<div className='flex flex-col gap-6'>
-			<CatalogHeader categories={categories} />
-			<CatalogStats
+			{/* <CatalogHeader categories={categories} /> */}
+			{/* <CatalogStats
 				total={mockServices.length}
 				active={totalActiveServices}
 				avgPrice={avgPrice}
@@ -44,7 +39,7 @@ export function ServicesCatalog() {
 			<CatalogTable services={filteredServices} statusColors={statusColors} />
 			<div className='text-sm text-muted-foreground'>
 				Showing {filteredServices.length} of {mockServices.length} services
-			</div>
+			</div> */}
 		</div>
 	);
 }

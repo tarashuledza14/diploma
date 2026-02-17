@@ -12,4 +12,4 @@ export type VehicleWithOwnerInfo = Vehicle & {
 	owner: Pick<Client, 'id' | 'fullName'>;
 };
 
-export interface GetVehicleParams extends PaginationFilterSortOptions<Client> {}
+export interface GetVehicleParams extends PaginationFilterSortOptions<Vehicle> {}

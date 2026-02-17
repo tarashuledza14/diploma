@@ -8,7 +8,8 @@
 		"build": "pnpm run build:shared && pnpm run build:backend && pnpm run build:frontend",
 		"backend": "pnpm --filter backend run start:dev",
 		"frontend": "pnpm --filter frontend run dev",
-		"dev": "concurrently \"pnpm run backend\" \"pnpm run frontend\""
+		"dev": "concurrently \"pnpm run backend\" \"pnpm run frontend\"",
+		"prisma:seed": "pnpm --filter backend run prisma:seed"
 	},
 	"devDependencies": {
 		"concurrently": "^9.1.0",

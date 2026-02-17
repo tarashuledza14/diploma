@@ -37,7 +37,6 @@ export function VehicleTable({
 			pageCount,
 			enableAdvancedFilter: true,
 			initialState: {
-				// sorting: [{ id: 'brand', desc: true }],
 				columnPinning: { right: ['actions'] },
 				columnVisibility: {
 					brand: false,

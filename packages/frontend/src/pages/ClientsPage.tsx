@@ -1,26 +1,8 @@
-import {
-	Client,
-	ClientsHeader,
-	ClientTable,
-	useClientsQuery,
-} from '@/modules/clients';
-import {
-	getSearchParamsParsers,
-	getValidFilters,
-	PaginationFilterSortOptions,
-} from '@/shared';
-import { useQueryStates } from 'nuqs';
+import { ClientsHeader, ClientTable, useClientsQuery } from '@/modules/clients';
+import { useTableSearchParams } from '@/shared';
 
 export function ClientsPage() {
-	const [search] = useQueryStates(getSearchParamsParsers());
-
-	const validFilters = getValidFilters(search.filters);
-
-	const searchParams: PaginationFilterSortOptions<Client> = {
-		...search,
-		filters: validFilters,
-	};
-	console.log('fil', JSON.stringify(searchParams));
+	const searchParams = useTableSearchParams();
 	const { data, isLoading } = useClientsQuery(searchParams);
 
 	return (

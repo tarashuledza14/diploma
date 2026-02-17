@@ -1,0 +1,101 @@
+import {
+	Badge,
+	Button,
+	ResponsiveDialogDescription,
+	ResponsiveDialogHeader,
+	ResponsiveDialogTitle,
+} from '@/shared';
+import { Edit, History } from 'lucide-react';
+import {
+	InventoryPart,
+	PartCondition,
+} from '../../../interfaces/inventory.interfaces';
+
+function getConditionBadge(condition: InventoryPart['condition']) {
+	switch (condition) {
+		case PartCondition.NEW:
+			return {
+				label: 'New',
+				className: 'bg-green-100 text-green-700 border-green-200',
+			};
+		case PartCondition.USED:
+			return {
+				label: 'Used',
+				className: 'bg-amber-100 text-amber-700 border-amber-200',
+			};
+		case PartCondition.REFURBISHED:
+			return {
+				label: 'Refurbished',
+				className: 'bg-blue-100 text-blue-700 border-blue-200',
+			};
+		default:
+			return {
+				label: 'Unknown',
+				className: 'bg-gray-100 text-gray-700 border-gray-200',
+			};
+	}
+}
+
+interface ViewPartModalHeaderProps {
+	selectedPart: InventoryPart;
+	onOpenChange: (open: boolean) => void;
+	handleEdit: (part: InventoryPart) => void;
+	handleHistory: (part: InventoryPart) => void;
+}
+
+export function ViewPartModalHeader({
+	selectedPart,
+	onOpenChange,
+	handleEdit,
+	handleHistory,
+}: ViewPartModalHeaderProps) {
+	return (
+		<ResponsiveDialogHeader className='pb-4'>
+			<div className='flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between'>
+				<div>
+					<ResponsiveDialogTitle className='text-lg sm:text-xl wrap-break-word'>
+						{selectedPart.name}
+					</ResponsiveDialogTitle>
+					<ResponsiveDialogDescription className='flex flex-wrap items-center gap-2 mt-1 text-xs sm:text-sm'>
+						<span className='font-mono'>{selectedPart.sku}</span>
+						<span className='hidden sm:inline'>|</span>
+						<span>{selectedPart.brand?.name || 'N/A'}</span>
+						<span className='hidden sm:inline'>|</span>
+						<Badge
+							variant='outline'
+							className={getConditionBadge(selectedPart.condition).className}
+						>
+							{getConditionBadge(selectedPart.condition).label}
+						</Badge>
+					</ResponsiveDialogDescription>
+				</div>
+				<div className='flex gap-2 w-full sm:w-auto'>
+					<Button
+						variant='outline'
+						size='sm'
+						className='flex-1 sm:flex-none'
+						onClick={() => {
+							onOpenChange(false);
+							setTimeout(() => handleEdit(selectedPart), 150);
+						}}
+					>
+						<Edit className='mr-1.5 h-3.5 w-3.5' />
+						Edit
+					</Button>
+					<Button
+						variant='outline'
+						size='sm'
+						className='flex-1 sm:flex-none'
+						onClick={() => {
+							onOpenChange(false);
+							setTimeout(() => handleHistory(selectedPart), 150);
+						}}
+					>
+						<History className='mr-1.5 h-3.5 w-3.5' />
+						History
+					</Button>
+				</div>
+			</div>
+		</ResponsiveDialogHeader>
+	);
+}

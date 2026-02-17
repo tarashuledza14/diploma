@@ -48,3 +48,21 @@ export const VehicleStatus = {
 } as const
 
 export type VehicleStatus = (typeof VehicleStatus)[keyof typeof VehicleStatus]
+
+
+export const PriceCategory = {
+  RETAIL: 'RETAIL',
+  WHOLESALE: 'WHOLESALE',
+  SPECIAL: 'SPECIAL'
+} as const
+
+export type PriceCategory = (typeof PriceCategory)[keyof typeof PriceCategory]
+
+
+export const PartCondition = {
+  NEW: 'NEW',
+  USED: 'USED',
+  REFURBISHED: 'REFURBISHED'
+} as const
+
+export type PartCondition = (typeof PartCondition)[keyof typeof PartCondition]

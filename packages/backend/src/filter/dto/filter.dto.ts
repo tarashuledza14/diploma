@@ -2,7 +2,6 @@ import { IntersectionType } from '@nestjs/mapped-types';
 import { Transform, Type } from 'class-transformer';
 import {
 	IsArray,
-	IsBoolean,
 	IsEnum,
 	IsOptional,
 	IsString,
@@ -46,13 +45,8 @@ export class SortItem {
 	id: string;
 
 	@IsOptional()
-	@IsBoolean()
-	@Transform(({ value }) => {
-		if (value === 'true') return true;
-		if (value === 'false') return false;
-		return value;
-	})
-	desc?: boolean;
+	@IsString()
+	desc?: string;
 }
 
 export type FilterVariant = 'text' | 'number' | 'date';

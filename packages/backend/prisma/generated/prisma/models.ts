@@ -8,10 +8,15 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/PartCategory'
+export type * from './models/ServiceCategory'
 export type * from './models/User'
 export type * from './models/Client'
 export type * from './models/Vehicle'
 export type * from './models/Part'
+export type * from './models/PartsManufacturer'
+export type * from './models/PartsBrand'
+export type * from './models/PartsSupplier'
 export type * from './models/Service'
 export type * from './models/Order'
 export type * from './models/OrderPart'

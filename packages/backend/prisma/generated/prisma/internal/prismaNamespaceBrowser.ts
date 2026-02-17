@@ -51,10 +51,15 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  PartCategory: 'PartCategory',
+  ServiceCategory: 'ServiceCategory',
   User: 'User',
   Client: 'Client',
   Vehicle: 'Vehicle',
   Part: 'Part',
+  PartsManufacturer: 'PartsManufacturer',
+  PartsBrand: 'PartsBrand',
+  PartsSupplier: 'PartsSupplier',
   Service: 'Service',
   Order: 'Order',
   OrderPart: 'OrderPart',
@@ -76,6 +81,22 @@ export const TransactionIsolationLevel = {
 } as const
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const PartCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+} as const
+
+export type PartCategoryScalarFieldEnum = (typeof PartCategoryScalarFieldEnum)[keyof typeof PartCategoryScalarFieldEnum]
+
+
+export const ServiceCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+} as const
+
+export type ServiceCategoryScalarFieldEnum = (typeof ServiceCategoryScalarFieldEnum)[keyof typeof ServiceCategoryScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -134,23 +155,76 @@ export type VehicleScalarFieldEnum = (typeof VehicleScalarFieldEnum)[keyof typeo
 
 export const PartScalarFieldEnum = {
   id: 'id',
+  code: 'code',
   name: 'name',
   sku: 'sku',
-  manufacturer: 'manufacturer',
-  quantity: 'quantity',
-  buyPrice: 'buyPrice',
-  sellPrice: 'sellPrice',
-  location: 'location'
+  oem: 'oem',
+  categoryId: 'categoryId',
+  brandId: 'brandId',
+  barcode: 'barcode',
+  compatibility: 'compatibility',
+  crossNumbers: 'crossNumbers',
+  location: 'location',
+  unit: 'unit',
+  minStock: 'minStock',
+  quantityAvailable: 'quantityAvailable',
+  quantityReserved: 'quantityReserved',
+  quantityTotal: 'quantityTotal',
+  purchasePrice: 'purchasePrice',
+  retailPrice: 'retailPrice',
+  markup: 'markup',
+  priceCategory: 'priceCategory',
+  supplierId: 'supplierId',
+  supplierContact: 'supplierContact',
+  condition: 'condition',
+  warrantyMonths: 'warrantyMonths',
+  warrantyKm: 'warrantyKm',
+  weight: 'weight',
+  dimensions: 'dimensions',
+  photo: 'photo',
+  notes: 'notes',
+  lastRestocked: 'lastRestocked',
+  createdAt: 'createdAt',
+  movementHistory: 'movementHistory',
+  manufacturerId: 'manufacturerId'
 } as const
 
 export type PartScalarFieldEnum = (typeof PartScalarFieldEnum)[keyof typeof PartScalarFieldEnum]
 
 
+export const PartsManufacturerScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+} as const
+
+export type PartsManufacturerScalarFieldEnum = (typeof PartsManufacturerScalarFieldEnum)[keyof typeof PartsManufacturerScalarFieldEnum]
+
+
+export const PartsBrandScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+} as const
+
+export type PartsBrandScalarFieldEnum = (typeof PartsBrandScalarFieldEnum)[keyof typeof PartsBrandScalarFieldEnum]
+
+
+export const PartsSupplierScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  contact: 'contact'
+} as const
+
+export type PartsSupplierScalarFieldEnum = (typeof PartsSupplierScalarFieldEnum)[keyof typeof PartsSupplierScalarFieldEnum]
+
+
 export const ServiceScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  pricePerHour: 'pricePerHour',
-  estimatedTime: 'estimatedTime'
+  description: 'description',
+  categoryId: 'categoryId',
+  price: 'price',
+  estimatedTime: 'estimatedTime',
+  status: 'status'
 } as const
 
 export type ServiceScalarFieldEnum = (typeof ServiceScalarFieldEnum)[keyof typeof ServiceScalarFieldEnum]
@@ -215,6 +289,14 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: 'DbNull',
+  JsonNull: 'JsonNull'
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -229,4 +311,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: 'DbNull',
+  JsonNull: 'JsonNull',
+  AnyNull: 'AnyNull'
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

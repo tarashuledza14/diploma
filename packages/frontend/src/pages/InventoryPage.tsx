@@ -1,51 +1,41 @@
-import {
-	InventoryFilters,
-	InventoryHeader,
-	InventoryStats,
-	InventoryTable,
-	categories,
-	mockParts,
-} from '@/modules/inventory';
-import { useState } from 'react';
-
 export function InventoryPage() {
-	const [searchQuery, setSearchQuery] = useState('');
-	const [categoryFilter, setCategoryFilter] = useState('all');
-	const [stockFilter, setStockFilter] = useState('all');
+	// const [searchQuery, setSearchQuery] = useState('');
+	// const [categoryFilter, setCategoryFilter] = useState('all');
+	// const [stockFilter, setStockFilter] = useState('all');
 
-	const filteredParts = mockParts.filter(part => {
-		const matchesSearch =
-			part.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			part.sku.toLowerCase().includes(searchQuery.toLowerCase());
-		const matchesCategory =
-			categoryFilter === 'all' || part.category === categoryFilter;
+	// const filteredParts = mockParts.filter(part => {
+	// 	const matchesSearch =
+	// 		part.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+	// 		part.sku.toLowerCase().includes(searchQuery.toLowerCase());
+	// 	const matchesCategory =
+	// 		categoryFilter === 'all' || part.category === categoryFilter;
 
-		const status = (() => {
-			if (part.quantity === 0) return 'Out of Stock';
-			if (part.quantity < part.minStock) return 'Low Stock';
-			return 'In Stock';
-		})();
-		const matchesStock =
-			stockFilter === 'all' ||
-			(stockFilter === 'low' && status === 'Low Stock') ||
-			(stockFilter === 'out' && status === 'Out of Stock') ||
-			(stockFilter === 'in' && status === 'In Stock');
+	// 	const status = (() => {
+	// 		if (part.quantity === 0) return 'Out of Stock';
+	// 		if (part.quantity < part.minStock) return 'Low Stock';
+	// 		return 'In Stock';
+	// 	})();
+	// 	const matchesStock =
+	// 		stockFilter === 'all' ||
+	// 		(stockFilter === 'low' && status === 'Low Stock') ||
+	// 		(stockFilter === 'out' && status === 'Out of Stock') ||
+	// 		(stockFilter === 'in' && status === 'In Stock');
 
-		return matchesSearch && matchesCategory && matchesStock;
-	});
+	// 	return matchesSearch && matchesCategory && matchesStock;
+	// });
 
-	const totalValue = mockParts.reduce(
-		(sum, p) => sum + p.quantity * p.unitPrice,
-		0,
-	);
-	const lowStockCount = mockParts.filter(
-		p => p.quantity < p.minStock && p.quantity > 0,
-	).length;
-	const outOfStockCount = mockParts.filter(p => p.quantity === 0).length;
+	// const totalValue = mockParts.reduce(
+	// 	(sum, p) => sum + p.quantity * p.unitPrice,
+	// 	0,
+	// );
+	// const lowStockCount = mockParts.filter(
+	// 	p => p.quantity < p.minStock && p.quantity > 0,
+	// ).length;
+	// const outOfStockCount = mockParts.filter(p => p.quantity === 0).length;
 
 	return (
 		<div className='flex flex-col gap-6'>
-			<InventoryHeader />
+			{/* <InventoryHeader />
 			<InventoryStats
 				totalParts={mockParts.length}
 				totalValue={totalValue}
@@ -72,7 +62,7 @@ export function InventoryPage() {
 			</div>
 			<div className='text-sm text-muted-foreground'>
 				Showing {filteredParts.length} of {mockParts.length} parts
-			</div>
+			</div> */}
 		</div>
 	);
 }

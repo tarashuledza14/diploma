@@ -55,7 +55,10 @@ export class VehiclesService {
 			page: input.page,
 			perPage: input.perPage,
 		});
-		const filter = this.filterService.createFilter(input.filters);
+		const filter = this.filterService.createFilter(
+			input.filters,
+			input.joinOperator,
+		);
 		const sortFilter = this.filterService.getSortFilter(input.sort);
 		const [vehicles, total] = await Promise.all([
 			this.db.vehicle.findMany({

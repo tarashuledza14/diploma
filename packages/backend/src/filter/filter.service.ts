@@ -11,10 +11,11 @@ import { FilterValue } from './types/filter.types';
 @Injectable()
 export class FilterService {
 	createFilter(
-		filtersData?: FilterItem[],
-		joinOperator?: JoinOperator,
+		filtersData: FilterItem[] | undefined,
+		joinOperator: JoinOperator | undefined,
+		shouldExcludeDeleted: boolean = true,
 	): Record<string, any> {
-		const deletedAtFilter = { deletedAt: null };
+		const deletedAtFilter = shouldExcludeDeleted ? { deletedAt: null } : {};
 
 		if (!filtersData || filtersData.length === 0) {
 			return { AND: [deletedAtFilter] };
@@ -92,7 +93,7 @@ export class FilterService {
 		}
 
 		return sort.map(sortItem => {
-			const direction = sortItem.desc ? 'desc' : 'asc';
+			const direction = sortItem.desc === 'true' ? 'desc' : 'asc';
 			const keys = sortItem.id.split('.');
 			if (keys.length > 1) {
 				return this.buildNestedSortObject(keys, direction);

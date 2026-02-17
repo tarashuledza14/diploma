@@ -45,20 +45,23 @@ export function ClientTable({ data, pageCount, isLoading }: ClientTableProps) {
 	});
 
 	return (
-		<DataTable
-			table={table}
-			actionBar={<ClientsTableActionBar table={table} />}
-		>
-			<DataTableAdvancedToolbar table={table}>
-				<DataTableSortList table={table} align='start' />
-				<DataTableFilterList
-					table={table}
-					shallow={shallow}
-					debounceMs={debounceMs}
-					throttleMs={throttleMs}
-					align='start'
-				/>
-			</DataTableAdvancedToolbar>
+		<>
+			<DataTable
+				table={table}
+				actionBar={<ClientsTableActionBar table={table} />}
+			>
+				<DataTableAdvancedToolbar table={table}>
+					<DataTableSortList table={table} align='start' />
+					<DataTableFilterList
+						table={table}
+						shallow={shallow}
+						debounceMs={debounceMs}
+						throttleMs={throttleMs}
+						align='start'
+					/>
+				</DataTableAdvancedToolbar>
+			</DataTable>
+
 			<DeleteConfirmClientModal
 				open={!!rowAction && rowAction.variant === 'delete'}
 				onOpenChange={open => {
@@ -82,6 +85,6 @@ export function ClientTable({ data, pageCount, isLoading }: ClientTableProps) {
 					rowAction?.row ? rowAction.row.original.id : undefined
 				}
 			/>
-		</DataTable>
+		</>
 	);
 }

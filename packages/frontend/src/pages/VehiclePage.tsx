@@ -1,20 +1,12 @@
-import { getSearchParamsParsers, getValidFilters } from '@/shared';
+import { useTableSearchParams } from '@/shared';
 import { useQuery } from '@tanstack/react-query';
-import { useQueryStates } from 'nuqs';
 import { VehicleService } from '../modules/vehicles/api/vehicles.service';
 import { VehiclesHeader } from '../modules/vehicles/components/VehiclesHeader';
 import { VehicleTable } from '../modules/vehicles/components/VehicleTable';
 import { vehicleKeys } from '../modules/vehicles/query/keys';
 
 export function VehiclePage() {
-	const [search] = useQueryStates(getSearchParamsParsers());
-
-	const validFilters = getValidFilters(search.filters);
-
-	const searchParams = {
-		...search,
-		filters: validFilters,
-	};
+	const searchParams = useTableSearchParams();
 
 	const { data } = useQuery({
 		queryKey: vehicleKeys.list(searchParams),

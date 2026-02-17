@@ -1,3 +1,21 @@
+// 6a. Категорії запчастин
+model PartCategory {
+  id    String @id @default(cuid())
+  name  String // Назва категорії (наприклад, "Fluids")
+  parts Part[]
+
+  @@map("part_categories")
+}
+
+// 7a. Категорії послуг
+model ServiceCategory {
+  id       String    @id @default(cuid())
+  name     String // Назва категорії (наприклад, "Діагностика")
+  services Service[]
+
+  @@map("service_categories")
+}
+
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
@@ -122,33 +140,103 @@ model Vehicle {
   @@map("vehicles")
 }
 
-// 6. Склад запчастин (Inventory)
+// 6. Склад запчастин (Inventory) 
 model Part {
-  id           String  @id @default(cuid())
-  name         String // Назва (Фільтр масляний)
-  sku          String  @unique // Артикул виробника
-  manufacturer String? // Виробник (Bosch, Mann)
+  id                String         @id @default(cuid())
+  code              String?        @unique // Код (PRT-010)
+  name              String // Назва
+  sku               String         @unique // Артикул виробника
+  oem               String? // OEM-номер
+  categoryId        String? // ID категорії
+  category          PartCategory?  @relation(fields: [categoryId], references: [id])
+  brandId           String? // ID бренду
+  brand             PartsBrand?    @relation(fields: [brandId], references: [id])
+  barcode           String? // Штрихкод
+  compatibility     String[] // Сумісність (масив)
+  crossNumbers      String[] // Крос-номери (масив)
+  location          String? // Місце на складі
+  unit              String? // Одиниця виміру
+  minStock          Int? // Мінімальний залишок
+  quantityAvailable Int            @default(0) // Доступно
+  quantityReserved  Int            @default(0) // Резерв
+  quantityTotal     Int            @default(0) // Всього
+  purchasePrice     Decimal?       @db.Decimal(10, 2) // Закупівельна ціна
+  retailPrice       Decimal?       @db.Decimal(10, 2) // Роздрібна ціна
+  markup            Int? // Націнка (%)
+  priceCategory     PriceCategory? // Категорія ціни
 
-  quantity Int @default(0) // Залишок на складі
+  supplierId      String? // ID постачальника
+  supplier        PartsSupplier? @relation(fields: [supplierId], references: [id])
+  supplierContact String? // Контакт постачальника
+  condition       PartCondition? // Стан
 
-  buyPrice  Decimal @map("buy_price") @db.Decimal(10, 2) // Ціна закупівлі
-  sellPrice Decimal @map("sell_price") @db.Decimal(10, 2) // Ціна продажу клієнту
+  warrantyMonths  Int? // Гарантія (місяці)
+  warrantyKm      Int? // Гарантія (км)
+  weight          String? // Вага
+  dimensions      String? // Розміри
+  photo           String? // Фото
+  notes           String? // Нотатки
+  lastRestocked   DateTime? // Дата останнього поповнення
+  createdAt       DateTime?          @map("created_at") // Дата створення
+  movementHistory Json? // Історія руху (масив об'єктів)
+  manufacturerId  String? // ID виробника
+  manufacturer    PartsManufacturer? @relation(fields: [manufacturerId], references: [id])
 
-  location String? // Місце на складі (Полиця А-1)
-
-  orderParts OrderPart[] // Зв'язок з використанням у замовленнях
+  orderParts OrderPart[]
+  services   Service[]
 
   @@map("parts")
 }
 
+enum PriceCategory {
+  RETAIL
+  WHOLESALE
+  SPECIAL
+}
+
+enum PartCondition {
+  NEW
+  USED
+  REFURBISHED
+}
+
+model PartsManufacturer {
+  id    String @id @default(cuid())
+  name  String @unique // Назва виробника
+  parts Part[]
+
+  @@map("parts_manufacturers")
+}
+
+model PartsBrand {
+  id    String @id @default(cuid())
+  name  String @unique // Назва бренду
+  parts Part[]
+
+  @@map("parts_brands")
+}
+
+model PartsSupplier {
+  id      String  @id @default(cuid())
+  name    String  @unique // Назва постачальника
+  contact String? // Контактна інформація
+  parts   Part[]
+
+  @@map("parts_suppliers")
+}
+
 // 7. Довідник послуг (Services Catalog)
 model Service {
-  id            String  @id @default(cuid())
+  id            String           @id @default(cuid())
   name          String // Назва роботи (Заміна мастила)
-  pricePerHour  Decimal @map("price_per_hour") @db.Decimal(10, 2) // Ціна нормо-години
-  estimatedTime Float   @default(1.0) @map("estimated_time") // Орієнтовний час (годин)
-
+  description   String // Опис роботи (для клієнта)
+  categoryId    String? // ID категорії
+  category      ServiceCategory? @relation(fields: [categoryId], references: [id])
+  price         Decimal          @default(0) @map("price") @db.Decimal(10, 2) // Ціна нормо-години
+  estimatedTime Float            @default(1.0) @map("estimated_time") // Орієнтовний час (годин)
+  status        Boolean          @default(true) // Чи активна послуга (може бути тимчасово вимкнена)
   orderServices OrderService[]
+  parts         Part[] // Запчастини, що використовуються у послузі
 
   @@map("services")
 }

@@ -10,6 +10,7 @@ import { PaginationModule } from './pagination/pagination.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
+import { InventoryModule } from './inventory/inventory.module';
 
 @Module({
 	imports: [
@@ -22,6 +23,7 @@ import { VehiclesModule } from './vehicles/vehicles.module';
 		VehiclesModule,
 		ClientsModule,
 		FilterModule,
+		InventoryModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
