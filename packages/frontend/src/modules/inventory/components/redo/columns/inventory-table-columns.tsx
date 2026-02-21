@@ -27,6 +27,7 @@ interface GetInventoryTableColumnsProps {
 
 export function getInventoryTableColumns({
 	setRowAction,
+	dictionaries,
 }: GetInventoryTableColumnsProps): ColumnDef<InventoryPart>[] {
 	return [
 		{
@@ -55,7 +56,7 @@ export function getInventoryTableColumns({
 			size: 40,
 		},
 		{
-			id: 'part',
+			id: 'name',
 			accessorKey: 'name',
 			header: ({ column }) => (
 				<DataTableColumnHeader column={column} label='Part' />
@@ -64,7 +65,8 @@ export function getInventoryTableColumns({
 				<div>
 					<p className='font-medium'>{row.original.name}</p>
 					<p className='text-xs text-muted-foreground'>
-						{row.original.barcode} | {row.original.oem}
+						{row.original.barcode || 'No barcode'} |{' '}
+						{row.original.oem || 'No OEM'}
 					</p>
 				</div>
 			),
@@ -113,6 +115,11 @@ export function getInventoryTableColumns({
 			meta: {
 				label: 'Brand',
 				variant: 'multiSelect',
+				options:
+					dictionaries?.brands.map(brand => ({
+						value: brand.name,
+						label: brand.name,
+					})) ?? [],
 			},
 		},
 		{
@@ -188,6 +195,10 @@ export function getInventoryTableColumns({
 			meta: {
 				label: 'Supplier',
 				variant: 'multiSelect',
+				options: dictionaries?.suppliers.map(supplier => ({
+					value: supplier.name,
+					label: supplier.name,
+				})) ?? [{ value: 'Unknown', label: 'Unknown' }],
 			},
 		},
 		{

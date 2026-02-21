@@ -378,7 +378,7 @@ export type PartGroupByOutputType = {
   barcode: string | null
   compatibility: string[]
   crossNumbers: string[]
-  location: string | null
+  location: string
   unit: string | null
   minStock: number | null
   quantityAvailable: number
@@ -437,7 +437,7 @@ export type PartWhereInput = {
   barcode?: Prisma.StringNullableFilter<"Part"> | string | null
   compatibility?: Prisma.StringNullableListFilter<"Part">
   crossNumbers?: Prisma.StringNullableListFilter<"Part">
-  location?: Prisma.StringNullableFilter<"Part"> | string | null
+  location?: Prisma.StringFilter<"Part"> | string
   unit?: Prisma.StringNullableFilter<"Part"> | string | null
   minStock?: Prisma.IntNullableFilter<"Part"> | number | null
   quantityAvailable?: Prisma.IntFilter<"Part"> | number
@@ -479,7 +479,7 @@ export type PartOrderByWithRelationInput = {
   barcode?: Prisma.SortOrderInput | Prisma.SortOrder
   compatibility?: Prisma.SortOrder
   crossNumbers?: Prisma.SortOrder
-  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrder
   unit?: Prisma.SortOrderInput | Prisma.SortOrder
   minStock?: Prisma.SortOrderInput | Prisma.SortOrder
   quantityAvailable?: Prisma.SortOrder
@@ -524,7 +524,7 @@ export type PartWhereUniqueInput = Prisma.AtLeast<{
   barcode?: Prisma.StringNullableFilter<"Part"> | string | null
   compatibility?: Prisma.StringNullableListFilter<"Part">
   crossNumbers?: Prisma.StringNullableListFilter<"Part">
-  location?: Prisma.StringNullableFilter<"Part"> | string | null
+  location?: Prisma.StringFilter<"Part"> | string
   unit?: Prisma.StringNullableFilter<"Part"> | string | null
   minStock?: Prisma.IntNullableFilter<"Part"> | number | null
   quantityAvailable?: Prisma.IntFilter<"Part"> | number
@@ -566,7 +566,7 @@ export type PartOrderByWithAggregationInput = {
   barcode?: Prisma.SortOrderInput | Prisma.SortOrder
   compatibility?: Prisma.SortOrder
   crossNumbers?: Prisma.SortOrder
-  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrder
   unit?: Prisma.SortOrderInput | Prisma.SortOrder
   minStock?: Prisma.SortOrderInput | Prisma.SortOrder
   quantityAvailable?: Prisma.SortOrder
@@ -610,7 +610,7 @@ export type PartScalarWhereWithAggregatesInput = {
   barcode?: Prisma.StringNullableWithAggregatesFilter<"Part"> | string | null
   compatibility?: Prisma.StringNullableListFilter<"Part">
   crossNumbers?: Prisma.StringNullableListFilter<"Part">
-  location?: Prisma.StringNullableWithAggregatesFilter<"Part"> | string | null
+  location?: Prisma.StringWithAggregatesFilter<"Part"> | string
   unit?: Prisma.StringNullableWithAggregatesFilter<"Part"> | string | null
   minStock?: Prisma.IntNullableWithAggregatesFilter<"Part"> | number | null
   quantityAvailable?: Prisma.IntWithAggregatesFilter<"Part"> | number
@@ -644,7 +644,7 @@ export type PartCreateInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -684,7 +684,7 @@ export type PartUncheckedCreateInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -720,7 +720,7 @@ export type PartUpdateInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -760,7 +760,7 @@ export type PartUncheckedUpdateInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -798,7 +798,7 @@ export type PartCreateManyInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -832,7 +832,7 @@ export type PartUpdateManyMutationInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -866,7 +866,7 @@ export type PartUncheckedUpdateManyInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1311,7 +1311,7 @@ export type PartCreateWithoutCategoryInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -1349,7 +1349,7 @@ export type PartUncheckedCreateWithoutCategoryInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -1416,7 +1416,7 @@ export type PartScalarWhereInput = {
   barcode?: Prisma.StringNullableFilter<"Part"> | string | null
   compatibility?: Prisma.StringNullableListFilter<"Part">
   crossNumbers?: Prisma.StringNullableListFilter<"Part">
-  location?: Prisma.StringNullableFilter<"Part"> | string | null
+  location?: Prisma.StringFilter<"Part"> | string
   unit?: Prisma.StringNullableFilter<"Part"> | string | null
   minStock?: Prisma.IntNullableFilter<"Part"> | number | null
   quantityAvailable?: Prisma.IntFilter<"Part"> | number
@@ -1450,7 +1450,7 @@ export type PartCreateWithoutManufacturerInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -1489,7 +1489,7 @@ export type PartUncheckedCreateWithoutManufacturerInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -1550,7 +1550,7 @@ export type PartCreateWithoutBrandInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -1588,7 +1588,7 @@ export type PartUncheckedCreateWithoutBrandInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -1650,7 +1650,7 @@ export type PartCreateWithoutSupplierInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -1689,7 +1689,7 @@ export type PartUncheckedCreateWithoutSupplierInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -1750,7 +1750,7 @@ export type PartCreateWithoutServicesInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -1789,7 +1789,7 @@ export type PartUncheckedCreateWithoutServicesInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -1845,7 +1845,7 @@ export type PartCreateWithoutOrderPartsInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -1884,7 +1884,7 @@ export type PartUncheckedCreateWithoutOrderPartsInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -1935,7 +1935,7 @@ export type PartUpdateWithoutOrderPartsInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1974,7 +1974,7 @@ export type PartUncheckedUpdateWithoutOrderPartsInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2010,7 +2010,7 @@ export type PartCreateManyCategoryInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -2044,7 +2044,7 @@ export type PartUpdateWithoutCategoryInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2082,7 +2082,7 @@ export type PartUncheckedUpdateWithoutCategoryInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2119,7 +2119,7 @@ export type PartUncheckedUpdateManyWithoutCategoryInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2155,7 +2155,7 @@ export type PartCreateManyManufacturerInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -2188,7 +2188,7 @@ export type PartUpdateWithoutManufacturerInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2227,7 +2227,7 @@ export type PartUncheckedUpdateWithoutManufacturerInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2264,7 +2264,7 @@ export type PartUncheckedUpdateManyWithoutManufacturerInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2298,7 +2298,7 @@ export type PartCreateManyBrandInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -2332,7 +2332,7 @@ export type PartUpdateWithoutBrandInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2370,7 +2370,7 @@ export type PartUncheckedUpdateWithoutBrandInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2407,7 +2407,7 @@ export type PartUncheckedUpdateManyWithoutBrandInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2443,7 +2443,7 @@ export type PartCreateManySupplierInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location?: string | null
+  location: string
   unit?: string | null
   minStock?: number | null
   quantityAvailable?: number
@@ -2476,7 +2476,7 @@ export type PartUpdateWithoutSupplierInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2515,7 +2515,7 @@ export type PartUncheckedUpdateWithoutSupplierInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2552,7 +2552,7 @@ export type PartUncheckedUpdateManyWithoutSupplierInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2585,7 +2585,7 @@ export type PartUpdateWithoutServicesInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2624,7 +2624,7 @@ export type PartUncheckedUpdateWithoutServicesInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2661,7 +2661,7 @@ export type PartUncheckedUpdateManyWithoutServicesInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2929,7 +2929,7 @@ export type $PartPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     barcode: string | null
     compatibility: string[]
     crossNumbers: string[]
-    location: string | null
+    location: string
     unit: string | null
     minStock: number | null
     quantityAvailable: number

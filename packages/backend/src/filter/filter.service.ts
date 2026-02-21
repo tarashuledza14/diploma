@@ -44,6 +44,9 @@ export class FilterService {
 				case FilterOperators.IS_BETWEEN:
 					otherFilters.push(this.getIsBetween(item.id, value));
 					break;
+				case FilterOperators.IN_ARRAY:
+					otherFilters.push(this.getInArrayFilter(item.id, value as string[]));
+					break;
 				default:
 					otherFilters.push(
 						this.generateOperatorFilter(
@@ -69,6 +72,18 @@ export class FilterService {
 				AND: [deletedAtFilter, ...otherFilters],
 			};
 		}
+	}
+
+	getInArrayFilter(field: string, value: string[]) {
+		console.log('field', field);
+		console.log('value', value);
+		return {
+			[field]: {
+				name: {
+					in: value,
+				},
+			},
+		};
 	}
 
 	private isTextVariant(variant: FilterVariant) {

@@ -100,3 +100,12 @@ export interface InventoryPart {
 	createdAt?: string | null; // ISO Date string
 	movementHistory?: any; // Json об'єкт або масив
 }
+
+export interface InventoryStats {
+	purchasePrice: number;
+	retailPrice: number;
+	quantityReserved: number;
+	totalParts: number;
+	lowStock: number;
+	outOfStock: number;
+}

@@ -8,4 +8,5 @@ export enum FilterOperators {
 	GREATER_THAN_OR_EQUALS = 'gte',
 	LESS_THAN_OR_EQUALS = 'lte',
 	IS_BETWEEN = 'isBetween',
+	IN_ARRAY = 'inArray',
 }

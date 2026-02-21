@@ -3,23 +3,20 @@ import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
-	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-	Input,
-	Label,
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
 } from '@/shared/components/ui';
 import { Plus, ShoppingCart } from 'lucide-react';
+import { InventoryDictionaries } from '../interfaces/inventory.interfaces';
+import { AddInventoryPart } from './redo/edit-part/form/AddInventoryPart';
 
 const categories = ['Filters', 'Fluids', 'Brakes', 'Ignition', 'Electrical'];
 
-export function InventoryHeader() {
+interface InventoryHeaderProps {
+	dictionaries: InventoryDictionaries | undefined;
+}
+export function InventoryHeader({ dictionaries }: InventoryHeaderProps) {
 	return (
 		<div className='flex items-center justify-between'>
 			<div>
@@ -47,51 +44,7 @@ export function InventoryHeader() {
 								Add a new part to your inventory.
 							</DialogDescription>
 						</DialogHeader>
-						<div className='grid gap-4 py-4'>
-							<div className='grid gap-2'>
-								<Label htmlFor='name'>Part Name</Label>
-								<Input id='name' placeholder='Oil Filter' />
-							</div>
-							<div className='grid grid-cols-2 gap-4'>
-								<div className='grid gap-2'>
-									<Label htmlFor='sku'>SKU</Label>
-									<Input id='sku' placeholder='OF-12345' />
-								</div>
-								<div className='grid gap-2'>
-									<Label htmlFor='category'>Category</Label>
-									<Select>
-										<SelectTrigger>
-											<SelectValue placeholder='Select' />
-										</SelectTrigger>
-										<SelectContent>
-											{categories.map(cat => (
-												<SelectItem key={cat} value={cat.toLowerCase()}>
-													{cat}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-								</div>
-							</div>
-							<div className='grid grid-cols-2 gap-4'>
-								<div className='grid gap-2'>
-									<Label htmlFor='quantity'>Quantity</Label>
-									<Input id='quantity' type='number' placeholder='0' />
-								</div>
-								<div className='grid gap-2'>
-									<Label htmlFor='minStock'>Min Stock</Label>
-									<Input id='minStock' type='number' placeholder='10' />
-								</div>
-							</div>
-							<div className='grid gap-2'>
-								<Label htmlFor='price'>Unit Price ($)</Label>
-								<Input id='price' type='number' placeholder='24.99' />
-							</div>
-						</div>
-						<DialogFooter>
-							<Button variant='outline'>Cancel</Button>
-							<Button>Add Part</Button>
-						</DialogFooter>
+						{dictionaries && <AddInventoryPart dictionaries={dictionaries} />}
 					</DialogContent>
 				</Dialog>
 			</div>

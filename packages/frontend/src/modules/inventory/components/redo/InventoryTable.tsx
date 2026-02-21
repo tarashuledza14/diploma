@@ -6,25 +6,32 @@ import {
 	useDataTable,
 } from '@/shared';
 import { DataTableRowAction } from '@/types/data-table';
-import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
-import { InventoryService } from '../../api/inventory.service';
-import { InventoryPart } from '../../interfaces/inventory.interfaces';
-import { inventoryKeys } from '../../query/keys';
+import {
+	InventoryDictionaries,
+	InventoryPart,
+} from '../../interfaces/inventory.interfaces';
 import { getInventoryTableColumns } from './columns/inventory-table-columns';
+import { EditPartModal } from './edit-part/EditPartModal';
 import { ViewPartModal } from './view-part-detail/ViewPartModal';
 interface InventoryTableProps {
 	data: InventoryPart[];
 	pageCount: number;
+	dictionaries: InventoryDictionaries | undefined;
 }
-export function InventoryTable({ data, pageCount }: InventoryTableProps) {
+export function InventoryTable({
+	data,
+	pageCount,
+	dictionaries,
+}: InventoryTableProps) {
 	const [rowAction, setRowAction] =
 		useState<DataTableRowAction<InventoryPart> | null>(null);
 
-	const { data: dictionaries } = useQuery({
-		queryKey: inventoryKeys.dictionaries(),
-		queryFn: () => InventoryService.getAllDictionaries(),
-	});
+	// const { data: dictionaries } = useSuspenseQuery({
+	// 	queryKey: inventoryKeys.dictionaries(),
+	// 	queryFn: () => InventoryService.getAllDictionaries(),
+	// 	staleTime: Infinity,
+	// });
 
 	const columns = useMemo(
 		() => getInventoryTableColumns({ setRowAction, dictionaries }),
@@ -33,7 +40,7 @@ export function InventoryTable({ data, pageCount }: InventoryTableProps) {
 	const { table, shallow, debounceMs, throttleMs } = useDataTable({
 		data,
 		columns,
-		pageCount,
+		pageCount: pageCount,
 
 		initialState: {
 			columnVisibility: {
@@ -43,8 +50,9 @@ export function InventoryTable({ data, pageCount }: InventoryTableProps) {
 			columnPinning: { right: ['actions'] },
 		},
 		getRowId: row => row.id,
+		shallow: false,
+		clearOnDefault: true,
 	});
-
 	return (
 		<>
 			<DataTable table={table}>
@@ -73,12 +81,18 @@ export function InventoryTable({ data, pageCount }: InventoryTableProps) {
 					onOpenChange={open => {
 						if (!open) setRowAction(null);
 					}}
-					handleEdit={function (part: InventoryPart): void {
-						// throw new Error('Function not implemented.');
-					}}
+					handleEdit={() => {}}
 					handleHistory={function (part: InventoryPart): void {
 						// throw new Error('Function not implemented.');
 					}}
+				/>
+				<EditPartModal
+					open={!!rowAction && rowAction.variant === 'update'}
+					onOpenChange={open => {
+						if (!open) setRowAction(null);
+					}}
+					dictionaries={dictionaries}
+					inventoryPart={rowAction?.row?.original || null}
 				/>
 			</DataTable>
 		</>

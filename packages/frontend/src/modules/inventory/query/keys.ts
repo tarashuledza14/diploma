@@ -6,6 +6,7 @@ export const inventoryKeys = {
 		[...inventoryKeys.lists(), params] as const,
 	statusCounts: () => [...inventoryKeys.all, 'status-counts'] as const,
 	dictionaries: () => [...inventoryKeys.all, 'dictionaries'] as const,
+	stats: () => [...inventoryKeys.all, 'stats'] as const,
 	mutations: {
 		add: () => [...inventoryKeys.all, 'mutations', 'add'] as const,
 		update: (id: string) =>

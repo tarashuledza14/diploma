@@ -147,14 +147,14 @@ model Part {
   name              String // Назва
   sku               String         @unique // Артикул виробника
   oem               String? // OEM-номер
-  categoryId        String? // ID категорії
-  category          PartCategory?  @relation(fields: [categoryId], references: [id])
-  brandId           String? // ID бренду
-  brand             PartsBrand?    @relation(fields: [brandId], references: [id])
+  categoryId        String // ID категорії
+  category          PartCategory   @relation(fields: [categoryId], references: [id])
+  brandId           String // ID бренду
+  brand             PartsBrand     @relation(fields: [brandId], references: [id])
   barcode           String? // Штрихкод
   compatibility     String[] // Сумісність (масив)
   crossNumbers      String[] // Крос-номери (масив)
-  location          String? // Місце на складі
+  location          String // Місце на складі
   unit              String? // Одиниця виміру
   minStock          Int? // Мінімальний залишок
   quantityAvailable Int            @default(0) // Доступно

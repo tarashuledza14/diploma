@@ -1,4 +1,5 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Put, Query } from '@nestjs/common';
+import { Part } from 'prisma/generated/prisma/client';
 import { GetInventoryDto } from './dto/get-inventory.dto';
 import { InventoryService } from './inventory.service';
 
@@ -14,5 +15,15 @@ export class InventoryController {
 	@Get('dictionaries')
 	async getAllDictionaries() {
 		return this.inventoryService.getAllDictionaries();
+	}
+
+	@Put('parts')
+	async updatePart(@Body() data: Part) {
+		return this.inventoryService.updatePart(data);
+	}
+
+	@Get('stats')
+	async getStats() {
+		return this.inventoryService.getStatistics();
 	}
 }
