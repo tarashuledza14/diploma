@@ -1,6 +1,6 @@
-export { InventoryPage } from '../../pages/InventoryPage';
-export { InventoryFilters } from './components/InventoryFilters';
+export { InventoryService } from './api/inventory.service';
 export { InventoryHeader } from './components/InventoryHeader';
-export { InventoryStats } from './components/InventoryStats';
 export { InventoryTable } from './components/InventoryTable';
-export { mockParts } from './components/mockData';
+export { InventoryTableSkeleton } from './components/InventoryTableSkeleton';
+export { InventoryStats } from './components/stats/InventoryStat';
+export { inventoryKeys } from './query/keys';

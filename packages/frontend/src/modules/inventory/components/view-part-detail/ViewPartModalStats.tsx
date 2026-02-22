@@ -1,4 +1,4 @@
-import { PartInventory } from '../../../interfaces/inventory.interfaces';
+import { PartInventory } from '../../interfaces/inventory.interfaces';
 
 interface ViewPartModalStatsProps {
 	inventory: PartInventory[];

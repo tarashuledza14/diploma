@@ -1,5 +1,5 @@
 import { DollarSign } from 'lucide-react';
-import { PartPriceRule } from '../../../interfaces/inventory.interfaces';
+import { PartPriceRule } from '../../interfaces/inventory.interfaces';
 
 interface ViewPartModalFinancialProps {
 	priceRules: PartPriceRule[];

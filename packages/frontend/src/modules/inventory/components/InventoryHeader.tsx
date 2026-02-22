@@ -7,10 +7,10 @@ import {
 	ResponsiveDialogTitle,
 	ResponsiveDialogTrigger,
 } from '@/shared/components/ui';
-import { Plus, ShoppingCart } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { InventoryDictionaries } from '../interfaces/inventory.interfaces';
-import { AddInventoryPart } from './redo/edit-part/form/AddInventoryPart';
+import { AddInventoryPart } from './edit-part/form/AddInventoryPart';
 
 interface InventoryHeaderProps {
 	dictionaries: InventoryDictionaries | undefined;
@@ -26,10 +26,10 @@ export function InventoryHeader({ dictionaries }: InventoryHeaderProps) {
 				</p>
 			</div>
 			<div className='flex gap-2'>
-				<Button variant='outline'>
+				{/* <Button variant='outline'>
 					<ShoppingCart className='mr-2 h-4 w-4' />
 					Order Parts
-				</Button>
+				</Button> */}
 				<ResponsiveDialog open={open} onOpenChange={setOpen}>
 					<ResponsiveDialogTrigger asChild>
 						<Button>

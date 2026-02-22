@@ -11,9 +11,9 @@ import type { Table } from '@tanstack/react-table';
 import { Trash2, X } from 'lucide-react';
 import { useCallback } from 'react';
 import { toast } from 'sonner';
-import { InventoryService } from '../../api/inventory.service';
-import { InventoryPart } from '../../interfaces/inventory.interfaces';
-import { inventoryKeys } from '../../query/keys';
+import { InventoryService } from '../api/inventory.service';
+import { InventoryPart } from '../interfaces/inventory.interfaces';
+import { inventoryKeys } from '../query/keys';
 
 interface InventoryTableActionBarProps {
 	table: Table<InventoryPart>;

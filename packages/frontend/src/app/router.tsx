@@ -3,7 +3,6 @@ import { createBrowserRouter } from 'react-router-dom';
 // import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { MainLayout } from '@/layouts';
 import { ProtectedRoute } from '@/modules/auth';
-import { InventoryPage } from '@/modules/inventory/components/redo/InventoryPage';
 import { ServicesPage } from '@/modules/services/redo/ServicesPage';
 import {
 	ClientsPage,
@@ -14,6 +13,7 @@ import {
 	OrdersPage,
 	VehiclePage,
 } from '@/pages';
+import { InventoryPage } from '@/pages/InventoryPage';
 import { Suspense } from 'react';
 
 // Ліниве завантаження сторінок (Code Splitting)
@@ -95,10 +95,10 @@ export const router = createBrowserRouter([
 					// },
 				],
 			},
-			// {
-			// 	path: '/inventory',
-			// 	element: <InventoryPage />,
-			// },
+			{
+				path: '/inventory',
+				element: <InventoryPage />,
+			},
 			{
 				path: '/services',
 				element: <ServicesPage />,
@@ -108,7 +108,6 @@ export const router = createBrowserRouter([
 				element: <VehiclePage />,
 			},
 			{ path: '/clients', element: <ClientsPage /> },
-			{ path: '/settings', element: <InventoryPage /> },
 		],
 	},
 	//

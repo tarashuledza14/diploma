@@ -30,7 +30,10 @@ export function InventoryStats() {
 	const totalParts = data?.totalParts ?? 0;
 
 	return (
-		<div className='grid grid-cols-5 gap-4 py-4 '>
+		// Змінено класи тут:
+		// grid-cols-1 для мобільних, sm:grid-cols-2 для більших телефонів,
+		// lg:grid-cols-3 для планшетів, xl:grid-cols-5 для десктопу
+		<div className='grid grid-cols-1 gap-4 py-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5'>
 			<Stat>
 				<StatLabel>Total Parts</StatLabel>
 				<StatIndicator variant='icon' color='default'>

@@ -1,6 +1,6 @@
 import { Badge } from '@/shared';
 import { FileText } from 'lucide-react';
-import { InventoryPart } from '../../../interfaces/inventory.interfaces';
+import { InventoryPart } from '../../interfaces/inventory.interfaces';
 
 interface ViewPartModalBaseInfoProps {
 	selectedPart: InventoryPart;

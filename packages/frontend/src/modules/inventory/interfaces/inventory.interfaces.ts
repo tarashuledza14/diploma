@@ -108,5 +108,7 @@ export interface InventoryStats {
 	totalParts: number;
 	lowStock: number;
 	outOfStock: number;
-	totalPurchaseSpent: number; // Оновлено відповідно до бекенду
+	retailPrice: number; // Оновлено відповідно до бекенду
+	purchasePrice: number; // ДОДАНО: кількість зарезервованих запчастин
+	quantityReserved: number;
 }

@@ -6,8 +6,8 @@ import {
 	ResponsiveDialogTitle,
 } from '@/shared';
 import { useQuery } from '@tanstack/react-query';
-import { InventoryService } from '../../../api/inventory.service';
-import { inventoryKeys } from '../../../query/keys';
+import { InventoryService } from '../../api/inventory.service';
+import { inventoryKeys } from '../../query/keys';
 import { MovementHistoryList } from './MovementHistoryList';
 
 interface MovementHistoryModalProps {

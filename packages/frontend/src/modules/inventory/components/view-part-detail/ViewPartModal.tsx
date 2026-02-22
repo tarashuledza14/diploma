@@ -13,7 +13,7 @@ import { ViewPartModalStorage } from './ViewPartModalStorage';
 import { ViewPartModalSupplier } from './ViewPartModalSupplier';
 import { ViewPartModalWarranty } from './ViewPartModalWarranty';
 
-import { InventoryPart } from '../../../interfaces/inventory.interfaces';
+import { InventoryPart } from '../../interfaces/inventory.interfaces';
 
 interface ViewPartModalProps {
 	selectedPart: InventoryPart | null;

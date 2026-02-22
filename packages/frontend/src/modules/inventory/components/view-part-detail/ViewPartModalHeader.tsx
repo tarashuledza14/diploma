@@ -9,7 +9,7 @@ import { Edit, History } from 'lucide-react';
 import {
 	InventoryPart,
 	PartCondition,
-} from '../../../interfaces/inventory.interfaces';
+} from '../../interfaces/inventory.interfaces';
 
 function getConditionBadge(condition: InventoryPart['condition']) {
 	switch (condition) {
