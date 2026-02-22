@@ -18,7 +18,9 @@ export function ViewPartModalWarranty({
 				<div className='flex justify-between border-b border-dashed pb-1 sm:border-0 sm:pb-0'>
 					<span className='text-muted-foreground'>Duration</span>
 					<span className='text-right'>
-						{selectedPart.warrantyMonths} months
+						{selectedPart.warrantyMonths != null
+							? `${selectedPart.warrantyMonths} months`
+							: 'N/A'}
 					</span>
 				</div>
 				<div className='flex justify-between border-b border-dashed pb-1 sm:border-0 sm:pb-0'>
@@ -27,7 +29,9 @@ export function ViewPartModalWarranty({
 						{typeof selectedPart.warrantyKm === 'number' &&
 						selectedPart.warrantyKm > 0
 							? `${selectedPart.warrantyKm.toLocaleString()} km`
-							: 'No limit'}
+							: selectedPart.warrantyKm === 0
+								? 'No limit'
+								: 'N/A'}
 					</span>
 				</div>
 			</div>

@@ -48,6 +48,21 @@ export type Vehicle = Prisma.VehicleModel
  */
 export type Part = Prisma.PartModel
 /**
+ * Model PartInventory
+ * 
+ */
+export type PartInventory = Prisma.PartInventoryModel
+/**
+ * Model StockMovement
+ * 
+ */
+export type StockMovement = Prisma.StockMovementModel
+/**
+ * Model PartPriceRule
+ * 
+ */
+export type PartPriceRule = Prisma.PartPriceRuleModel
+/**
  * Model PartsManufacturer
  * 
  */

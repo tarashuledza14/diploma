@@ -278,6 +278,7 @@ export type OrderWhereInput = {
   client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
   parts?: Prisma.OrderPartListRelationFilter
   services?: Prisma.OrderServiceListRelationFilter
+  stockMovements?: Prisma.StockMovementListRelationFilter
 }
 
 export type OrderOrderByWithRelationInput = {
@@ -299,6 +300,7 @@ export type OrderOrderByWithRelationInput = {
   client?: Prisma.ClientOrderByWithRelationInput
   parts?: Prisma.OrderPartOrderByRelationAggregateInput
   services?: Prisma.OrderServiceOrderByRelationAggregateInput
+  stockMovements?: Prisma.StockMovementOrderByRelationAggregateInput
 }
 
 export type OrderWhereUniqueInput = Prisma.AtLeast<{
@@ -323,6 +325,7 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
   parts?: Prisma.OrderPartListRelationFilter
   services?: Prisma.OrderServiceListRelationFilter
+  stockMovements?: Prisma.StockMovementListRelationFilter
 }, "id">
 
 export type OrderOrderByWithAggregationInput = {
@@ -378,6 +381,7 @@ export type OrderCreateInput = {
   client: Prisma.ClientCreateNestedOneWithoutOrdersInput
   parts?: Prisma.OrderPartCreateNestedManyWithoutOrderInput
   services?: Prisma.OrderServiceCreateNestedManyWithoutOrderInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateInput = {
@@ -395,6 +399,7 @@ export type OrderUncheckedCreateInput = {
   endDate?: Date | string | null
   parts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutOrderInput
   services?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutOrderInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUpdateInput = {
@@ -412,6 +417,7 @@ export type OrderUpdateInput = {
   client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
   parts?: Prisma.OrderPartUpdateManyWithoutOrderNestedInput
   services?: Prisma.OrderServiceUpdateManyWithoutOrderNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateInput = {
@@ -429,6 +435,7 @@ export type OrderUncheckedUpdateInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   parts?: Prisma.OrderPartUncheckedUpdateManyWithoutOrderNestedInput
   services?: Prisma.OrderServiceUncheckedUpdateManyWithoutOrderNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateManyInput = {
@@ -480,6 +487,11 @@ export type OrderListRelationFilter = {
 
 export type OrderOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type OrderNullableScalarRelationFilter = {
+  is?: Prisma.OrderWhereInput | null
+  isNot?: Prisma.OrderWhereInput | null
 }
 
 export type OrderCountOrderByAggregateInput = {
@@ -708,6 +720,22 @@ export type OrderUncheckedUpdateManyWithoutVehicleNestedInput = {
   deleteMany?: Prisma.OrderScalarWhereInput | Prisma.OrderScalarWhereInput[]
 }
 
+export type OrderCreateNestedOneWithoutStockMovementsInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutStockMovementsInput, Prisma.OrderUncheckedCreateWithoutStockMovementsInput>
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutStockMovementsInput
+  connect?: Prisma.OrderWhereUniqueInput
+}
+
+export type OrderUpdateOneWithoutStockMovementsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutStockMovementsInput, Prisma.OrderUncheckedCreateWithoutStockMovementsInput>
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutStockMovementsInput
+  upsert?: Prisma.OrderUpsertWithoutStockMovementsInput
+  disconnect?: Prisma.OrderWhereInput | boolean
+  delete?: Prisma.OrderWhereInput | boolean
+  connect?: Prisma.OrderWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrderUpdateToOneWithWhereWithoutStockMovementsInput, Prisma.OrderUpdateWithoutStockMovementsInput>, Prisma.OrderUncheckedUpdateWithoutStockMovementsInput>
+}
+
 export type EnumOrderStatusFieldUpdateOperationsInput = {
   set?: $Enums.OrderStatus
 }
@@ -758,6 +786,7 @@ export type OrderCreateWithoutManagerInput = {
   client: Prisma.ClientCreateNestedOneWithoutOrdersInput
   parts?: Prisma.OrderPartCreateNestedManyWithoutOrderInput
   services?: Prisma.OrderServiceCreateNestedManyWithoutOrderInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutManagerInput = {
@@ -774,6 +803,7 @@ export type OrderUncheckedCreateWithoutManagerInput = {
   endDate?: Date | string | null
   parts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutOrderInput
   services?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutOrderInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutManagerInput = {
@@ -800,6 +830,7 @@ export type OrderCreateWithoutMechanicInput = {
   client: Prisma.ClientCreateNestedOneWithoutOrdersInput
   parts?: Prisma.OrderPartCreateNestedManyWithoutOrderInput
   services?: Prisma.OrderServiceCreateNestedManyWithoutOrderInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutMechanicInput = {
@@ -816,6 +847,7 @@ export type OrderUncheckedCreateWithoutMechanicInput = {
   endDate?: Date | string | null
   parts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutOrderInput
   services?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutOrderInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutMechanicInput = {
@@ -892,6 +924,7 @@ export type OrderCreateWithoutClientInput = {
   mechanic?: Prisma.UserCreateNestedOneWithoutMechanicOrdersInput
   parts?: Prisma.OrderPartCreateNestedManyWithoutOrderInput
   services?: Prisma.OrderServiceCreateNestedManyWithoutOrderInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutClientInput = {
@@ -908,6 +941,7 @@ export type OrderUncheckedCreateWithoutClientInput = {
   endDate?: Date | string | null
   parts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutOrderInput
   services?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutOrderInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutClientInput = {
@@ -950,6 +984,7 @@ export type OrderCreateWithoutVehicleInput = {
   client: Prisma.ClientCreateNestedOneWithoutOrdersInput
   parts?: Prisma.OrderPartCreateNestedManyWithoutOrderInput
   services?: Prisma.OrderServiceCreateNestedManyWithoutOrderInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutVehicleInput = {
@@ -966,6 +1001,7 @@ export type OrderUncheckedCreateWithoutVehicleInput = {
   endDate?: Date | string | null
   parts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutOrderInput
   services?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutOrderInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutVehicleInput = {
@@ -994,6 +1030,90 @@ export type OrderUpdateManyWithWhereWithoutVehicleInput = {
   data: Prisma.XOR<Prisma.OrderUpdateManyMutationInput, Prisma.OrderUncheckedUpdateManyWithoutVehicleInput>
 }
 
+export type OrderCreateWithoutStockMovementsInput = {
+  id?: string
+  status?: $Enums.OrderStatus
+  description?: string | null
+  totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  priority?: $Enums.OrderPriority
+  deletedAt?: Date | string | null
+  startDate?: Date | string
+  endDate?: Date | string | null
+  vehicle: Prisma.VehicleCreateNestedOneWithoutOrdersInput
+  manager?: Prisma.UserCreateNestedOneWithoutManagerOrdersInput
+  mechanic?: Prisma.UserCreateNestedOneWithoutMechanicOrdersInput
+  client: Prisma.ClientCreateNestedOneWithoutOrdersInput
+  parts?: Prisma.OrderPartCreateNestedManyWithoutOrderInput
+  services?: Prisma.OrderServiceCreateNestedManyWithoutOrderInput
+}
+
+export type OrderUncheckedCreateWithoutStockMovementsInput = {
+  id?: string
+  status?: $Enums.OrderStatus
+  description?: string | null
+  totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  priority?: $Enums.OrderPriority
+  vehicleId: string
+  deletedAt?: Date | string | null
+  managerId?: string | null
+  mechanicId?: string | null
+  clientId: string
+  startDate?: Date | string
+  endDate?: Date | string | null
+  parts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutOrderInput
+  services?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutOrderInput
+}
+
+export type OrderCreateOrConnectWithoutStockMovementsInput = {
+  where: Prisma.OrderWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrderCreateWithoutStockMovementsInput, Prisma.OrderUncheckedCreateWithoutStockMovementsInput>
+}
+
+export type OrderUpsertWithoutStockMovementsInput = {
+  update: Prisma.XOR<Prisma.OrderUpdateWithoutStockMovementsInput, Prisma.OrderUncheckedUpdateWithoutStockMovementsInput>
+  create: Prisma.XOR<Prisma.OrderCreateWithoutStockMovementsInput, Prisma.OrderUncheckedCreateWithoutStockMovementsInput>
+  where?: Prisma.OrderWhereInput
+}
+
+export type OrderUpdateToOneWithWhereWithoutStockMovementsInput = {
+  where?: Prisma.OrderWhereInput
+  data: Prisma.XOR<Prisma.OrderUpdateWithoutStockMovementsInput, Prisma.OrderUncheckedUpdateWithoutStockMovementsInput>
+}
+
+export type OrderUpdateWithoutStockMovementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vehicle?: Prisma.VehicleUpdateOneRequiredWithoutOrdersNestedInput
+  manager?: Prisma.UserUpdateOneWithoutManagerOrdersNestedInput
+  mechanic?: Prisma.UserUpdateOneWithoutMechanicOrdersNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
+  parts?: Prisma.OrderPartUpdateManyWithoutOrderNestedInput
+  services?: Prisma.OrderServiceUpdateManyWithoutOrderNestedInput
+}
+
+export type OrderUncheckedUpdateWithoutStockMovementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
+  vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  parts?: Prisma.OrderPartUncheckedUpdateManyWithoutOrderNestedInput
+  services?: Prisma.OrderServiceUncheckedUpdateManyWithoutOrderNestedInput
+}
+
 export type OrderCreateWithoutPartsInput = {
   id?: string
   status?: $Enums.OrderStatus
@@ -1008,6 +1128,7 @@ export type OrderCreateWithoutPartsInput = {
   mechanic?: Prisma.UserCreateNestedOneWithoutMechanicOrdersInput
   client: Prisma.ClientCreateNestedOneWithoutOrdersInput
   services?: Prisma.OrderServiceCreateNestedManyWithoutOrderInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutPartsInput = {
@@ -1024,6 +1145,7 @@ export type OrderUncheckedCreateWithoutPartsInput = {
   startDate?: Date | string
   endDate?: Date | string | null
   services?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutOrderInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutPartsInput = {
@@ -1056,6 +1178,7 @@ export type OrderUpdateWithoutPartsInput = {
   mechanic?: Prisma.UserUpdateOneWithoutMechanicOrdersNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
   services?: Prisma.OrderServiceUpdateManyWithoutOrderNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutPartsInput = {
@@ -1072,6 +1195,7 @@ export type OrderUncheckedUpdateWithoutPartsInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   services?: Prisma.OrderServiceUncheckedUpdateManyWithoutOrderNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateWithoutServicesInput = {
@@ -1088,6 +1212,7 @@ export type OrderCreateWithoutServicesInput = {
   mechanic?: Prisma.UserCreateNestedOneWithoutMechanicOrdersInput
   client: Prisma.ClientCreateNestedOneWithoutOrdersInput
   parts?: Prisma.OrderPartCreateNestedManyWithoutOrderInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutServicesInput = {
@@ -1104,6 +1229,7 @@ export type OrderUncheckedCreateWithoutServicesInput = {
   startDate?: Date | string
   endDate?: Date | string | null
   parts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutOrderInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutServicesInput = {
@@ -1136,6 +1262,7 @@ export type OrderUpdateWithoutServicesInput = {
   mechanic?: Prisma.UserUpdateOneWithoutMechanicOrdersNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
   parts?: Prisma.OrderPartUpdateManyWithoutOrderNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutServicesInput = {
@@ -1152,6 +1279,7 @@ export type OrderUncheckedUpdateWithoutServicesInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   parts?: Prisma.OrderPartUncheckedUpdateManyWithoutOrderNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateManyManagerInput = {
@@ -1196,6 +1324,7 @@ export type OrderUpdateWithoutManagerInput = {
   client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
   parts?: Prisma.OrderPartUpdateManyWithoutOrderNestedInput
   services?: Prisma.OrderServiceUpdateManyWithoutOrderNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutManagerInput = {
@@ -1212,6 +1341,7 @@ export type OrderUncheckedUpdateWithoutManagerInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   parts?: Prisma.OrderPartUncheckedUpdateManyWithoutOrderNestedInput
   services?: Prisma.OrderServiceUncheckedUpdateManyWithoutOrderNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateManyWithoutManagerInput = {
@@ -1242,6 +1372,7 @@ export type OrderUpdateWithoutMechanicInput = {
   client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
   parts?: Prisma.OrderPartUpdateManyWithoutOrderNestedInput
   services?: Prisma.OrderServiceUpdateManyWithoutOrderNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutMechanicInput = {
@@ -1258,6 +1389,7 @@ export type OrderUncheckedUpdateWithoutMechanicInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   parts?: Prisma.OrderPartUncheckedUpdateManyWithoutOrderNestedInput
   services?: Prisma.OrderServiceUncheckedUpdateManyWithoutOrderNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateManyWithoutMechanicInput = {
@@ -1302,6 +1434,7 @@ export type OrderUpdateWithoutClientInput = {
   mechanic?: Prisma.UserUpdateOneWithoutMechanicOrdersNestedInput
   parts?: Prisma.OrderPartUpdateManyWithoutOrderNestedInput
   services?: Prisma.OrderServiceUpdateManyWithoutOrderNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutClientInput = {
@@ -1318,6 +1451,7 @@ export type OrderUncheckedUpdateWithoutClientInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   parts?: Prisma.OrderPartUncheckedUpdateManyWithoutOrderNestedInput
   services?: Prisma.OrderServiceUncheckedUpdateManyWithoutOrderNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateManyWithoutClientInput = {
@@ -1362,6 +1496,7 @@ export type OrderUpdateWithoutVehicleInput = {
   client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
   parts?: Prisma.OrderPartUpdateManyWithoutOrderNestedInput
   services?: Prisma.OrderServiceUpdateManyWithoutOrderNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutVehicleInput = {
@@ -1378,6 +1513,7 @@ export type OrderUncheckedUpdateWithoutVehicleInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   parts?: Prisma.OrderPartUncheckedUpdateManyWithoutOrderNestedInput
   services?: Prisma.OrderServiceUncheckedUpdateManyWithoutOrderNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateManyWithoutVehicleInput = {
@@ -1402,11 +1538,13 @@ export type OrderUncheckedUpdateManyWithoutVehicleInput = {
 export type OrderCountOutputType = {
   parts: number
   services: number
+  stockMovements: number
 }
 
 export type OrderCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   parts?: boolean | OrderCountOutputTypeCountPartsArgs
   services?: boolean | OrderCountOutputTypeCountServicesArgs
+  stockMovements?: boolean | OrderCountOutputTypeCountStockMovementsArgs
 }
 
 /**
@@ -1433,6 +1571,13 @@ export type OrderCountOutputTypeCountServicesArgs<ExtArgs extends runtime.Types.
   where?: Prisma.OrderServiceWhereInput
 }
 
+/**
+ * OrderCountOutputType without action
+ */
+export type OrderCountOutputTypeCountStockMovementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.StockMovementWhereInput
+}
+
 
 export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1453,6 +1598,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   parts?: boolean | Prisma.Order$partsArgs<ExtArgs>
   services?: boolean | Prisma.Order$servicesArgs<ExtArgs>
+  stockMovements?: boolean | Prisma.Order$stockMovementsArgs<ExtArgs>
   _count?: boolean | Prisma.OrderCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["order"]>
 
@@ -1517,6 +1663,7 @@ export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   parts?: boolean | Prisma.Order$partsArgs<ExtArgs>
   services?: boolean | Prisma.Order$servicesArgs<ExtArgs>
+  stockMovements?: boolean | Prisma.Order$stockMovementsArgs<ExtArgs>
   _count?: boolean | Prisma.OrderCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrderIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1541,6 +1688,7 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     client: Prisma.$ClientPayload<ExtArgs>
     parts: Prisma.$OrderPartPayload<ExtArgs>[]
     services: Prisma.$OrderServicePayload<ExtArgs>[]
+    stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1955,6 +2103,7 @@ export interface Prisma__OrderClient<T, Null = never, ExtArgs extends runtime.Ty
   client<T extends Prisma.ClientDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientDefaultArgs<ExtArgs>>): Prisma.Prisma__ClientClient<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   parts<T extends Prisma.Order$partsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$partsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPartPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   services<T extends Prisma.Order$servicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  stockMovements<T extends Prisma.Order$stockMovementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2475,6 +2624,30 @@ export type Order$servicesArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.OrderServiceScalarFieldEnum | Prisma.OrderServiceScalarFieldEnum[]
+}
+
+/**
+ * Order.stockMovements
+ */
+export type Order$stockMovementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the StockMovement
+   */
+  select?: Prisma.StockMovementSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the StockMovement
+   */
+  omit?: Prisma.StockMovementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StockMovementInclude<ExtArgs> | null
+  where?: Prisma.StockMovementWhereInput
+  orderBy?: Prisma.StockMovementOrderByWithRelationInput | Prisma.StockMovementOrderByWithRelationInput[]
+  cursor?: Prisma.StockMovementWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.StockMovementScalarFieldEnum | Prisma.StockMovementScalarFieldEnum[]
 }
 
 /**

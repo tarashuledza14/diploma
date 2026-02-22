@@ -57,7 +57,8 @@ export function ViewPartModalHeader({
 						{selectedPart.name}
 					</ResponsiveDialogTitle>
 					<ResponsiveDialogDescription className='flex flex-wrap items-center gap-2 mt-1 text-xs sm:text-sm'>
-						<span className='font-mono'>{selectedPart.sku}</span>
+						<span className='font-mono'>{selectedPart.sku ?? 'N/A'}</span>
+						<span className='font-mono'>{selectedPart.code ?? 'N/A'}</span>
 						<span className='hidden sm:inline'>|</span>
 						<span>{selectedPart.brand?.name || 'N/A'}</span>
 						<span className='hidden sm:inline'>|</span>

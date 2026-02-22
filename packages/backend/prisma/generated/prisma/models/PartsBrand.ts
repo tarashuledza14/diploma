@@ -231,9 +231,9 @@ export type PartsBrandUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type PartsBrandNullableScalarRelationFilter = {
-  is?: Prisma.PartsBrandWhereInput | null
-  isNot?: Prisma.PartsBrandWhereInput | null
+export type PartsBrandScalarRelationFilter = {
+  is?: Prisma.PartsBrandWhereInput
+  isNot?: Prisma.PartsBrandWhereInput
 }
 
 export type PartsBrandCountOrderByAggregateInput = {
@@ -257,12 +257,10 @@ export type PartsBrandCreateNestedOneWithoutPartsInput = {
   connect?: Prisma.PartsBrandWhereUniqueInput
 }
 
-export type PartsBrandUpdateOneWithoutPartsNestedInput = {
+export type PartsBrandUpdateOneRequiredWithoutPartsNestedInput = {
   create?: Prisma.XOR<Prisma.PartsBrandCreateWithoutPartsInput, Prisma.PartsBrandUncheckedCreateWithoutPartsInput>
   connectOrCreate?: Prisma.PartsBrandCreateOrConnectWithoutPartsInput
   upsert?: Prisma.PartsBrandUpsertWithoutPartsInput
-  disconnect?: Prisma.PartsBrandWhereInput | boolean
-  delete?: Prisma.PartsBrandWhereInput | boolean
   connect?: Prisma.PartsBrandWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.PartsBrandUpdateToOneWithWhereWithoutPartsInput, Prisma.PartsBrandUpdateWithoutPartsInput>, Prisma.PartsBrandUncheckedUpdateWithoutPartsInput>
 }

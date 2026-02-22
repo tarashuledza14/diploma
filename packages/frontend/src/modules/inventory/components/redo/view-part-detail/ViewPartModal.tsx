@@ -44,19 +44,17 @@ export function ViewPartModal({
 						<ScrollArea className='flex h-[70vh] -mr-4 pr-4'>
 							<div className='space-y-6 pb-4'>
 								<ViewPartModalStats
-									available={selectedPart.quantityAvailable ?? 0}
-									reserved={selectedPart.quantityReserved ?? 0}
-									retailPrice={selectedPart.retailPrice ?? 0}
-									markup={selectedPart.markup ?? 0}
+									inventory={selectedPart.inventory ?? []}
 									minStock={selectedPart.minStock ?? 0}
-									total={selectedPart.quantityTotal ?? 0}
 								/>
 								<ViewPartModalBaseInfo selectedPart={selectedPart} />
 								<ViewPartModalCompatibility
 									compatibility={selectedPart.compatibility}
 								/>
 								<ViewPartModalStorage selectedPart={selectedPart} />
-								<ViewPartModalFinancial selectedPart={selectedPart} />
+								<ViewPartModalFinancial
+									priceRules={selectedPart.priceRules ?? []}
+								/>
 								<ViewPartModalSupplier selectedPart={selectedPart} />
 								<ViewPartModalWarranty selectedPart={selectedPart} />
 								<ViewPartModalNotes notes={selectedPart.notes} />

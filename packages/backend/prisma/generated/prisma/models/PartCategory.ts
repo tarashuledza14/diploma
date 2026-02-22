@@ -246,9 +246,9 @@ export type PartCategoryMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
 }
 
-export type PartCategoryNullableScalarRelationFilter = {
-  is?: Prisma.PartCategoryWhereInput | null
-  isNot?: Prisma.PartCategoryWhereInput | null
+export type PartCategoryScalarRelationFilter = {
+  is?: Prisma.PartCategoryWhereInput
+  isNot?: Prisma.PartCategoryWhereInput
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -261,12 +261,10 @@ export type PartCategoryCreateNestedOneWithoutPartsInput = {
   connect?: Prisma.PartCategoryWhereUniqueInput
 }
 
-export type PartCategoryUpdateOneWithoutPartsNestedInput = {
+export type PartCategoryUpdateOneRequiredWithoutPartsNestedInput = {
   create?: Prisma.XOR<Prisma.PartCategoryCreateWithoutPartsInput, Prisma.PartCategoryUncheckedCreateWithoutPartsInput>
   connectOrCreate?: Prisma.PartCategoryCreateOrConnectWithoutPartsInput
   upsert?: Prisma.PartCategoryUpsertWithoutPartsInput
-  disconnect?: Prisma.PartCategoryWhereInput | boolean
-  delete?: Prisma.PartCategoryWhereInput | boolean
   connect?: Prisma.PartCategoryWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.PartCategoryUpdateToOneWithWhereWithoutPartsInput, Prisma.PartCategoryUpdateWithoutPartsInput>, Prisma.PartCategoryUncheckedUpdateWithoutPartsInput>
 }

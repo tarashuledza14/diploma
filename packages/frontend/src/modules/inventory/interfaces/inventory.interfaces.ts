@@ -1,24 +1,17 @@
-// 4. Інтерфейс для всіх довідників (Dictionaries)
-export interface InventoryDictionaries {
-	brands: PartsBrand[];
-	categories: PartCategory[];
-	manufacturers: Manufacturer[];
-	suppliers: PartsSupplier[];
-}
-// 1. Enums (щоб відповідати Prisma enum)
-export enum PriceCategory {
-	RETAIL = 'RETAIL',
-	WHOLESALE = 'WHOLESALE',
-	SPECIAL = 'SPECIAL',
-}
-
+// 1. Enums
 export enum PartCondition {
 	NEW = 'NEW',
 	USED = 'USED',
 	REFURBISHED = 'REFURBISHED',
 }
 
-// 2. Допоміжні інтерфейси для зв'язків (Relations)
+export enum ClientType {
+	RETAIL = 'RETAIL',
+	WHOLESALE = 'WHOLESALE',
+	VIP = 'VIP',
+}
+
+// 2. Допоміжні інтерфейси для зв'язків
 export interface PartCategory {
 	id: string;
 	name: string;
@@ -40,52 +33,51 @@ export interface PartsSupplier {
 	contact?: string | null;
 }
 
+// ДОДАНО: Інтерфейс для залишків на складі
+export interface PartInventory {
+	id: string;
+	partId: string;
+	quantity: number;
+	purchasePrice: number | string; // Залежить від того, як бекенд серіалізує Decimal
+	location?: string | null;
+	batchNumber?: string | null;
+	receivedAt: string;
+}
+
+// ДОДАНО: Інтерфейс для правил ціноутворення
+export interface PartPriceRule {
+	id: string;
+	partId: string;
+	clientType?: ClientType | null;
+	markupPercent?: number | null;
+	fixedPrice?: number | string | null;
+	createdAt: string;
+}
+
 // 3. Основний інтерфейс (Inventory / Part)
 export interface InventoryPart {
 	id: string;
 
 	// Основна інформація
 	name: string;
-	sku: string; // Артикул виробника (Unique)
-	code?: string | null; // Внутрішній код (Unique)
-	oem?: string | null; // Оригінальний номер
+	sku: string;
+	code?: string | null;
+	oem?: string | null;
 	barcode?: string | null;
 
 	// Зв'язки (Relations)
-	categoryId?: string | null;
 	category?: PartCategory | null;
-
-	brandId?: string | null;
-	brand?: PartsBrand | null; // Тепер це об'єкт, а не рядок
-
-	manufacturerId?: string | null;
-	manufacturer?: Manufacturer | null; // Тепер це об'єкт, а не рядок
-
-	supplierId?: string | null;
-	supplier?: PartsSupplier | null; // Тепер це об'єкт, а не рядок
-	supplierContact?: string | null; // Залишив, якщо ви дублюєте це поле, але краще брати з supplier.contact
+	brand?: PartsBrand | null;
+	manufacturer?: Manufacturer | null;
+	supplier?: PartsSupplier | null;
+	supplierContact?: string | null;
 
 	// Характеристики
-	compatibility: string[]; // Масив рядків (Models)
-	crossNumbers: string[]; // Масив рядків (Cross-codes)
-
-	location?: string | null;
-	unit?: string | null; // шт, л, комплект
-	condition?: PartCondition | null; // Enum
-
-	// Кількість (Stock)
+	compatibility: string[];
+	crossNumbers: string[];
+	unit?: string | null;
+	condition?: PartCondition | null;
 	minStock?: number | null;
-	quantityAvailable: number;
-	quantityReserved: number;
-	quantityTotal: number;
-
-	// Ціни (Financial)
-	// Prisma Decimal зазвичай приходить як string або number в залежності від конфігурації.
-	// Для фронтенду часто зручніше number.
-	purchasePrice?: number | null;
-	retailPrice?: number | null;
-	markup?: number | null; // % націнки
-	priceCategory?: PriceCategory | null; // Enum
 
 	// Деталі товару
 	warrantyMonths?: number | null;
@@ -95,17 +87,26 @@ export interface InventoryPart {
 	photo?: string | null;
 	notes?: string | null;
 
-	// Дати та історія
-	lastRestocked?: string | null; // ISO Date string
-	createdAt?: string | null; // ISO Date string
-	movementHistory?: any; // Json об'єкт або масив
+	// Дати
+	createdAt?: string | null;
+	updatedAt?: string | null;
+
+	// ДОДАНО: Зв'язки з новими таблицями
+	inventory?: PartInventory[];
+	priceRules?: PartPriceRule[];
+}
+
+// 4. Інтерфейси для довідників та статистики
+export interface InventoryDictionaries {
+	brands: PartsBrand[];
+	categories: PartCategory[];
+	manufacturers: Manufacturer[];
+	suppliers: PartsSupplier[];
 }
 
 export interface InventoryStats {
-	purchasePrice: number;
-	retailPrice: number;
-	quantityReserved: number;
 	totalParts: number;
 	lowStock: number;
 	outOfStock: number;
+	totalPurchaseSpent: number; // Оновлено відповідно до бекенду
 }

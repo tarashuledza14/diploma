@@ -3,58 +3,67 @@ import {
 	InventoryDictionaries,
 	InventoryPart,
 } from '@/modules/inventory/interfaces/inventory.interfaces';
-import { Button, DialogFooter } from '@/shared';
-import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
+import { inventoryKeys } from '@/modules/inventory/query/keys';
+import { Button, ResponsiveDialogFooter } from '@/shared';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { EditPartForm } from './EditPartForm';
 
 interface AddInventoryPartProps {
 	dictionaries: InventoryDictionaries;
-	onSuccess?: (part: InventoryPart) => void;
+	onCancel: () => void;
 }
 
 export function AddInventoryPart({
 	dictionaries,
-	onSuccess,
+	onCancel,
 }: AddInventoryPartProps) {
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	const queryClient = useQueryClient();
+
 	const mutation = useMutation({
 		mutationFn: (data: Partial<InventoryPart>) =>
 			InventoryService.createPart(data),
 		onSuccess: part => {
-			setIsSubmitting(false);
-			// onSuccess?.(part);
+			queryClient.invalidateQueries({ queryKey: inventoryKeys.lists() });
+			queryClient.invalidateQueries({ queryKey: inventoryKeys.stats() });
+			toast.success(`Part "${part.name}" added successfully!`);
+			onCancel();
 		},
-		onError: () => setIsSubmitting(false),
+		onError: error => {
+			console.error('Failed to create part:', error);
+			toast.error('Failed to create part. Please try again.');
+		},
 	});
 
 	const handleSubmit = (data: Partial<InventoryPart>) => {
-		console.log('data', data);
-		setIsSubmitting(true);
-		// mutation.mutate(data);
+		mutation.mutate(data);
 	};
 
 	return (
 		<>
 			<EditPartForm
 				onSubmit={handleSubmit}
-				isSubmitting={isSubmitting}
+				isSubmitting={mutation.isPending}
 				dictionaries={dictionaries}
 			/>
-			<DialogFooter>
+
+			<ResponsiveDialogFooter>
 				<Button
-					type='submit'
-					form='edit-part-form' //disabled={isSubmitting}
-				>
-					{/* {isSubmitting ? 'Adding...' : 'Add Part'} */}
-					Add Part
-				</Button>
-				<Button
-					variant='outline' //disabled={isSubmitting}
+					type='button'
+					variant='outline'
+					disabled={mutation.isPending}
+					onClick={onCancel}
 				>
 					Cancel
 				</Button>
-			</DialogFooter>
+				<Button
+					type='submit'
+					form='edit-part-form' // Має збігатися з ID форми всередині EditPartForm
+					disabled={mutation.isPending}
+				>
+					{mutation.isPending ? 'Adding...' : 'Add Part'}
+				</Button>
+			</ResponsiveDialogFooter>
 		</>
 	);
 }

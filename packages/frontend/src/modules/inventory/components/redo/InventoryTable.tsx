@@ -13,6 +13,8 @@ import {
 } from '../../interfaces/inventory.interfaces';
 import { getInventoryTableColumns } from './columns/inventory-table-columns';
 import { EditPartModal } from './edit-part/EditPartModal';
+import { InventoryTableActionBar } from './InventoryTableActionBar';
+import { MovementHistoryModal } from './movement-history/MovementHistoryModal';
 import { ViewPartModal } from './view-part-detail/ViewPartModal';
 interface InventoryTableProps {
 	data: InventoryPart[];
@@ -55,7 +57,10 @@ export function InventoryTable({
 	});
 	return (
 		<>
-			<DataTable table={table}>
+			<DataTable
+				table={table}
+				actionBar={<InventoryTableActionBar table={table} />}
+			>
 				<DataTableAdvancedToolbar table={table}>
 					<DataTableSortList table={table} align='start' />
 					<DataTableFilterList
@@ -75,26 +80,39 @@ export function InventoryTable({
 					<DataTableSortList table={table} align='end' />
 				</DataTableToolbar> */}
 				</DataTableAdvancedToolbar>
-				<ViewPartModal
-					selectedPart={rowAction?.row?.original || null}
-					open={!!rowAction && rowAction.variant === 'view'}
-					onOpenChange={open => {
-						if (!open) setRowAction(null);
-					}}
-					handleEdit={() => {}}
-					handleHistory={function (part: InventoryPart): void {
-						// throw new Error('Function not implemented.');
-					}}
-				/>
-				<EditPartModal
-					open={!!rowAction && rowAction.variant === 'update'}
-					onOpenChange={open => {
-						if (!open) setRowAction(null);
-					}}
-					dictionaries={dictionaries}
-					inventoryPart={rowAction?.row?.original || null}
-				/>
 			</DataTable>
+			<ViewPartModal
+				selectedPart={rowAction?.row?.original || null}
+				open={!!rowAction && rowAction.variant === 'view'}
+				onOpenChange={open => {
+					if (!open) setRowAction(null);
+				}}
+				handleEdit={() => {}}
+				handleHistory={(part: InventoryPart) => {
+					setRowAction({
+						row: table.getRow(part.id),
+						variant: 'history',
+					});
+				}}
+			/>
+			<EditPartModal
+				open={!!rowAction && rowAction.variant === 'update'}
+				onOpenChange={open => {
+					if (!open) setRowAction(null);
+				}}
+				dictionaries={dictionaries}
+				inventoryPart={rowAction?.row?.original || null}
+			/>
+			<MovementHistoryModal
+				partId={rowAction?.row?.original?.id || ''}
+				historyModalOpen={!!rowAction && rowAction.variant === 'history'}
+				setHistoryModalOpen={open => {
+					if (!open) setRowAction(null);
+				}}
+				partName={rowAction?.row?.original?.name || ''}
+				partSku={rowAction?.row?.original?.sku || ''}
+				partUnit={rowAction?.row?.original?.unit || ''}
+			/>
 		</>
 	);
 }

@@ -1,3 +1,4 @@
+import { PartFormData } from '@/modules/inventory/interfaces/edit-inventory.interfaces';
 import {
 	Input,
 	Label,
@@ -8,10 +9,10 @@ import {
 	SelectValue,
 } from '@/shared';
 import { AlertTriangle, MapPin } from 'lucide-react';
-import { Controller } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
 
 interface StockTabProps {
-	control: any;
+	control: Control<PartFormData, any, PartFormData>;
 }
 
 export function StockTab({ control }: StockTabProps) {
@@ -72,10 +73,10 @@ export function StockTab({ control }: StockTabProps) {
 						)}
 					/>
 				</div>
-				<div className='grid gap-2'>
+				{/* <div className='grid gap-2'>
 					<Label>Reserved</Label>
 					<Controller
-						name='quantityReserved'
+						name=''
 						control={control}
 						render={({ field }) => (
 							<Input
@@ -86,7 +87,7 @@ export function StockTab({ control }: StockTabProps) {
 							/>
 						)}
 					/>
-				</div>
+				</div> */}
 				<div className='grid gap-2'>
 					<Label>Min Stock (Alert)</Label>
 					<Controller

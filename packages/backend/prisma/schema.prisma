@@ -76,8 +76,9 @@ model User {
   managerOrders  Order[] @relation("ManagerOrders")
   mechanicOrders Order[] @relation("MechanicOrders")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  stockMovements StockMovement[]
 
   @@map("users")
 }
@@ -140,58 +141,130 @@ model Vehicle {
   @@map("vehicles")
 }
 
-// 6. Склад запчастин (Inventory) 
 model Part {
-  id                String         @id @default(cuid())
-  code              String?        @unique // Код (PRT-010)
-  name              String // Назва
-  sku               String         @unique // Артикул виробника
-  oem               String? // OEM-номер
-  categoryId        String // ID категорії
-  category          PartCategory   @relation(fields: [categoryId], references: [id])
-  brandId           String // ID бренду
-  brand             PartsBrand     @relation(fields: [brandId], references: [id])
-  barcode           String? // Штрихкод
-  compatibility     String[] // Сумісність (масив)
-  crossNumbers      String[] // Крос-номери (масив)
-  location          String // Місце на складі
-  unit              String? // Одиниця виміру
-  minStock          Int? // Мінімальний залишок
-  quantityAvailable Int            @default(0) // Доступно
-  quantityReserved  Int            @default(0) // Резерв
-  quantityTotal     Int            @default(0) // Всього
-  purchasePrice     Decimal?       @db.Decimal(10, 2) // Закупівельна ціна
-  retailPrice       Decimal?       @db.Decimal(10, 2) // Роздрібна ціна
-  markup            Int? // Націнка (%)
-  priceCategory     PriceCategory? // Категорія ціни
+  id   String  @id @default(cuid())
+  code String? @unique
+  name String
+  sku  String  @unique
+  oem  String?
 
-  supplierId      String? // ID постачальника
+  categoryId String
+  category   PartCategory @relation(fields: [categoryId], references: [id])
+
+  brandId String
+  brand   PartsBrand @relation(fields: [brandId], references: [id])
+
+  barcode       String?
+  compatibility String[]
+  crossNumbers  String[]
+
+  unit     String?
+  minStock Int?
+
+  supplierId      String?
   supplier        PartsSupplier? @relation(fields: [supplierId], references: [id])
-  supplierContact String? // Контакт постачальника
-  condition       PartCondition? // Стан
+  supplierContact String?
 
-  warrantyMonths  Int? // Гарантія (місяці)
-  warrantyKm      Int? // Гарантія (км)
-  weight          String? // Вага
-  dimensions      String? // Розміри
-  photo           String? // Фото
-  notes           String? // Нотатки
-  lastRestocked   DateTime? // Дата останнього поповнення
-  createdAt       DateTime?          @map("created_at") // Дата створення
-  movementHistory Json? // Історія руху (масив об'єктів)
-  manufacturerId  String? // ID виробника
-  manufacturer    PartsManufacturer? @relation(fields: [manufacturerId], references: [id])
+  condition PartCondition?
+
+  warrantyMonths Int?
+  warrantyKm     Int?
+
+  weight     String?
+  dimensions String?
+  photo      String?
+  notes      String?
+
+  manufacturerId String?
+  manufacturer   PartsManufacturer? @relation(fields: [manufacturerId], references: [id])
+
+  inventory  PartInventory[]
+  priceRules PartPriceRule[]
 
   orderParts OrderPart[]
   services   Service[]
 
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  stockMovements StockMovement[]
+
   @@map("parts")
 }
 
-enum PriceCategory {
+model PartInventory {
+  id String @id @default(cuid())
+
+  partId String
+  part   Part   @relation(fields: [partId], references: [id])
+
+  quantity Int
+
+  purchasePrice Decimal @db.Decimal(10, 2)
+
+  location String?
+
+  batchNumber String? // номер партії
+
+  receivedAt DateTime @default(now())
+
+  @@index([partId])
+}
+
+// 1. Додаємо типи рухів
+enum MovementType {
+  RECEIVED // Прихід (зелений на графіку)
+  ISSUED // Видано на ремонт/продаж (синій)
+  RESERVED // Зарезервовано під замовлення (помаранчевий)
+  RETURNED // Повернено з резерву або клієнтом (фіолетовий)
+  ADJUSTMENT // Ручне коригування (через форму Edit Part)
+}
+
+// 2. Створюємо таблицю історії рухів
+model StockMovement {
+  id String @id @default(cuid())
+
+  // Яка запчастина
+  partId String @map("part_id")
+  part   Part   @relation(fields: [partId], references: [id], onDelete: Cascade)
+
+  // Деталі руху
+  type     MovementType
+  quantity Int // Може бути +10 (прихід) або -2 (видача)
+  reason   String? // Опис ("Початковий залишок", "Регулярне ТО", "Коригування")
+
+  // Хто це зробив (Іван Петров з твого скріна)
+  userId String? @map("user_id")
+  user   User?   @relation(fields: [userId], references: [id])
+
+  // До якого замовлення це прив'язано (ORD-044 з твого скріна)
+  orderId String? @map("order_id")
+  order   Order?  @relation(fields: [orderId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("stock_movements")
+}
+
+model PartPriceRule {
+  id String @id @default(cuid())
+
+  partId String
+  part   Part   @relation(fields: [partId], references: [id])
+
+  clientType ClientType?
+
+  markupPercent Int?
+  fixedPrice    Decimal? @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+
+  @@index([partId])
+}
+
+enum ClientType {
   RETAIL
   WHOLESALE
-  SPECIAL
+  VIP
 }
 
 enum PartCondition {
@@ -272,8 +345,9 @@ model Order {
   parts    OrderPart[]
   services OrderService[]
 
-  startDate DateTime  @default(now()) @map("start_date")
-  endDate   DateTime? @map("end_date")
+  startDate      DateTime        @default(now()) @map("start_date")
+  endDate        DateTime?       @map("end_date")
+  stockMovements StockMovement[]
 
   @@map("orders")
 }

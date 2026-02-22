@@ -10,13 +10,19 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 	Progress,
 } from '@/shared';
 import { DataTableRowAction } from '@/types/data-table';
 import { ColumnDef } from '@tanstack/react-table';
-import { Edit, EllipsisVertical, Eye, MapPin, Trash2 } from 'lucide-react';
+import {
+	Edit,
+	EllipsisVertical,
+	Eye,
+	History,
+	MapPin,
+	Trash2,
+} from 'lucide-react';
 
 interface GetInventoryTableColumnsProps {
 	setRowAction: React.Dispatch<
@@ -86,9 +92,9 @@ export function getInventoryTableColumns({
 				placeholder: 'Search OEM...',
 				variant: 'text',
 			},
-			enableColumnFilter: true, // Вмикаємо, щоб з'явилось у списку фільтрів
+			enableColumnFilter: true,
 			enableSorting: true,
-			enableHiding: true, // Дозволяємо приховувати
+			enableHiding: true,
 		},
 		{
 			id: 'barcode',
@@ -98,9 +104,9 @@ export function getInventoryTableColumns({
 				placeholder: 'Search barcode...',
 				variant: 'text',
 			},
-			enableColumnFilter: true, // Вмикаємо, щоб з'явилось у списку фільтрів
+			enableColumnFilter: true,
 			enableSorting: true,
-			enableHiding: true, // Дозволяємо приховувати
+			enableHiding: true,
 		},
 		{
 			id: 'brand',
@@ -124,16 +130,24 @@ export function getInventoryTableColumns({
 		},
 		{
 			id: 'location',
-			accessorKey: 'location',
+			// Збираємо унікальні локації з усіх партій на складі для пошуку/сортування
+			accessorFn: row => {
+				const locations =
+					row.inventory?.map(i => i.location).filter(Boolean) || [];
+				return Array.from(new Set(locations)).join(', ');
+			},
 			header: ({ column }) => (
 				<DataTableColumnHeader column={column} label='Location' />
 			),
-			cell: ({ cell }) => (
-				<span>
-					<MapPin className='size-5 mr-1 inline-block' />
-					{cell.getValue<string>()}
-				</span>
-			),
+			cell: ({ cell }) => {
+				const value = cell.getValue<string>();
+				return (
+					<span>
+						<MapPin className='size-5 mr-1 inline-block text-muted-foreground' />
+						{value || '—'}
+					</span>
+				);
+			},
 			enableSorting: true,
 			enableColumnFilter: true,
 			enableHiding: true,
@@ -144,14 +158,22 @@ export function getInventoryTableColumns({
 		},
 		{
 			id: 'stock',
-			accessorKey: 'stock',
+			// Вираховуємо загальну кількість для правильного сортування
+			accessorFn: row =>
+				row.inventory?.reduce((sum, item) => sum + item.quantity, 0) || 0,
 			header: ({ column }) => (
 				<DataTableColumnHeader column={column} label='Stock' />
 			),
 			cell: ({ row }) => {
 				const minStock = row.original.minStock || 1;
+				const totalQuantity =
+					row.original.inventory?.reduce(
+						(sum, item) => sum + item.quantity,
+						0,
+					) || 0;
+
 				const stockPercent = Math.min(
-					(row.original.quantityAvailable / (minStock * 2)) * 100,
+					(totalQuantity / (minStock * 2)) * 100,
 					100,
 				);
 
@@ -159,17 +181,12 @@ export function getInventoryTableColumns({
 					<div className='w-28 space-y-1'>
 						<div className='flex justify-between text-xs'>
 							<span>
-								{row.original.quantityAvailable} {row.original.unit}
+								{totalQuantity} {row.original.unit || 'шт'}
 							</span>
-							{row.original.quantityReserved > 0 && (
-								<span className='text-amber-600'>
-									({row.original.quantityReserved} res.)
-								</span>
-							)}
 						</div>
 						<Progress
 							value={stockPercent}
-							className={`h-1.5 ${row.original.quantityAvailable === 0 ? '[&>div]:bg-red-500' : row.original.quantityAvailable < minStock ? '[&>div]:bg-amber-500' : ''}`}
+							className={`h-1.5 ${totalQuantity === 0 ? '[&>div]:bg-red-500' : totalQuantity < minStock ? '[&>div]:bg-amber-500' : ''}`}
 						/>
 					</div>
 				);
@@ -188,7 +205,7 @@ export function getInventoryTableColumns({
 			header: ({ column }) => (
 				<DataTableColumnHeader column={column} label='Supplier' />
 			),
-			cell: ({ cell }) => <span>{cell.getValue<string>()}</span>,
+			cell: ({ cell }) => <span>{cell.getValue<string>() || '—'}</span>,
 			enableSorting: true,
 			enableColumnFilter: true,
 			enableHiding: true,
@@ -203,15 +220,30 @@ export function getInventoryTableColumns({
 		},
 		{
 			id: 'retailPrice',
-			accessorKey: 'price',
+			// Шукаємо роздрібну ціну для сортування
+			accessorFn: row => {
+				const retailRule =
+					row.priceRules?.find(r => r.clientType === 'RETAIL') ||
+					row.priceRules?.[0];
+				return retailRule?.fixedPrice ? Number(retailRule.fixedPrice) : 0;
+			},
 			header: ({ column }) => (
 				<DataTableColumnHeader column={column} label='Price' />
 			),
 			cell: ({ row }) => {
-				const retail = row.original.retailPrice;
-				const purchase = row.original.purchasePrice;
+				// Беремо роздрібну ціну
+				const retailRule =
+					row.original.priceRules?.find(r => r.clientType === 'RETAIL') ||
+					row.original.priceRules?.[0];
+				const retailPrice = retailRule?.fixedPrice;
+				const markup = retailRule?.markupPercent;
+
+				// Беремо закупівельну ціну з останньої партії
+				const latestInventory = row.original.inventory?.[0];
+				const purchasePrice = latestInventory?.purchasePrice;
 
 				const formatPrice = (value: unknown) => {
+					if (value == null) return '—';
 					const num = typeof value === 'number' ? value : Number(value);
 					return !isNaN(num) ? `$${num.toFixed(2)}` : '—';
 				};
@@ -219,18 +251,16 @@ export function getInventoryTableColumns({
 				return (
 					<div>
 						<p className='font-medium'>
-							{retail != null && !isNaN(Number(retail)) ? (
-								formatPrice(retail)
+							{retailPrice != null ? (
+								formatPrice(retailPrice)
 							) : (
 								<span className='text-muted-foreground'>—</span>
 							)}
 						</p>
 
 						<p className='text-xs text-muted-foreground'>
-							{purchase != null && !isNaN(Number(purchase))
-								? formatPrice(purchase)
-								: '—'}
-							{row.original.markup ? ` (+${row.original.markup}%)` : ''}
+							{purchasePrice != null ? formatPrice(purchasePrice) : '—'}
+							{markup ? ` (+${markup}%)` : ''}
 						</p>
 					</div>
 				);
@@ -261,22 +291,26 @@ export function getInventoryTableColumns({
 							<DropdownMenuItem
 								onSelect={() => setRowAction({ row, variant: 'view' })}
 							>
-								<Eye className='h-4 w-4' />
+								<Eye className='h-4 w-4 mr-2' />
 								View
 							</DropdownMenuItem>
-							<DropdownMenuSeparator />
 							<DropdownMenuItem
 								onSelect={() => setRowAction({ row, variant: 'update' })}
 							>
-								<Edit className=' h-4 w-4' />
+								<Edit className='h-4 w-4 mr-2' />
 								Edit
 							</DropdownMenuItem>
 
-							<DropdownMenuSeparator />
+							<DropdownMenuItem
+								onSelect={() => setRowAction({ row, variant: 'history' })}
+							>
+								<History className='h-4 w-4 mr-2' />
+								Movement History
+							</DropdownMenuItem>
 							<DropdownMenuItem
 								onSelect={() => setRowAction({ row, variant: 'delete' })}
 							>
-								<Trash2 className='h-4 w-4' />
+								<Trash2 className='h-4 w-4 mr-2' />
 								Delete
 							</DropdownMenuItem>
 						</DropdownMenuContent>
@@ -285,99 +319,5 @@ export function getInventoryTableColumns({
 			},
 			size: 40,
 		},
-
-		// 	enableColumnFilter: true,
-		// 	enableSorting: true,
-		// 	enableHiding: true,
-		// },
-		// {
-		// 	id: 'mileage',
-		// 	accessorKey: 'mileage',
-		// 	header: ({ column }) => (
-		// 		<DataTableColumnHeader column={column} label='Mileage' />
-		// 	),
-		// 	cell: ({ cell }) => {
-		// 		return (
-		// 			<div className='flex items-center gap-1'>
-		// 				{cell.getValue<number>()} km
-		// 			</div>
-		// 		);
-		// 	},
-		// 	meta: {
-		// 		label: 'Mileage',
-		// 		variant: 'number',
-		// 	},
-		// 	enableColumnFilter: true,
-		// 	enableSorting: true,
-		// },
-		// {
-		// 	id: 'totalServices',
-		// 	accessorKey: 'totalServices',
-		// 	header: ({ column }) => (
-		// 		<DataTableColumnHeader column={column} label='Services' />
-		// 	),
-		// 	cell: ({ cell }) => {
-		// 		return (
-		// 			<div className='flex items-center gap-1'>
-		// 				<Wrench className='h-4 w-4 text-muted-foreground' />
-		// 				{cell.getValue<number>()}
-		// 			</div>
-		// 		);
-		// 	},
-		// 	meta: {
-		// 		label: 'Services',
-		// 		variant: 'number',
-		// 	},
-
-		// 	enableColumnFilter: true,
-		// 	enableSorting: true,
-		// },
-		// {
-		// 	id: 'lastService',
-		// 	accessorKey: 'lastService',
-		// 	header: ({ column }) => (
-		// 		<DataTableColumnHeader column={column} label='Last Service' />
-		// 	),
-		// 	cell: ({ cell }) => formatDate(cell.getValue<Date>()),
-		// 	meta: {
-		// 		label: 'Last Service',
-		// 		variant: 'date',
-		// 	},
-		// 	enableColumnFilter: true,
-		// },
-
-		// {
-		// 	id: 'status',
-		// 	accessorKey: 'status',
-		// 	header: ({ column }) => (
-		// 		<DataTableColumnHeader column={column} label='Status' />
-		// 	),
-		// 	cell: ({ cell }) => {
-		// 		const value = cell.getValue<VehicleStatus>();
-		// 		const statusInfo = vehicleStatusInfo[value] || {
-		// 			label: value,
-		// 			variant: 'default' as const,
-		// 		};
-
-		// 		return (
-		// 			<Status variant={statusInfo.variant}>
-		// 				<StatusLabel>{statusInfo.label}</StatusLabel>
-		// 			</Status>
-		// 		);
-		// 	},
-		// 	enableColumnFilter: true,
-		// 	enableSorting: true,
-		// 	meta: {
-		// 		label: 'Status',
-		// 		placeholder: 'Filter by status...',
-		// 		variant: 'multiSelect',
-		// 		options: Object.entries(vehicleStatusInfo).map(([value, info]) => ({
-		// 			value: value as string,
-		// 			label: `${info.label}	`,
-		// 			variant: info.variant,
-		// 			count: statusCounts?.[value as unknown as VehicleStatus] || 0,
-		// 		})),
-		// 	},
-		// },
 	];
 }

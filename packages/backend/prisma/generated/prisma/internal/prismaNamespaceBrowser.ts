@@ -57,6 +57,9 @@ export const ModelName = {
   Client: 'Client',
   Vehicle: 'Vehicle',
   Part: 'Part',
+  PartInventory: 'PartInventory',
+  StockMovement: 'StockMovement',
+  PartPriceRule: 'PartPriceRule',
   PartsManufacturer: 'PartsManufacturer',
   PartsBrand: 'PartsBrand',
   PartsSupplier: 'PartsSupplier',
@@ -164,16 +167,8 @@ export const PartScalarFieldEnum = {
   barcode: 'barcode',
   compatibility: 'compatibility',
   crossNumbers: 'crossNumbers',
-  location: 'location',
   unit: 'unit',
   minStock: 'minStock',
-  quantityAvailable: 'quantityAvailable',
-  quantityReserved: 'quantityReserved',
-  quantityTotal: 'quantityTotal',
-  purchasePrice: 'purchasePrice',
-  retailPrice: 'retailPrice',
-  markup: 'markup',
-  priceCategory: 'priceCategory',
   supplierId: 'supplierId',
   supplierContact: 'supplierContact',
   condition: 'condition',
@@ -183,13 +178,51 @@ export const PartScalarFieldEnum = {
   dimensions: 'dimensions',
   photo: 'photo',
   notes: 'notes',
-  lastRestocked: 'lastRestocked',
+  manufacturerId: 'manufacturerId',
   createdAt: 'createdAt',
-  movementHistory: 'movementHistory',
-  manufacturerId: 'manufacturerId'
+  updatedAt: 'updatedAt'
 } as const
 
 export type PartScalarFieldEnum = (typeof PartScalarFieldEnum)[keyof typeof PartScalarFieldEnum]
+
+
+export const PartInventoryScalarFieldEnum = {
+  id: 'id',
+  partId: 'partId',
+  quantity: 'quantity',
+  purchasePrice: 'purchasePrice',
+  location: 'location',
+  batchNumber: 'batchNumber',
+  receivedAt: 'receivedAt'
+} as const
+
+export type PartInventoryScalarFieldEnum = (typeof PartInventoryScalarFieldEnum)[keyof typeof PartInventoryScalarFieldEnum]
+
+
+export const StockMovementScalarFieldEnum = {
+  id: 'id',
+  partId: 'partId',
+  type: 'type',
+  quantity: 'quantity',
+  reason: 'reason',
+  userId: 'userId',
+  orderId: 'orderId',
+  createdAt: 'createdAt'
+} as const
+
+export type StockMovementScalarFieldEnum = (typeof StockMovementScalarFieldEnum)[keyof typeof StockMovementScalarFieldEnum]
+
+
+export const PartPriceRuleScalarFieldEnum = {
+  id: 'id',
+  partId: 'partId',
+  clientType: 'clientType',
+  markupPercent: 'markupPercent',
+  fixedPrice: 'fixedPrice',
+  createdAt: 'createdAt'
+} as const
+
+export type PartPriceRuleScalarFieldEnum = (typeof PartPriceRuleScalarFieldEnum)[keyof typeof PartPriceRuleScalarFieldEnum]
 
 
 export const PartsManufacturerScalarFieldEnum = {
@@ -289,14 +322,6 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const NullableJsonNullValueInput = {
-  DbNull: 'DbNull',
-  JsonNull: 'JsonNull'
-} as const
-
-export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
-
-
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -311,13 +336,4 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
-export const JsonNullValueFilter = {
-  DbNull: 'DbNull',
-  JsonNull: 'JsonNull',
-  AnyNull: 'AnyNull'
-} as const
-
-export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

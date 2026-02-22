@@ -50,13 +50,24 @@ export const VehicleStatus = {
 export type VehicleStatus = (typeof VehicleStatus)[keyof typeof VehicleStatus]
 
 
-export const PriceCategory = {
-  RETAIL: 'RETAIL',
-  WHOLESALE: 'WHOLESALE',
-  SPECIAL: 'SPECIAL'
+export const MovementType = {
+  RECEIVED: 'RECEIVED',
+  ISSUED: 'ISSUED',
+  RESERVED: 'RESERVED',
+  RETURNED: 'RETURNED',
+  ADJUSTMENT: 'ADJUSTMENT'
 } as const
 
-export type PriceCategory = (typeof PriceCategory)[keyof typeof PriceCategory]
+export type MovementType = (typeof MovementType)[keyof typeof MovementType]
+
+
+export const ClientType = {
+  RETAIL: 'RETAIL',
+  WHOLESALE: 'WHOLESALE',
+  VIP: 'VIP'
+} as const
+
+export type ClientType = (typeof ClientType)[keyof typeof ClientType]
 
 
 export const PartCondition = {

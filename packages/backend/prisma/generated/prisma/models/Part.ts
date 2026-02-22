@@ -28,24 +28,12 @@ export type AggregatePart = {
 
 export type PartAvgAggregateOutputType = {
   minStock: number | null
-  quantityAvailable: number | null
-  quantityReserved: number | null
-  quantityTotal: number | null
-  purchasePrice: runtime.Decimal | null
-  retailPrice: runtime.Decimal | null
-  markup: number | null
   warrantyMonths: number | null
   warrantyKm: number | null
 }
 
 export type PartSumAggregateOutputType = {
   minStock: number | null
-  quantityAvailable: number | null
-  quantityReserved: number | null
-  quantityTotal: number | null
-  purchasePrice: runtime.Decimal | null
-  retailPrice: runtime.Decimal | null
-  markup: number | null
   warrantyMonths: number | null
   warrantyKm: number | null
 }
@@ -59,16 +47,8 @@ export type PartMinAggregateOutputType = {
   categoryId: string | null
   brandId: string | null
   barcode: string | null
-  location: string | null
   unit: string | null
   minStock: number | null
-  quantityAvailable: number | null
-  quantityReserved: number | null
-  quantityTotal: number | null
-  purchasePrice: runtime.Decimal | null
-  retailPrice: runtime.Decimal | null
-  markup: number | null
-  priceCategory: $Enums.PriceCategory | null
   supplierId: string | null
   supplierContact: string | null
   condition: $Enums.PartCondition | null
@@ -78,9 +58,9 @@ export type PartMinAggregateOutputType = {
   dimensions: string | null
   photo: string | null
   notes: string | null
-  lastRestocked: Date | null
-  createdAt: Date | null
   manufacturerId: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type PartMaxAggregateOutputType = {
@@ -92,16 +72,8 @@ export type PartMaxAggregateOutputType = {
   categoryId: string | null
   brandId: string | null
   barcode: string | null
-  location: string | null
   unit: string | null
   minStock: number | null
-  quantityAvailable: number | null
-  quantityReserved: number | null
-  quantityTotal: number | null
-  purchasePrice: runtime.Decimal | null
-  retailPrice: runtime.Decimal | null
-  markup: number | null
-  priceCategory: $Enums.PriceCategory | null
   supplierId: string | null
   supplierContact: string | null
   condition: $Enums.PartCondition | null
@@ -111,9 +83,9 @@ export type PartMaxAggregateOutputType = {
   dimensions: string | null
   photo: string | null
   notes: string | null
-  lastRestocked: Date | null
-  createdAt: Date | null
   manufacturerId: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type PartCountAggregateOutputType = {
@@ -127,16 +99,8 @@ export type PartCountAggregateOutputType = {
   barcode: number
   compatibility: number
   crossNumbers: number
-  location: number
   unit: number
   minStock: number
-  quantityAvailable: number
-  quantityReserved: number
-  quantityTotal: number
-  purchasePrice: number
-  retailPrice: number
-  markup: number
-  priceCategory: number
   supplierId: number
   supplierContact: number
   condition: number
@@ -146,34 +110,21 @@ export type PartCountAggregateOutputType = {
   dimensions: number
   photo: number
   notes: number
-  lastRestocked: number
-  createdAt: number
-  movementHistory: number
   manufacturerId: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
 
 export type PartAvgAggregateInputType = {
   minStock?: true
-  quantityAvailable?: true
-  quantityReserved?: true
-  quantityTotal?: true
-  purchasePrice?: true
-  retailPrice?: true
-  markup?: true
   warrantyMonths?: true
   warrantyKm?: true
 }
 
 export type PartSumAggregateInputType = {
   minStock?: true
-  quantityAvailable?: true
-  quantityReserved?: true
-  quantityTotal?: true
-  purchasePrice?: true
-  retailPrice?: true
-  markup?: true
   warrantyMonths?: true
   warrantyKm?: true
 }
@@ -187,16 +138,8 @@ export type PartMinAggregateInputType = {
   categoryId?: true
   brandId?: true
   barcode?: true
-  location?: true
   unit?: true
   minStock?: true
-  quantityAvailable?: true
-  quantityReserved?: true
-  quantityTotal?: true
-  purchasePrice?: true
-  retailPrice?: true
-  markup?: true
-  priceCategory?: true
   supplierId?: true
   supplierContact?: true
   condition?: true
@@ -206,9 +149,9 @@ export type PartMinAggregateInputType = {
   dimensions?: true
   photo?: true
   notes?: true
-  lastRestocked?: true
-  createdAt?: true
   manufacturerId?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type PartMaxAggregateInputType = {
@@ -220,16 +163,8 @@ export type PartMaxAggregateInputType = {
   categoryId?: true
   brandId?: true
   barcode?: true
-  location?: true
   unit?: true
   minStock?: true
-  quantityAvailable?: true
-  quantityReserved?: true
-  quantityTotal?: true
-  purchasePrice?: true
-  retailPrice?: true
-  markup?: true
-  priceCategory?: true
   supplierId?: true
   supplierContact?: true
   condition?: true
@@ -239,9 +174,9 @@ export type PartMaxAggregateInputType = {
   dimensions?: true
   photo?: true
   notes?: true
-  lastRestocked?: true
-  createdAt?: true
   manufacturerId?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type PartCountAggregateInputType = {
@@ -255,16 +190,8 @@ export type PartCountAggregateInputType = {
   barcode?: true
   compatibility?: true
   crossNumbers?: true
-  location?: true
   unit?: true
   minStock?: true
-  quantityAvailable?: true
-  quantityReserved?: true
-  quantityTotal?: true
-  purchasePrice?: true
-  retailPrice?: true
-  markup?: true
-  priceCategory?: true
   supplierId?: true
   supplierContact?: true
   condition?: true
@@ -274,10 +201,9 @@ export type PartCountAggregateInputType = {
   dimensions?: true
   photo?: true
   notes?: true
-  lastRestocked?: true
-  createdAt?: true
-  movementHistory?: true
   manufacturerId?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -373,21 +299,13 @@ export type PartGroupByOutputType = {
   name: string
   sku: string
   oem: string | null
-  categoryId: string | null
-  brandId: string | null
+  categoryId: string
+  brandId: string
   barcode: string | null
   compatibility: string[]
   crossNumbers: string[]
-  location: string
   unit: string | null
   minStock: number | null
-  quantityAvailable: number
-  quantityReserved: number
-  quantityTotal: number
-  purchasePrice: runtime.Decimal | null
-  retailPrice: runtime.Decimal | null
-  markup: number | null
-  priceCategory: $Enums.PriceCategory | null
   supplierId: string | null
   supplierContact: string | null
   condition: $Enums.PartCondition | null
@@ -397,10 +315,9 @@ export type PartGroupByOutputType = {
   dimensions: string | null
   photo: string | null
   notes: string | null
-  lastRestocked: Date | null
-  createdAt: Date | null
-  movementHistory: runtime.JsonValue | null
   manufacturerId: string | null
+  createdAt: Date
+  updatedAt: Date
   _count: PartCountAggregateOutputType | null
   _avg: PartAvgAggregateOutputType | null
   _sum: PartSumAggregateOutputType | null
@@ -432,21 +349,13 @@ export type PartWhereInput = {
   name?: Prisma.StringFilter<"Part"> | string
   sku?: Prisma.StringFilter<"Part"> | string
   oem?: Prisma.StringNullableFilter<"Part"> | string | null
-  categoryId?: Prisma.StringNullableFilter<"Part"> | string | null
-  brandId?: Prisma.StringNullableFilter<"Part"> | string | null
+  categoryId?: Prisma.StringFilter<"Part"> | string
+  brandId?: Prisma.StringFilter<"Part"> | string
   barcode?: Prisma.StringNullableFilter<"Part"> | string | null
   compatibility?: Prisma.StringNullableListFilter<"Part">
   crossNumbers?: Prisma.StringNullableListFilter<"Part">
-  location?: Prisma.StringFilter<"Part"> | string
   unit?: Prisma.StringNullableFilter<"Part"> | string | null
   minStock?: Prisma.IntNullableFilter<"Part"> | number | null
-  quantityAvailable?: Prisma.IntFilter<"Part"> | number
-  quantityReserved?: Prisma.IntFilter<"Part"> | number
-  quantityTotal?: Prisma.IntFilter<"Part"> | number
-  purchasePrice?: Prisma.DecimalNullableFilter<"Part"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.DecimalNullableFilter<"Part"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.IntNullableFilter<"Part"> | number | null
-  priceCategory?: Prisma.EnumPriceCategoryNullableFilter<"Part"> | $Enums.PriceCategory | null
   supplierId?: Prisma.StringNullableFilter<"Part"> | string | null
   supplierContact?: Prisma.StringNullableFilter<"Part"> | string | null
   condition?: Prisma.EnumPartConditionNullableFilter<"Part"> | $Enums.PartCondition | null
@@ -456,16 +365,18 @@ export type PartWhereInput = {
   dimensions?: Prisma.StringNullableFilter<"Part"> | string | null
   photo?: Prisma.StringNullableFilter<"Part"> | string | null
   notes?: Prisma.StringNullableFilter<"Part"> | string | null
-  lastRestocked?: Prisma.DateTimeNullableFilter<"Part"> | Date | string | null
-  createdAt?: Prisma.DateTimeNullableFilter<"Part"> | Date | string | null
-  movementHistory?: Prisma.JsonNullableFilter<"Part">
   manufacturerId?: Prisma.StringNullableFilter<"Part"> | string | null
-  category?: Prisma.XOR<Prisma.PartCategoryNullableScalarRelationFilter, Prisma.PartCategoryWhereInput> | null
-  brand?: Prisma.XOR<Prisma.PartsBrandNullableScalarRelationFilter, Prisma.PartsBrandWhereInput> | null
+  createdAt?: Prisma.DateTimeFilter<"Part"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Part"> | Date | string
+  category?: Prisma.XOR<Prisma.PartCategoryScalarRelationFilter, Prisma.PartCategoryWhereInput>
+  brand?: Prisma.XOR<Prisma.PartsBrandScalarRelationFilter, Prisma.PartsBrandWhereInput>
   supplier?: Prisma.XOR<Prisma.PartsSupplierNullableScalarRelationFilter, Prisma.PartsSupplierWhereInput> | null
   manufacturer?: Prisma.XOR<Prisma.PartsManufacturerNullableScalarRelationFilter, Prisma.PartsManufacturerWhereInput> | null
+  inventory?: Prisma.PartInventoryListRelationFilter
+  priceRules?: Prisma.PartPriceRuleListRelationFilter
   orderParts?: Prisma.OrderPartListRelationFilter
   services?: Prisma.ServiceListRelationFilter
+  stockMovements?: Prisma.StockMovementListRelationFilter
 }
 
 export type PartOrderByWithRelationInput = {
@@ -474,21 +385,13 @@ export type PartOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   sku?: Prisma.SortOrder
   oem?: Prisma.SortOrderInput | Prisma.SortOrder
-  categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
-  brandId?: Prisma.SortOrderInput | Prisma.SortOrder
+  categoryId?: Prisma.SortOrder
+  brandId?: Prisma.SortOrder
   barcode?: Prisma.SortOrderInput | Prisma.SortOrder
   compatibility?: Prisma.SortOrder
   crossNumbers?: Prisma.SortOrder
-  location?: Prisma.SortOrder
   unit?: Prisma.SortOrderInput | Prisma.SortOrder
   minStock?: Prisma.SortOrderInput | Prisma.SortOrder
-  quantityAvailable?: Prisma.SortOrder
-  quantityReserved?: Prisma.SortOrder
-  quantityTotal?: Prisma.SortOrder
-  purchasePrice?: Prisma.SortOrderInput | Prisma.SortOrder
-  retailPrice?: Prisma.SortOrderInput | Prisma.SortOrder
-  markup?: Prisma.SortOrderInput | Prisma.SortOrder
-  priceCategory?: Prisma.SortOrderInput | Prisma.SortOrder
   supplierId?: Prisma.SortOrderInput | Prisma.SortOrder
   supplierContact?: Prisma.SortOrderInput | Prisma.SortOrder
   condition?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -498,16 +401,18 @@ export type PartOrderByWithRelationInput = {
   dimensions?: Prisma.SortOrderInput | Prisma.SortOrder
   photo?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
-  lastRestocked?: Prisma.SortOrderInput | Prisma.SortOrder
-  createdAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  movementHistory?: Prisma.SortOrderInput | Prisma.SortOrder
   manufacturerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   category?: Prisma.PartCategoryOrderByWithRelationInput
   brand?: Prisma.PartsBrandOrderByWithRelationInput
   supplier?: Prisma.PartsSupplierOrderByWithRelationInput
   manufacturer?: Prisma.PartsManufacturerOrderByWithRelationInput
+  inventory?: Prisma.PartInventoryOrderByRelationAggregateInput
+  priceRules?: Prisma.PartPriceRuleOrderByRelationAggregateInput
   orderParts?: Prisma.OrderPartOrderByRelationAggregateInput
   services?: Prisma.ServiceOrderByRelationAggregateInput
+  stockMovements?: Prisma.StockMovementOrderByRelationAggregateInput
 }
 
 export type PartWhereUniqueInput = Prisma.AtLeast<{
@@ -519,21 +424,13 @@ export type PartWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PartWhereInput | Prisma.PartWhereInput[]
   name?: Prisma.StringFilter<"Part"> | string
   oem?: Prisma.StringNullableFilter<"Part"> | string | null
-  categoryId?: Prisma.StringNullableFilter<"Part"> | string | null
-  brandId?: Prisma.StringNullableFilter<"Part"> | string | null
+  categoryId?: Prisma.StringFilter<"Part"> | string
+  brandId?: Prisma.StringFilter<"Part"> | string
   barcode?: Prisma.StringNullableFilter<"Part"> | string | null
   compatibility?: Prisma.StringNullableListFilter<"Part">
   crossNumbers?: Prisma.StringNullableListFilter<"Part">
-  location?: Prisma.StringFilter<"Part"> | string
   unit?: Prisma.StringNullableFilter<"Part"> | string | null
   minStock?: Prisma.IntNullableFilter<"Part"> | number | null
-  quantityAvailable?: Prisma.IntFilter<"Part"> | number
-  quantityReserved?: Prisma.IntFilter<"Part"> | number
-  quantityTotal?: Prisma.IntFilter<"Part"> | number
-  purchasePrice?: Prisma.DecimalNullableFilter<"Part"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.DecimalNullableFilter<"Part"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.IntNullableFilter<"Part"> | number | null
-  priceCategory?: Prisma.EnumPriceCategoryNullableFilter<"Part"> | $Enums.PriceCategory | null
   supplierId?: Prisma.StringNullableFilter<"Part"> | string | null
   supplierContact?: Prisma.StringNullableFilter<"Part"> | string | null
   condition?: Prisma.EnumPartConditionNullableFilter<"Part"> | $Enums.PartCondition | null
@@ -543,16 +440,18 @@ export type PartWhereUniqueInput = Prisma.AtLeast<{
   dimensions?: Prisma.StringNullableFilter<"Part"> | string | null
   photo?: Prisma.StringNullableFilter<"Part"> | string | null
   notes?: Prisma.StringNullableFilter<"Part"> | string | null
-  lastRestocked?: Prisma.DateTimeNullableFilter<"Part"> | Date | string | null
-  createdAt?: Prisma.DateTimeNullableFilter<"Part"> | Date | string | null
-  movementHistory?: Prisma.JsonNullableFilter<"Part">
   manufacturerId?: Prisma.StringNullableFilter<"Part"> | string | null
-  category?: Prisma.XOR<Prisma.PartCategoryNullableScalarRelationFilter, Prisma.PartCategoryWhereInput> | null
-  brand?: Prisma.XOR<Prisma.PartsBrandNullableScalarRelationFilter, Prisma.PartsBrandWhereInput> | null
+  createdAt?: Prisma.DateTimeFilter<"Part"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Part"> | Date | string
+  category?: Prisma.XOR<Prisma.PartCategoryScalarRelationFilter, Prisma.PartCategoryWhereInput>
+  brand?: Prisma.XOR<Prisma.PartsBrandScalarRelationFilter, Prisma.PartsBrandWhereInput>
   supplier?: Prisma.XOR<Prisma.PartsSupplierNullableScalarRelationFilter, Prisma.PartsSupplierWhereInput> | null
   manufacturer?: Prisma.XOR<Prisma.PartsManufacturerNullableScalarRelationFilter, Prisma.PartsManufacturerWhereInput> | null
+  inventory?: Prisma.PartInventoryListRelationFilter
+  priceRules?: Prisma.PartPriceRuleListRelationFilter
   orderParts?: Prisma.OrderPartListRelationFilter
   services?: Prisma.ServiceListRelationFilter
+  stockMovements?: Prisma.StockMovementListRelationFilter
 }, "id" | "code" | "sku">
 
 export type PartOrderByWithAggregationInput = {
@@ -561,21 +460,13 @@ export type PartOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   sku?: Prisma.SortOrder
   oem?: Prisma.SortOrderInput | Prisma.SortOrder
-  categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
-  brandId?: Prisma.SortOrderInput | Prisma.SortOrder
+  categoryId?: Prisma.SortOrder
+  brandId?: Prisma.SortOrder
   barcode?: Prisma.SortOrderInput | Prisma.SortOrder
   compatibility?: Prisma.SortOrder
   crossNumbers?: Prisma.SortOrder
-  location?: Prisma.SortOrder
   unit?: Prisma.SortOrderInput | Prisma.SortOrder
   minStock?: Prisma.SortOrderInput | Prisma.SortOrder
-  quantityAvailable?: Prisma.SortOrder
-  quantityReserved?: Prisma.SortOrder
-  quantityTotal?: Prisma.SortOrder
-  purchasePrice?: Prisma.SortOrderInput | Prisma.SortOrder
-  retailPrice?: Prisma.SortOrderInput | Prisma.SortOrder
-  markup?: Prisma.SortOrderInput | Prisma.SortOrder
-  priceCategory?: Prisma.SortOrderInput | Prisma.SortOrder
   supplierId?: Prisma.SortOrderInput | Prisma.SortOrder
   supplierContact?: Prisma.SortOrderInput | Prisma.SortOrder
   condition?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -585,10 +476,9 @@ export type PartOrderByWithAggregationInput = {
   dimensions?: Prisma.SortOrderInput | Prisma.SortOrder
   photo?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
-  lastRestocked?: Prisma.SortOrderInput | Prisma.SortOrder
-  createdAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  movementHistory?: Prisma.SortOrderInput | Prisma.SortOrder
   manufacturerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.PartCountOrderByAggregateInput
   _avg?: Prisma.PartAvgOrderByAggregateInput
   _max?: Prisma.PartMaxOrderByAggregateInput
@@ -605,21 +495,13 @@ export type PartScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Part"> | string
   sku?: Prisma.StringWithAggregatesFilter<"Part"> | string
   oem?: Prisma.StringNullableWithAggregatesFilter<"Part"> | string | null
-  categoryId?: Prisma.StringNullableWithAggregatesFilter<"Part"> | string | null
-  brandId?: Prisma.StringNullableWithAggregatesFilter<"Part"> | string | null
+  categoryId?: Prisma.StringWithAggregatesFilter<"Part"> | string
+  brandId?: Prisma.StringWithAggregatesFilter<"Part"> | string
   barcode?: Prisma.StringNullableWithAggregatesFilter<"Part"> | string | null
   compatibility?: Prisma.StringNullableListFilter<"Part">
   crossNumbers?: Prisma.StringNullableListFilter<"Part">
-  location?: Prisma.StringWithAggregatesFilter<"Part"> | string
   unit?: Prisma.StringNullableWithAggregatesFilter<"Part"> | string | null
   minStock?: Prisma.IntNullableWithAggregatesFilter<"Part"> | number | null
-  quantityAvailable?: Prisma.IntWithAggregatesFilter<"Part"> | number
-  quantityReserved?: Prisma.IntWithAggregatesFilter<"Part"> | number
-  quantityTotal?: Prisma.IntWithAggregatesFilter<"Part"> | number
-  purchasePrice?: Prisma.DecimalNullableWithAggregatesFilter<"Part"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.DecimalNullableWithAggregatesFilter<"Part"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.IntNullableWithAggregatesFilter<"Part"> | number | null
-  priceCategory?: Prisma.EnumPriceCategoryNullableWithAggregatesFilter<"Part"> | $Enums.PriceCategory | null
   supplierId?: Prisma.StringNullableWithAggregatesFilter<"Part"> | string | null
   supplierContact?: Prisma.StringNullableWithAggregatesFilter<"Part"> | string | null
   condition?: Prisma.EnumPartConditionNullableWithAggregatesFilter<"Part"> | $Enums.PartCondition | null
@@ -629,10 +511,9 @@ export type PartScalarWhereWithAggregatesInput = {
   dimensions?: Prisma.StringNullableWithAggregatesFilter<"Part"> | string | null
   photo?: Prisma.StringNullableWithAggregatesFilter<"Part"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"Part"> | string | null
-  lastRestocked?: Prisma.DateTimeNullableWithAggregatesFilter<"Part"> | Date | string | null
-  createdAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Part"> | Date | string | null
-  movementHistory?: Prisma.JsonNullableWithAggregatesFilter<"Part">
   manufacturerId?: Prisma.StringNullableWithAggregatesFilter<"Part"> | string | null
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Part"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Part"> | Date | string
 }
 
 export type PartCreateInput = {
@@ -644,16 +525,8 @@ export type PartCreateInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
   warrantyMonths?: number | null
@@ -662,15 +535,17 @@ export type PartCreateInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  category?: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
-  brand?: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
+  brand: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
   supplier?: Prisma.PartsSupplierCreateNestedOneWithoutPartsInput
   manufacturer?: Prisma.PartsManufacturerCreateNestedOneWithoutPartsInput
+  inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
   services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
 }
 
 export type PartUncheckedCreateInput = {
@@ -679,21 +554,13 @@ export type PartUncheckedCreateInput = {
   name: string
   sku: string
   oem?: string | null
-  categoryId?: string | null
-  brandId?: string | null
+  categoryId: string
+  brandId: string
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierId?: string | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
@@ -703,12 +570,14 @@ export type PartUncheckedCreateInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
 }
 
 export type PartUpdateInput = {
@@ -720,16 +589,8 @@ export type PartUpdateInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
   warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -738,15 +599,17 @@ export type PartUpdateInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  category?: Prisma.PartCategoryUpdateOneWithoutPartsNestedInput
-  brand?: Prisma.PartsBrandUpdateOneWithoutPartsNestedInput
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.PartCategoryUpdateOneRequiredWithoutPartsNestedInput
+  brand?: Prisma.PartsBrandUpdateOneRequiredWithoutPartsNestedInput
   supplier?: Prisma.PartsSupplierUpdateOneWithoutPartsNestedInput
   manufacturer?: Prisma.PartsManufacturerUpdateOneWithoutPartsNestedInput
+  inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
+  priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
   services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
 }
 
 export type PartUncheckedUpdateInput = {
@@ -755,21 +618,13 @@ export type PartUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  brandId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  brandId?: Prisma.StringFieldUpdateOperationsInput | string
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
@@ -779,12 +634,14 @@ export type PartUncheckedUpdateInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
+  priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
 }
 
 export type PartCreateManyInput = {
@@ -793,21 +650,13 @@ export type PartCreateManyInput = {
   name: string
   sku: string
   oem?: string | null
-  categoryId?: string | null
-  brandId?: string | null
+  categoryId: string
+  brandId: string
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierId?: string | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
@@ -817,10 +666,9 @@ export type PartCreateManyInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type PartUpdateManyMutationInput = {
@@ -832,16 +680,8 @@ export type PartUpdateManyMutationInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
   warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -850,9 +690,8 @@ export type PartUpdateManyMutationInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PartUncheckedUpdateManyInput = {
@@ -861,21 +700,13 @@ export type PartUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  brandId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  brandId?: Prisma.StringFieldUpdateOperationsInput | string
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
@@ -885,10 +716,9 @@ export type PartUncheckedUpdateManyInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PartListRelationFilter = {
@@ -920,16 +750,8 @@ export type PartCountOrderByAggregateInput = {
   barcode?: Prisma.SortOrder
   compatibility?: Prisma.SortOrder
   crossNumbers?: Prisma.SortOrder
-  location?: Prisma.SortOrder
   unit?: Prisma.SortOrder
   minStock?: Prisma.SortOrder
-  quantityAvailable?: Prisma.SortOrder
-  quantityReserved?: Prisma.SortOrder
-  quantityTotal?: Prisma.SortOrder
-  purchasePrice?: Prisma.SortOrder
-  retailPrice?: Prisma.SortOrder
-  markup?: Prisma.SortOrder
-  priceCategory?: Prisma.SortOrder
   supplierId?: Prisma.SortOrder
   supplierContact?: Prisma.SortOrder
   condition?: Prisma.SortOrder
@@ -939,20 +761,13 @@ export type PartCountOrderByAggregateInput = {
   dimensions?: Prisma.SortOrder
   photo?: Prisma.SortOrder
   notes?: Prisma.SortOrder
-  lastRestocked?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  movementHistory?: Prisma.SortOrder
   manufacturerId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type PartAvgOrderByAggregateInput = {
   minStock?: Prisma.SortOrder
-  quantityAvailable?: Prisma.SortOrder
-  quantityReserved?: Prisma.SortOrder
-  quantityTotal?: Prisma.SortOrder
-  purchasePrice?: Prisma.SortOrder
-  retailPrice?: Prisma.SortOrder
-  markup?: Prisma.SortOrder
   warrantyMonths?: Prisma.SortOrder
   warrantyKm?: Prisma.SortOrder
 }
@@ -966,16 +781,8 @@ export type PartMaxOrderByAggregateInput = {
   categoryId?: Prisma.SortOrder
   brandId?: Prisma.SortOrder
   barcode?: Prisma.SortOrder
-  location?: Prisma.SortOrder
   unit?: Prisma.SortOrder
   minStock?: Prisma.SortOrder
-  quantityAvailable?: Prisma.SortOrder
-  quantityReserved?: Prisma.SortOrder
-  quantityTotal?: Prisma.SortOrder
-  purchasePrice?: Prisma.SortOrder
-  retailPrice?: Prisma.SortOrder
-  markup?: Prisma.SortOrder
-  priceCategory?: Prisma.SortOrder
   supplierId?: Prisma.SortOrder
   supplierContact?: Prisma.SortOrder
   condition?: Prisma.SortOrder
@@ -985,9 +792,9 @@ export type PartMaxOrderByAggregateInput = {
   dimensions?: Prisma.SortOrder
   photo?: Prisma.SortOrder
   notes?: Prisma.SortOrder
-  lastRestocked?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
   manufacturerId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type PartMinOrderByAggregateInput = {
@@ -999,16 +806,8 @@ export type PartMinOrderByAggregateInput = {
   categoryId?: Prisma.SortOrder
   brandId?: Prisma.SortOrder
   barcode?: Prisma.SortOrder
-  location?: Prisma.SortOrder
   unit?: Prisma.SortOrder
   minStock?: Prisma.SortOrder
-  quantityAvailable?: Prisma.SortOrder
-  quantityReserved?: Prisma.SortOrder
-  quantityTotal?: Prisma.SortOrder
-  purchasePrice?: Prisma.SortOrder
-  retailPrice?: Prisma.SortOrder
-  markup?: Prisma.SortOrder
-  priceCategory?: Prisma.SortOrder
   supplierId?: Prisma.SortOrder
   supplierContact?: Prisma.SortOrder
   condition?: Prisma.SortOrder
@@ -1018,19 +817,13 @@ export type PartMinOrderByAggregateInput = {
   dimensions?: Prisma.SortOrder
   photo?: Prisma.SortOrder
   notes?: Prisma.SortOrder
-  lastRestocked?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
   manufacturerId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type PartSumOrderByAggregateInput = {
   minStock?: Prisma.SortOrder
-  quantityAvailable?: Prisma.SortOrder
-  quantityReserved?: Prisma.SortOrder
-  quantityTotal?: Prisma.SortOrder
-  purchasePrice?: Prisma.SortOrder
-  retailPrice?: Prisma.SortOrder
-  markup?: Prisma.SortOrder
   warrantyMonths?: Prisma.SortOrder
   warrantyKm?: Prisma.SortOrder
 }
@@ -1108,20 +901,50 @@ export type NullableIntFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type NullableDecimalFieldUpdateOperationsInput = {
-  set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
-}
-
-export type NullableEnumPriceCategoryFieldUpdateOperationsInput = {
-  set?: $Enums.PriceCategory | null
-}
-
 export type NullableEnumPartConditionFieldUpdateOperationsInput = {
   set?: $Enums.PartCondition | null
+}
+
+export type PartCreateNestedOneWithoutInventoryInput = {
+  create?: Prisma.XOR<Prisma.PartCreateWithoutInventoryInput, Prisma.PartUncheckedCreateWithoutInventoryInput>
+  connectOrCreate?: Prisma.PartCreateOrConnectWithoutInventoryInput
+  connect?: Prisma.PartWhereUniqueInput
+}
+
+export type PartUpdateOneRequiredWithoutInventoryNestedInput = {
+  create?: Prisma.XOR<Prisma.PartCreateWithoutInventoryInput, Prisma.PartUncheckedCreateWithoutInventoryInput>
+  connectOrCreate?: Prisma.PartCreateOrConnectWithoutInventoryInput
+  upsert?: Prisma.PartUpsertWithoutInventoryInput
+  connect?: Prisma.PartWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PartUpdateToOneWithWhereWithoutInventoryInput, Prisma.PartUpdateWithoutInventoryInput>, Prisma.PartUncheckedUpdateWithoutInventoryInput>
+}
+
+export type PartCreateNestedOneWithoutStockMovementsInput = {
+  create?: Prisma.XOR<Prisma.PartCreateWithoutStockMovementsInput, Prisma.PartUncheckedCreateWithoutStockMovementsInput>
+  connectOrCreate?: Prisma.PartCreateOrConnectWithoutStockMovementsInput
+  connect?: Prisma.PartWhereUniqueInput
+}
+
+export type PartUpdateOneRequiredWithoutStockMovementsNestedInput = {
+  create?: Prisma.XOR<Prisma.PartCreateWithoutStockMovementsInput, Prisma.PartUncheckedCreateWithoutStockMovementsInput>
+  connectOrCreate?: Prisma.PartCreateOrConnectWithoutStockMovementsInput
+  upsert?: Prisma.PartUpsertWithoutStockMovementsInput
+  connect?: Prisma.PartWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PartUpdateToOneWithWhereWithoutStockMovementsInput, Prisma.PartUpdateWithoutStockMovementsInput>, Prisma.PartUncheckedUpdateWithoutStockMovementsInput>
+}
+
+export type PartCreateNestedOneWithoutPriceRulesInput = {
+  create?: Prisma.XOR<Prisma.PartCreateWithoutPriceRulesInput, Prisma.PartUncheckedCreateWithoutPriceRulesInput>
+  connectOrCreate?: Prisma.PartCreateOrConnectWithoutPriceRulesInput
+  connect?: Prisma.PartWhereUniqueInput
+}
+
+export type PartUpdateOneRequiredWithoutPriceRulesNestedInput = {
+  create?: Prisma.XOR<Prisma.PartCreateWithoutPriceRulesInput, Prisma.PartUncheckedCreateWithoutPriceRulesInput>
+  connectOrCreate?: Prisma.PartCreateOrConnectWithoutPriceRulesInput
+  upsert?: Prisma.PartUpsertWithoutPriceRulesInput
+  connect?: Prisma.PartWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PartUpdateToOneWithWhereWithoutPriceRulesInput, Prisma.PartUpdateWithoutPriceRulesInput>, Prisma.PartUncheckedUpdateWithoutPriceRulesInput>
 }
 
 export type PartCreateNestedManyWithoutManufacturerInput = {
@@ -1311,16 +1134,8 @@ export type PartCreateWithoutCategoryInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
   warrantyMonths?: number | null
@@ -1329,14 +1144,16 @@ export type PartCreateWithoutCategoryInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  brand?: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  brand: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
   supplier?: Prisma.PartsSupplierCreateNestedOneWithoutPartsInput
   manufacturer?: Prisma.PartsManufacturerCreateNestedOneWithoutPartsInput
+  inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
   services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
 }
 
 export type PartUncheckedCreateWithoutCategoryInput = {
@@ -1345,20 +1162,12 @@ export type PartUncheckedCreateWithoutCategoryInput = {
   name: string
   sku: string
   oem?: string | null
-  brandId?: string | null
+  brandId: string
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierId?: string | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
@@ -1368,12 +1177,14 @@ export type PartUncheckedCreateWithoutCategoryInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
 }
 
 export type PartCreateOrConnectWithoutCategoryInput = {
@@ -1411,21 +1222,13 @@ export type PartScalarWhereInput = {
   name?: Prisma.StringFilter<"Part"> | string
   sku?: Prisma.StringFilter<"Part"> | string
   oem?: Prisma.StringNullableFilter<"Part"> | string | null
-  categoryId?: Prisma.StringNullableFilter<"Part"> | string | null
-  brandId?: Prisma.StringNullableFilter<"Part"> | string | null
+  categoryId?: Prisma.StringFilter<"Part"> | string
+  brandId?: Prisma.StringFilter<"Part"> | string
   barcode?: Prisma.StringNullableFilter<"Part"> | string | null
   compatibility?: Prisma.StringNullableListFilter<"Part">
   crossNumbers?: Prisma.StringNullableListFilter<"Part">
-  location?: Prisma.StringFilter<"Part"> | string
   unit?: Prisma.StringNullableFilter<"Part"> | string | null
   minStock?: Prisma.IntNullableFilter<"Part"> | number | null
-  quantityAvailable?: Prisma.IntFilter<"Part"> | number
-  quantityReserved?: Prisma.IntFilter<"Part"> | number
-  quantityTotal?: Prisma.IntFilter<"Part"> | number
-  purchasePrice?: Prisma.DecimalNullableFilter<"Part"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.DecimalNullableFilter<"Part"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.IntNullableFilter<"Part"> | number | null
-  priceCategory?: Prisma.EnumPriceCategoryNullableFilter<"Part"> | $Enums.PriceCategory | null
   supplierId?: Prisma.StringNullableFilter<"Part"> | string | null
   supplierContact?: Prisma.StringNullableFilter<"Part"> | string | null
   condition?: Prisma.EnumPartConditionNullableFilter<"Part"> | $Enums.PartCondition | null
@@ -1435,10 +1238,429 @@ export type PartScalarWhereInput = {
   dimensions?: Prisma.StringNullableFilter<"Part"> | string | null
   photo?: Prisma.StringNullableFilter<"Part"> | string | null
   notes?: Prisma.StringNullableFilter<"Part"> | string | null
-  lastRestocked?: Prisma.DateTimeNullableFilter<"Part"> | Date | string | null
-  createdAt?: Prisma.DateTimeNullableFilter<"Part"> | Date | string | null
-  movementHistory?: Prisma.JsonNullableFilter<"Part">
   manufacturerId?: Prisma.StringNullableFilter<"Part"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Part"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Part"> | Date | string
+}
+
+export type PartCreateWithoutInventoryInput = {
+  id?: string
+  code?: string | null
+  name: string
+  sku: string
+  oem?: string | null
+  barcode?: string | null
+  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
+  unit?: string | null
+  minStock?: number | null
+  supplierContact?: string | null
+  condition?: $Enums.PartCondition | null
+  warrantyMonths?: number | null
+  warrantyKm?: number | null
+  weight?: string | null
+  dimensions?: string | null
+  photo?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
+  brand: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
+  supplier?: Prisma.PartsSupplierCreateNestedOneWithoutPartsInput
+  manufacturer?: Prisma.PartsManufacturerCreateNestedOneWithoutPartsInput
+  priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
+  orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
+  services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
+}
+
+export type PartUncheckedCreateWithoutInventoryInput = {
+  id?: string
+  code?: string | null
+  name: string
+  sku: string
+  oem?: string | null
+  categoryId: string
+  brandId: string
+  barcode?: string | null
+  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
+  unit?: string | null
+  minStock?: number | null
+  supplierId?: string | null
+  supplierContact?: string | null
+  condition?: $Enums.PartCondition | null
+  warrantyMonths?: number | null
+  warrantyKm?: number | null
+  weight?: string | null
+  dimensions?: string | null
+  photo?: string | null
+  notes?: string | null
+  manufacturerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
+  orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
+  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
+}
+
+export type PartCreateOrConnectWithoutInventoryInput = {
+  where: Prisma.PartWhereUniqueInput
+  create: Prisma.XOR<Prisma.PartCreateWithoutInventoryInput, Prisma.PartUncheckedCreateWithoutInventoryInput>
+}
+
+export type PartUpsertWithoutInventoryInput = {
+  update: Prisma.XOR<Prisma.PartUpdateWithoutInventoryInput, Prisma.PartUncheckedUpdateWithoutInventoryInput>
+  create: Prisma.XOR<Prisma.PartCreateWithoutInventoryInput, Prisma.PartUncheckedCreateWithoutInventoryInput>
+  where?: Prisma.PartWhereInput
+}
+
+export type PartUpdateToOneWithWhereWithoutInventoryInput = {
+  where?: Prisma.PartWhereInput
+  data: Prisma.XOR<Prisma.PartUpdateWithoutInventoryInput, Prisma.PartUncheckedUpdateWithoutInventoryInput>
+}
+
+export type PartUpdateWithoutInventoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
+  unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
+  warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  warrantyKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.PartCategoryUpdateOneRequiredWithoutPartsNestedInput
+  brand?: Prisma.PartsBrandUpdateOneRequiredWithoutPartsNestedInput
+  supplier?: Prisma.PartsSupplierUpdateOneWithoutPartsNestedInput
+  manufacturer?: Prisma.PartsManufacturerUpdateOneWithoutPartsNestedInput
+  priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
+  orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
+  services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
+}
+
+export type PartUncheckedUpdateWithoutInventoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  brandId?: Prisma.StringFieldUpdateOperationsInput | string
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
+  unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
+  warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  warrantyKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
+  orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
+  services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
+}
+
+export type PartCreateWithoutStockMovementsInput = {
+  id?: string
+  code?: string | null
+  name: string
+  sku: string
+  oem?: string | null
+  barcode?: string | null
+  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
+  unit?: string | null
+  minStock?: number | null
+  supplierContact?: string | null
+  condition?: $Enums.PartCondition | null
+  warrantyMonths?: number | null
+  warrantyKm?: number | null
+  weight?: string | null
+  dimensions?: string | null
+  photo?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
+  brand: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
+  supplier?: Prisma.PartsSupplierCreateNestedOneWithoutPartsInput
+  manufacturer?: Prisma.PartsManufacturerCreateNestedOneWithoutPartsInput
+  inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
+  orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
+  services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
+}
+
+export type PartUncheckedCreateWithoutStockMovementsInput = {
+  id?: string
+  code?: string | null
+  name: string
+  sku: string
+  oem?: string | null
+  categoryId: string
+  brandId: string
+  barcode?: string | null
+  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
+  unit?: string | null
+  minStock?: number | null
+  supplierId?: string | null
+  supplierContact?: string | null
+  condition?: $Enums.PartCondition | null
+  warrantyMonths?: number | null
+  warrantyKm?: number | null
+  weight?: string | null
+  dimensions?: string | null
+  photo?: string | null
+  notes?: string | null
+  manufacturerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
+  orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
+  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
+}
+
+export type PartCreateOrConnectWithoutStockMovementsInput = {
+  where: Prisma.PartWhereUniqueInput
+  create: Prisma.XOR<Prisma.PartCreateWithoutStockMovementsInput, Prisma.PartUncheckedCreateWithoutStockMovementsInput>
+}
+
+export type PartUpsertWithoutStockMovementsInput = {
+  update: Prisma.XOR<Prisma.PartUpdateWithoutStockMovementsInput, Prisma.PartUncheckedUpdateWithoutStockMovementsInput>
+  create: Prisma.XOR<Prisma.PartCreateWithoutStockMovementsInput, Prisma.PartUncheckedCreateWithoutStockMovementsInput>
+  where?: Prisma.PartWhereInput
+}
+
+export type PartUpdateToOneWithWhereWithoutStockMovementsInput = {
+  where?: Prisma.PartWhereInput
+  data: Prisma.XOR<Prisma.PartUpdateWithoutStockMovementsInput, Prisma.PartUncheckedUpdateWithoutStockMovementsInput>
+}
+
+export type PartUpdateWithoutStockMovementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
+  unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
+  warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  warrantyKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.PartCategoryUpdateOneRequiredWithoutPartsNestedInput
+  brand?: Prisma.PartsBrandUpdateOneRequiredWithoutPartsNestedInput
+  supplier?: Prisma.PartsSupplierUpdateOneWithoutPartsNestedInput
+  manufacturer?: Prisma.PartsManufacturerUpdateOneWithoutPartsNestedInput
+  inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
+  priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
+  orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
+  services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
+}
+
+export type PartUncheckedUpdateWithoutStockMovementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  brandId?: Prisma.StringFieldUpdateOperationsInput | string
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
+  unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
+  warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  warrantyKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
+  priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
+  orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
+  services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
+}
+
+export type PartCreateWithoutPriceRulesInput = {
+  id?: string
+  code?: string | null
+  name: string
+  sku: string
+  oem?: string | null
+  barcode?: string | null
+  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
+  unit?: string | null
+  minStock?: number | null
+  supplierContact?: string | null
+  condition?: $Enums.PartCondition | null
+  warrantyMonths?: number | null
+  warrantyKm?: number | null
+  weight?: string | null
+  dimensions?: string | null
+  photo?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
+  brand: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
+  supplier?: Prisma.PartsSupplierCreateNestedOneWithoutPartsInput
+  manufacturer?: Prisma.PartsManufacturerCreateNestedOneWithoutPartsInput
+  inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
+  orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
+  services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
+}
+
+export type PartUncheckedCreateWithoutPriceRulesInput = {
+  id?: string
+  code?: string | null
+  name: string
+  sku: string
+  oem?: string | null
+  categoryId: string
+  brandId: string
+  barcode?: string | null
+  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
+  unit?: string | null
+  minStock?: number | null
+  supplierId?: string | null
+  supplierContact?: string | null
+  condition?: $Enums.PartCondition | null
+  warrantyMonths?: number | null
+  warrantyKm?: number | null
+  weight?: string | null
+  dimensions?: string | null
+  photo?: string | null
+  notes?: string | null
+  manufacturerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
+  orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
+  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
+}
+
+export type PartCreateOrConnectWithoutPriceRulesInput = {
+  where: Prisma.PartWhereUniqueInput
+  create: Prisma.XOR<Prisma.PartCreateWithoutPriceRulesInput, Prisma.PartUncheckedCreateWithoutPriceRulesInput>
+}
+
+export type PartUpsertWithoutPriceRulesInput = {
+  update: Prisma.XOR<Prisma.PartUpdateWithoutPriceRulesInput, Prisma.PartUncheckedUpdateWithoutPriceRulesInput>
+  create: Prisma.XOR<Prisma.PartCreateWithoutPriceRulesInput, Prisma.PartUncheckedCreateWithoutPriceRulesInput>
+  where?: Prisma.PartWhereInput
+}
+
+export type PartUpdateToOneWithWhereWithoutPriceRulesInput = {
+  where?: Prisma.PartWhereInput
+  data: Prisma.XOR<Prisma.PartUpdateWithoutPriceRulesInput, Prisma.PartUncheckedUpdateWithoutPriceRulesInput>
+}
+
+export type PartUpdateWithoutPriceRulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
+  unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
+  warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  warrantyKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.PartCategoryUpdateOneRequiredWithoutPartsNestedInput
+  brand?: Prisma.PartsBrandUpdateOneRequiredWithoutPartsNestedInput
+  supplier?: Prisma.PartsSupplierUpdateOneWithoutPartsNestedInput
+  manufacturer?: Prisma.PartsManufacturerUpdateOneWithoutPartsNestedInput
+  inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
+  orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
+  services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
+}
+
+export type PartUncheckedUpdateWithoutPriceRulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  brandId?: Prisma.StringFieldUpdateOperationsInput | string
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
+  unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
+  warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  warrantyKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  manufacturerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
+  orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
+  services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
 }
 
 export type PartCreateWithoutManufacturerInput = {
@@ -1450,16 +1672,8 @@ export type PartCreateWithoutManufacturerInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
   warrantyMonths?: number | null
@@ -1468,14 +1682,16 @@ export type PartCreateWithoutManufacturerInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  category?: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
-  brand?: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
+  brand: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
   supplier?: Prisma.PartsSupplierCreateNestedOneWithoutPartsInput
+  inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
   services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
 }
 
 export type PartUncheckedCreateWithoutManufacturerInput = {
@@ -1484,21 +1700,13 @@ export type PartUncheckedCreateWithoutManufacturerInput = {
   name: string
   sku: string
   oem?: string | null
-  categoryId?: string | null
-  brandId?: string | null
+  categoryId: string
+  brandId: string
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierId?: string | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
@@ -1508,11 +1716,13 @@ export type PartUncheckedCreateWithoutManufacturerInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
 }
 
 export type PartCreateOrConnectWithoutManufacturerInput = {
@@ -1550,16 +1760,8 @@ export type PartCreateWithoutBrandInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
   warrantyMonths?: number | null
@@ -1568,14 +1770,16 @@ export type PartCreateWithoutBrandInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  category?: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
   supplier?: Prisma.PartsSupplierCreateNestedOneWithoutPartsInput
   manufacturer?: Prisma.PartsManufacturerCreateNestedOneWithoutPartsInput
+  inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
   services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
 }
 
 export type PartUncheckedCreateWithoutBrandInput = {
@@ -1584,20 +1788,12 @@ export type PartUncheckedCreateWithoutBrandInput = {
   name: string
   sku: string
   oem?: string | null
-  categoryId?: string | null
+  categoryId: string
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierId?: string | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
@@ -1607,12 +1803,14 @@ export type PartUncheckedCreateWithoutBrandInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
 }
 
 export type PartCreateOrConnectWithoutBrandInput = {
@@ -1650,16 +1848,8 @@ export type PartCreateWithoutSupplierInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
   warrantyMonths?: number | null
@@ -1668,14 +1858,16 @@ export type PartCreateWithoutSupplierInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  category?: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
-  brand?: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
+  brand: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
   manufacturer?: Prisma.PartsManufacturerCreateNestedOneWithoutPartsInput
+  inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
   services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
 }
 
 export type PartUncheckedCreateWithoutSupplierInput = {
@@ -1684,21 +1876,13 @@ export type PartUncheckedCreateWithoutSupplierInput = {
   name: string
   sku: string
   oem?: string | null
-  categoryId?: string | null
-  brandId?: string | null
+  categoryId: string
+  brandId: string
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
   warrantyMonths?: number | null
@@ -1707,12 +1891,14 @@ export type PartUncheckedCreateWithoutSupplierInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
 }
 
 export type PartCreateOrConnectWithoutSupplierInput = {
@@ -1750,16 +1936,8 @@ export type PartCreateWithoutServicesInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
   warrantyMonths?: number | null
@@ -1768,14 +1946,16 @@ export type PartCreateWithoutServicesInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  category?: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
-  brand?: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
+  brand: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
   supplier?: Prisma.PartsSupplierCreateNestedOneWithoutPartsInput
   manufacturer?: Prisma.PartsManufacturerCreateNestedOneWithoutPartsInput
+  inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
 }
 
 export type PartUncheckedCreateWithoutServicesInput = {
@@ -1784,21 +1964,13 @@ export type PartUncheckedCreateWithoutServicesInput = {
   name: string
   sku: string
   oem?: string | null
-  categoryId?: string | null
-  brandId?: string | null
+  categoryId: string
+  brandId: string
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierId?: string | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
@@ -1808,11 +1980,13 @@ export type PartUncheckedCreateWithoutServicesInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
 }
 
 export type PartCreateOrConnectWithoutServicesInput = {
@@ -1845,16 +2019,8 @@ export type PartCreateWithoutOrderPartsInput = {
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
   warrantyMonths?: number | null
@@ -1863,14 +2029,16 @@ export type PartCreateWithoutOrderPartsInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  category?: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
-  brand?: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
+  brand: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
   supplier?: Prisma.PartsSupplierCreateNestedOneWithoutPartsInput
   manufacturer?: Prisma.PartsManufacturerCreateNestedOneWithoutPartsInput
+  inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
   services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
 }
 
 export type PartUncheckedCreateWithoutOrderPartsInput = {
@@ -1879,21 +2047,13 @@ export type PartUncheckedCreateWithoutOrderPartsInput = {
   name: string
   sku: string
   oem?: string | null
-  categoryId?: string | null
-  brandId?: string | null
+  categoryId: string
+  brandId: string
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierId?: string | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
@@ -1903,11 +2063,13 @@ export type PartUncheckedCreateWithoutOrderPartsInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
 }
 
 export type PartCreateOrConnectWithoutOrderPartsInput = {
@@ -1935,16 +2097,8 @@ export type PartUpdateWithoutOrderPartsInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
   warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1953,14 +2107,16 @@ export type PartUpdateWithoutOrderPartsInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  category?: Prisma.PartCategoryUpdateOneWithoutPartsNestedInput
-  brand?: Prisma.PartsBrandUpdateOneWithoutPartsNestedInput
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.PartCategoryUpdateOneRequiredWithoutPartsNestedInput
+  brand?: Prisma.PartsBrandUpdateOneRequiredWithoutPartsNestedInput
   supplier?: Prisma.PartsSupplierUpdateOneWithoutPartsNestedInput
   manufacturer?: Prisma.PartsManufacturerUpdateOneWithoutPartsNestedInput
+  inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
+  priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
   services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
 }
 
 export type PartUncheckedUpdateWithoutOrderPartsInput = {
@@ -1969,21 +2125,13 @@ export type PartUncheckedUpdateWithoutOrderPartsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  brandId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  brandId?: Prisma.StringFieldUpdateOperationsInput | string
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
@@ -1993,11 +2141,13 @@ export type PartUncheckedUpdateWithoutOrderPartsInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
+  priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
 }
 
 export type PartCreateManyCategoryInput = {
@@ -2006,20 +2156,12 @@ export type PartCreateManyCategoryInput = {
   name: string
   sku: string
   oem?: string | null
-  brandId?: string | null
+  brandId: string
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierId?: string | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
@@ -2029,10 +2171,9 @@ export type PartCreateManyCategoryInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type PartUpdateWithoutCategoryInput = {
@@ -2044,16 +2185,8 @@ export type PartUpdateWithoutCategoryInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
   warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2062,14 +2195,16 @@ export type PartUpdateWithoutCategoryInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  brand?: Prisma.PartsBrandUpdateOneWithoutPartsNestedInput
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  brand?: Prisma.PartsBrandUpdateOneRequiredWithoutPartsNestedInput
   supplier?: Prisma.PartsSupplierUpdateOneWithoutPartsNestedInput
   manufacturer?: Prisma.PartsManufacturerUpdateOneWithoutPartsNestedInput
+  inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
+  priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
   services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
 }
 
 export type PartUncheckedUpdateWithoutCategoryInput = {
@@ -2078,20 +2213,12 @@ export type PartUncheckedUpdateWithoutCategoryInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  brandId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brandId?: Prisma.StringFieldUpdateOperationsInput | string
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
@@ -2101,12 +2228,14 @@ export type PartUncheckedUpdateWithoutCategoryInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
+  priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
 }
 
 export type PartUncheckedUpdateManyWithoutCategoryInput = {
@@ -2115,20 +2244,12 @@ export type PartUncheckedUpdateManyWithoutCategoryInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  brandId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brandId?: Prisma.StringFieldUpdateOperationsInput | string
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
@@ -2138,10 +2259,9 @@ export type PartUncheckedUpdateManyWithoutCategoryInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PartCreateManyManufacturerInput = {
@@ -2150,21 +2270,13 @@ export type PartCreateManyManufacturerInput = {
   name: string
   sku: string
   oem?: string | null
-  categoryId?: string | null
-  brandId?: string | null
+  categoryId: string
+  brandId: string
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierId?: string | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
@@ -2174,9 +2286,8 @@ export type PartCreateManyManufacturerInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type PartUpdateWithoutManufacturerInput = {
@@ -2188,16 +2299,8 @@ export type PartUpdateWithoutManufacturerInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
   warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2206,14 +2309,16 @@ export type PartUpdateWithoutManufacturerInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  category?: Prisma.PartCategoryUpdateOneWithoutPartsNestedInput
-  brand?: Prisma.PartsBrandUpdateOneWithoutPartsNestedInput
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.PartCategoryUpdateOneRequiredWithoutPartsNestedInput
+  brand?: Prisma.PartsBrandUpdateOneRequiredWithoutPartsNestedInput
   supplier?: Prisma.PartsSupplierUpdateOneWithoutPartsNestedInput
+  inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
+  priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
   services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
 }
 
 export type PartUncheckedUpdateWithoutManufacturerInput = {
@@ -2222,21 +2327,13 @@ export type PartUncheckedUpdateWithoutManufacturerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  brandId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  brandId?: Prisma.StringFieldUpdateOperationsInput | string
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
@@ -2246,11 +2343,13 @@ export type PartUncheckedUpdateWithoutManufacturerInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
+  priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
 }
 
 export type PartUncheckedUpdateManyWithoutManufacturerInput = {
@@ -2259,21 +2358,13 @@ export type PartUncheckedUpdateManyWithoutManufacturerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  brandId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  brandId?: Prisma.StringFieldUpdateOperationsInput | string
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
@@ -2283,9 +2374,8 @@ export type PartUncheckedUpdateManyWithoutManufacturerInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PartCreateManyBrandInput = {
@@ -2294,20 +2384,12 @@ export type PartCreateManyBrandInput = {
   name: string
   sku: string
   oem?: string | null
-  categoryId?: string | null
+  categoryId: string
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierId?: string | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
@@ -2317,10 +2399,9 @@ export type PartCreateManyBrandInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type PartUpdateWithoutBrandInput = {
@@ -2332,16 +2413,8 @@ export type PartUpdateWithoutBrandInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
   warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2350,14 +2423,16 @@ export type PartUpdateWithoutBrandInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  category?: Prisma.PartCategoryUpdateOneWithoutPartsNestedInput
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.PartCategoryUpdateOneRequiredWithoutPartsNestedInput
   supplier?: Prisma.PartsSupplierUpdateOneWithoutPartsNestedInput
   manufacturer?: Prisma.PartsManufacturerUpdateOneWithoutPartsNestedInput
+  inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
+  priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
   services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
 }
 
 export type PartUncheckedUpdateWithoutBrandInput = {
@@ -2366,20 +2441,12 @@ export type PartUncheckedUpdateWithoutBrandInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
@@ -2389,12 +2456,14 @@ export type PartUncheckedUpdateWithoutBrandInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
+  priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
 }
 
 export type PartUncheckedUpdateManyWithoutBrandInput = {
@@ -2403,20 +2472,12 @@ export type PartUncheckedUpdateManyWithoutBrandInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
@@ -2426,10 +2487,9 @@ export type PartUncheckedUpdateManyWithoutBrandInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PartCreateManySupplierInput = {
@@ -2438,21 +2498,13 @@ export type PartCreateManySupplierInput = {
   name: string
   sku: string
   oem?: string | null
-  categoryId?: string | null
-  brandId?: string | null
+  categoryId: string
+  brandId: string
   barcode?: string | null
   compatibility?: Prisma.PartCreatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  location: string
   unit?: string | null
   minStock?: number | null
-  quantityAvailable?: number
-  quantityReserved?: number
-  quantityTotal?: number
-  purchasePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: number | null
-  priceCategory?: $Enums.PriceCategory | null
   supplierContact?: string | null
   condition?: $Enums.PartCondition | null
   warrantyMonths?: number | null
@@ -2461,10 +2513,9 @@ export type PartCreateManySupplierInput = {
   dimensions?: string | null
   photo?: string | null
   notes?: string | null
-  lastRestocked?: Date | string | null
-  createdAt?: Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type PartUpdateWithoutSupplierInput = {
@@ -2476,16 +2527,8 @@ export type PartUpdateWithoutSupplierInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
   warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2494,14 +2537,16 @@ export type PartUpdateWithoutSupplierInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  category?: Prisma.PartCategoryUpdateOneWithoutPartsNestedInput
-  brand?: Prisma.PartsBrandUpdateOneWithoutPartsNestedInput
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.PartCategoryUpdateOneRequiredWithoutPartsNestedInput
+  brand?: Prisma.PartsBrandUpdateOneRequiredWithoutPartsNestedInput
   manufacturer?: Prisma.PartsManufacturerUpdateOneWithoutPartsNestedInput
+  inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
+  priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
   services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
 }
 
 export type PartUncheckedUpdateWithoutSupplierInput = {
@@ -2510,21 +2555,13 @@ export type PartUncheckedUpdateWithoutSupplierInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  brandId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  brandId?: Prisma.StringFieldUpdateOperationsInput | string
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
   warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2533,12 +2570,14 @@ export type PartUncheckedUpdateWithoutSupplierInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
+  priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
 }
 
 export type PartUncheckedUpdateManyWithoutSupplierInput = {
@@ -2547,21 +2586,13 @@ export type PartUncheckedUpdateManyWithoutSupplierInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  brandId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  brandId?: Prisma.StringFieldUpdateOperationsInput | string
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
   warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2570,10 +2601,9 @@ export type PartUncheckedUpdateManyWithoutSupplierInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PartUpdateWithoutServicesInput = {
@@ -2585,16 +2615,8 @@ export type PartUpdateWithoutServicesInput = {
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
   warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2603,14 +2625,16 @@ export type PartUpdateWithoutServicesInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  category?: Prisma.PartCategoryUpdateOneWithoutPartsNestedInput
-  brand?: Prisma.PartsBrandUpdateOneWithoutPartsNestedInput
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.PartCategoryUpdateOneRequiredWithoutPartsNestedInput
+  brand?: Prisma.PartsBrandUpdateOneRequiredWithoutPartsNestedInput
   supplier?: Prisma.PartsSupplierUpdateOneWithoutPartsNestedInput
   manufacturer?: Prisma.PartsManufacturerUpdateOneWithoutPartsNestedInput
+  inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
+  priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
 }
 
 export type PartUncheckedUpdateWithoutServicesInput = {
@@ -2619,21 +2643,13 @@ export type PartUncheckedUpdateWithoutServicesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  brandId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  brandId?: Prisma.StringFieldUpdateOperationsInput | string
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
@@ -2643,11 +2659,13 @@ export type PartUncheckedUpdateWithoutServicesInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
+  priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
 }
 
 export type PartUncheckedUpdateManyWithoutServicesInput = {
@@ -2656,21 +2674,13 @@ export type PartUncheckedUpdateManyWithoutServicesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  brandId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  brandId?: Prisma.StringFieldUpdateOperationsInput | string
   barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
   crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  quantityAvailable?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityReserved?: Prisma.IntFieldUpdateOperationsInput | number
-  quantityTotal?: Prisma.IntFieldUpdateOperationsInput | number
-  purchasePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  retailPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  markup?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  priceCategory?: Prisma.NullableEnumPriceCategoryFieldUpdateOperationsInput | $Enums.PriceCategory | null
   supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
@@ -2680,10 +2690,9 @@ export type PartUncheckedUpdateManyWithoutServicesInput = {
   dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastRestocked?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  movementHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   manufacturerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -2692,13 +2701,19 @@ export type PartUncheckedUpdateManyWithoutServicesInput = {
  */
 
 export type PartCountOutputType = {
+  inventory: number
+  priceRules: number
   orderParts: number
   services: number
+  stockMovements: number
 }
 
 export type PartCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  inventory?: boolean | PartCountOutputTypeCountInventoryArgs
+  priceRules?: boolean | PartCountOutputTypeCountPriceRulesArgs
   orderParts?: boolean | PartCountOutputTypeCountOrderPartsArgs
   services?: boolean | PartCountOutputTypeCountServicesArgs
+  stockMovements?: boolean | PartCountOutputTypeCountStockMovementsArgs
 }
 
 /**
@@ -2709,6 +2724,20 @@ export type PartCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
    * Select specific fields to fetch from the PartCountOutputType
    */
   select?: Prisma.PartCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * PartCountOutputType without action
+ */
+export type PartCountOutputTypeCountInventoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PartInventoryWhereInput
+}
+
+/**
+ * PartCountOutputType without action
+ */
+export type PartCountOutputTypeCountPriceRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PartPriceRuleWhereInput
 }
 
 /**
@@ -2725,6 +2754,13 @@ export type PartCountOutputTypeCountServicesArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.ServiceWhereInput
 }
 
+/**
+ * PartCountOutputType without action
+ */
+export type PartCountOutputTypeCountStockMovementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.StockMovementWhereInput
+}
+
 
 export type PartSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2737,16 +2773,8 @@ export type PartSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   barcode?: boolean
   compatibility?: boolean
   crossNumbers?: boolean
-  location?: boolean
   unit?: boolean
   minStock?: boolean
-  quantityAvailable?: boolean
-  quantityReserved?: boolean
-  quantityTotal?: boolean
-  purchasePrice?: boolean
-  retailPrice?: boolean
-  markup?: boolean
-  priceCategory?: boolean
   supplierId?: boolean
   supplierContact?: boolean
   condition?: boolean
@@ -2756,16 +2784,18 @@ export type PartSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   dimensions?: boolean
   photo?: boolean
   notes?: boolean
-  lastRestocked?: boolean
-  createdAt?: boolean
-  movementHistory?: boolean
   manufacturerId?: boolean
-  category?: boolean | Prisma.Part$categoryArgs<ExtArgs>
-  brand?: boolean | Prisma.Part$brandArgs<ExtArgs>
+  createdAt?: boolean
+  updatedAt?: boolean
+  category?: boolean | Prisma.PartCategoryDefaultArgs<ExtArgs>
+  brand?: boolean | Prisma.PartsBrandDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.Part$supplierArgs<ExtArgs>
   manufacturer?: boolean | Prisma.Part$manufacturerArgs<ExtArgs>
+  inventory?: boolean | Prisma.Part$inventoryArgs<ExtArgs>
+  priceRules?: boolean | Prisma.Part$priceRulesArgs<ExtArgs>
   orderParts?: boolean | Prisma.Part$orderPartsArgs<ExtArgs>
   services?: boolean | Prisma.Part$servicesArgs<ExtArgs>
+  stockMovements?: boolean | Prisma.Part$stockMovementsArgs<ExtArgs>
   _count?: boolean | Prisma.PartCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["part"]>
 
@@ -2780,16 +2810,8 @@ export type PartSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   barcode?: boolean
   compatibility?: boolean
   crossNumbers?: boolean
-  location?: boolean
   unit?: boolean
   minStock?: boolean
-  quantityAvailable?: boolean
-  quantityReserved?: boolean
-  quantityTotal?: boolean
-  purchasePrice?: boolean
-  retailPrice?: boolean
-  markup?: boolean
-  priceCategory?: boolean
   supplierId?: boolean
   supplierContact?: boolean
   condition?: boolean
@@ -2799,12 +2821,11 @@ export type PartSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   dimensions?: boolean
   photo?: boolean
   notes?: boolean
-  lastRestocked?: boolean
-  createdAt?: boolean
-  movementHistory?: boolean
   manufacturerId?: boolean
-  category?: boolean | Prisma.Part$categoryArgs<ExtArgs>
-  brand?: boolean | Prisma.Part$brandArgs<ExtArgs>
+  createdAt?: boolean
+  updatedAt?: boolean
+  category?: boolean | Prisma.PartCategoryDefaultArgs<ExtArgs>
+  brand?: boolean | Prisma.PartsBrandDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.Part$supplierArgs<ExtArgs>
   manufacturer?: boolean | Prisma.Part$manufacturerArgs<ExtArgs>
 }, ExtArgs["result"]["part"]>
@@ -2820,16 +2841,8 @@ export type PartSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   barcode?: boolean
   compatibility?: boolean
   crossNumbers?: boolean
-  location?: boolean
   unit?: boolean
   minStock?: boolean
-  quantityAvailable?: boolean
-  quantityReserved?: boolean
-  quantityTotal?: boolean
-  purchasePrice?: boolean
-  retailPrice?: boolean
-  markup?: boolean
-  priceCategory?: boolean
   supplierId?: boolean
   supplierContact?: boolean
   condition?: boolean
@@ -2839,12 +2852,11 @@ export type PartSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   dimensions?: boolean
   photo?: boolean
   notes?: boolean
-  lastRestocked?: boolean
-  createdAt?: boolean
-  movementHistory?: boolean
   manufacturerId?: boolean
-  category?: boolean | Prisma.Part$categoryArgs<ExtArgs>
-  brand?: boolean | Prisma.Part$brandArgs<ExtArgs>
+  createdAt?: boolean
+  updatedAt?: boolean
+  category?: boolean | Prisma.PartCategoryDefaultArgs<ExtArgs>
+  brand?: boolean | Prisma.PartsBrandDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.Part$supplierArgs<ExtArgs>
   manufacturer?: boolean | Prisma.Part$manufacturerArgs<ExtArgs>
 }, ExtArgs["result"]["part"]>
@@ -2860,16 +2872,8 @@ export type PartSelectScalar = {
   barcode?: boolean
   compatibility?: boolean
   crossNumbers?: boolean
-  location?: boolean
   unit?: boolean
   minStock?: boolean
-  quantityAvailable?: boolean
-  quantityReserved?: boolean
-  quantityTotal?: boolean
-  purchasePrice?: boolean
-  retailPrice?: boolean
-  markup?: boolean
-  priceCategory?: boolean
   supplierId?: boolean
   supplierContact?: boolean
   condition?: boolean
@@ -2879,31 +2883,33 @@ export type PartSelectScalar = {
   dimensions?: boolean
   photo?: boolean
   notes?: boolean
-  lastRestocked?: boolean
-  createdAt?: boolean
-  movementHistory?: boolean
   manufacturerId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type PartOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "sku" | "oem" | "categoryId" | "brandId" | "barcode" | "compatibility" | "crossNumbers" | "location" | "unit" | "minStock" | "quantityAvailable" | "quantityReserved" | "quantityTotal" | "purchasePrice" | "retailPrice" | "markup" | "priceCategory" | "supplierId" | "supplierContact" | "condition" | "warrantyMonths" | "warrantyKm" | "weight" | "dimensions" | "photo" | "notes" | "lastRestocked" | "createdAt" | "movementHistory" | "manufacturerId", ExtArgs["result"]["part"]>
+export type PartOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "sku" | "oem" | "categoryId" | "brandId" | "barcode" | "compatibility" | "crossNumbers" | "unit" | "minStock" | "supplierId" | "supplierContact" | "condition" | "warrantyMonths" | "warrantyKm" | "weight" | "dimensions" | "photo" | "notes" | "manufacturerId" | "createdAt" | "updatedAt", ExtArgs["result"]["part"]>
 export type PartInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  category?: boolean | Prisma.Part$categoryArgs<ExtArgs>
-  brand?: boolean | Prisma.Part$brandArgs<ExtArgs>
+  category?: boolean | Prisma.PartCategoryDefaultArgs<ExtArgs>
+  brand?: boolean | Prisma.PartsBrandDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.Part$supplierArgs<ExtArgs>
   manufacturer?: boolean | Prisma.Part$manufacturerArgs<ExtArgs>
+  inventory?: boolean | Prisma.Part$inventoryArgs<ExtArgs>
+  priceRules?: boolean | Prisma.Part$priceRulesArgs<ExtArgs>
   orderParts?: boolean | Prisma.Part$orderPartsArgs<ExtArgs>
   services?: boolean | Prisma.Part$servicesArgs<ExtArgs>
+  stockMovements?: boolean | Prisma.Part$stockMovementsArgs<ExtArgs>
   _count?: boolean | Prisma.PartCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PartIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  category?: boolean | Prisma.Part$categoryArgs<ExtArgs>
-  brand?: boolean | Prisma.Part$brandArgs<ExtArgs>
+  category?: boolean | Prisma.PartCategoryDefaultArgs<ExtArgs>
+  brand?: boolean | Prisma.PartsBrandDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.Part$supplierArgs<ExtArgs>
   manufacturer?: boolean | Prisma.Part$manufacturerArgs<ExtArgs>
 }
 export type PartIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  category?: boolean | Prisma.Part$categoryArgs<ExtArgs>
-  brand?: boolean | Prisma.Part$brandArgs<ExtArgs>
+  category?: boolean | Prisma.PartCategoryDefaultArgs<ExtArgs>
+  brand?: boolean | Prisma.PartsBrandDefaultArgs<ExtArgs>
   supplier?: boolean | Prisma.Part$supplierArgs<ExtArgs>
   manufacturer?: boolean | Prisma.Part$manufacturerArgs<ExtArgs>
 }
@@ -2911,12 +2917,15 @@ export type PartIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $PartPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Part"
   objects: {
-    category: Prisma.$PartCategoryPayload<ExtArgs> | null
-    brand: Prisma.$PartsBrandPayload<ExtArgs> | null
+    category: Prisma.$PartCategoryPayload<ExtArgs>
+    brand: Prisma.$PartsBrandPayload<ExtArgs>
     supplier: Prisma.$PartsSupplierPayload<ExtArgs> | null
     manufacturer: Prisma.$PartsManufacturerPayload<ExtArgs> | null
+    inventory: Prisma.$PartInventoryPayload<ExtArgs>[]
+    priceRules: Prisma.$PartPriceRulePayload<ExtArgs>[]
     orderParts: Prisma.$OrderPartPayload<ExtArgs>[]
     services: Prisma.$ServicePayload<ExtArgs>[]
+    stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2924,21 +2933,13 @@ export type $PartPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     name: string
     sku: string
     oem: string | null
-    categoryId: string | null
-    brandId: string | null
+    categoryId: string
+    brandId: string
     barcode: string | null
     compatibility: string[]
     crossNumbers: string[]
-    location: string
     unit: string | null
     minStock: number | null
-    quantityAvailable: number
-    quantityReserved: number
-    quantityTotal: number
-    purchasePrice: runtime.Decimal | null
-    retailPrice: runtime.Decimal | null
-    markup: number | null
-    priceCategory: $Enums.PriceCategory | null
     supplierId: string | null
     supplierContact: string | null
     condition: $Enums.PartCondition | null
@@ -2948,10 +2949,9 @@ export type $PartPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     dimensions: string | null
     photo: string | null
     notes: string | null
-    lastRestocked: Date | null
-    createdAt: Date | null
-    movementHistory: runtime.JsonValue | null
     manufacturerId: string | null
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["part"]>
   composites: {}
 }
@@ -3346,12 +3346,15 @@ readonly fields: PartFieldRefs;
  */
 export interface Prisma__PartClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  category<T extends Prisma.Part$categoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Part$categoryArgs<ExtArgs>>): Prisma.Prisma__PartCategoryClient<runtime.Types.Result.GetResult<Prisma.$PartCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  brand<T extends Prisma.Part$brandArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Part$brandArgs<ExtArgs>>): Prisma.Prisma__PartsBrandClient<runtime.Types.Result.GetResult<Prisma.$PartsBrandPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  category<T extends Prisma.PartCategoryDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PartCategoryDefaultArgs<ExtArgs>>): Prisma.Prisma__PartCategoryClient<runtime.Types.Result.GetResult<Prisma.$PartCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  brand<T extends Prisma.PartsBrandDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PartsBrandDefaultArgs<ExtArgs>>): Prisma.Prisma__PartsBrandClient<runtime.Types.Result.GetResult<Prisma.$PartsBrandPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   supplier<T extends Prisma.Part$supplierArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Part$supplierArgs<ExtArgs>>): Prisma.Prisma__PartsSupplierClient<runtime.Types.Result.GetResult<Prisma.$PartsSupplierPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   manufacturer<T extends Prisma.Part$manufacturerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Part$manufacturerArgs<ExtArgs>>): Prisma.Prisma__PartsManufacturerClient<runtime.Types.Result.GetResult<Prisma.$PartsManufacturerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  inventory<T extends Prisma.Part$inventoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Part$inventoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartInventoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  priceRules<T extends Prisma.Part$priceRulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Part$priceRulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartPriceRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   orderParts<T extends Prisma.Part$orderPartsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Part$orderPartsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPartPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   services<T extends Prisma.Part$servicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Part$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  stockMovements<T extends Prisma.Part$stockMovementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Part$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3391,16 +3394,8 @@ export interface PartFieldRefs {
   readonly barcode: Prisma.FieldRef<"Part", 'String'>
   readonly compatibility: Prisma.FieldRef<"Part", 'String[]'>
   readonly crossNumbers: Prisma.FieldRef<"Part", 'String[]'>
-  readonly location: Prisma.FieldRef<"Part", 'String'>
   readonly unit: Prisma.FieldRef<"Part", 'String'>
   readonly minStock: Prisma.FieldRef<"Part", 'Int'>
-  readonly quantityAvailable: Prisma.FieldRef<"Part", 'Int'>
-  readonly quantityReserved: Prisma.FieldRef<"Part", 'Int'>
-  readonly quantityTotal: Prisma.FieldRef<"Part", 'Int'>
-  readonly purchasePrice: Prisma.FieldRef<"Part", 'Decimal'>
-  readonly retailPrice: Prisma.FieldRef<"Part", 'Decimal'>
-  readonly markup: Prisma.FieldRef<"Part", 'Int'>
-  readonly priceCategory: Prisma.FieldRef<"Part", 'PriceCategory'>
   readonly supplierId: Prisma.FieldRef<"Part", 'String'>
   readonly supplierContact: Prisma.FieldRef<"Part", 'String'>
   readonly condition: Prisma.FieldRef<"Part", 'PartCondition'>
@@ -3410,10 +3405,9 @@ export interface PartFieldRefs {
   readonly dimensions: Prisma.FieldRef<"Part", 'String'>
   readonly photo: Prisma.FieldRef<"Part", 'String'>
   readonly notes: Prisma.FieldRef<"Part", 'String'>
-  readonly lastRestocked: Prisma.FieldRef<"Part", 'DateTime'>
-  readonly createdAt: Prisma.FieldRef<"Part", 'DateTime'>
-  readonly movementHistory: Prisma.FieldRef<"Part", 'Json'>
   readonly manufacturerId: Prisma.FieldRef<"Part", 'String'>
+  readonly createdAt: Prisma.FieldRef<"Part", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Part", 'DateTime'>
 }
     
 
@@ -3810,44 +3804,6 @@ export type PartDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * Part.category
- */
-export type Part$categoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the PartCategory
-   */
-  select?: Prisma.PartCategorySelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the PartCategory
-   */
-  omit?: Prisma.PartCategoryOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.PartCategoryInclude<ExtArgs> | null
-  where?: Prisma.PartCategoryWhereInput
-}
-
-/**
- * Part.brand
- */
-export type Part$brandArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the PartsBrand
-   */
-  select?: Prisma.PartsBrandSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the PartsBrand
-   */
-  omit?: Prisma.PartsBrandOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.PartsBrandInclude<ExtArgs> | null
-  where?: Prisma.PartsBrandWhereInput
-}
-
-/**
  * Part.supplier
  */
 export type Part$supplierArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3883,6 +3839,54 @@ export type Part$manufacturerArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   include?: Prisma.PartsManufacturerInclude<ExtArgs> | null
   where?: Prisma.PartsManufacturerWhereInput
+}
+
+/**
+ * Part.inventory
+ */
+export type Part$inventoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PartInventory
+   */
+  select?: Prisma.PartInventorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PartInventory
+   */
+  omit?: Prisma.PartInventoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PartInventoryInclude<ExtArgs> | null
+  where?: Prisma.PartInventoryWhereInput
+  orderBy?: Prisma.PartInventoryOrderByWithRelationInput | Prisma.PartInventoryOrderByWithRelationInput[]
+  cursor?: Prisma.PartInventoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PartInventoryScalarFieldEnum | Prisma.PartInventoryScalarFieldEnum[]
+}
+
+/**
+ * Part.priceRules
+ */
+export type Part$priceRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PartPriceRule
+   */
+  select?: Prisma.PartPriceRuleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PartPriceRule
+   */
+  omit?: Prisma.PartPriceRuleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PartPriceRuleInclude<ExtArgs> | null
+  where?: Prisma.PartPriceRuleWhereInput
+  orderBy?: Prisma.PartPriceRuleOrderByWithRelationInput | Prisma.PartPriceRuleOrderByWithRelationInput[]
+  cursor?: Prisma.PartPriceRuleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PartPriceRuleScalarFieldEnum | Prisma.PartPriceRuleScalarFieldEnum[]
 }
 
 /**
@@ -3931,6 +3935,30 @@ export type Part$servicesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.ServiceScalarFieldEnum | Prisma.ServiceScalarFieldEnum[]
+}
+
+/**
+ * Part.stockMovements
+ */
+export type Part$stockMovementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the StockMovement
+   */
+  select?: Prisma.StockMovementSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the StockMovement
+   */
+  omit?: Prisma.StockMovementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StockMovementInclude<ExtArgs> | null
+  where?: Prisma.StockMovementWhereInput
+  orderBy?: Prisma.StockMovementOrderByWithRelationInput | Prisma.StockMovementOrderByWithRelationInput[]
+  cursor?: Prisma.StockMovementWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.StockMovementScalarFieldEnum | Prisma.StockMovementScalarFieldEnum[]
 }
 
 /**

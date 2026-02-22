@@ -1,7 +1,5 @@
-import {
-	InventoryDictionaries,
-	InventoryPart,
-} from '@/modules/inventory/interfaces/inventory.interfaces';
+import { PartFormData } from '@/modules/inventory/interfaces/edit-inventory.interfaces';
+import { InventoryDictionaries } from '@/modules/inventory/interfaces/inventory.interfaces';
 import {
 	Input,
 	Label,
@@ -16,7 +14,7 @@ import { DollarSign, Truck } from 'lucide-react';
 import { Control, Controller } from 'react-hook-form';
 
 interface FinanceTabProps {
-	control: Control<InventoryPart, any, InventoryPart>;
+	control: Control<PartFormData, any, PartFormData>;
 	dictionaries: InventoryDictionaries;
 }
 

@@ -1,22 +1,22 @@
 import {
 	Button,
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
+	ResponsiveDialog,
+	ResponsiveDialogContent,
+	ResponsiveDialogDescription,
+	ResponsiveDialogHeader,
+	ResponsiveDialogTitle,
+	ResponsiveDialogTrigger,
 } from '@/shared/components/ui';
 import { Plus, ShoppingCart } from 'lucide-react';
+import { useState } from 'react';
 import { InventoryDictionaries } from '../interfaces/inventory.interfaces';
 import { AddInventoryPart } from './redo/edit-part/form/AddInventoryPart';
-
-const categories = ['Filters', 'Fluids', 'Brakes', 'Ignition', 'Electrical'];
 
 interface InventoryHeaderProps {
 	dictionaries: InventoryDictionaries | undefined;
 }
 export function InventoryHeader({ dictionaries }: InventoryHeaderProps) {
+	const [open, setOpen] = useState(false);
 	return (
 		<div className='flex items-center justify-between'>
 			<div>
@@ -30,23 +30,28 @@ export function InventoryHeader({ dictionaries }: InventoryHeaderProps) {
 					<ShoppingCart className='mr-2 h-4 w-4' />
 					Order Parts
 				</Button>
-				<Dialog>
-					<DialogTrigger asChild>
+				<ResponsiveDialog open={open} onOpenChange={setOpen}>
+					<ResponsiveDialogTrigger asChild>
 						<Button>
 							<Plus className='mr-2 h-4 w-4' />
 							Add Part
 						</Button>
-					</DialogTrigger>
-					<DialogContent>
-						<DialogHeader>
-							<DialogTitle>Add New Part</DialogTitle>
-							<DialogDescription>
+					</ResponsiveDialogTrigger>
+					<ResponsiveDialogContent>
+						<ResponsiveDialogHeader>
+							<ResponsiveDialogTitle>Add New Part</ResponsiveDialogTitle>
+							<ResponsiveDialogDescription>
 								Add a new part to your inventory.
-							</DialogDescription>
-						</DialogHeader>
-						{dictionaries && <AddInventoryPart dictionaries={dictionaries} />}
-					</DialogContent>
-				</Dialog>
+							</ResponsiveDialogDescription>
+						</ResponsiveDialogHeader>
+						{dictionaries && (
+							<AddInventoryPart
+								dictionaries={dictionaries}
+								onCancel={() => setOpen(false)}
+							/>
+						)}
+					</ResponsiveDialogContent>
+				</ResponsiveDialog>
 			</div>
 		</div>
 	);

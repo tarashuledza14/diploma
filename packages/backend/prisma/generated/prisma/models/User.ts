@@ -216,6 +216,7 @@ export type UserWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   managerOrders?: Prisma.OrderListRelationFilter
   mechanicOrders?: Prisma.OrderListRelationFilter
+  stockMovements?: Prisma.StockMovementListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -230,6 +231,7 @@ export type UserOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   managerOrders?: Prisma.OrderOrderByRelationAggregateInput
   mechanicOrders?: Prisma.OrderOrderByRelationAggregateInput
+  stockMovements?: Prisma.StockMovementOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -247,6 +249,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   managerOrders?: Prisma.OrderListRelationFilter
   mechanicOrders?: Prisma.OrderListRelationFilter
+  stockMovements?: Prisma.StockMovementListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -291,6 +294,7 @@ export type UserCreateInput = {
   updatedAt?: Date | string
   managerOrders?: Prisma.OrderCreateNestedManyWithoutManagerInput
   mechanicOrders?: Prisma.OrderCreateNestedManyWithoutMechanicInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -305,6 +309,7 @@ export type UserUncheckedCreateInput = {
   updatedAt?: Date | string
   managerOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutManagerInput
   mechanicOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutMechanicInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -319,6 +324,7 @@ export type UserUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerOrders?: Prisma.OrderUpdateManyWithoutManagerNestedInput
   mechanicOrders?: Prisma.OrderUpdateManyWithoutMechanicNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -333,6 +339,7 @@ export type UserUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerOrders?: Prisma.OrderUncheckedUpdateManyWithoutManagerNestedInput
   mechanicOrders?: Prisma.OrderUncheckedUpdateManyWithoutMechanicNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -428,6 +435,22 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
+export type UserCreateNestedOneWithoutStockMovementsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutStockMovementsInput, Prisma.UserUncheckedCreateWithoutStockMovementsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutStockMovementsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutStockMovementsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutStockMovementsInput, Prisma.UserUncheckedCreateWithoutStockMovementsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutStockMovementsInput
+  upsert?: Prisma.UserUpsertWithoutStockMovementsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutStockMovementsInput, Prisma.UserUpdateWithoutStockMovementsInput>, Prisma.UserUncheckedUpdateWithoutStockMovementsInput>
+}
+
 export type UserCreateNestedOneWithoutManagerOrdersInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutManagerOrdersInput, Prisma.UserUncheckedCreateWithoutManagerOrdersInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutManagerOrdersInput
@@ -460,6 +483,78 @@ export type UserUpdateOneWithoutMechanicOrdersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMechanicOrdersInput, Prisma.UserUpdateWithoutMechanicOrdersInput>, Prisma.UserUncheckedUpdateWithoutMechanicOrdersInput>
 }
 
+export type UserCreateWithoutStockMovementsInput = {
+  id?: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  fullName: string
+  avatar?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerOrders?: Prisma.OrderCreateNestedManyWithoutManagerInput
+  mechanicOrders?: Prisma.OrderCreateNestedManyWithoutMechanicInput
+}
+
+export type UserUncheckedCreateWithoutStockMovementsInput = {
+  id?: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  fullName: string
+  avatar?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutManagerInput
+  mechanicOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutMechanicInput
+}
+
+export type UserCreateOrConnectWithoutStockMovementsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutStockMovementsInput, Prisma.UserUncheckedCreateWithoutStockMovementsInput>
+}
+
+export type UserUpsertWithoutStockMovementsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutStockMovementsInput, Prisma.UserUncheckedUpdateWithoutStockMovementsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutStockMovementsInput, Prisma.UserUncheckedCreateWithoutStockMovementsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutStockMovementsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutStockMovementsInput, Prisma.UserUncheckedUpdateWithoutStockMovementsInput>
+}
+
+export type UserUpdateWithoutStockMovementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerOrders?: Prisma.OrderUpdateManyWithoutManagerNestedInput
+  mechanicOrders?: Prisma.OrderUpdateManyWithoutMechanicNestedInput
+}
+
+export type UserUncheckedUpdateWithoutStockMovementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerOrders?: Prisma.OrderUncheckedUpdateManyWithoutManagerNestedInput
+  mechanicOrders?: Prisma.OrderUncheckedUpdateManyWithoutMechanicNestedInput
+}
+
 export type UserCreateWithoutManagerOrdersInput = {
   id?: string
   email: string
@@ -471,6 +566,7 @@ export type UserCreateWithoutManagerOrdersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   mechanicOrders?: Prisma.OrderCreateNestedManyWithoutMechanicInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutManagerOrdersInput = {
@@ -484,6 +580,7 @@ export type UserUncheckedCreateWithoutManagerOrdersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   mechanicOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutMechanicInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutManagerOrdersInput = {
@@ -502,6 +599,7 @@ export type UserCreateWithoutMechanicOrdersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerOrders?: Prisma.OrderCreateNestedManyWithoutManagerInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMechanicOrdersInput = {
@@ -515,6 +613,7 @@ export type UserUncheckedCreateWithoutMechanicOrdersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutManagerInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMechanicOrdersInput = {
@@ -544,6 +643,7 @@ export type UserUpdateWithoutManagerOrdersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   mechanicOrders?: Prisma.OrderUpdateManyWithoutMechanicNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutManagerOrdersInput = {
@@ -557,6 +657,7 @@ export type UserUncheckedUpdateWithoutManagerOrdersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   mechanicOrders?: Prisma.OrderUncheckedUpdateManyWithoutMechanicNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutMechanicOrdersInput = {
@@ -581,6 +682,7 @@ export type UserUpdateWithoutMechanicOrdersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerOrders?: Prisma.OrderUpdateManyWithoutManagerNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMechanicOrdersInput = {
@@ -594,6 +696,7 @@ export type UserUncheckedUpdateWithoutMechanicOrdersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerOrders?: Prisma.OrderUncheckedUpdateManyWithoutManagerNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -604,11 +707,13 @@ export type UserUncheckedUpdateWithoutMechanicOrdersInput = {
 export type UserCountOutputType = {
   managerOrders: number
   mechanicOrders: number
+  stockMovements: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   managerOrders?: boolean | UserCountOutputTypeCountManagerOrdersArgs
   mechanicOrders?: boolean | UserCountOutputTypeCountMechanicOrdersArgs
+  stockMovements?: boolean | UserCountOutputTypeCountStockMovementsArgs
 }
 
 /**
@@ -635,6 +740,13 @@ export type UserCountOutputTypeCountMechanicOrdersArgs<ExtArgs extends runtime.T
   where?: Prisma.OrderWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountStockMovementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.StockMovementWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -648,6 +760,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   managerOrders?: boolean | Prisma.User$managerOrdersArgs<ExtArgs>
   mechanicOrders?: boolean | Prisma.User$mechanicOrdersArgs<ExtArgs>
+  stockMovements?: boolean | Prisma.User$stockMovementsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -691,6 +804,7 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   managerOrders?: boolean | Prisma.User$managerOrdersArgs<ExtArgs>
   mechanicOrders?: boolean | Prisma.User$mechanicOrdersArgs<ExtArgs>
+  stockMovements?: boolean | Prisma.User$stockMovementsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -701,6 +815,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     managerOrders: Prisma.$OrderPayload<ExtArgs>[]
     mechanicOrders: Prisma.$OrderPayload<ExtArgs>[]
+    stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1108,6 +1223,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   managerOrders<T extends Prisma.User$managerOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$managerOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   mechanicOrders<T extends Prisma.User$mechanicOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$mechanicOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  stockMovements<T extends Prisma.User$stockMovementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1579,6 +1695,30 @@ export type User$mechanicOrdersArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.OrderScalarFieldEnum | Prisma.OrderScalarFieldEnum[]
+}
+
+/**
+ * User.stockMovements
+ */
+export type User$stockMovementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the StockMovement
+   */
+  select?: Prisma.StockMovementSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the StockMovement
+   */
+  omit?: Prisma.StockMovementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StockMovementInclude<ExtArgs> | null
+  where?: Prisma.StockMovementWhereInput
+  orderBy?: Prisma.StockMovementOrderByWithRelationInput | Prisma.StockMovementOrderByWithRelationInput[]
+  cursor?: Prisma.StockMovementWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.StockMovementScalarFieldEnum | Prisma.StockMovementScalarFieldEnum[]
 }
 
 /**

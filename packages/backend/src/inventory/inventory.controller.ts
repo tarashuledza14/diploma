@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Put, Query } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Post,
+	Put,
+	Query,
+} from '@nestjs/common';
 import { Part } from 'prisma/generated/prisma/client';
 import { GetInventoryDto } from './dto/get-inventory.dto';
 import { InventoryService } from './inventory.service';
@@ -17,7 +25,7 @@ export class InventoryController {
 		return this.inventoryService.getAllDictionaries();
 	}
 
-	@Put('parts')
+	@Put()
 	async updatePart(@Body() data: Part) {
 		return this.inventoryService.updatePart(data);
 	}
@@ -25,5 +33,18 @@ export class InventoryController {
 	@Get('stats')
 	async getStats() {
 		return this.inventoryService.getStatistics();
+	}
+	@Post()
+	async createPart(@Body() data: any) {
+		console.log('data', data);
+		return this.inventoryService.createPart(data);
+	}
+	@Get('movement-history/:partId')
+	async getMovementHistory(@Query('partId') partId: string) {
+		return this.inventoryService.getPartMovementHistory(partId);
+	}
+	@Delete('bulk')
+	async deleteBulk(@Body('ids') ids: string[]) {
+		return this.inventoryService.deleteBulk(ids);
 	}
 }

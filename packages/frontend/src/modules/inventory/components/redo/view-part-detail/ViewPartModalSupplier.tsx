@@ -18,12 +18,14 @@ export function ViewPartModalSupplier({
 				<div className='flex justify-between border-b border-dashed pb-1 sm:border-0 sm:pb-0'>
 					<span className='text-muted-foreground'>Name</span>
 					<span className='font-medium text-right'>
-						{selectedPart.supplier?.name}
+						{selectedPart.supplier?.name ?? 'N/A'}
 					</span>
 				</div>
 				<div className='flex justify-between border-b border-dashed pb-1 sm:border-0 sm:pb-0'>
 					<span className='text-muted-foreground'>Contact</span>
-					<span className='text-right'>{selectedPart.supplier?.contact}</span>
+					<span className='text-right'>
+						{selectedPart.supplier?.contact ?? 'N/A'}
+					</span>
 				</div>
 			</div>
 		</div>

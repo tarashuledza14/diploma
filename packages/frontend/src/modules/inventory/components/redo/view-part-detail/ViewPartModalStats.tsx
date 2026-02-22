@@ -1,47 +1,34 @@
+import { PartInventory } from '../../../interfaces/inventory.interfaces';
+
 interface ViewPartModalStatsProps {
-	available: number;
-	reserved: number;
-	retailPrice: number;
-	markup: number;
+	inventory: PartInventory[];
 	minStock: number;
-	total: number;
 }
 
-function getStockColor(available: number, total: number, minStock: number) {
-	if (total === 0) return 'text-red-600';
+function getStockColor(available: number, minStock: number) {
+	if (available === 0) return 'text-red-600';
 	if (available < minStock) return 'text-amber-600';
 	return 'text-green-600';
 }
 
 export function ViewPartModalStats({
-	available,
-	reserved,
-	retailPrice,
-	markup,
+	inventory,
 	minStock,
-	total,
 }: ViewPartModalStatsProps) {
+	const available = inventory.reduce((sum, item) => sum + item.quantity, 0);
 	return (
-		<div className='grid grid-cols-2 gap-3 sm:grid-cols-4'>
+		<div className='grid grid-cols-2 gap-3 sm:grid-cols-2'>
 			<div className='rounded-lg border p-3 text-center'>
 				<p className='text-xs text-muted-foreground'>Available</p>
 				<p
-					className={`text-xl font-bold ${getStockColor(available, total, minStock)}`}
+					className={`text-xl font-bold ${getStockColor(available, minStock)}`}
 				>
 					{available}
 				</p>
 			</div>
 			<div className='rounded-lg border p-3 text-center'>
-				<p className='text-xs text-muted-foreground'>Reserved</p>
-				<p className='text-xl font-bold text-amber-600'>{reserved}</p>
-			</div>
-			<div className='rounded-lg border p-3 text-center'>
-				<p className='text-xs text-muted-foreground'>Retail Price</p>
-				<p className='text-xl font-bold'>${retailPrice}</p>
-			</div>
-			<div className='rounded-lg border p-3 text-center'>
-				<p className='text-xs text-muted-foreground'>Markup</p>
-				<p className='text-xl font-bold text-green-600'>{markup}%</p>
+				<p className='text-xs text-muted-foreground'>Min Stock</p>
+				<p className='text-xl font-bold'>{minStock}</p>
 			</div>
 		</div>
 	);

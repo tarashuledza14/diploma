@@ -1,3 +1,4 @@
+import { PartFormData } from '@/modules/inventory/interfaces/edit-inventory.interfaces';
 import {
 	Button,
 	Input,
@@ -11,10 +12,10 @@ import {
 	Textarea,
 } from '@/shared';
 import { ImageIcon } from 'lucide-react';
-import { Controller } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
 
 interface DetailsTabProps {
-	control: any;
+	control: Control<PartFormData, any, PartFormData>;
 }
 
 export function DetailsTab({ control }: DetailsTabProps) {
