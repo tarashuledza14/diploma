@@ -1,9 +1,27 @@
+import { PartCategory } from '@/modules/inventory/interfaces/inventory.interfaces';
+
 export interface Service {
+	id: string;
 	categoryId: number;
-	price: number; // Ціна нормо-години
-	estimatedTime: number; // Орієнтовний час (годин)
+	category: Pick<PartCategory, 'id' | 'name'> | null;
+	price: number;
+	estimatedTime: number;
 	status: boolean;
-	name: string; // Назва роботи (Заміна мастила)
-	description: string; // Опис роботи (для клієнта)
-	// parts: ServicePart[]; // Запчастини, які використовуються для цієї послуги
+	name: string;
+	description: string;
+	requiredCategories: Pick<PartCategory, 'id' | 'name'>[];
+}
+export interface GetServicesResponse {
+	data: Service[];
+	total: number;
+}
+
+export interface ServiceDictionaries {
+	partCategories: Pick<PartCategory, 'id' | 'name'>[];
+	serviceCategories: ServiceCategory[];
+}
+
+export interface ServiceCategory {
+	id: string;
+	name: string;
 }

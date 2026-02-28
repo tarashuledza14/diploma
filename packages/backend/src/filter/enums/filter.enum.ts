@@ -9,4 +9,5 @@ export enum FilterOperators {
 	LESS_THAN_OR_EQUALS = 'lte',
 	IS_BETWEEN = 'isBetween',
 	IN_ARRAY = 'inArray',
+	NOT_IN_ARRAY = 'notInArray',
 }

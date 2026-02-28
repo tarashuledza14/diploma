@@ -47,6 +47,11 @@ export class FilterService {
 				case FilterOperators.IN_ARRAY:
 					otherFilters.push(this.getInArrayFilter(item.id, value as string[]));
 					break;
+				case FilterOperators.NOT_IN_ARRAY:
+					otherFilters.push(
+						this.getNotInArrayFilter(item.id, value as string[]),
+					);
+					break;
 				default:
 					otherFilters.push(
 						this.generateOperatorFilter(
@@ -75,15 +80,16 @@ export class FilterService {
 	}
 
 	getInArrayFilter(field: string, value: string[]) {
-		console.log('field', field);
-		console.log('value', value);
-		return {
-			[field]: {
-				name: {
-					in: value,
-				},
-			},
+		const filter = {
+			in: value,
 		};
+		return this.buildNestedFilter(field, filter);
+	}
+	getNotInArrayFilter(field: string, value: string[]) {
+		const filter = {
+			in: value,
+		};
+		return { NOT: this.buildNestedFilter(field, filter) };
 	}
 
 	private isTextVariant(variant: FilterVariant) {
@@ -97,6 +103,9 @@ export class FilterService {
 			case 'date':
 				const dateString = Array.isArray(value) ? value[0] : value;
 				return new Date(+dateString);
+			case 'boolean':
+				const str = Array.isArray(value) ? value[0] : value;
+				return str === 'true';
 			default:
 				return value;
 		}

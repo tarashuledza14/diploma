@@ -1,8 +1,9 @@
 // 6a. Категорії запчастин
 model PartCategory {
-  id    String @id @default(cuid())
-  name  String // Назва категорії (наприклад, "Fluids")
-  parts Part[]
+  id                 String    @id @default(cuid())
+  name               String // Назва категорії (наприклад, "Fluids")
+  parts              Part[]
+  requiredByServices Service[] @relation("ServiceToCategory")
 
   @@map("part_categories")
 }
@@ -182,7 +183,6 @@ model Part {
   priceRules PartPriceRule[]
 
   orderParts OrderPart[]
-  services   Service[]
 
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
@@ -300,16 +300,17 @@ model PartsSupplier {
 
 // 7. Довідник послуг (Services Catalog)
 model Service {
-  id            String           @id @default(cuid())
-  name          String // Назва роботи (Заміна мастила)
-  description   String // Опис роботи (для клієнта)
-  categoryId    String? // ID категорії
-  category      ServiceCategory? @relation(fields: [categoryId], references: [id])
-  price         Decimal          @default(0) @map("price") @db.Decimal(10, 2) // Ціна нормо-години
-  estimatedTime Float            @default(1.0) @map("estimated_time") // Орієнтовний час (годин)
-  status        Boolean          @default(true) // Чи активна послуга (може бути тимчасово вимкнена)
-  orderServices OrderService[]
-  parts         Part[] // Запчастини, що використовуються у послузі
+  id                 String           @id @default(cuid())
+  createdAt          DateTime         @default(now()) @map("created_at")
+  name               String // Назва роботи (Заміна мастила)
+  description        String // Опис роботи (для клієнта)
+  categoryId         String? // ID категорії
+  category           ServiceCategory? @relation(fields: [categoryId], references: [id])
+  price              Decimal          @default(0) @map("price") @db.Decimal(10, 2) // Ціна нормо-години
+  estimatedTime      Float            @default(1.0) @map("estimated_time") // Орієнтовний час (годин)
+  status             Boolean          @default(true) // Чи активна послуга (може бути тимчасово вимкнена)
+  orderServices      OrderService[]
+  requiredCategories PartCategory[]   @relation("ServiceToCategory")
 
   @@map("services")
 }

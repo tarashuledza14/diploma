@@ -159,12 +159,14 @@ export type PartCategoryWhereInput = {
   id?: Prisma.StringFilter<"PartCategory"> | string
   name?: Prisma.StringFilter<"PartCategory"> | string
   parts?: Prisma.PartListRelationFilter
+  requiredByServices?: Prisma.ServiceListRelationFilter
 }
 
 export type PartCategoryOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   parts?: Prisma.PartOrderByRelationAggregateInput
+  requiredByServices?: Prisma.ServiceOrderByRelationAggregateInput
 }
 
 export type PartCategoryWhereUniqueInput = Prisma.AtLeast<{
@@ -174,6 +176,7 @@ export type PartCategoryWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PartCategoryWhereInput | Prisma.PartCategoryWhereInput[]
   name?: Prisma.StringFilter<"PartCategory"> | string
   parts?: Prisma.PartListRelationFilter
+  requiredByServices?: Prisma.ServiceListRelationFilter
 }, "id">
 
 export type PartCategoryOrderByWithAggregationInput = {
@@ -196,24 +199,28 @@ export type PartCategoryCreateInput = {
   id?: string
   name: string
   parts?: Prisma.PartCreateNestedManyWithoutCategoryInput
+  requiredByServices?: Prisma.ServiceCreateNestedManyWithoutRequiredCategoriesInput
 }
 
 export type PartCategoryUncheckedCreateInput = {
   id?: string
   name: string
   parts?: Prisma.PartUncheckedCreateNestedManyWithoutCategoryInput
+  requiredByServices?: Prisma.ServiceUncheckedCreateNestedManyWithoutRequiredCategoriesInput
 }
 
 export type PartCategoryUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   parts?: Prisma.PartUpdateManyWithoutCategoryNestedInput
+  requiredByServices?: Prisma.ServiceUpdateManyWithoutRequiredCategoriesNestedInput
 }
 
 export type PartCategoryUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   parts?: Prisma.PartUncheckedUpdateManyWithoutCategoryNestedInput
+  requiredByServices?: Prisma.ServiceUncheckedUpdateManyWithoutRequiredCategoriesNestedInput
 }
 
 export type PartCategoryCreateManyInput = {
@@ -251,6 +258,16 @@ export type PartCategoryScalarRelationFilter = {
   isNot?: Prisma.PartCategoryWhereInput
 }
 
+export type PartCategoryListRelationFilter = {
+  every?: Prisma.PartCategoryWhereInput
+  some?: Prisma.PartCategoryWhereInput
+  none?: Prisma.PartCategoryWhereInput
+}
+
+export type PartCategoryOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -269,14 +286,54 @@ export type PartCategoryUpdateOneRequiredWithoutPartsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PartCategoryUpdateToOneWithWhereWithoutPartsInput, Prisma.PartCategoryUpdateWithoutPartsInput>, Prisma.PartCategoryUncheckedUpdateWithoutPartsInput>
 }
 
+export type PartCategoryCreateNestedManyWithoutRequiredByServicesInput = {
+  create?: Prisma.XOR<Prisma.PartCategoryCreateWithoutRequiredByServicesInput, Prisma.PartCategoryUncheckedCreateWithoutRequiredByServicesInput> | Prisma.PartCategoryCreateWithoutRequiredByServicesInput[] | Prisma.PartCategoryUncheckedCreateWithoutRequiredByServicesInput[]
+  connectOrCreate?: Prisma.PartCategoryCreateOrConnectWithoutRequiredByServicesInput | Prisma.PartCategoryCreateOrConnectWithoutRequiredByServicesInput[]
+  connect?: Prisma.PartCategoryWhereUniqueInput | Prisma.PartCategoryWhereUniqueInput[]
+}
+
+export type PartCategoryUncheckedCreateNestedManyWithoutRequiredByServicesInput = {
+  create?: Prisma.XOR<Prisma.PartCategoryCreateWithoutRequiredByServicesInput, Prisma.PartCategoryUncheckedCreateWithoutRequiredByServicesInput> | Prisma.PartCategoryCreateWithoutRequiredByServicesInput[] | Prisma.PartCategoryUncheckedCreateWithoutRequiredByServicesInput[]
+  connectOrCreate?: Prisma.PartCategoryCreateOrConnectWithoutRequiredByServicesInput | Prisma.PartCategoryCreateOrConnectWithoutRequiredByServicesInput[]
+  connect?: Prisma.PartCategoryWhereUniqueInput | Prisma.PartCategoryWhereUniqueInput[]
+}
+
+export type PartCategoryUpdateManyWithoutRequiredByServicesNestedInput = {
+  create?: Prisma.XOR<Prisma.PartCategoryCreateWithoutRequiredByServicesInput, Prisma.PartCategoryUncheckedCreateWithoutRequiredByServicesInput> | Prisma.PartCategoryCreateWithoutRequiredByServicesInput[] | Prisma.PartCategoryUncheckedCreateWithoutRequiredByServicesInput[]
+  connectOrCreate?: Prisma.PartCategoryCreateOrConnectWithoutRequiredByServicesInput | Prisma.PartCategoryCreateOrConnectWithoutRequiredByServicesInput[]
+  upsert?: Prisma.PartCategoryUpsertWithWhereUniqueWithoutRequiredByServicesInput | Prisma.PartCategoryUpsertWithWhereUniqueWithoutRequiredByServicesInput[]
+  set?: Prisma.PartCategoryWhereUniqueInput | Prisma.PartCategoryWhereUniqueInput[]
+  disconnect?: Prisma.PartCategoryWhereUniqueInput | Prisma.PartCategoryWhereUniqueInput[]
+  delete?: Prisma.PartCategoryWhereUniqueInput | Prisma.PartCategoryWhereUniqueInput[]
+  connect?: Prisma.PartCategoryWhereUniqueInput | Prisma.PartCategoryWhereUniqueInput[]
+  update?: Prisma.PartCategoryUpdateWithWhereUniqueWithoutRequiredByServicesInput | Prisma.PartCategoryUpdateWithWhereUniqueWithoutRequiredByServicesInput[]
+  updateMany?: Prisma.PartCategoryUpdateManyWithWhereWithoutRequiredByServicesInput | Prisma.PartCategoryUpdateManyWithWhereWithoutRequiredByServicesInput[]
+  deleteMany?: Prisma.PartCategoryScalarWhereInput | Prisma.PartCategoryScalarWhereInput[]
+}
+
+export type PartCategoryUncheckedUpdateManyWithoutRequiredByServicesNestedInput = {
+  create?: Prisma.XOR<Prisma.PartCategoryCreateWithoutRequiredByServicesInput, Prisma.PartCategoryUncheckedCreateWithoutRequiredByServicesInput> | Prisma.PartCategoryCreateWithoutRequiredByServicesInput[] | Prisma.PartCategoryUncheckedCreateWithoutRequiredByServicesInput[]
+  connectOrCreate?: Prisma.PartCategoryCreateOrConnectWithoutRequiredByServicesInput | Prisma.PartCategoryCreateOrConnectWithoutRequiredByServicesInput[]
+  upsert?: Prisma.PartCategoryUpsertWithWhereUniqueWithoutRequiredByServicesInput | Prisma.PartCategoryUpsertWithWhereUniqueWithoutRequiredByServicesInput[]
+  set?: Prisma.PartCategoryWhereUniqueInput | Prisma.PartCategoryWhereUniqueInput[]
+  disconnect?: Prisma.PartCategoryWhereUniqueInput | Prisma.PartCategoryWhereUniqueInput[]
+  delete?: Prisma.PartCategoryWhereUniqueInput | Prisma.PartCategoryWhereUniqueInput[]
+  connect?: Prisma.PartCategoryWhereUniqueInput | Prisma.PartCategoryWhereUniqueInput[]
+  update?: Prisma.PartCategoryUpdateWithWhereUniqueWithoutRequiredByServicesInput | Prisma.PartCategoryUpdateWithWhereUniqueWithoutRequiredByServicesInput[]
+  updateMany?: Prisma.PartCategoryUpdateManyWithWhereWithoutRequiredByServicesInput | Prisma.PartCategoryUpdateManyWithWhereWithoutRequiredByServicesInput[]
+  deleteMany?: Prisma.PartCategoryScalarWhereInput | Prisma.PartCategoryScalarWhereInput[]
+}
+
 export type PartCategoryCreateWithoutPartsInput = {
   id?: string
   name: string
+  requiredByServices?: Prisma.ServiceCreateNestedManyWithoutRequiredCategoriesInput
 }
 
 export type PartCategoryUncheckedCreateWithoutPartsInput = {
   id?: string
   name: string
+  requiredByServices?: Prisma.ServiceUncheckedCreateNestedManyWithoutRequiredCategoriesInput
 }
 
 export type PartCategoryCreateOrConnectWithoutPartsInput = {
@@ -298,9 +355,69 @@ export type PartCategoryUpdateToOneWithWhereWithoutPartsInput = {
 export type PartCategoryUpdateWithoutPartsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  requiredByServices?: Prisma.ServiceUpdateManyWithoutRequiredCategoriesNestedInput
 }
 
 export type PartCategoryUncheckedUpdateWithoutPartsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  requiredByServices?: Prisma.ServiceUncheckedUpdateManyWithoutRequiredCategoriesNestedInput
+}
+
+export type PartCategoryCreateWithoutRequiredByServicesInput = {
+  id?: string
+  name: string
+  parts?: Prisma.PartCreateNestedManyWithoutCategoryInput
+}
+
+export type PartCategoryUncheckedCreateWithoutRequiredByServicesInput = {
+  id?: string
+  name: string
+  parts?: Prisma.PartUncheckedCreateNestedManyWithoutCategoryInput
+}
+
+export type PartCategoryCreateOrConnectWithoutRequiredByServicesInput = {
+  where: Prisma.PartCategoryWhereUniqueInput
+  create: Prisma.XOR<Prisma.PartCategoryCreateWithoutRequiredByServicesInput, Prisma.PartCategoryUncheckedCreateWithoutRequiredByServicesInput>
+}
+
+export type PartCategoryUpsertWithWhereUniqueWithoutRequiredByServicesInput = {
+  where: Prisma.PartCategoryWhereUniqueInput
+  update: Prisma.XOR<Prisma.PartCategoryUpdateWithoutRequiredByServicesInput, Prisma.PartCategoryUncheckedUpdateWithoutRequiredByServicesInput>
+  create: Prisma.XOR<Prisma.PartCategoryCreateWithoutRequiredByServicesInput, Prisma.PartCategoryUncheckedCreateWithoutRequiredByServicesInput>
+}
+
+export type PartCategoryUpdateWithWhereUniqueWithoutRequiredByServicesInput = {
+  where: Prisma.PartCategoryWhereUniqueInput
+  data: Prisma.XOR<Prisma.PartCategoryUpdateWithoutRequiredByServicesInput, Prisma.PartCategoryUncheckedUpdateWithoutRequiredByServicesInput>
+}
+
+export type PartCategoryUpdateManyWithWhereWithoutRequiredByServicesInput = {
+  where: Prisma.PartCategoryScalarWhereInput
+  data: Prisma.XOR<Prisma.PartCategoryUpdateManyMutationInput, Prisma.PartCategoryUncheckedUpdateManyWithoutRequiredByServicesInput>
+}
+
+export type PartCategoryScalarWhereInput = {
+  AND?: Prisma.PartCategoryScalarWhereInput | Prisma.PartCategoryScalarWhereInput[]
+  OR?: Prisma.PartCategoryScalarWhereInput[]
+  NOT?: Prisma.PartCategoryScalarWhereInput | Prisma.PartCategoryScalarWhereInput[]
+  id?: Prisma.StringFilter<"PartCategory"> | string
+  name?: Prisma.StringFilter<"PartCategory"> | string
+}
+
+export type PartCategoryUpdateWithoutRequiredByServicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  parts?: Prisma.PartUpdateManyWithoutCategoryNestedInput
+}
+
+export type PartCategoryUncheckedUpdateWithoutRequiredByServicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  parts?: Prisma.PartUncheckedUpdateManyWithoutCategoryNestedInput
+}
+
+export type PartCategoryUncheckedUpdateManyWithoutRequiredByServicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -312,10 +429,12 @@ export type PartCategoryUncheckedUpdateWithoutPartsInput = {
 
 export type PartCategoryCountOutputType = {
   parts: number
+  requiredByServices: number
 }
 
 export type PartCategoryCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   parts?: boolean | PartCategoryCountOutputTypeCountPartsArgs
+  requiredByServices?: boolean | PartCategoryCountOutputTypeCountRequiredByServicesArgs
 }
 
 /**
@@ -335,11 +454,19 @@ export type PartCategoryCountOutputTypeCountPartsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.PartWhereInput
 }
 
+/**
+ * PartCategoryCountOutputType without action
+ */
+export type PartCategoryCountOutputTypeCountRequiredByServicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ServiceWhereInput
+}
+
 
 export type PartCategorySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   parts?: boolean | Prisma.PartCategory$partsArgs<ExtArgs>
+  requiredByServices?: boolean | Prisma.PartCategory$requiredByServicesArgs<ExtArgs>
   _count?: boolean | Prisma.PartCategoryCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["partCategory"]>
 
@@ -361,6 +488,7 @@ export type PartCategorySelectScalar = {
 export type PartCategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name", ExtArgs["result"]["partCategory"]>
 export type PartCategoryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   parts?: boolean | Prisma.PartCategory$partsArgs<ExtArgs>
+  requiredByServices?: boolean | Prisma.PartCategory$requiredByServicesArgs<ExtArgs>
   _count?: boolean | Prisma.PartCategoryCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PartCategoryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -370,6 +498,7 @@ export type $PartCategoryPayload<ExtArgs extends runtime.Types.Extensions.Intern
   name: "PartCategory"
   objects: {
     parts: Prisma.$PartPayload<ExtArgs>[]
+    requiredByServices: Prisma.$ServicePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -769,6 +898,7 @@ readonly fields: PartCategoryFieldRefs;
 export interface Prisma__PartCategoryClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   parts<T extends Prisma.PartCategory$partsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PartCategory$partsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  requiredByServices<T extends Prisma.PartCategory$requiredByServicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PartCategory$requiredByServicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1209,6 +1339,30 @@ export type PartCategory$partsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.PartScalarFieldEnum | Prisma.PartScalarFieldEnum[]
+}
+
+/**
+ * PartCategory.requiredByServices
+ */
+export type PartCategory$requiredByServicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Service
+   */
+  select?: Prisma.ServiceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Service
+   */
+  omit?: Prisma.ServiceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ServiceInclude<ExtArgs> | null
+  where?: Prisma.ServiceWhereInput
+  orderBy?: Prisma.ServiceOrderByWithRelationInput | Prisma.ServiceOrderByWithRelationInput[]
+  cursor?: Prisma.ServiceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ServiceScalarFieldEnum | Prisma.ServiceScalarFieldEnum[]
 }
 
 /**

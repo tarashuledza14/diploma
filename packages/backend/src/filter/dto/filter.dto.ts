@@ -49,7 +49,7 @@ export class SortItem {
 	desc?: string;
 }
 
-export type FilterVariant = 'text' | 'number' | 'date';
+export type FilterVariant = 'text' | 'number' | 'date' | 'boolean';
 export class FilterItem {
 	@IsString()
 	id: string;

@@ -7,37 +7,21 @@ import {
 } from '@/shared';
 import { DataTableRowAction } from '@/types/data-table';
 import { useMemo, useState } from 'react';
-import {
-	InventoryDictionaries,
-	InventoryPart,
-} from '../interfaces/inventory.interfaces';
-import { getInventoryTableColumns } from './columns/inventory-table-columns';
-import { EditPartModal } from './edit-part/EditPartModal';
-import { InventoryTableActionBar } from './InventoryTableActionBar';
-import { MovementHistoryModal } from './movement-history/MovementHistoryModal';
-import { ViewPartModal } from './view-part-detail/ViewPartModal';
-interface InventoryTableProps {
-	data: InventoryPart[];
-	pageCount: number;
-	dictionaries: InventoryDictionaries | undefined;
-}
-export function InventoryTable({
-	data,
-	pageCount,
-	dictionaries,
-}: InventoryTableProps) {
-	const [rowAction, setRowAction] =
-		useState<DataTableRowAction<InventoryPart> | null>(null);
+import { Order } from '../../interfaces/order.interface';
+import { getOrdersTableColumns } from '../column-data/orders-column-data';
 
-	// const { data: dictionaries } = useSuspenseQuery({
-	// 	queryKey: inventoryKeys.dictionaries(),
-	// 	queryFn: () => InventoryService.getAllDictionaries(),
-	// 	staleTime: Infinity,
-	// });
+interface OrdersTableProps {
+	data: Order[];
+	pageCount: number;
+}
+export function OrdersTable({ data, pageCount }: OrdersTableProps) {
+	const [rowAction, setRowAction] = useState<DataTableRowAction<any> | null>(
+		null,
+	);
 
 	const columns = useMemo(
-		() => getInventoryTableColumns({ setRowAction, dictionaries }),
-		[setRowAction, dictionaries],
+		() => getOrdersTableColumns({ setRowAction }),
+		[setRowAction],
 	);
 	const { table, shallow, debounceMs, throttleMs } = useDataTable({
 		data,
@@ -46,8 +30,8 @@ export function InventoryTable({
 
 		initialState: {
 			columnVisibility: {
-				oem: false,
-				barcode: false,
+				// oem: false,
+				// barcode: false,
 			},
 			columnPinning: { right: ['actions'] },
 		},
@@ -59,7 +43,7 @@ export function InventoryTable({
 		<>
 			<DataTable
 				table={table}
-				actionBar={<InventoryTableActionBar table={table} />}
+				// actionBar={<InventoryTableActionBar table={table} />}
 			>
 				<DataTableAdvancedToolbar table={table}>
 					<DataTableSortList table={table} align='start' />
@@ -72,7 +56,7 @@ export function InventoryTable({
 					/>
 				</DataTableAdvancedToolbar>
 			</DataTable>
-			<ViewPartModal
+			{/* <ViewPartModal
 				selectedPart={rowAction?.row?.original || null}
 				open={!!rowAction && rowAction.variant === 'view'}
 				onOpenChange={open => {
@@ -103,7 +87,7 @@ export function InventoryTable({
 				partName={rowAction?.row?.original?.name || ''}
 				partSku={rowAction?.row?.original?.sku || ''}
 				partUnit={rowAction?.row?.original?.unit || ''}
-			/>
+			/> */}
 		</>
 	);
 }

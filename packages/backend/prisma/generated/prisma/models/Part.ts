@@ -375,7 +375,6 @@ export type PartWhereInput = {
   inventory?: Prisma.PartInventoryListRelationFilter
   priceRules?: Prisma.PartPriceRuleListRelationFilter
   orderParts?: Prisma.OrderPartListRelationFilter
-  services?: Prisma.ServiceListRelationFilter
   stockMovements?: Prisma.StockMovementListRelationFilter
 }
 
@@ -411,7 +410,6 @@ export type PartOrderByWithRelationInput = {
   inventory?: Prisma.PartInventoryOrderByRelationAggregateInput
   priceRules?: Prisma.PartPriceRuleOrderByRelationAggregateInput
   orderParts?: Prisma.OrderPartOrderByRelationAggregateInput
-  services?: Prisma.ServiceOrderByRelationAggregateInput
   stockMovements?: Prisma.StockMovementOrderByRelationAggregateInput
 }
 
@@ -450,7 +448,6 @@ export type PartWhereUniqueInput = Prisma.AtLeast<{
   inventory?: Prisma.PartInventoryListRelationFilter
   priceRules?: Prisma.PartPriceRuleListRelationFilter
   orderParts?: Prisma.OrderPartListRelationFilter
-  services?: Prisma.ServiceListRelationFilter
   stockMovements?: Prisma.StockMovementListRelationFilter
 }, "id" | "code" | "sku">
 
@@ -544,7 +541,6 @@ export type PartCreateInput = {
   inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
   priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
 }
 
@@ -576,7 +572,6 @@ export type PartUncheckedCreateInput = {
   inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
   priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
 }
 
@@ -608,7 +603,6 @@ export type PartUpdateInput = {
   inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
   priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
 }
 
@@ -640,7 +634,6 @@ export type PartUncheckedUpdateInput = {
   inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
   priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
 }
 
@@ -1073,44 +1066,6 @@ export type PartUncheckedUpdateManyWithoutSupplierNestedInput = {
   deleteMany?: Prisma.PartScalarWhereInput | Prisma.PartScalarWhereInput[]
 }
 
-export type PartCreateNestedManyWithoutServicesInput = {
-  create?: Prisma.XOR<Prisma.PartCreateWithoutServicesInput, Prisma.PartUncheckedCreateWithoutServicesInput> | Prisma.PartCreateWithoutServicesInput[] | Prisma.PartUncheckedCreateWithoutServicesInput[]
-  connectOrCreate?: Prisma.PartCreateOrConnectWithoutServicesInput | Prisma.PartCreateOrConnectWithoutServicesInput[]
-  connect?: Prisma.PartWhereUniqueInput | Prisma.PartWhereUniqueInput[]
-}
-
-export type PartUncheckedCreateNestedManyWithoutServicesInput = {
-  create?: Prisma.XOR<Prisma.PartCreateWithoutServicesInput, Prisma.PartUncheckedCreateWithoutServicesInput> | Prisma.PartCreateWithoutServicesInput[] | Prisma.PartUncheckedCreateWithoutServicesInput[]
-  connectOrCreate?: Prisma.PartCreateOrConnectWithoutServicesInput | Prisma.PartCreateOrConnectWithoutServicesInput[]
-  connect?: Prisma.PartWhereUniqueInput | Prisma.PartWhereUniqueInput[]
-}
-
-export type PartUpdateManyWithoutServicesNestedInput = {
-  create?: Prisma.XOR<Prisma.PartCreateWithoutServicesInput, Prisma.PartUncheckedCreateWithoutServicesInput> | Prisma.PartCreateWithoutServicesInput[] | Prisma.PartUncheckedCreateWithoutServicesInput[]
-  connectOrCreate?: Prisma.PartCreateOrConnectWithoutServicesInput | Prisma.PartCreateOrConnectWithoutServicesInput[]
-  upsert?: Prisma.PartUpsertWithWhereUniqueWithoutServicesInput | Prisma.PartUpsertWithWhereUniqueWithoutServicesInput[]
-  set?: Prisma.PartWhereUniqueInput | Prisma.PartWhereUniqueInput[]
-  disconnect?: Prisma.PartWhereUniqueInput | Prisma.PartWhereUniqueInput[]
-  delete?: Prisma.PartWhereUniqueInput | Prisma.PartWhereUniqueInput[]
-  connect?: Prisma.PartWhereUniqueInput | Prisma.PartWhereUniqueInput[]
-  update?: Prisma.PartUpdateWithWhereUniqueWithoutServicesInput | Prisma.PartUpdateWithWhereUniqueWithoutServicesInput[]
-  updateMany?: Prisma.PartUpdateManyWithWhereWithoutServicesInput | Prisma.PartUpdateManyWithWhereWithoutServicesInput[]
-  deleteMany?: Prisma.PartScalarWhereInput | Prisma.PartScalarWhereInput[]
-}
-
-export type PartUncheckedUpdateManyWithoutServicesNestedInput = {
-  create?: Prisma.XOR<Prisma.PartCreateWithoutServicesInput, Prisma.PartUncheckedCreateWithoutServicesInput> | Prisma.PartCreateWithoutServicesInput[] | Prisma.PartUncheckedCreateWithoutServicesInput[]
-  connectOrCreate?: Prisma.PartCreateOrConnectWithoutServicesInput | Prisma.PartCreateOrConnectWithoutServicesInput[]
-  upsert?: Prisma.PartUpsertWithWhereUniqueWithoutServicesInput | Prisma.PartUpsertWithWhereUniqueWithoutServicesInput[]
-  set?: Prisma.PartWhereUniqueInput | Prisma.PartWhereUniqueInput[]
-  disconnect?: Prisma.PartWhereUniqueInput | Prisma.PartWhereUniqueInput[]
-  delete?: Prisma.PartWhereUniqueInput | Prisma.PartWhereUniqueInput[]
-  connect?: Prisma.PartWhereUniqueInput | Prisma.PartWhereUniqueInput[]
-  update?: Prisma.PartUpdateWithWhereUniqueWithoutServicesInput | Prisma.PartUpdateWithWhereUniqueWithoutServicesInput[]
-  updateMany?: Prisma.PartUpdateManyWithWhereWithoutServicesInput | Prisma.PartUpdateManyWithWhereWithoutServicesInput[]
-  deleteMany?: Prisma.PartScalarWhereInput | Prisma.PartScalarWhereInput[]
-}
-
 export type PartCreateNestedOneWithoutOrderPartsInput = {
   create?: Prisma.XOR<Prisma.PartCreateWithoutOrderPartsInput, Prisma.PartUncheckedCreateWithoutOrderPartsInput>
   connectOrCreate?: Prisma.PartCreateOrConnectWithoutOrderPartsInput
@@ -1152,7 +1107,6 @@ export type PartCreateWithoutCategoryInput = {
   inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
   priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
 }
 
@@ -1183,7 +1137,6 @@ export type PartUncheckedCreateWithoutCategoryInput = {
   inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
   priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
 }
 
@@ -1270,7 +1223,6 @@ export type PartCreateWithoutInventoryInput = {
   manufacturer?: Prisma.PartsManufacturerCreateNestedOneWithoutPartsInput
   priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
 }
 
@@ -1301,7 +1253,6 @@ export type PartUncheckedCreateWithoutInventoryInput = {
   updatedAt?: Date | string
   priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
 }
 
@@ -1348,7 +1299,6 @@ export type PartUpdateWithoutInventoryInput = {
   manufacturer?: Prisma.PartsManufacturerUpdateOneWithoutPartsNestedInput
   priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
 }
 
@@ -1379,7 +1329,6 @@ export type PartUncheckedUpdateWithoutInventoryInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
 }
 
@@ -1411,7 +1360,6 @@ export type PartCreateWithoutStockMovementsInput = {
   inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
   priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
 }
 
 export type PartUncheckedCreateWithoutStockMovementsInput = {
@@ -1442,7 +1390,6 @@ export type PartUncheckedCreateWithoutStockMovementsInput = {
   inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
   priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
 }
 
 export type PartCreateOrConnectWithoutStockMovementsInput = {
@@ -1489,7 +1436,6 @@ export type PartUpdateWithoutStockMovementsInput = {
   inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
   priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
 }
 
 export type PartUncheckedUpdateWithoutStockMovementsInput = {
@@ -1520,7 +1466,6 @@ export type PartUncheckedUpdateWithoutStockMovementsInput = {
   inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
   priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
 }
 
 export type PartCreateWithoutPriceRulesInput = {
@@ -1550,7 +1495,6 @@ export type PartCreateWithoutPriceRulesInput = {
   manufacturer?: Prisma.PartsManufacturerCreateNestedOneWithoutPartsInput
   inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
 }
 
@@ -1581,7 +1525,6 @@ export type PartUncheckedCreateWithoutPriceRulesInput = {
   updatedAt?: Date | string
   inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
 }
 
@@ -1628,7 +1571,6 @@ export type PartUpdateWithoutPriceRulesInput = {
   manufacturer?: Prisma.PartsManufacturerUpdateOneWithoutPartsNestedInput
   inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
 }
 
@@ -1659,7 +1601,6 @@ export type PartUncheckedUpdateWithoutPriceRulesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
 }
 
@@ -1690,7 +1631,6 @@ export type PartCreateWithoutManufacturerInput = {
   inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
   priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
 }
 
@@ -1721,7 +1661,6 @@ export type PartUncheckedCreateWithoutManufacturerInput = {
   inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
   priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
 }
 
@@ -1778,7 +1717,6 @@ export type PartCreateWithoutBrandInput = {
   inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
   priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
 }
 
@@ -1809,7 +1747,6 @@ export type PartUncheckedCreateWithoutBrandInput = {
   inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
   priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
 }
 
@@ -1866,7 +1803,6 @@ export type PartCreateWithoutSupplierInput = {
   inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
   priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
 }
 
@@ -1897,7 +1833,6 @@ export type PartUncheckedCreateWithoutSupplierInput = {
   inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
   priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
   orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
 }
 
@@ -1927,89 +1862,6 @@ export type PartUpdateManyWithWhereWithoutSupplierInput = {
   data: Prisma.XOR<Prisma.PartUpdateManyMutationInput, Prisma.PartUncheckedUpdateManyWithoutSupplierInput>
 }
 
-export type PartCreateWithoutServicesInput = {
-  id?: string
-  code?: string | null
-  name: string
-  sku: string
-  oem?: string | null
-  barcode?: string | null
-  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
-  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  unit?: string | null
-  minStock?: number | null
-  supplierContact?: string | null
-  condition?: $Enums.PartCondition | null
-  warrantyMonths?: number | null
-  warrantyKm?: number | null
-  weight?: string | null
-  dimensions?: string | null
-  photo?: string | null
-  notes?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  category: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
-  brand: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
-  supplier?: Prisma.PartsSupplierCreateNestedOneWithoutPartsInput
-  manufacturer?: Prisma.PartsManufacturerCreateNestedOneWithoutPartsInput
-  inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
-  priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
-  orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
-  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
-}
-
-export type PartUncheckedCreateWithoutServicesInput = {
-  id?: string
-  code?: string | null
-  name: string
-  sku: string
-  oem?: string | null
-  categoryId: string
-  brandId: string
-  barcode?: string | null
-  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
-  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  unit?: string | null
-  minStock?: number | null
-  supplierId?: string | null
-  supplierContact?: string | null
-  condition?: $Enums.PartCondition | null
-  warrantyMonths?: number | null
-  warrantyKm?: number | null
-  weight?: string | null
-  dimensions?: string | null
-  photo?: string | null
-  notes?: string | null
-  manufacturerId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
-  priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
-  orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
-  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
-}
-
-export type PartCreateOrConnectWithoutServicesInput = {
-  where: Prisma.PartWhereUniqueInput
-  create: Prisma.XOR<Prisma.PartCreateWithoutServicesInput, Prisma.PartUncheckedCreateWithoutServicesInput>
-}
-
-export type PartUpsertWithWhereUniqueWithoutServicesInput = {
-  where: Prisma.PartWhereUniqueInput
-  update: Prisma.XOR<Prisma.PartUpdateWithoutServicesInput, Prisma.PartUncheckedUpdateWithoutServicesInput>
-  create: Prisma.XOR<Prisma.PartCreateWithoutServicesInput, Prisma.PartUncheckedCreateWithoutServicesInput>
-}
-
-export type PartUpdateWithWhereUniqueWithoutServicesInput = {
-  where: Prisma.PartWhereUniqueInput
-  data: Prisma.XOR<Prisma.PartUpdateWithoutServicesInput, Prisma.PartUncheckedUpdateWithoutServicesInput>
-}
-
-export type PartUpdateManyWithWhereWithoutServicesInput = {
-  where: Prisma.PartScalarWhereInput
-  data: Prisma.XOR<Prisma.PartUpdateManyMutationInput, Prisma.PartUncheckedUpdateManyWithoutServicesInput>
-}
-
 export type PartCreateWithoutOrderPartsInput = {
   id?: string
   code?: string | null
@@ -2037,7 +1889,6 @@ export type PartCreateWithoutOrderPartsInput = {
   manufacturer?: Prisma.PartsManufacturerCreateNestedOneWithoutPartsInput
   inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
   priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceCreateNestedManyWithoutPartsInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
 }
 
@@ -2068,7 +1919,6 @@ export type PartUncheckedCreateWithoutOrderPartsInput = {
   updatedAt?: Date | string
   inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
   priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
-  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutPartsInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
 }
 
@@ -2115,7 +1965,6 @@ export type PartUpdateWithoutOrderPartsInput = {
   manufacturer?: Prisma.PartsManufacturerUpdateOneWithoutPartsNestedInput
   inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
   priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
 }
 
@@ -2146,7 +1995,6 @@ export type PartUncheckedUpdateWithoutOrderPartsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
   priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
 }
 
@@ -2203,7 +2051,6 @@ export type PartUpdateWithoutCategoryInput = {
   inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
   priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
 }
 
@@ -2234,7 +2081,6 @@ export type PartUncheckedUpdateWithoutCategoryInput = {
   inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
   priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
 }
 
@@ -2317,7 +2163,6 @@ export type PartUpdateWithoutManufacturerInput = {
   inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
   priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
 }
 
@@ -2348,7 +2193,6 @@ export type PartUncheckedUpdateWithoutManufacturerInput = {
   inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
   priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
 }
 
@@ -2431,7 +2275,6 @@ export type PartUpdateWithoutBrandInput = {
   inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
   priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
 }
 
@@ -2462,7 +2305,6 @@ export type PartUncheckedUpdateWithoutBrandInput = {
   inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
   priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
 }
 
@@ -2545,7 +2387,6 @@ export type PartUpdateWithoutSupplierInput = {
   inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
   priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUpdateManyWithoutPartsNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
 }
 
@@ -2576,7 +2417,6 @@ export type PartUncheckedUpdateWithoutSupplierInput = {
   inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
   priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
-  services?: Prisma.ServiceUncheckedUpdateManyWithoutPartsNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
 }
 
@@ -2606,95 +2446,6 @@ export type PartUncheckedUpdateManyWithoutSupplierInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type PartUpdateWithoutServicesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  sku?: Prisma.StringFieldUpdateOperationsInput | string
-  oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
-  crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
-  warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  warrantyKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  category?: Prisma.PartCategoryUpdateOneRequiredWithoutPartsNestedInput
-  brand?: Prisma.PartsBrandUpdateOneRequiredWithoutPartsNestedInput
-  supplier?: Prisma.PartsSupplierUpdateOneWithoutPartsNestedInput
-  manufacturer?: Prisma.PartsManufacturerUpdateOneWithoutPartsNestedInput
-  inventory?: Prisma.PartInventoryUpdateManyWithoutPartNestedInput
-  priceRules?: Prisma.PartPriceRuleUpdateManyWithoutPartNestedInput
-  orderParts?: Prisma.OrderPartUpdateManyWithoutPartNestedInput
-  stockMovements?: Prisma.StockMovementUpdateManyWithoutPartNestedInput
-}
-
-export type PartUncheckedUpdateWithoutServicesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  sku?: Prisma.StringFieldUpdateOperationsInput | string
-  oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
-  brandId?: Prisma.StringFieldUpdateOperationsInput | string
-  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
-  crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
-  warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  warrantyKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manufacturerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
-  priceRules?: Prisma.PartPriceRuleUncheckedUpdateManyWithoutPartNestedInput
-  orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
-  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
-}
-
-export type PartUncheckedUpdateManyWithoutServicesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  sku?: Prisma.StringFieldUpdateOperationsInput | string
-  oem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
-  brandId?: Prisma.StringFieldUpdateOperationsInput | string
-  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  compatibility?: Prisma.PartUpdatecompatibilityInput | string[]
-  crossNumbers?: Prisma.PartUpdatecrossNumbersInput | string[]
-  unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  minStock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  supplierContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  condition?: Prisma.NullableEnumPartConditionFieldUpdateOperationsInput | $Enums.PartCondition | null
-  warrantyMonths?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  warrantyKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  manufacturerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
 
 /**
  * Count Type PartCountOutputType
@@ -2704,7 +2455,6 @@ export type PartCountOutputType = {
   inventory: number
   priceRules: number
   orderParts: number
-  services: number
   stockMovements: number
 }
 
@@ -2712,7 +2462,6 @@ export type PartCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   inventory?: boolean | PartCountOutputTypeCountInventoryArgs
   priceRules?: boolean | PartCountOutputTypeCountPriceRulesArgs
   orderParts?: boolean | PartCountOutputTypeCountOrderPartsArgs
-  services?: boolean | PartCountOutputTypeCountServicesArgs
   stockMovements?: boolean | PartCountOutputTypeCountStockMovementsArgs
 }
 
@@ -2745,13 +2494,6 @@ export type PartCountOutputTypeCountPriceRulesArgs<ExtArgs extends runtime.Types
  */
 export type PartCountOutputTypeCountOrderPartsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.OrderPartWhereInput
-}
-
-/**
- * PartCountOutputType without action
- */
-export type PartCountOutputTypeCountServicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ServiceWhereInput
 }
 
 /**
@@ -2794,7 +2536,6 @@ export type PartSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   inventory?: boolean | Prisma.Part$inventoryArgs<ExtArgs>
   priceRules?: boolean | Prisma.Part$priceRulesArgs<ExtArgs>
   orderParts?: boolean | Prisma.Part$orderPartsArgs<ExtArgs>
-  services?: boolean | Prisma.Part$servicesArgs<ExtArgs>
   stockMovements?: boolean | Prisma.Part$stockMovementsArgs<ExtArgs>
   _count?: boolean | Prisma.PartCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["part"]>
@@ -2897,7 +2638,6 @@ export type PartInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   inventory?: boolean | Prisma.Part$inventoryArgs<ExtArgs>
   priceRules?: boolean | Prisma.Part$priceRulesArgs<ExtArgs>
   orderParts?: boolean | Prisma.Part$orderPartsArgs<ExtArgs>
-  services?: boolean | Prisma.Part$servicesArgs<ExtArgs>
   stockMovements?: boolean | Prisma.Part$stockMovementsArgs<ExtArgs>
   _count?: boolean | Prisma.PartCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -2924,7 +2664,6 @@ export type $PartPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     inventory: Prisma.$PartInventoryPayload<ExtArgs>[]
     priceRules: Prisma.$PartPriceRulePayload<ExtArgs>[]
     orderParts: Prisma.$OrderPartPayload<ExtArgs>[]
-    services: Prisma.$ServicePayload<ExtArgs>[]
     stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -3353,7 +3092,6 @@ export interface Prisma__PartClient<T, Null = never, ExtArgs extends runtime.Typ
   inventory<T extends Prisma.Part$inventoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Part$inventoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartInventoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   priceRules<T extends Prisma.Part$priceRulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Part$priceRulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartPriceRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   orderParts<T extends Prisma.Part$orderPartsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Part$orderPartsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPartPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  services<T extends Prisma.Part$servicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Part$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   stockMovements<T extends Prisma.Part$stockMovementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Part$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3911,30 +3649,6 @@ export type Part$orderPartsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.OrderPartScalarFieldEnum | Prisma.OrderPartScalarFieldEnum[]
-}
-
-/**
- * Part.services
- */
-export type Part$servicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Service
-   */
-  select?: Prisma.ServiceSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Service
-   */
-  omit?: Prisma.ServiceOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ServiceInclude<ExtArgs> | null
-  where?: Prisma.ServiceWhereInput
-  orderBy?: Prisma.ServiceOrderByWithRelationInput | Prisma.ServiceOrderByWithRelationInput[]
-  cursor?: Prisma.ServiceWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ServiceScalarFieldEnum | Prisma.ServiceScalarFieldEnum[]
 }
 
 /**

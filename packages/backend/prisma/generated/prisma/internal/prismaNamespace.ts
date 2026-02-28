@@ -1883,6 +1883,7 @@ export type PartsSupplierScalarFieldEnum = (typeof PartsSupplierScalarFieldEnum)
 
 export const ServiceScalarFieldEnum = {
   id: 'id',
+  createdAt: 'createdAt',
   name: 'name',
   description: 'description',
   categoryId: 'categoryId',

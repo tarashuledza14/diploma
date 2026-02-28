@@ -3,7 +3,7 @@ import * as argon2 from 'argon2';
 import 'dotenv/config';
 import {
 	ClientType,
-	MovementType, // ДОДАНО: Імпорт типу руху
+	MovementType,
 	OrderPriority,
 	OrderStatus,
 	PartCondition,
@@ -20,7 +20,7 @@ const prisma = new PrismaClient({ adapter });
 async function clearDatabase() {
 	console.log('🗑️  Clearing database...');
 	// Видаляємо в порядку зворотному до залежностей
-	await prisma.stockMovement.deleteMany({}); // ДОДАНО: Очищення історії рухів
+	await prisma.stockMovement.deleteMany({});
 	await prisma.orderPart.deleteMany({});
 	await prisma.orderService.deleteMany({});
 	await prisma.order.deleteMany({});
@@ -266,7 +266,6 @@ async function main() {
 						},
 					],
 				},
-				// ДОДАНО: Історія рухів (Прихід товарів на склад)
 				stockMovements: {
 					create: [
 						{
@@ -306,7 +305,6 @@ async function main() {
 				priceRules: {
 					create: [{ clientType: ClientType.RETAIL, fixedPrice: 1800.0 }],
 				},
-				// ДОДАНО: Історія
 				stockMovements: {
 					create: [
 						{
@@ -404,6 +402,10 @@ async function main() {
 				price: 400,
 				estimatedTime: 1.0,
 				categoryId: srvCatMaint.id,
+				// ЗМІНЕНО: Прив'язуємо категорії необхідних матеріалів (Filters та Fluids)
+				requiredCategories: {
+					connect: [{ id: catFilters.id }, { id: catFluids.id }],
+				},
 			},
 		}),
 		await prisma.service.create({
@@ -413,6 +415,10 @@ async function main() {
 				price: 500,
 				estimatedTime: 2.0,
 				categoryId: srvCatReplace.id,
+				// ЗМІНЕНО: Прив'язуємо категорію (Brakes)
+				requiredCategories: {
+					connect: [{ id: catBrakes.id }],
+				},
 			},
 		}),
 	];
@@ -460,7 +466,7 @@ async function main() {
 					},
 				});
 
-				// ДОДАНО: Автоматичне створення логу видачі зі складу, якщо це деталь
+				// Автоматичне створення логу видачі зі складу, якщо це деталь
 				await prisma.stockMovement.create({
 					data: {
 						partId: parts[item.idx].id,

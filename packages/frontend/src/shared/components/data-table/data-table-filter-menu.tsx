@@ -619,6 +619,7 @@ function onFilterInputRender<TData>({
 			/>
 		);
 	}
+	console.log('filter', filter);
 
 	switch (filter.variant) {
 		case 'text':
@@ -659,7 +660,7 @@ function onFilterInputRender<TData>({
 
 		case 'boolean': {
 			const inputListboxId = `${inputId}-listbox`;
-
+			const options = column.columnDef.meta?.options ?? [];
 			return (
 				<Select
 					open={showValueSelector}
@@ -677,8 +678,18 @@ function onFilterInputRender<TData>({
 						<SelectValue placeholder={filter.value ? 'True' : 'False'} />
 					</SelectTrigger>
 					<SelectContent id={inputListboxId}>
-						<SelectItem value='true'>True</SelectItem>
-						<SelectItem value='false'>False</SelectItem>
+						{options.length > 0 ? (
+							options.map(option => (
+								<SelectItem key={option.value} value={option.value}>
+									{option.label}
+								</SelectItem>
+							))
+						) : (
+							<>
+								<SelectItem value='true'>True</SelectItem>
+								<SelectItem value='false'>False</SelectItem>
+							</>
+						)}
 					</SelectContent>
 				</Select>
 			);

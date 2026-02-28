@@ -3,7 +3,6 @@ import { createBrowserRouter } from 'react-router-dom';
 // import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { MainLayout } from '@/layouts';
 import { ProtectedRoute } from '@/modules/auth';
-import { ServicesPage } from '@/modules/services/redo/ServicesPage';
 import {
 	ClientsPage,
 	DashboardPage,
@@ -14,6 +13,7 @@ import {
 	VehiclePage,
 } from '@/pages';
 import { InventoryPage } from '@/pages/InventoryPage';
+import { ServicesPage } from '@/pages/ServicesPage';
 import { Suspense } from 'react';
 
 // Ліниве завантаження сторінок (Code Splitting)

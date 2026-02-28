@@ -631,9 +631,9 @@ function onFilterInputRender<TData>({
 
 		case 'boolean': {
 			if (Array.isArray(filter.value)) return null;
-
+			const options = columnMeta?.options;
 			const inputListboxId = `${inputId}-listbox`;
-
+			console.log('options', options);
 			return (
 				<Select
 					open={showValueSelector}
@@ -654,8 +654,18 @@ function onFilterInputRender<TData>({
 						<SelectValue placeholder={filter.value ? 'True' : 'False'} />
 					</SelectTrigger>
 					<SelectContent id={inputListboxId}>
-						<SelectItem value='true'>True</SelectItem>
-						<SelectItem value='false'>False</SelectItem>
+						{options ? (
+							options.map(option => (
+								<SelectItem key={option.value} value={option.value}>
+									{option.label}
+								</SelectItem>
+							))
+						) : (
+							<>
+								<SelectItem value='true'>True</SelectItem>
+								<SelectItem value='false'>False</SelectItem>
+							</>
+						)}
 					</SelectContent>
 				</Select>
 			);

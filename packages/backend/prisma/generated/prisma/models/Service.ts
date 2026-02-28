@@ -38,6 +38,7 @@ export type ServiceSumAggregateOutputType = {
 
 export type ServiceMinAggregateOutputType = {
   id: string | null
+  createdAt: Date | null
   name: string | null
   description: string | null
   categoryId: string | null
@@ -48,6 +49,7 @@ export type ServiceMinAggregateOutputType = {
 
 export type ServiceMaxAggregateOutputType = {
   id: string | null
+  createdAt: Date | null
   name: string | null
   description: string | null
   categoryId: string | null
@@ -58,6 +60,7 @@ export type ServiceMaxAggregateOutputType = {
 
 export type ServiceCountAggregateOutputType = {
   id: number
+  createdAt: number
   name: number
   description: number
   categoryId: number
@@ -80,6 +83,7 @@ export type ServiceSumAggregateInputType = {
 
 export type ServiceMinAggregateInputType = {
   id?: true
+  createdAt?: true
   name?: true
   description?: true
   categoryId?: true
@@ -90,6 +94,7 @@ export type ServiceMinAggregateInputType = {
 
 export type ServiceMaxAggregateInputType = {
   id?: true
+  createdAt?: true
   name?: true
   description?: true
   categoryId?: true
@@ -100,6 +105,7 @@ export type ServiceMaxAggregateInputType = {
 
 export type ServiceCountAggregateInputType = {
   id?: true
+  createdAt?: true
   name?: true
   description?: true
   categoryId?: true
@@ -197,6 +203,7 @@ export type ServiceGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type ServiceGroupByOutputType = {
   id: string
+  createdAt: Date
   name: string
   description: string
   categoryId: string | null
@@ -230,6 +237,7 @@ export type ServiceWhereInput = {
   OR?: Prisma.ServiceWhereInput[]
   NOT?: Prisma.ServiceWhereInput | Prisma.ServiceWhereInput[]
   id?: Prisma.StringFilter<"Service"> | string
+  createdAt?: Prisma.DateTimeFilter<"Service"> | Date | string
   name?: Prisma.StringFilter<"Service"> | string
   description?: Prisma.StringFilter<"Service"> | string
   categoryId?: Prisma.StringNullableFilter<"Service"> | string | null
@@ -238,11 +246,12 @@ export type ServiceWhereInput = {
   status?: Prisma.BoolFilter<"Service"> | boolean
   category?: Prisma.XOR<Prisma.ServiceCategoryNullableScalarRelationFilter, Prisma.ServiceCategoryWhereInput> | null
   orderServices?: Prisma.OrderServiceListRelationFilter
-  parts?: Prisma.PartListRelationFilter
+  requiredCategories?: Prisma.PartCategoryListRelationFilter
 }
 
 export type ServiceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -251,7 +260,7 @@ export type ServiceOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   category?: Prisma.ServiceCategoryOrderByWithRelationInput
   orderServices?: Prisma.OrderServiceOrderByRelationAggregateInput
-  parts?: Prisma.PartOrderByRelationAggregateInput
+  requiredCategories?: Prisma.PartCategoryOrderByRelationAggregateInput
 }
 
 export type ServiceWhereUniqueInput = Prisma.AtLeast<{
@@ -259,6 +268,7 @@ export type ServiceWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ServiceWhereInput | Prisma.ServiceWhereInput[]
   OR?: Prisma.ServiceWhereInput[]
   NOT?: Prisma.ServiceWhereInput | Prisma.ServiceWhereInput[]
+  createdAt?: Prisma.DateTimeFilter<"Service"> | Date | string
   name?: Prisma.StringFilter<"Service"> | string
   description?: Prisma.StringFilter<"Service"> | string
   categoryId?: Prisma.StringNullableFilter<"Service"> | string | null
@@ -267,11 +277,12 @@ export type ServiceWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.BoolFilter<"Service"> | boolean
   category?: Prisma.XOR<Prisma.ServiceCategoryNullableScalarRelationFilter, Prisma.ServiceCategoryWhereInput> | null
   orderServices?: Prisma.OrderServiceListRelationFilter
-  parts?: Prisma.PartListRelationFilter
+  requiredCategories?: Prisma.PartCategoryListRelationFilter
 }, "id">
 
 export type ServiceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -290,6 +301,7 @@ export type ServiceScalarWhereWithAggregatesInput = {
   OR?: Prisma.ServiceScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ServiceScalarWhereWithAggregatesInput | Prisma.ServiceScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Service"> | string
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Service"> | Date | string
   name?: Prisma.StringWithAggregatesFilter<"Service"> | string
   description?: Prisma.StringWithAggregatesFilter<"Service"> | string
   categoryId?: Prisma.StringNullableWithAggregatesFilter<"Service"> | string | null
@@ -300,6 +312,7 @@ export type ServiceScalarWhereWithAggregatesInput = {
 
 export type ServiceCreateInput = {
   id?: string
+  createdAt?: Date | string
   name: string
   description: string
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -307,11 +320,12 @@ export type ServiceCreateInput = {
   status?: boolean
   category?: Prisma.ServiceCategoryCreateNestedOneWithoutServicesInput
   orderServices?: Prisma.OrderServiceCreateNestedManyWithoutServiceInput
-  parts?: Prisma.PartCreateNestedManyWithoutServicesInput
+  requiredCategories?: Prisma.PartCategoryCreateNestedManyWithoutRequiredByServicesInput
 }
 
 export type ServiceUncheckedCreateInput = {
   id?: string
+  createdAt?: Date | string
   name: string
   description: string
   categoryId?: string | null
@@ -319,11 +333,12 @@ export type ServiceUncheckedCreateInput = {
   estimatedTime?: number
   status?: boolean
   orderServices?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutServiceInput
-  parts?: Prisma.PartUncheckedCreateNestedManyWithoutServicesInput
+  requiredCategories?: Prisma.PartCategoryUncheckedCreateNestedManyWithoutRequiredByServicesInput
 }
 
 export type ServiceUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -331,11 +346,12 @@ export type ServiceUpdateInput = {
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   category?: Prisma.ServiceCategoryUpdateOneWithoutServicesNestedInput
   orderServices?: Prisma.OrderServiceUpdateManyWithoutServiceNestedInput
-  parts?: Prisma.PartUpdateManyWithoutServicesNestedInput
+  requiredCategories?: Prisma.PartCategoryUpdateManyWithoutRequiredByServicesNestedInput
 }
 
 export type ServiceUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -343,11 +359,12 @@ export type ServiceUncheckedUpdateInput = {
   estimatedTime?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   orderServices?: Prisma.OrderServiceUncheckedUpdateManyWithoutServiceNestedInput
-  parts?: Prisma.PartUncheckedUpdateManyWithoutServicesNestedInput
+  requiredCategories?: Prisma.PartCategoryUncheckedUpdateManyWithoutRequiredByServicesNestedInput
 }
 
 export type ServiceCreateManyInput = {
   id?: string
+  createdAt?: Date | string
   name: string
   description: string
   categoryId?: string | null
@@ -358,6 +375,7 @@ export type ServiceCreateManyInput = {
 
 export type ServiceUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -367,6 +385,7 @@ export type ServiceUpdateManyMutationInput = {
 
 export type ServiceUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -387,6 +406,7 @@ export type ServiceOrderByRelationAggregateInput = {
 
 export type ServiceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
@@ -402,6 +422,7 @@ export type ServiceAvgOrderByAggregateInput = {
 
 export type ServiceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
@@ -412,6 +433,7 @@ export type ServiceMaxOrderByAggregateInput = {
 
 export type ServiceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
@@ -428,6 +450,44 @@ export type ServiceSumOrderByAggregateInput = {
 export type ServiceScalarRelationFilter = {
   is?: Prisma.ServiceWhereInput
   isNot?: Prisma.ServiceWhereInput
+}
+
+export type ServiceCreateNestedManyWithoutRequiredCategoriesInput = {
+  create?: Prisma.XOR<Prisma.ServiceCreateWithoutRequiredCategoriesInput, Prisma.ServiceUncheckedCreateWithoutRequiredCategoriesInput> | Prisma.ServiceCreateWithoutRequiredCategoriesInput[] | Prisma.ServiceUncheckedCreateWithoutRequiredCategoriesInput[]
+  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutRequiredCategoriesInput | Prisma.ServiceCreateOrConnectWithoutRequiredCategoriesInput[]
+  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
+}
+
+export type ServiceUncheckedCreateNestedManyWithoutRequiredCategoriesInput = {
+  create?: Prisma.XOR<Prisma.ServiceCreateWithoutRequiredCategoriesInput, Prisma.ServiceUncheckedCreateWithoutRequiredCategoriesInput> | Prisma.ServiceCreateWithoutRequiredCategoriesInput[] | Prisma.ServiceUncheckedCreateWithoutRequiredCategoriesInput[]
+  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutRequiredCategoriesInput | Prisma.ServiceCreateOrConnectWithoutRequiredCategoriesInput[]
+  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
+}
+
+export type ServiceUpdateManyWithoutRequiredCategoriesNestedInput = {
+  create?: Prisma.XOR<Prisma.ServiceCreateWithoutRequiredCategoriesInput, Prisma.ServiceUncheckedCreateWithoutRequiredCategoriesInput> | Prisma.ServiceCreateWithoutRequiredCategoriesInput[] | Prisma.ServiceUncheckedCreateWithoutRequiredCategoriesInput[]
+  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutRequiredCategoriesInput | Prisma.ServiceCreateOrConnectWithoutRequiredCategoriesInput[]
+  upsert?: Prisma.ServiceUpsertWithWhereUniqueWithoutRequiredCategoriesInput | Prisma.ServiceUpsertWithWhereUniqueWithoutRequiredCategoriesInput[]
+  set?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
+  disconnect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
+  delete?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
+  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
+  update?: Prisma.ServiceUpdateWithWhereUniqueWithoutRequiredCategoriesInput | Prisma.ServiceUpdateWithWhereUniqueWithoutRequiredCategoriesInput[]
+  updateMany?: Prisma.ServiceUpdateManyWithWhereWithoutRequiredCategoriesInput | Prisma.ServiceUpdateManyWithWhereWithoutRequiredCategoriesInput[]
+  deleteMany?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
+}
+
+export type ServiceUncheckedUpdateManyWithoutRequiredCategoriesNestedInput = {
+  create?: Prisma.XOR<Prisma.ServiceCreateWithoutRequiredCategoriesInput, Prisma.ServiceUncheckedCreateWithoutRequiredCategoriesInput> | Prisma.ServiceCreateWithoutRequiredCategoriesInput[] | Prisma.ServiceUncheckedCreateWithoutRequiredCategoriesInput[]
+  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutRequiredCategoriesInput | Prisma.ServiceCreateOrConnectWithoutRequiredCategoriesInput[]
+  upsert?: Prisma.ServiceUpsertWithWhereUniqueWithoutRequiredCategoriesInput | Prisma.ServiceUpsertWithWhereUniqueWithoutRequiredCategoriesInput[]
+  set?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
+  disconnect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
+  delete?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
+  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
+  update?: Prisma.ServiceUpdateWithWhereUniqueWithoutRequiredCategoriesInput | Prisma.ServiceUpdateWithWhereUniqueWithoutRequiredCategoriesInput[]
+  updateMany?: Prisma.ServiceUpdateManyWithWhereWithoutRequiredCategoriesInput | Prisma.ServiceUpdateManyWithWhereWithoutRequiredCategoriesInput[]
+  deleteMany?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
 }
 
 export type ServiceCreateNestedManyWithoutCategoryInput = {
@@ -472,44 +532,6 @@ export type ServiceUncheckedUpdateManyWithoutCategoryNestedInput = {
   deleteMany?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
 }
 
-export type ServiceCreateNestedManyWithoutPartsInput = {
-  create?: Prisma.XOR<Prisma.ServiceCreateWithoutPartsInput, Prisma.ServiceUncheckedCreateWithoutPartsInput> | Prisma.ServiceCreateWithoutPartsInput[] | Prisma.ServiceUncheckedCreateWithoutPartsInput[]
-  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutPartsInput | Prisma.ServiceCreateOrConnectWithoutPartsInput[]
-  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-}
-
-export type ServiceUncheckedCreateNestedManyWithoutPartsInput = {
-  create?: Prisma.XOR<Prisma.ServiceCreateWithoutPartsInput, Prisma.ServiceUncheckedCreateWithoutPartsInput> | Prisma.ServiceCreateWithoutPartsInput[] | Prisma.ServiceUncheckedCreateWithoutPartsInput[]
-  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutPartsInput | Prisma.ServiceCreateOrConnectWithoutPartsInput[]
-  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-}
-
-export type ServiceUpdateManyWithoutPartsNestedInput = {
-  create?: Prisma.XOR<Prisma.ServiceCreateWithoutPartsInput, Prisma.ServiceUncheckedCreateWithoutPartsInput> | Prisma.ServiceCreateWithoutPartsInput[] | Prisma.ServiceUncheckedCreateWithoutPartsInput[]
-  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutPartsInput | Prisma.ServiceCreateOrConnectWithoutPartsInput[]
-  upsert?: Prisma.ServiceUpsertWithWhereUniqueWithoutPartsInput | Prisma.ServiceUpsertWithWhereUniqueWithoutPartsInput[]
-  set?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  disconnect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  delete?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  update?: Prisma.ServiceUpdateWithWhereUniqueWithoutPartsInput | Prisma.ServiceUpdateWithWhereUniqueWithoutPartsInput[]
-  updateMany?: Prisma.ServiceUpdateManyWithWhereWithoutPartsInput | Prisma.ServiceUpdateManyWithWhereWithoutPartsInput[]
-  deleteMany?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
-}
-
-export type ServiceUncheckedUpdateManyWithoutPartsNestedInput = {
-  create?: Prisma.XOR<Prisma.ServiceCreateWithoutPartsInput, Prisma.ServiceUncheckedCreateWithoutPartsInput> | Prisma.ServiceCreateWithoutPartsInput[] | Prisma.ServiceUncheckedCreateWithoutPartsInput[]
-  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutPartsInput | Prisma.ServiceCreateOrConnectWithoutPartsInput[]
-  upsert?: Prisma.ServiceUpsertWithWhereUniqueWithoutPartsInput | Prisma.ServiceUpsertWithWhereUniqueWithoutPartsInput[]
-  set?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  disconnect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  delete?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  update?: Prisma.ServiceUpdateWithWhereUniqueWithoutPartsInput | Prisma.ServiceUpdateWithWhereUniqueWithoutPartsInput[]
-  updateMany?: Prisma.ServiceUpdateManyWithWhereWithoutPartsInput | Prisma.ServiceUpdateManyWithWhereWithoutPartsInput[]
-  deleteMany?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
-}
-
 export type FloatFieldUpdateOperationsInput = {
   set?: number
   increment?: number
@@ -536,26 +558,87 @@ export type ServiceUpdateOneRequiredWithoutOrderServicesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ServiceUpdateToOneWithWhereWithoutOrderServicesInput, Prisma.ServiceUpdateWithoutOrderServicesInput>, Prisma.ServiceUncheckedUpdateWithoutOrderServicesInput>
 }
 
+export type ServiceCreateWithoutRequiredCategoriesInput = {
+  id?: string
+  createdAt?: Date | string
+  name: string
+  description: string
+  price?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedTime?: number
+  status?: boolean
+  category?: Prisma.ServiceCategoryCreateNestedOneWithoutServicesInput
+  orderServices?: Prisma.OrderServiceCreateNestedManyWithoutServiceInput
+}
+
+export type ServiceUncheckedCreateWithoutRequiredCategoriesInput = {
+  id?: string
+  createdAt?: Date | string
+  name: string
+  description: string
+  categoryId?: string | null
+  price?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedTime?: number
+  status?: boolean
+  orderServices?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutServiceInput
+}
+
+export type ServiceCreateOrConnectWithoutRequiredCategoriesInput = {
+  where: Prisma.ServiceWhereUniqueInput
+  create: Prisma.XOR<Prisma.ServiceCreateWithoutRequiredCategoriesInput, Prisma.ServiceUncheckedCreateWithoutRequiredCategoriesInput>
+}
+
+export type ServiceUpsertWithWhereUniqueWithoutRequiredCategoriesInput = {
+  where: Prisma.ServiceWhereUniqueInput
+  update: Prisma.XOR<Prisma.ServiceUpdateWithoutRequiredCategoriesInput, Prisma.ServiceUncheckedUpdateWithoutRequiredCategoriesInput>
+  create: Prisma.XOR<Prisma.ServiceCreateWithoutRequiredCategoriesInput, Prisma.ServiceUncheckedCreateWithoutRequiredCategoriesInput>
+}
+
+export type ServiceUpdateWithWhereUniqueWithoutRequiredCategoriesInput = {
+  where: Prisma.ServiceWhereUniqueInput
+  data: Prisma.XOR<Prisma.ServiceUpdateWithoutRequiredCategoriesInput, Prisma.ServiceUncheckedUpdateWithoutRequiredCategoriesInput>
+}
+
+export type ServiceUpdateManyWithWhereWithoutRequiredCategoriesInput = {
+  where: Prisma.ServiceScalarWhereInput
+  data: Prisma.XOR<Prisma.ServiceUpdateManyMutationInput, Prisma.ServiceUncheckedUpdateManyWithoutRequiredCategoriesInput>
+}
+
+export type ServiceScalarWhereInput = {
+  AND?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
+  OR?: Prisma.ServiceScalarWhereInput[]
+  NOT?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
+  id?: Prisma.StringFilter<"Service"> | string
+  createdAt?: Prisma.DateTimeFilter<"Service"> | Date | string
+  name?: Prisma.StringFilter<"Service"> | string
+  description?: Prisma.StringFilter<"Service"> | string
+  categoryId?: Prisma.StringNullableFilter<"Service"> | string | null
+  price?: Prisma.DecimalFilter<"Service"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedTime?: Prisma.FloatFilter<"Service"> | number
+  status?: Prisma.BoolFilter<"Service"> | boolean
+}
+
 export type ServiceCreateWithoutCategoryInput = {
   id?: string
+  createdAt?: Date | string
   name: string
   description: string
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string
   estimatedTime?: number
   status?: boolean
   orderServices?: Prisma.OrderServiceCreateNestedManyWithoutServiceInput
-  parts?: Prisma.PartCreateNestedManyWithoutServicesInput
+  requiredCategories?: Prisma.PartCategoryCreateNestedManyWithoutRequiredByServicesInput
 }
 
 export type ServiceUncheckedCreateWithoutCategoryInput = {
   id?: string
+  createdAt?: Date | string
   name: string
   description: string
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string
   estimatedTime?: number
   status?: boolean
   orderServices?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutServiceInput
-  parts?: Prisma.PartUncheckedCreateNestedManyWithoutServicesInput
+  requiredCategories?: Prisma.PartCategoryUncheckedCreateNestedManyWithoutRequiredByServicesInput
 }
 
 export type ServiceCreateOrConnectWithoutCategoryInput = {
@@ -584,82 +667,28 @@ export type ServiceUpdateManyWithWhereWithoutCategoryInput = {
   data: Prisma.XOR<Prisma.ServiceUpdateManyMutationInput, Prisma.ServiceUncheckedUpdateManyWithoutCategoryInput>
 }
 
-export type ServiceScalarWhereInput = {
-  AND?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
-  OR?: Prisma.ServiceScalarWhereInput[]
-  NOT?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
-  id?: Prisma.StringFilter<"Service"> | string
-  name?: Prisma.StringFilter<"Service"> | string
-  description?: Prisma.StringFilter<"Service"> | string
-  categoryId?: Prisma.StringNullableFilter<"Service"> | string | null
-  price?: Prisma.DecimalFilter<"Service"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedTime?: Prisma.FloatFilter<"Service"> | number
-  status?: Prisma.BoolFilter<"Service"> | boolean
-}
-
-export type ServiceCreateWithoutPartsInput = {
-  id?: string
-  name: string
-  description: string
-  price?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedTime?: number
-  status?: boolean
-  category?: Prisma.ServiceCategoryCreateNestedOneWithoutServicesInput
-  orderServices?: Prisma.OrderServiceCreateNestedManyWithoutServiceInput
-}
-
-export type ServiceUncheckedCreateWithoutPartsInput = {
-  id?: string
-  name: string
-  description: string
-  categoryId?: string | null
-  price?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedTime?: number
-  status?: boolean
-  orderServices?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutServiceInput
-}
-
-export type ServiceCreateOrConnectWithoutPartsInput = {
-  where: Prisma.ServiceWhereUniqueInput
-  create: Prisma.XOR<Prisma.ServiceCreateWithoutPartsInput, Prisma.ServiceUncheckedCreateWithoutPartsInput>
-}
-
-export type ServiceUpsertWithWhereUniqueWithoutPartsInput = {
-  where: Prisma.ServiceWhereUniqueInput
-  update: Prisma.XOR<Prisma.ServiceUpdateWithoutPartsInput, Prisma.ServiceUncheckedUpdateWithoutPartsInput>
-  create: Prisma.XOR<Prisma.ServiceCreateWithoutPartsInput, Prisma.ServiceUncheckedCreateWithoutPartsInput>
-}
-
-export type ServiceUpdateWithWhereUniqueWithoutPartsInput = {
-  where: Prisma.ServiceWhereUniqueInput
-  data: Prisma.XOR<Prisma.ServiceUpdateWithoutPartsInput, Prisma.ServiceUncheckedUpdateWithoutPartsInput>
-}
-
-export type ServiceUpdateManyWithWhereWithoutPartsInput = {
-  where: Prisma.ServiceScalarWhereInput
-  data: Prisma.XOR<Prisma.ServiceUpdateManyMutationInput, Prisma.ServiceUncheckedUpdateManyWithoutPartsInput>
-}
-
 export type ServiceCreateWithoutOrderServicesInput = {
   id?: string
+  createdAt?: Date | string
   name: string
   description: string
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string
   estimatedTime?: number
   status?: boolean
   category?: Prisma.ServiceCategoryCreateNestedOneWithoutServicesInput
-  parts?: Prisma.PartCreateNestedManyWithoutServicesInput
+  requiredCategories?: Prisma.PartCategoryCreateNestedManyWithoutRequiredByServicesInput
 }
 
 export type ServiceUncheckedCreateWithoutOrderServicesInput = {
   id?: string
+  createdAt?: Date | string
   name: string
   description: string
   categoryId?: string | null
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string
   estimatedTime?: number
   status?: boolean
-  parts?: Prisma.PartUncheckedCreateNestedManyWithoutServicesInput
+  requiredCategories?: Prisma.PartCategoryUncheckedCreateNestedManyWithoutRequiredByServicesInput
 }
 
 export type ServiceCreateOrConnectWithoutOrderServicesInput = {
@@ -680,28 +709,66 @@ export type ServiceUpdateToOneWithWhereWithoutOrderServicesInput = {
 
 export type ServiceUpdateWithoutOrderServicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   estimatedTime?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   category?: Prisma.ServiceCategoryUpdateOneWithoutServicesNestedInput
-  parts?: Prisma.PartUpdateManyWithoutServicesNestedInput
+  requiredCategories?: Prisma.PartCategoryUpdateManyWithoutRequiredByServicesNestedInput
 }
 
 export type ServiceUncheckedUpdateWithoutOrderServicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   estimatedTime?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  parts?: Prisma.PartUncheckedUpdateManyWithoutServicesNestedInput
+  requiredCategories?: Prisma.PartCategoryUncheckedUpdateManyWithoutRequiredByServicesNestedInput
+}
+
+export type ServiceUpdateWithoutRequiredCategoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedTime?: Prisma.FloatFieldUpdateOperationsInput | number
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  category?: Prisma.ServiceCategoryUpdateOneWithoutServicesNestedInput
+  orderServices?: Prisma.OrderServiceUpdateManyWithoutServiceNestedInput
+}
+
+export type ServiceUncheckedUpdateWithoutRequiredCategoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedTime?: Prisma.FloatFieldUpdateOperationsInput | number
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  orderServices?: Prisma.OrderServiceUncheckedUpdateManyWithoutServiceNestedInput
+}
+
+export type ServiceUncheckedUpdateManyWithoutRequiredCategoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedTime?: Prisma.FloatFieldUpdateOperationsInput | number
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type ServiceCreateManyCategoryInput = {
   id?: string
+  createdAt?: Date | string
   name: string
   description: string
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -711,62 +778,33 @@ export type ServiceCreateManyCategoryInput = {
 
 export type ServiceUpdateWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   estimatedTime?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   orderServices?: Prisma.OrderServiceUpdateManyWithoutServiceNestedInput
-  parts?: Prisma.PartUpdateManyWithoutServicesNestedInput
+  requiredCategories?: Prisma.PartCategoryUpdateManyWithoutRequiredByServicesNestedInput
 }
 
 export type ServiceUncheckedUpdateWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   estimatedTime?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   orderServices?: Prisma.OrderServiceUncheckedUpdateManyWithoutServiceNestedInput
-  parts?: Prisma.PartUncheckedUpdateManyWithoutServicesNestedInput
+  requiredCategories?: Prisma.PartCategoryUncheckedUpdateManyWithoutRequiredByServicesNestedInput
 }
 
 export type ServiceUncheckedUpdateManyWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedTime?: Prisma.FloatFieldUpdateOperationsInput | number
-  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
-}
-
-export type ServiceUpdateWithoutPartsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedTime?: Prisma.FloatFieldUpdateOperationsInput | number
-  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  category?: Prisma.ServiceCategoryUpdateOneWithoutServicesNestedInput
-  orderServices?: Prisma.OrderServiceUpdateManyWithoutServiceNestedInput
-}
-
-export type ServiceUncheckedUpdateWithoutPartsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedTime?: Prisma.FloatFieldUpdateOperationsInput | number
-  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  orderServices?: Prisma.OrderServiceUncheckedUpdateManyWithoutServiceNestedInput
-}
-
-export type ServiceUncheckedUpdateManyWithoutPartsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   estimatedTime?: Prisma.FloatFieldUpdateOperationsInput | number
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -779,12 +817,12 @@ export type ServiceUncheckedUpdateManyWithoutPartsInput = {
 
 export type ServiceCountOutputType = {
   orderServices: number
-  parts: number
+  requiredCategories: number
 }
 
 export type ServiceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   orderServices?: boolean | ServiceCountOutputTypeCountOrderServicesArgs
-  parts?: boolean | ServiceCountOutputTypeCountPartsArgs
+  requiredCategories?: boolean | ServiceCountOutputTypeCountRequiredCategoriesArgs
 }
 
 /**
@@ -807,13 +845,14 @@ export type ServiceCountOutputTypeCountOrderServicesArgs<ExtArgs extends runtime
 /**
  * ServiceCountOutputType without action
  */
-export type ServiceCountOutputTypeCountPartsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PartWhereInput
+export type ServiceCountOutputTypeCountRequiredCategoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PartCategoryWhereInput
 }
 
 
 export type ServiceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  createdAt?: boolean
   name?: boolean
   description?: boolean
   categoryId?: boolean
@@ -822,12 +861,13 @@ export type ServiceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   status?: boolean
   category?: boolean | Prisma.Service$categoryArgs<ExtArgs>
   orderServices?: boolean | Prisma.Service$orderServicesArgs<ExtArgs>
-  parts?: boolean | Prisma.Service$partsArgs<ExtArgs>
+  requiredCategories?: boolean | Prisma.Service$requiredCategoriesArgs<ExtArgs>
   _count?: boolean | Prisma.ServiceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["service"]>
 
 export type ServiceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  createdAt?: boolean
   name?: boolean
   description?: boolean
   categoryId?: boolean
@@ -839,6 +879,7 @@ export type ServiceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
 
 export type ServiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  createdAt?: boolean
   name?: boolean
   description?: boolean
   categoryId?: boolean
@@ -850,6 +891,7 @@ export type ServiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
 
 export type ServiceSelectScalar = {
   id?: boolean
+  createdAt?: boolean
   name?: boolean
   description?: boolean
   categoryId?: boolean
@@ -858,11 +900,11 @@ export type ServiceSelectScalar = {
   status?: boolean
 }
 
-export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "categoryId" | "price" | "estimatedTime" | "status", ExtArgs["result"]["service"]>
+export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "name" | "description" | "categoryId" | "price" | "estimatedTime" | "status", ExtArgs["result"]["service"]>
 export type ServiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   category?: boolean | Prisma.Service$categoryArgs<ExtArgs>
   orderServices?: boolean | Prisma.Service$orderServicesArgs<ExtArgs>
-  parts?: boolean | Prisma.Service$partsArgs<ExtArgs>
+  requiredCategories?: boolean | Prisma.Service$requiredCategoriesArgs<ExtArgs>
   _count?: boolean | Prisma.ServiceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ServiceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -877,10 +919,11 @@ export type $ServicePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     category: Prisma.$ServiceCategoryPayload<ExtArgs> | null
     orderServices: Prisma.$OrderServicePayload<ExtArgs>[]
-    parts: Prisma.$PartPayload<ExtArgs>[]
+    requiredCategories: Prisma.$PartCategoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    createdAt: Date
     name: string
     description: string
     categoryId: string | null
@@ -1283,7 +1326,7 @@ export interface Prisma__ServiceClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   category<T extends Prisma.Service$categoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Service$categoryArgs<ExtArgs>>): Prisma.Prisma__ServiceCategoryClient<runtime.Types.Result.GetResult<Prisma.$ServiceCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   orderServices<T extends Prisma.Service$orderServicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Service$orderServicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  parts<T extends Prisma.Service$partsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Service$partsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  requiredCategories<T extends Prisma.Service$requiredCategoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Service$requiredCategoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartCategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1314,6 +1357,7 @@ export interface Prisma__ServiceClient<T, Null = never, ExtArgs extends runtime.
  */
 export interface ServiceFieldRefs {
   readonly id: Prisma.FieldRef<"Service", 'String'>
+  readonly createdAt: Prisma.FieldRef<"Service", 'DateTime'>
   readonly name: Prisma.FieldRef<"Service", 'String'>
   readonly description: Prisma.FieldRef<"Service", 'String'>
   readonly categoryId: Prisma.FieldRef<"Service", 'String'>
@@ -1759,27 +1803,27 @@ export type Service$orderServicesArgs<ExtArgs extends runtime.Types.Extensions.I
 }
 
 /**
- * Service.parts
+ * Service.requiredCategories
  */
-export type Service$partsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Service$requiredCategoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Part
+   * Select specific fields to fetch from the PartCategory
    */
-  select?: Prisma.PartSelect<ExtArgs> | null
+  select?: Prisma.PartCategorySelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Part
+   * Omit specific fields from the PartCategory
    */
-  omit?: Prisma.PartOmit<ExtArgs> | null
+  omit?: Prisma.PartCategoryOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PartInclude<ExtArgs> | null
-  where?: Prisma.PartWhereInput
-  orderBy?: Prisma.PartOrderByWithRelationInput | Prisma.PartOrderByWithRelationInput[]
-  cursor?: Prisma.PartWhereUniqueInput
+  include?: Prisma.PartCategoryInclude<ExtArgs> | null
+  where?: Prisma.PartCategoryWhereInput
+  orderBy?: Prisma.PartCategoryOrderByWithRelationInput | Prisma.PartCategoryOrderByWithRelationInput[]
+  cursor?: Prisma.PartCategoryWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.PartScalarFieldEnum | Prisma.PartScalarFieldEnum[]
+  distinct?: Prisma.PartCategoryScalarFieldEnum | Prisma.PartCategoryScalarFieldEnum[]
 }
 
 /**
