@@ -23,7 +23,10 @@ export function ServicesPage() {
 				<ServicesHeader />
 			</Suspense>
 			<Suspense fallback={<div>Loading...</div>}>
-				<ServiceTable data={data?.data || []} dictionaries={undefined} />
+				<ServiceTable
+					data={data?.data || []}
+					pageCount={data?.pageCount || 0}
+				/>
 			</Suspense>
 		</div>
 	);

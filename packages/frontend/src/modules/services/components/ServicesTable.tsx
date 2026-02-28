@@ -9,7 +9,7 @@ import { DataTableRowAction } from '@/types/data-table';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { ServicesService } from '../api/services.service';
-import { Service, ServiceDictionaries } from '../interfaces/services.interface';
+import { Service } from '../interfaces/services.interface';
 import { serviceKeys } from '../queries/keys';
 import { DeleteConfirmServiceModal } from './DeleteConfirmServiceModal';
 import { EditServiceDialog } from './EditServiceDialog';
@@ -18,9 +18,9 @@ import { getServicesTableColumns } from './columns/services-table-columns';
 
 interface ServiceTableProps {
 	data: Service[];
-	dictionaries: ServiceDictionaries | undefined;
+	pageCount: number;
 }
-export function ServiceTable({ data }: ServiceTableProps) {
+export function ServiceTable({ data, pageCount }: ServiceTableProps) {
 	const { data: dictionaries } = useSuspenseQuery({
 		queryKey: serviceKeys.categories(),
 		queryFn: () => ServicesService.getDictionaries(),
@@ -37,7 +37,7 @@ export function ServiceTable({ data }: ServiceTableProps) {
 	const { table, shallow, debounceMs, throttleMs } = useDataTable({
 		data,
 		columns,
-		pageCount: 1,
+		pageCount,
 		initialState: {
 			sorting: [{ id: 'name', desc: true }],
 			columnPinning: { right: ['actions'] },
