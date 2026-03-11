@@ -25,7 +25,9 @@ export function OrderTimeline({ order }: Props) {
 						<span className='text-sm'>Created</span>
 					</div>
 					<span className='text-sm font-medium'>
-						{new Date(order.createdAt).toLocaleString()}
+						{order.createdAt
+							? new Date(order.createdAt).toLocaleString()
+							: '—'}
 					</span>
 				</div>
 				<div className='flex items-center justify-between'>
@@ -34,7 +36,9 @@ export function OrderTimeline({ order }: Props) {
 						<span className='text-sm'>Due Date</span>
 					</div>
 					<span className='text-sm font-medium'>
-						{new Date(order.dueDate).toLocaleString()}
+						{order.dueDate
+							? new Date(order.dueDate).toLocaleString()
+							: '—'}
 					</span>
 				</div>
 				<div className='flex items-center justify-between'>
@@ -43,7 +47,9 @@ export function OrderTimeline({ order }: Props) {
 						<span className='text-sm'>Est. Completion</span>
 					</div>
 					<span className='text-sm font-medium'>
-						{new Date(order.estimatedCompletion).toLocaleString()}
+						{order.estimatedCompletion
+							? new Date(order.estimatedCompletion).toLocaleString()
+							: '—'}
 					</span>
 				</div>
 			</CardContent>

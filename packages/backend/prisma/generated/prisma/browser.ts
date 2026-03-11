@@ -18,16 +18,6 @@ export { Prisma }
 export * as $Enums from './enums'
 export * from './enums';
 /**
- * Model PartCategory
- * 
- */
-export type PartCategory = Prisma.PartCategoryModel
-/**
- * Model ServiceCategory
- * 
- */
-export type ServiceCategory = Prisma.ServiceCategoryModel
-/**
  * Model User
  * 
  */
@@ -42,6 +32,31 @@ export type Client = Prisma.ClientModel
  * 
  */
 export type Vehicle = Prisma.VehicleModel
+/**
+ * Model PartCategory
+ * 
+ */
+export type PartCategory = Prisma.PartCategoryModel
+/**
+ * Model ServiceCategory
+ * 
+ */
+export type ServiceCategory = Prisma.ServiceCategoryModel
+/**
+ * Model PartsManufacturer
+ * 
+ */
+export type PartsManufacturer = Prisma.PartsManufacturerModel
+/**
+ * Model PartsBrand
+ * 
+ */
+export type PartsBrand = Prisma.PartsBrandModel
+/**
+ * Model PartsSupplier
+ * 
+ */
+export type PartsSupplier = Prisma.PartsSupplierModel
 /**
  * Model Part
  * 
@@ -62,21 +77,6 @@ export type StockMovement = Prisma.StockMovementModel
  * 
  */
 export type PartPriceRule = Prisma.PartPriceRuleModel
-/**
- * Model PartsManufacturer
- * 
- */
-export type PartsManufacturer = Prisma.PartsManufacturerModel
-/**
- * Model PartsBrand
- * 
- */
-export type PartsBrand = Prisma.PartsBrandModel
-/**
- * Model PartsSupplier
- * 
- */
-export type PartsSupplier = Prisma.PartsSupplierModel
 /**
  * Model Service
  * 

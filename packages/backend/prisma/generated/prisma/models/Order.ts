@@ -27,10 +27,14 @@ export type AggregateOrder = {
 }
 
 export type OrderAvgAggregateOutputType = {
+  mileage: number | null
+  discount: runtime.Decimal | null
   totalAmount: runtime.Decimal | null
 }
 
 export type OrderSumAggregateOutputType = {
+  mileage: number | null
+  discount: runtime.Decimal | null
   totalAmount: runtime.Decimal | null
 }
 
@@ -38,13 +42,16 @@ export type OrderMinAggregateOutputType = {
   id: string | null
   status: $Enums.OrderStatus | null
   description: string | null
+  mileage: number | null
+  discount: runtime.Decimal | null
+  recommendations: string | null
   totalAmount: runtime.Decimal | null
   priority: $Enums.OrderPriority | null
   vehicleId: string | null
-  deletedAt: Date | null
+  clientId: string | null
   managerId: string | null
   mechanicId: string | null
-  clientId: string | null
+  deletedAt: Date | null
   startDate: Date | null
   endDate: Date | null
 }
@@ -53,13 +60,16 @@ export type OrderMaxAggregateOutputType = {
   id: string | null
   status: $Enums.OrderStatus | null
   description: string | null
+  mileage: number | null
+  discount: runtime.Decimal | null
+  recommendations: string | null
   totalAmount: runtime.Decimal | null
   priority: $Enums.OrderPriority | null
   vehicleId: string | null
-  deletedAt: Date | null
+  clientId: string | null
   managerId: string | null
   mechanicId: string | null
-  clientId: string | null
+  deletedAt: Date | null
   startDate: Date | null
   endDate: Date | null
 }
@@ -68,13 +78,16 @@ export type OrderCountAggregateOutputType = {
   id: number
   status: number
   description: number
+  mileage: number
+  discount: number
+  recommendations: number
   totalAmount: number
   priority: number
   vehicleId: number
-  deletedAt: number
+  clientId: number
   managerId: number
   mechanicId: number
-  clientId: number
+  deletedAt: number
   startDate: number
   endDate: number
   _all: number
@@ -82,10 +95,14 @@ export type OrderCountAggregateOutputType = {
 
 
 export type OrderAvgAggregateInputType = {
+  mileage?: true
+  discount?: true
   totalAmount?: true
 }
 
 export type OrderSumAggregateInputType = {
+  mileage?: true
+  discount?: true
   totalAmount?: true
 }
 
@@ -93,13 +110,16 @@ export type OrderMinAggregateInputType = {
   id?: true
   status?: true
   description?: true
+  mileage?: true
+  discount?: true
+  recommendations?: true
   totalAmount?: true
   priority?: true
   vehicleId?: true
-  deletedAt?: true
+  clientId?: true
   managerId?: true
   mechanicId?: true
-  clientId?: true
+  deletedAt?: true
   startDate?: true
   endDate?: true
 }
@@ -108,13 +128,16 @@ export type OrderMaxAggregateInputType = {
   id?: true
   status?: true
   description?: true
+  mileage?: true
+  discount?: true
+  recommendations?: true
   totalAmount?: true
   priority?: true
   vehicleId?: true
-  deletedAt?: true
+  clientId?: true
   managerId?: true
   mechanicId?: true
-  clientId?: true
+  deletedAt?: true
   startDate?: true
   endDate?: true
 }
@@ -123,13 +146,16 @@ export type OrderCountAggregateInputType = {
   id?: true
   status?: true
   description?: true
+  mileage?: true
+  discount?: true
+  recommendations?: true
   totalAmount?: true
   priority?: true
   vehicleId?: true
-  deletedAt?: true
+  clientId?: true
   managerId?: true
   mechanicId?: true
-  clientId?: true
+  deletedAt?: true
   startDate?: true
   endDate?: true
   _all?: true
@@ -225,13 +251,16 @@ export type OrderGroupByOutputType = {
   id: string
   status: $Enums.OrderStatus
   description: string | null
+  mileage: number
+  discount: runtime.Decimal | null
+  recommendations: string | null
   totalAmount: runtime.Decimal
   priority: $Enums.OrderPriority
   vehicleId: string
-  deletedAt: Date | null
+  clientId: string
   managerId: string | null
   mechanicId: string | null
-  clientId: string
+  deletedAt: Date | null
   startDate: Date
   endDate: Date | null
   _count: OrderCountAggregateOutputType | null
@@ -263,19 +292,22 @@ export type OrderWhereInput = {
   id?: Prisma.StringFilter<"Order"> | string
   status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
   description?: Prisma.StringNullableFilter<"Order"> | string | null
+  mileage?: Prisma.IntFilter<"Order"> | number
+  discount?: Prisma.DecimalNullableFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.StringNullableFilter<"Order"> | string | null
   totalAmount?: Prisma.DecimalFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFilter<"Order"> | $Enums.OrderPriority
   vehicleId?: Prisma.StringFilter<"Order"> | string
-  deletedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  clientId?: Prisma.StringFilter<"Order"> | string
   managerId?: Prisma.StringNullableFilter<"Order"> | string | null
   mechanicId?: Prisma.StringNullableFilter<"Order"> | string | null
-  clientId?: Prisma.StringFilter<"Order"> | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   startDate?: Prisma.DateTimeFilter<"Order"> | Date | string
   endDate?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
+  client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
   manager?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   mechanic?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-  client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
   parts?: Prisma.OrderPartListRelationFilter
   services?: Prisma.OrderServiceListRelationFilter
   stockMovements?: Prisma.StockMovementListRelationFilter
@@ -285,19 +317,22 @@ export type OrderOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   status?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  mileage?: Prisma.SortOrder
+  discount?: Prisma.SortOrderInput | Prisma.SortOrder
+  recommendations?: Prisma.SortOrderInput | Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   vehicleId?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  clientId?: Prisma.SortOrder
   managerId?: Prisma.SortOrderInput | Prisma.SortOrder
   mechanicId?: Prisma.SortOrderInput | Prisma.SortOrder
-  clientId?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrderInput | Prisma.SortOrder
   vehicle?: Prisma.VehicleOrderByWithRelationInput
+  client?: Prisma.ClientOrderByWithRelationInput
   manager?: Prisma.UserOrderByWithRelationInput
   mechanic?: Prisma.UserOrderByWithRelationInput
-  client?: Prisma.ClientOrderByWithRelationInput
   parts?: Prisma.OrderPartOrderByRelationAggregateInput
   services?: Prisma.OrderServiceOrderByRelationAggregateInput
   stockMovements?: Prisma.StockMovementOrderByRelationAggregateInput
@@ -310,19 +345,22 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.OrderWhereInput | Prisma.OrderWhereInput[]
   status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
   description?: Prisma.StringNullableFilter<"Order"> | string | null
+  mileage?: Prisma.IntFilter<"Order"> | number
+  discount?: Prisma.DecimalNullableFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.StringNullableFilter<"Order"> | string | null
   totalAmount?: Prisma.DecimalFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFilter<"Order"> | $Enums.OrderPriority
   vehicleId?: Prisma.StringFilter<"Order"> | string
-  deletedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  clientId?: Prisma.StringFilter<"Order"> | string
   managerId?: Prisma.StringNullableFilter<"Order"> | string | null
   mechanicId?: Prisma.StringNullableFilter<"Order"> | string | null
-  clientId?: Prisma.StringFilter<"Order"> | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   startDate?: Prisma.DateTimeFilter<"Order"> | Date | string
   endDate?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   vehicle?: Prisma.XOR<Prisma.VehicleScalarRelationFilter, Prisma.VehicleWhereInput>
+  client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
   manager?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   mechanic?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-  client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
   parts?: Prisma.OrderPartListRelationFilter
   services?: Prisma.OrderServiceListRelationFilter
   stockMovements?: Prisma.StockMovementListRelationFilter
@@ -332,13 +370,16 @@ export type OrderOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   status?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  mileage?: Prisma.SortOrder
+  discount?: Prisma.SortOrderInput | Prisma.SortOrder
+  recommendations?: Prisma.SortOrderInput | Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   vehicleId?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  clientId?: Prisma.SortOrder
   managerId?: Prisma.SortOrderInput | Prisma.SortOrder
   mechanicId?: Prisma.SortOrderInput | Prisma.SortOrder
-  clientId?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.OrderCountOrderByAggregateInput
@@ -355,13 +396,16 @@ export type OrderScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Order"> | string
   status?: Prisma.EnumOrderStatusWithAggregatesFilter<"Order"> | $Enums.OrderStatus
   description?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
+  mileage?: Prisma.IntWithAggregatesFilter<"Order"> | number
+  discount?: Prisma.DecimalNullableWithAggregatesFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   totalAmount?: Prisma.DecimalWithAggregatesFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityWithAggregatesFilter<"Order"> | $Enums.OrderPriority
   vehicleId?: Prisma.StringWithAggregatesFilter<"Order"> | string
-  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
+  clientId?: Prisma.StringWithAggregatesFilter<"Order"> | string
   managerId?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   mechanicId?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
-  clientId?: Prisma.StringWithAggregatesFilter<"Order"> | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
   startDate?: Prisma.DateTimeWithAggregatesFilter<"Order"> | Date | string
   endDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
 }
@@ -370,15 +414,18 @@ export type OrderCreateInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   vehicle: Prisma.VehicleCreateNestedOneWithoutOrdersInput
+  client: Prisma.ClientCreateNestedOneWithoutOrdersInput
   manager?: Prisma.UserCreateNestedOneWithoutManagerOrdersInput
   mechanic?: Prisma.UserCreateNestedOneWithoutMechanicOrdersInput
-  client: Prisma.ClientCreateNestedOneWithoutOrdersInput
   parts?: Prisma.OrderPartCreateNestedManyWithoutOrderInput
   services?: Prisma.OrderServiceCreateNestedManyWithoutOrderInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutOrderInput
@@ -388,13 +435,16 @@ export type OrderUncheckedCreateInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
-  deletedAt?: Date | string | null
+  clientId: string
   managerId?: string | null
   mechanicId?: string | null
-  clientId: string
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   parts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutOrderInput
@@ -406,15 +456,18 @@ export type OrderUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutOrdersNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
   manager?: Prisma.UserUpdateOneWithoutManagerOrdersNestedInput
   mechanic?: Prisma.UserUpdateOneWithoutMechanicOrdersNestedInput
-  client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
   parts?: Prisma.OrderPartUpdateManyWithoutOrderNestedInput
   services?: Prisma.OrderServiceUpdateManyWithoutOrderNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutOrderNestedInput
@@ -424,13 +477,16 @@ export type OrderUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   parts?: Prisma.OrderPartUncheckedUpdateManyWithoutOrderNestedInput
@@ -442,13 +498,16 @@ export type OrderCreateManyInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
-  deletedAt?: Date | string | null
+  clientId: string
   managerId?: string | null
   mechanicId?: string | null
-  clientId: string
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
 }
@@ -457,6 +516,9 @@ export type OrderUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -468,13 +530,16 @@ export type OrderUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -498,18 +563,23 @@ export type OrderCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   status?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  mileage?: Prisma.SortOrder
+  discount?: Prisma.SortOrder
+  recommendations?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   vehicleId?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrder
+  clientId?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
   mechanicId?: Prisma.SortOrder
-  clientId?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
 }
 
 export type OrderAvgOrderByAggregateInput = {
+  mileage?: Prisma.SortOrder
+  discount?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
 }
 
@@ -517,13 +587,16 @@ export type OrderMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   status?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  mileage?: Prisma.SortOrder
+  discount?: Prisma.SortOrder
+  recommendations?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   vehicleId?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrder
+  clientId?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
   mechanicId?: Prisma.SortOrder
-  clientId?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
 }
@@ -532,18 +605,23 @@ export type OrderMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   status?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  mileage?: Prisma.SortOrder
+  discount?: Prisma.SortOrder
+  recommendations?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   vehicleId?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrder
+  clientId?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
   mechanicId?: Prisma.SortOrder
-  clientId?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
 }
 
 export type OrderSumOrderByAggregateInput = {
+  mileage?: Prisma.SortOrder
+  discount?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
 }
 
@@ -776,14 +854,17 @@ export type OrderCreateWithoutManagerInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   vehicle: Prisma.VehicleCreateNestedOneWithoutOrdersInput
-  mechanic?: Prisma.UserCreateNestedOneWithoutMechanicOrdersInput
   client: Prisma.ClientCreateNestedOneWithoutOrdersInput
+  mechanic?: Prisma.UserCreateNestedOneWithoutMechanicOrdersInput
   parts?: Prisma.OrderPartCreateNestedManyWithoutOrderInput
   services?: Prisma.OrderServiceCreateNestedManyWithoutOrderInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutOrderInput
@@ -793,12 +874,15 @@ export type OrderUncheckedCreateWithoutManagerInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
-  deletedAt?: Date | string | null
-  mechanicId?: string | null
   clientId: string
+  mechanicId?: string | null
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   parts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutOrderInput
@@ -820,14 +904,17 @@ export type OrderCreateWithoutMechanicInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   vehicle: Prisma.VehicleCreateNestedOneWithoutOrdersInput
-  manager?: Prisma.UserCreateNestedOneWithoutManagerOrdersInput
   client: Prisma.ClientCreateNestedOneWithoutOrdersInput
+  manager?: Prisma.UserCreateNestedOneWithoutManagerOrdersInput
   parts?: Prisma.OrderPartCreateNestedManyWithoutOrderInput
   services?: Prisma.OrderServiceCreateNestedManyWithoutOrderInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutOrderInput
@@ -837,12 +924,15 @@ export type OrderUncheckedCreateWithoutMechanicInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
-  deletedAt?: Date | string | null
-  managerId?: string | null
   clientId: string
+  managerId?: string | null
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   parts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutOrderInput
@@ -883,13 +973,16 @@ export type OrderScalarWhereInput = {
   id?: Prisma.StringFilter<"Order"> | string
   status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
   description?: Prisma.StringNullableFilter<"Order"> | string | null
+  mileage?: Prisma.IntFilter<"Order"> | number
+  discount?: Prisma.DecimalNullableFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.StringNullableFilter<"Order"> | string | null
   totalAmount?: Prisma.DecimalFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFilter<"Order"> | $Enums.OrderPriority
   vehicleId?: Prisma.StringFilter<"Order"> | string
-  deletedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  clientId?: Prisma.StringFilter<"Order"> | string
   managerId?: Prisma.StringNullableFilter<"Order"> | string | null
   mechanicId?: Prisma.StringNullableFilter<"Order"> | string | null
-  clientId?: Prisma.StringFilter<"Order"> | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   startDate?: Prisma.DateTimeFilter<"Order"> | Date | string
   endDate?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
 }
@@ -914,6 +1007,9 @@ export type OrderCreateWithoutClientInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   deletedAt?: Date | string | null
@@ -931,12 +1027,15 @@ export type OrderUncheckedCreateWithoutClientInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
-  deletedAt?: Date | string | null
   managerId?: string | null
   mechanicId?: string | null
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   parts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutOrderInput
@@ -974,14 +1073,17 @@ export type OrderCreateWithoutVehicleInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
+  client: Prisma.ClientCreateNestedOneWithoutOrdersInput
   manager?: Prisma.UserCreateNestedOneWithoutManagerOrdersInput
   mechanic?: Prisma.UserCreateNestedOneWithoutMechanicOrdersInput
-  client: Prisma.ClientCreateNestedOneWithoutOrdersInput
   parts?: Prisma.OrderPartCreateNestedManyWithoutOrderInput
   services?: Prisma.OrderServiceCreateNestedManyWithoutOrderInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutOrderInput
@@ -991,12 +1093,15 @@ export type OrderUncheckedCreateWithoutVehicleInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
-  deletedAt?: Date | string | null
+  clientId: string
   managerId?: string | null
   mechanicId?: string | null
-  clientId: string
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   parts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutOrderInput
@@ -1034,15 +1139,18 @@ export type OrderCreateWithoutStockMovementsInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   vehicle: Prisma.VehicleCreateNestedOneWithoutOrdersInput
+  client: Prisma.ClientCreateNestedOneWithoutOrdersInput
   manager?: Prisma.UserCreateNestedOneWithoutManagerOrdersInput
   mechanic?: Prisma.UserCreateNestedOneWithoutMechanicOrdersInput
-  client: Prisma.ClientCreateNestedOneWithoutOrdersInput
   parts?: Prisma.OrderPartCreateNestedManyWithoutOrderInput
   services?: Prisma.OrderServiceCreateNestedManyWithoutOrderInput
 }
@@ -1051,13 +1159,16 @@ export type OrderUncheckedCreateWithoutStockMovementsInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
-  deletedAt?: Date | string | null
+  clientId: string
   managerId?: string | null
   mechanicId?: string | null
-  clientId: string
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   parts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutOrderInput
@@ -1084,15 +1195,18 @@ export type OrderUpdateWithoutStockMovementsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutOrdersNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
   manager?: Prisma.UserUpdateOneWithoutManagerOrdersNestedInput
   mechanic?: Prisma.UserUpdateOneWithoutMechanicOrdersNestedInput
-  client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
   parts?: Prisma.OrderPartUpdateManyWithoutOrderNestedInput
   services?: Prisma.OrderServiceUpdateManyWithoutOrderNestedInput
 }
@@ -1101,13 +1215,16 @@ export type OrderUncheckedUpdateWithoutStockMovementsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   parts?: Prisma.OrderPartUncheckedUpdateManyWithoutOrderNestedInput
@@ -1118,15 +1235,18 @@ export type OrderCreateWithoutPartsInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   vehicle: Prisma.VehicleCreateNestedOneWithoutOrdersInput
+  client: Prisma.ClientCreateNestedOneWithoutOrdersInput
   manager?: Prisma.UserCreateNestedOneWithoutManagerOrdersInput
   mechanic?: Prisma.UserCreateNestedOneWithoutMechanicOrdersInput
-  client: Prisma.ClientCreateNestedOneWithoutOrdersInput
   services?: Prisma.OrderServiceCreateNestedManyWithoutOrderInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutOrderInput
 }
@@ -1135,13 +1255,16 @@ export type OrderUncheckedCreateWithoutPartsInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
-  deletedAt?: Date | string | null
+  clientId: string
   managerId?: string | null
   mechanicId?: string | null
-  clientId: string
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   services?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutOrderInput
@@ -1168,15 +1291,18 @@ export type OrderUpdateWithoutPartsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutOrdersNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
   manager?: Prisma.UserUpdateOneWithoutManagerOrdersNestedInput
   mechanic?: Prisma.UserUpdateOneWithoutMechanicOrdersNestedInput
-  client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
   services?: Prisma.OrderServiceUpdateManyWithoutOrderNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutOrderNestedInput
 }
@@ -1185,13 +1311,16 @@ export type OrderUncheckedUpdateWithoutPartsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   services?: Prisma.OrderServiceUncheckedUpdateManyWithoutOrderNestedInput
@@ -1202,15 +1331,18 @@ export type OrderCreateWithoutServicesInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   vehicle: Prisma.VehicleCreateNestedOneWithoutOrdersInput
+  client: Prisma.ClientCreateNestedOneWithoutOrdersInput
   manager?: Prisma.UserCreateNestedOneWithoutManagerOrdersInput
   mechanic?: Prisma.UserCreateNestedOneWithoutMechanicOrdersInput
-  client: Prisma.ClientCreateNestedOneWithoutOrdersInput
   parts?: Prisma.OrderPartCreateNestedManyWithoutOrderInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutOrderInput
 }
@@ -1219,13 +1351,16 @@ export type OrderUncheckedCreateWithoutServicesInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
-  deletedAt?: Date | string | null
+  clientId: string
   managerId?: string | null
   mechanicId?: string | null
-  clientId: string
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
   parts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutOrderInput
@@ -1252,15 +1387,18 @@ export type OrderUpdateWithoutServicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutOrdersNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
   manager?: Prisma.UserUpdateOneWithoutManagerOrdersNestedInput
   mechanic?: Prisma.UserUpdateOneWithoutMechanicOrdersNestedInput
-  client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
   parts?: Prisma.OrderPartUpdateManyWithoutOrderNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutOrderNestedInput
 }
@@ -1269,13 +1407,16 @@ export type OrderUncheckedUpdateWithoutServicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   parts?: Prisma.OrderPartUncheckedUpdateManyWithoutOrderNestedInput
@@ -1286,12 +1427,15 @@ export type OrderCreateManyManagerInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
-  deletedAt?: Date | string | null
-  mechanicId?: string | null
   clientId: string
+  mechanicId?: string | null
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
 }
@@ -1300,12 +1444,15 @@ export type OrderCreateManyMechanicInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
-  deletedAt?: Date | string | null
-  managerId?: string | null
   clientId: string
+  managerId?: string | null
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
 }
@@ -1314,14 +1461,17 @@ export type OrderUpdateWithoutManagerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutOrdersNestedInput
-  mechanic?: Prisma.UserUpdateOneWithoutMechanicOrdersNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
+  mechanic?: Prisma.UserUpdateOneWithoutMechanicOrdersNestedInput
   parts?: Prisma.OrderPartUpdateManyWithoutOrderNestedInput
   services?: Prisma.OrderServiceUpdateManyWithoutOrderNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutOrderNestedInput
@@ -1331,12 +1481,15 @@ export type OrderUncheckedUpdateWithoutManagerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   parts?: Prisma.OrderPartUncheckedUpdateManyWithoutOrderNestedInput
@@ -1348,12 +1501,15 @@ export type OrderUncheckedUpdateManyWithoutManagerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -1362,14 +1518,17 @@ export type OrderUpdateWithoutMechanicInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vehicle?: Prisma.VehicleUpdateOneRequiredWithoutOrdersNestedInput
-  manager?: Prisma.UserUpdateOneWithoutManagerOrdersNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
+  manager?: Prisma.UserUpdateOneWithoutManagerOrdersNestedInput
   parts?: Prisma.OrderPartUpdateManyWithoutOrderNestedInput
   services?: Prisma.OrderServiceUpdateManyWithoutOrderNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutOrderNestedInput
@@ -1379,12 +1538,15 @@ export type OrderUncheckedUpdateWithoutMechanicInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   parts?: Prisma.OrderPartUncheckedUpdateManyWithoutOrderNestedInput
@@ -1396,12 +1558,15 @@ export type OrderUncheckedUpdateManyWithoutMechanicInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -1410,12 +1575,15 @@ export type OrderCreateManyClientInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
   vehicleId: string
-  deletedAt?: Date | string | null
   managerId?: string | null
   mechanicId?: string | null
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
 }
@@ -1424,6 +1592,9 @@ export type OrderUpdateWithoutClientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1441,12 +1612,15 @@ export type OrderUncheckedUpdateWithoutClientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   parts?: Prisma.OrderPartUncheckedUpdateManyWithoutOrderNestedInput
@@ -1458,12 +1632,15 @@ export type OrderUncheckedUpdateManyWithoutClientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   vehicleId?: Prisma.StringFieldUpdateOperationsInput | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -1472,12 +1649,15 @@ export type OrderCreateManyVehicleInput = {
   id?: string
   status?: $Enums.OrderStatus
   description?: string | null
+  mileage: number
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: string | null
   totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: $Enums.OrderPriority
-  deletedAt?: Date | string | null
+  clientId: string
   managerId?: string | null
   mechanicId?: string | null
-  clientId: string
+  deletedAt?: Date | string | null
   startDate?: Date | string
   endDate?: Date | string | null
 }
@@ -1486,14 +1666,17 @@ export type OrderUpdateWithoutVehicleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
   manager?: Prisma.UserUpdateOneWithoutManagerOrdersNestedInput
   mechanic?: Prisma.UserUpdateOneWithoutMechanicOrdersNestedInput
-  client?: Prisma.ClientUpdateOneRequiredWithoutOrdersNestedInput
   parts?: Prisma.OrderPartUpdateManyWithoutOrderNestedInput
   services?: Prisma.OrderServiceUpdateManyWithoutOrderNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutOrderNestedInput
@@ -1503,12 +1686,15 @@ export type OrderUncheckedUpdateWithoutVehicleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   parts?: Prisma.OrderPartUncheckedUpdateManyWithoutOrderNestedInput
@@ -1520,12 +1706,15 @@ export type OrderUncheckedUpdateManyWithoutVehicleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  recommendations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priority?: Prisma.EnumOrderPriorityFieldUpdateOperationsInput | $Enums.OrderPriority
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -1583,19 +1772,22 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   id?: boolean
   status?: boolean
   description?: boolean
+  mileage?: boolean
+  discount?: boolean
+  recommendations?: boolean
   totalAmount?: boolean
   priority?: boolean
   vehicleId?: boolean
-  deletedAt?: boolean
+  clientId?: boolean
   managerId?: boolean
   mechanicId?: boolean
-  clientId?: boolean
+  deletedAt?: boolean
   startDate?: boolean
   endDate?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   manager?: boolean | Prisma.Order$managerArgs<ExtArgs>
   mechanic?: boolean | Prisma.Order$mechanicArgs<ExtArgs>
-  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   parts?: boolean | Prisma.Order$partsArgs<ExtArgs>
   services?: boolean | Prisma.Order$servicesArgs<ExtArgs>
   stockMovements?: boolean | Prisma.Order$stockMovementsArgs<ExtArgs>
@@ -1606,61 +1798,70 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   id?: boolean
   status?: boolean
   description?: boolean
+  mileage?: boolean
+  discount?: boolean
+  recommendations?: boolean
   totalAmount?: boolean
   priority?: boolean
   vehicleId?: boolean
-  deletedAt?: boolean
+  clientId?: boolean
   managerId?: boolean
   mechanicId?: boolean
-  clientId?: boolean
+  deletedAt?: boolean
   startDate?: boolean
   endDate?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   manager?: boolean | Prisma.Order$managerArgs<ExtArgs>
   mechanic?: boolean | Prisma.Order$mechanicArgs<ExtArgs>
-  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["order"]>
 
 export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   status?: boolean
   description?: boolean
+  mileage?: boolean
+  discount?: boolean
+  recommendations?: boolean
   totalAmount?: boolean
   priority?: boolean
   vehicleId?: boolean
-  deletedAt?: boolean
+  clientId?: boolean
   managerId?: boolean
   mechanicId?: boolean
-  clientId?: boolean
+  deletedAt?: boolean
   startDate?: boolean
   endDate?: boolean
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   manager?: boolean | Prisma.Order$managerArgs<ExtArgs>
   mechanic?: boolean | Prisma.Order$mechanicArgs<ExtArgs>
-  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["order"]>
 
 export type OrderSelectScalar = {
   id?: boolean
   status?: boolean
   description?: boolean
+  mileage?: boolean
+  discount?: boolean
+  recommendations?: boolean
   totalAmount?: boolean
   priority?: boolean
   vehicleId?: boolean
-  deletedAt?: boolean
+  clientId?: boolean
   managerId?: boolean
   mechanicId?: boolean
-  clientId?: boolean
+  deletedAt?: boolean
   startDate?: boolean
   endDate?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "description" | "totalAmount" | "priority" | "vehicleId" | "deletedAt" | "managerId" | "mechanicId" | "clientId" | "startDate" | "endDate", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "description" | "mileage" | "discount" | "recommendations" | "totalAmount" | "priority" | "vehicleId" | "clientId" | "managerId" | "mechanicId" | "deletedAt" | "startDate" | "endDate", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   manager?: boolean | Prisma.Order$managerArgs<ExtArgs>
   mechanic?: boolean | Prisma.Order$mechanicArgs<ExtArgs>
-  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   parts?: boolean | Prisma.Order$partsArgs<ExtArgs>
   services?: boolean | Prisma.Order$servicesArgs<ExtArgs>
   stockMovements?: boolean | Prisma.Order$stockMovementsArgs<ExtArgs>
@@ -1668,24 +1869,24 @@ export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 }
 export type OrderIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   manager?: boolean | Prisma.Order$managerArgs<ExtArgs>
   mechanic?: boolean | Prisma.Order$mechanicArgs<ExtArgs>
-  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
 }
 export type OrderIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   manager?: boolean | Prisma.Order$managerArgs<ExtArgs>
   mechanic?: boolean | Prisma.Order$mechanicArgs<ExtArgs>
-  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
 }
 
 export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Order"
   objects: {
     vehicle: Prisma.$VehiclePayload<ExtArgs>
+    client: Prisma.$ClientPayload<ExtArgs>
     manager: Prisma.$UserPayload<ExtArgs> | null
     mechanic: Prisma.$UserPayload<ExtArgs> | null
-    client: Prisma.$ClientPayload<ExtArgs>
     parts: Prisma.$OrderPartPayload<ExtArgs>[]
     services: Prisma.$OrderServicePayload<ExtArgs>[]
     stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
@@ -1694,13 +1895,16 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     id: string
     status: $Enums.OrderStatus
     description: string | null
+    mileage: number
+    discount: runtime.Decimal | null
+    recommendations: string | null
     totalAmount: runtime.Decimal
     priority: $Enums.OrderPriority
     vehicleId: string
-    deletedAt: Date | null
+    clientId: string
     managerId: string | null
     mechanicId: string | null
-    clientId: string
+    deletedAt: Date | null
     startDate: Date
     endDate: Date | null
   }, ExtArgs["result"]["order"]>
@@ -2098,9 +2302,9 @@ readonly fields: OrderFieldRefs;
 export interface Prisma__OrderClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   vehicle<T extends Prisma.VehicleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VehicleDefaultArgs<ExtArgs>>): Prisma.Prisma__VehicleClient<runtime.Types.Result.GetResult<Prisma.$VehiclePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  client<T extends Prisma.ClientDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientDefaultArgs<ExtArgs>>): Prisma.Prisma__ClientClient<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   manager<T extends Prisma.Order$managerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$managerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   mechanic<T extends Prisma.Order$mechanicArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$mechanicArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  client<T extends Prisma.ClientDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientDefaultArgs<ExtArgs>>): Prisma.Prisma__ClientClient<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   parts<T extends Prisma.Order$partsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$partsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPartPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   services<T extends Prisma.Order$servicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   stockMovements<T extends Prisma.Order$stockMovementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2136,13 +2340,16 @@ export interface OrderFieldRefs {
   readonly id: Prisma.FieldRef<"Order", 'String'>
   readonly status: Prisma.FieldRef<"Order", 'OrderStatus'>
   readonly description: Prisma.FieldRef<"Order", 'String'>
+  readonly mileage: Prisma.FieldRef<"Order", 'Int'>
+  readonly discount: Prisma.FieldRef<"Order", 'Decimal'>
+  readonly recommendations: Prisma.FieldRef<"Order", 'String'>
   readonly totalAmount: Prisma.FieldRef<"Order", 'Decimal'>
   readonly priority: Prisma.FieldRef<"Order", 'OrderPriority'>
   readonly vehicleId: Prisma.FieldRef<"Order", 'String'>
-  readonly deletedAt: Prisma.FieldRef<"Order", 'DateTime'>
+  readonly clientId: Prisma.FieldRef<"Order", 'String'>
   readonly managerId: Prisma.FieldRef<"Order", 'String'>
   readonly mechanicId: Prisma.FieldRef<"Order", 'String'>
-  readonly clientId: Prisma.FieldRef<"Order", 'String'>
+  readonly deletedAt: Prisma.FieldRef<"Order", 'DateTime'>
   readonly startDate: Prisma.FieldRef<"Order", 'DateTime'>
   readonly endDate: Prisma.FieldRef<"Order", 'DateTime'>
 }

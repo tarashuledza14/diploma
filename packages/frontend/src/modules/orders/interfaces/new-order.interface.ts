@@ -1,16 +1,22 @@
-enum OrderStatus {
-	NEW = 'NEW',
-	IN_PROGRESS = 'IN_PROGRESS',
-	COMPLETED = 'COMPLETED',
-	CANCELLED = 'CANCELLED',
+import { OrderPriority, OrderStatus } from './order.enums';
+
+export interface OrderServiceItem {
+	serviceId: string;
+	mechanicId?: string;
 }
+
+export interface OrderPartItem {
+	partId: string;
+	quantity: number;
+}
+
 export interface NewOrder {
 	clientId: string;
 	vehicleId: string;
-	services: string[];
-	status: OrderStatus;
-	priority: string;
-	assignedMechanic: string;
-	dueDate: Date | undefined;
+	mileage: number;
+	priority: OrderPriority;
+	services: OrderServiceItem[];
+	parts: OrderPartItem[];
 	notes: string;
+	status: OrderStatus;
 }

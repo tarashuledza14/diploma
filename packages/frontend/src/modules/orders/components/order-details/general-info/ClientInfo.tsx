@@ -15,6 +15,10 @@ interface Props {
 	order: any;
 }
 export function ClientInfo({ order }: Props) {
+	const client = order.client;
+	if (!client) return null;
+
+	const clientName = client.name ?? client.fullName ?? '—';
 	return (
 		<Card>
 			<CardHeader className='flex flex-row items-center justify-between'>
@@ -31,47 +35,53 @@ export function ClientInfo({ order }: Props) {
 			<CardContent className='space-y-4'>
 				<div className='flex items-center gap-4'>
 					<Avatar className='h-12 w-12'>
-						<AvatarImage src={order.client.avatar || '/placeholder.svg'} />
+						<AvatarImage src={order.client?.avatar || '/placeholder.svg'} />
 						<AvatarFallback>
-							{order.client.name
+							{(order.client?.name ?? order.client?.fullName ?? '')
 								.split(' ')
-								// .map(n => n[0])
+								.map(n => n[0])
 								.join('')}
 						</AvatarFallback>
 					</Avatar>
 					<div>
-						<p className='font-medium'>{order.client.name}</p>
+						<p className='font-medium'>{clientName}</p>
 						<p className='text-sm text-muted-foreground'>
-							Client ID: {order.client.id}
+							Client ID: {client.id}
 						</p>
 					</div>
 				</div>
 				<Separator />
 				<div className='space-y-2'>
-					<div className='flex items-center gap-2'>
-						<Mail className='h-4 w-4 text-muted-foreground' />
-						<a
-							href={`mailto:${order.client.email}`}
-							className='text-sm hover:underline'
-						>
-							{order.client.email}
-						</a>
-					</div>
+					{client.email && (
+						<div className='flex items-center gap-2'>
+							<Mail className='h-4 w-4 text-muted-foreground' />
+							<a
+								href={`mailto:${client.email}`}
+								className='text-sm hover:underline'
+							>
+								{client.email}
+							</a>
+						</div>
+					)}
 					<div className='flex items-center gap-2'>
 						<Phone className='h-4 w-4 text-muted-foreground' />
 						<a
-							href={`tel:${order.client.phone}`}
+							href={`tel:${client.phone}`}
 							className='text-sm hover:underline'
 						>
-							{order.client.phone}
+							{client.phone}
 						</a>
 					</div>
 				</div>
-				<Separator />
-				<div>
-					<p className='text-sm text-muted-foreground'>Address</p>
-					<p className='text-sm'>{order.client.address}</p>
-				</div>
+				{client.address && (
+					<>
+						<Separator />
+						<div>
+							<p className='text-sm text-muted-foreground'>Address</p>
+							<p className='text-sm'>{client.address}</p>
+						</div>
+					</>
+				)}
 			</CardContent>
 		</Card>
 	);

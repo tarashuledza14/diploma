@@ -7,51 +7,36 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/shared/components/ui';
-import { cn } from '@/shared/lib/utils';
-import { Badge, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
 interface Props {
 	services: any;
 }
-const serviceStatusColors = {
-	pending: 'bg-gray-100 text-gray-700',
-	in_progress: 'bg-blue-100 text-blue-700',
-	completed: 'bg-green-100 text-green-700',
-};
+
 export function ServiceTable({ services }: Props) {
 	return (
 		<Table>
 			<TableHeader>
-				<TableRow>
-					<TableHead>Service</TableHead>
-					<TableHead>Description</TableHead>
-					<TableHead>Labor (hrs)</TableHead>
-					<TableHead>Status</TableHead>
-					<TableHead className='text-right'>Price</TableHead>
-					<TableHead className='w-12'></TableHead>
-				</TableRow>
+			<TableRow>
+				<TableHead>Service</TableHead>
+				<TableHead>Description</TableHead>
+				<TableHead>Qty</TableHead>
+				<TableHead>Labor (hrs)</TableHead>
+				<TableHead className='text-right'>Price</TableHead>
+				<TableHead className='w-12'></TableHead>
+			</TableRow>
 			</TableHeader>
 			<TableBody>
 				{services.map((service: any) => (
 					<TableRow key={service.id}>
 						<TableCell className='font-medium'>{service.name}</TableCell>
 						<TableCell className='text-muted-foreground'>
-							{service.description}
+							{service.description ?? '—'}
 						</TableCell>
-						<TableCell>{service.laborHours}h</TableCell>
-						<TableCell>
-							<Badge
-								className={cn(
-									serviceStatusColors[
-										service.status as keyof typeof serviceStatusColors
-									],
-								)}
-							>
-								{service.status.replace('_', ' ')}
-							</Badge>
-						</TableCell>
+						<TableCell>{service.quantity ?? 1}</TableCell>
+						<TableCell>{service.laborHours ?? 0}h</TableCell>
 						<TableCell className='text-right font-medium'>
-							${service.price.toFixed(2)}
+							${(Number(service.price) * (service.quantity ?? 1)).toFixed(2)}
 						</TableCell>
 						<TableCell>
 							<Button

@@ -19,7 +19,6 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
 	showKanban = true,
 	kanbanUrl = '/orders/board',
 	showNewOrder = true,
-	newOrderHandler,
 }) => (
 	<div className='flex items-center justify-between'>
 		<div>

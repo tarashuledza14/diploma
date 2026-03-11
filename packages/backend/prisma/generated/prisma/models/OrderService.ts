@@ -40,6 +40,7 @@ export type OrderServiceMinAggregateOutputType = {
   id: string | null
   orderId: string | null
   serviceId: string | null
+  mechanicId: string | null
   quantity: number | null
   price: runtime.Decimal | null
 }
@@ -48,6 +49,7 @@ export type OrderServiceMaxAggregateOutputType = {
   id: string | null
   orderId: string | null
   serviceId: string | null
+  mechanicId: string | null
   quantity: number | null
   price: runtime.Decimal | null
 }
@@ -56,6 +58,7 @@ export type OrderServiceCountAggregateOutputType = {
   id: number
   orderId: number
   serviceId: number
+  mechanicId: number
   quantity: number
   price: number
   _all: number
@@ -76,6 +79,7 @@ export type OrderServiceMinAggregateInputType = {
   id?: true
   orderId?: true
   serviceId?: true
+  mechanicId?: true
   quantity?: true
   price?: true
 }
@@ -84,6 +88,7 @@ export type OrderServiceMaxAggregateInputType = {
   id?: true
   orderId?: true
   serviceId?: true
+  mechanicId?: true
   quantity?: true
   price?: true
 }
@@ -92,6 +97,7 @@ export type OrderServiceCountAggregateInputType = {
   id?: true
   orderId?: true
   serviceId?: true
+  mechanicId?: true
   quantity?: true
   price?: true
   _all?: true
@@ -187,6 +193,7 @@ export type OrderServiceGroupByOutputType = {
   id: string
   orderId: string
   serviceId: string
+  mechanicId: string | null
   quantity: number
   price: runtime.Decimal
   _count: OrderServiceCountAggregateOutputType | null
@@ -218,20 +225,24 @@ export type OrderServiceWhereInput = {
   id?: Prisma.StringFilter<"OrderService"> | string
   orderId?: Prisma.StringFilter<"OrderService"> | string
   serviceId?: Prisma.StringFilter<"OrderService"> | string
+  mechanicId?: Prisma.StringNullableFilter<"OrderService"> | string | null
   quantity?: Prisma.FloatFilter<"OrderService"> | number
   price?: Prisma.DecimalFilter<"OrderService"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>
   service?: Prisma.XOR<Prisma.ServiceScalarRelationFilter, Prisma.ServiceWhereInput>
+  mechanic?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type OrderServiceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
+  mechanicId?: Prisma.SortOrderInput | Prisma.SortOrder
   quantity?: Prisma.SortOrder
   price?: Prisma.SortOrder
   order?: Prisma.OrderOrderByWithRelationInput
   service?: Prisma.ServiceOrderByWithRelationInput
+  mechanic?: Prisma.UserOrderByWithRelationInput
 }
 
 export type OrderServiceWhereUniqueInput = Prisma.AtLeast<{
@@ -241,16 +252,19 @@ export type OrderServiceWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.OrderServiceWhereInput | Prisma.OrderServiceWhereInput[]
   orderId?: Prisma.StringFilter<"OrderService"> | string
   serviceId?: Prisma.StringFilter<"OrderService"> | string
+  mechanicId?: Prisma.StringNullableFilter<"OrderService"> | string | null
   quantity?: Prisma.FloatFilter<"OrderService"> | number
   price?: Prisma.DecimalFilter<"OrderService"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>
   service?: Prisma.XOR<Prisma.ServiceScalarRelationFilter, Prisma.ServiceWhereInput>
+  mechanic?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id">
 
 export type OrderServiceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
+  mechanicId?: Prisma.SortOrderInput | Prisma.SortOrder
   quantity?: Prisma.SortOrder
   price?: Prisma.SortOrder
   _count?: Prisma.OrderServiceCountOrderByAggregateInput
@@ -267,6 +281,7 @@ export type OrderServiceScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"OrderService"> | string
   orderId?: Prisma.StringWithAggregatesFilter<"OrderService"> | string
   serviceId?: Prisma.StringWithAggregatesFilter<"OrderService"> | string
+  mechanicId?: Prisma.StringNullableWithAggregatesFilter<"OrderService"> | string | null
   quantity?: Prisma.FloatWithAggregatesFilter<"OrderService"> | number
   price?: Prisma.DecimalWithAggregatesFilter<"OrderService"> | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -277,12 +292,14 @@ export type OrderServiceCreateInput = {
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   order: Prisma.OrderCreateNestedOneWithoutServicesInput
   service: Prisma.ServiceCreateNestedOneWithoutOrderServicesInput
+  mechanic?: Prisma.UserCreateNestedOneWithoutServiceJobsInput
 }
 
 export type OrderServiceUncheckedCreateInput = {
   id?: string
   orderId: string
   serviceId: string
+  mechanicId?: string | null
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -293,12 +310,14 @@ export type OrderServiceUpdateInput = {
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   order?: Prisma.OrderUpdateOneRequiredWithoutServicesNestedInput
   service?: Prisma.ServiceUpdateOneRequiredWithoutOrderServicesNestedInput
+  mechanic?: Prisma.UserUpdateOneWithoutServiceJobsNestedInput
 }
 
 export type OrderServiceUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
+  mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -307,6 +326,7 @@ export type OrderServiceCreateManyInput = {
   id?: string
   orderId: string
   serviceId: string
+  mechanicId?: string | null
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -321,6 +341,7 @@ export type OrderServiceUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
+  mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -339,6 +360,7 @@ export type OrderServiceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
+  mechanicId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   price?: Prisma.SortOrder
 }
@@ -352,6 +374,7 @@ export type OrderServiceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
+  mechanicId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   price?: Prisma.SortOrder
 }
@@ -360,6 +383,7 @@ export type OrderServiceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
+  mechanicId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   price?: Prisma.SortOrder
 }
@@ -367,6 +391,48 @@ export type OrderServiceMinOrderByAggregateInput = {
 export type OrderServiceSumOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
   price?: Prisma.SortOrder
+}
+
+export type OrderServiceCreateNestedManyWithoutMechanicInput = {
+  create?: Prisma.XOR<Prisma.OrderServiceCreateWithoutMechanicInput, Prisma.OrderServiceUncheckedCreateWithoutMechanicInput> | Prisma.OrderServiceCreateWithoutMechanicInput[] | Prisma.OrderServiceUncheckedCreateWithoutMechanicInput[]
+  connectOrCreate?: Prisma.OrderServiceCreateOrConnectWithoutMechanicInput | Prisma.OrderServiceCreateOrConnectWithoutMechanicInput[]
+  createMany?: Prisma.OrderServiceCreateManyMechanicInputEnvelope
+  connect?: Prisma.OrderServiceWhereUniqueInput | Prisma.OrderServiceWhereUniqueInput[]
+}
+
+export type OrderServiceUncheckedCreateNestedManyWithoutMechanicInput = {
+  create?: Prisma.XOR<Prisma.OrderServiceCreateWithoutMechanicInput, Prisma.OrderServiceUncheckedCreateWithoutMechanicInput> | Prisma.OrderServiceCreateWithoutMechanicInput[] | Prisma.OrderServiceUncheckedCreateWithoutMechanicInput[]
+  connectOrCreate?: Prisma.OrderServiceCreateOrConnectWithoutMechanicInput | Prisma.OrderServiceCreateOrConnectWithoutMechanicInput[]
+  createMany?: Prisma.OrderServiceCreateManyMechanicInputEnvelope
+  connect?: Prisma.OrderServiceWhereUniqueInput | Prisma.OrderServiceWhereUniqueInput[]
+}
+
+export type OrderServiceUpdateManyWithoutMechanicNestedInput = {
+  create?: Prisma.XOR<Prisma.OrderServiceCreateWithoutMechanicInput, Prisma.OrderServiceUncheckedCreateWithoutMechanicInput> | Prisma.OrderServiceCreateWithoutMechanicInput[] | Prisma.OrderServiceUncheckedCreateWithoutMechanicInput[]
+  connectOrCreate?: Prisma.OrderServiceCreateOrConnectWithoutMechanicInput | Prisma.OrderServiceCreateOrConnectWithoutMechanicInput[]
+  upsert?: Prisma.OrderServiceUpsertWithWhereUniqueWithoutMechanicInput | Prisma.OrderServiceUpsertWithWhereUniqueWithoutMechanicInput[]
+  createMany?: Prisma.OrderServiceCreateManyMechanicInputEnvelope
+  set?: Prisma.OrderServiceWhereUniqueInput | Prisma.OrderServiceWhereUniqueInput[]
+  disconnect?: Prisma.OrderServiceWhereUniqueInput | Prisma.OrderServiceWhereUniqueInput[]
+  delete?: Prisma.OrderServiceWhereUniqueInput | Prisma.OrderServiceWhereUniqueInput[]
+  connect?: Prisma.OrderServiceWhereUniqueInput | Prisma.OrderServiceWhereUniqueInput[]
+  update?: Prisma.OrderServiceUpdateWithWhereUniqueWithoutMechanicInput | Prisma.OrderServiceUpdateWithWhereUniqueWithoutMechanicInput[]
+  updateMany?: Prisma.OrderServiceUpdateManyWithWhereWithoutMechanicInput | Prisma.OrderServiceUpdateManyWithWhereWithoutMechanicInput[]
+  deleteMany?: Prisma.OrderServiceScalarWhereInput | Prisma.OrderServiceScalarWhereInput[]
+}
+
+export type OrderServiceUncheckedUpdateManyWithoutMechanicNestedInput = {
+  create?: Prisma.XOR<Prisma.OrderServiceCreateWithoutMechanicInput, Prisma.OrderServiceUncheckedCreateWithoutMechanicInput> | Prisma.OrderServiceCreateWithoutMechanicInput[] | Prisma.OrderServiceUncheckedCreateWithoutMechanicInput[]
+  connectOrCreate?: Prisma.OrderServiceCreateOrConnectWithoutMechanicInput | Prisma.OrderServiceCreateOrConnectWithoutMechanicInput[]
+  upsert?: Prisma.OrderServiceUpsertWithWhereUniqueWithoutMechanicInput | Prisma.OrderServiceUpsertWithWhereUniqueWithoutMechanicInput[]
+  createMany?: Prisma.OrderServiceCreateManyMechanicInputEnvelope
+  set?: Prisma.OrderServiceWhereUniqueInput | Prisma.OrderServiceWhereUniqueInput[]
+  disconnect?: Prisma.OrderServiceWhereUniqueInput | Prisma.OrderServiceWhereUniqueInput[]
+  delete?: Prisma.OrderServiceWhereUniqueInput | Prisma.OrderServiceWhereUniqueInput[]
+  connect?: Prisma.OrderServiceWhereUniqueInput | Prisma.OrderServiceWhereUniqueInput[]
+  update?: Prisma.OrderServiceUpdateWithWhereUniqueWithoutMechanicInput | Prisma.OrderServiceUpdateWithWhereUniqueWithoutMechanicInput[]
+  updateMany?: Prisma.OrderServiceUpdateManyWithWhereWithoutMechanicInput | Prisma.OrderServiceUpdateManyWithWhereWithoutMechanicInput[]
+  deleteMany?: Prisma.OrderServiceScalarWhereInput | Prisma.OrderServiceScalarWhereInput[]
 }
 
 export type OrderServiceCreateNestedManyWithoutServiceInput = {
@@ -453,16 +519,72 @@ export type OrderServiceUncheckedUpdateManyWithoutOrderNestedInput = {
   deleteMany?: Prisma.OrderServiceScalarWhereInput | Prisma.OrderServiceScalarWhereInput[]
 }
 
+export type OrderServiceCreateWithoutMechanicInput = {
+  id?: string
+  quantity?: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  order: Prisma.OrderCreateNestedOneWithoutServicesInput
+  service: Prisma.ServiceCreateNestedOneWithoutOrderServicesInput
+}
+
+export type OrderServiceUncheckedCreateWithoutMechanicInput = {
+  id?: string
+  orderId: string
+  serviceId: string
+  quantity?: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
+export type OrderServiceCreateOrConnectWithoutMechanicInput = {
+  where: Prisma.OrderServiceWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrderServiceCreateWithoutMechanicInput, Prisma.OrderServiceUncheckedCreateWithoutMechanicInput>
+}
+
+export type OrderServiceCreateManyMechanicInputEnvelope = {
+  data: Prisma.OrderServiceCreateManyMechanicInput | Prisma.OrderServiceCreateManyMechanicInput[]
+  skipDuplicates?: boolean
+}
+
+export type OrderServiceUpsertWithWhereUniqueWithoutMechanicInput = {
+  where: Prisma.OrderServiceWhereUniqueInput
+  update: Prisma.XOR<Prisma.OrderServiceUpdateWithoutMechanicInput, Prisma.OrderServiceUncheckedUpdateWithoutMechanicInput>
+  create: Prisma.XOR<Prisma.OrderServiceCreateWithoutMechanicInput, Prisma.OrderServiceUncheckedCreateWithoutMechanicInput>
+}
+
+export type OrderServiceUpdateWithWhereUniqueWithoutMechanicInput = {
+  where: Prisma.OrderServiceWhereUniqueInput
+  data: Prisma.XOR<Prisma.OrderServiceUpdateWithoutMechanicInput, Prisma.OrderServiceUncheckedUpdateWithoutMechanicInput>
+}
+
+export type OrderServiceUpdateManyWithWhereWithoutMechanicInput = {
+  where: Prisma.OrderServiceScalarWhereInput
+  data: Prisma.XOR<Prisma.OrderServiceUpdateManyMutationInput, Prisma.OrderServiceUncheckedUpdateManyWithoutMechanicInput>
+}
+
+export type OrderServiceScalarWhereInput = {
+  AND?: Prisma.OrderServiceScalarWhereInput | Prisma.OrderServiceScalarWhereInput[]
+  OR?: Prisma.OrderServiceScalarWhereInput[]
+  NOT?: Prisma.OrderServiceScalarWhereInput | Prisma.OrderServiceScalarWhereInput[]
+  id?: Prisma.StringFilter<"OrderService"> | string
+  orderId?: Prisma.StringFilter<"OrderService"> | string
+  serviceId?: Prisma.StringFilter<"OrderService"> | string
+  mechanicId?: Prisma.StringNullableFilter<"OrderService"> | string | null
+  quantity?: Prisma.FloatFilter<"OrderService"> | number
+  price?: Prisma.DecimalFilter<"OrderService"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
 export type OrderServiceCreateWithoutServiceInput = {
   id?: string
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   order: Prisma.OrderCreateNestedOneWithoutServicesInput
+  mechanic?: Prisma.UserCreateNestedOneWithoutServiceJobsInput
 }
 
 export type OrderServiceUncheckedCreateWithoutServiceInput = {
   id?: string
   orderId: string
+  mechanicId?: string | null
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -493,27 +615,18 @@ export type OrderServiceUpdateManyWithWhereWithoutServiceInput = {
   data: Prisma.XOR<Prisma.OrderServiceUpdateManyMutationInput, Prisma.OrderServiceUncheckedUpdateManyWithoutServiceInput>
 }
 
-export type OrderServiceScalarWhereInput = {
-  AND?: Prisma.OrderServiceScalarWhereInput | Prisma.OrderServiceScalarWhereInput[]
-  OR?: Prisma.OrderServiceScalarWhereInput[]
-  NOT?: Prisma.OrderServiceScalarWhereInput | Prisma.OrderServiceScalarWhereInput[]
-  id?: Prisma.StringFilter<"OrderService"> | string
-  orderId?: Prisma.StringFilter<"OrderService"> | string
-  serviceId?: Prisma.StringFilter<"OrderService"> | string
-  quantity?: Prisma.FloatFilter<"OrderService"> | number
-  price?: Prisma.DecimalFilter<"OrderService"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-}
-
 export type OrderServiceCreateWithoutOrderInput = {
   id?: string
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   service: Prisma.ServiceCreateNestedOneWithoutOrderServicesInput
+  mechanic?: Prisma.UserCreateNestedOneWithoutServiceJobsInput
 }
 
 export type OrderServiceUncheckedCreateWithoutOrderInput = {
   id?: string
   serviceId: string
+  mechanicId?: string | null
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -544,9 +657,42 @@ export type OrderServiceUpdateManyWithWhereWithoutOrderInput = {
   data: Prisma.XOR<Prisma.OrderServiceUpdateManyMutationInput, Prisma.OrderServiceUncheckedUpdateManyWithoutOrderInput>
 }
 
+export type OrderServiceCreateManyMechanicInput = {
+  id?: string
+  orderId: string
+  serviceId: string
+  quantity?: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
+export type OrderServiceUpdateWithoutMechanicInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.FloatFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  order?: Prisma.OrderUpdateOneRequiredWithoutServicesNestedInput
+  service?: Prisma.ServiceUpdateOneRequiredWithoutOrderServicesNestedInput
+}
+
+export type OrderServiceUncheckedUpdateWithoutMechanicInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.FloatFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
+export type OrderServiceUncheckedUpdateManyWithoutMechanicInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.FloatFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
 export type OrderServiceCreateManyServiceInput = {
   id?: string
   orderId: string
+  mechanicId?: string | null
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -556,11 +702,13 @@ export type OrderServiceUpdateWithoutServiceInput = {
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   order?: Prisma.OrderUpdateOneRequiredWithoutServicesNestedInput
+  mechanic?: Prisma.UserUpdateOneWithoutServiceJobsNestedInput
 }
 
 export type OrderServiceUncheckedUpdateWithoutServiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -568,6 +716,7 @@ export type OrderServiceUncheckedUpdateWithoutServiceInput = {
 export type OrderServiceUncheckedUpdateManyWithoutServiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -575,6 +724,7 @@ export type OrderServiceUncheckedUpdateManyWithoutServiceInput = {
 export type OrderServiceCreateManyOrderInput = {
   id?: string
   serviceId: string
+  mechanicId?: string | null
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -584,11 +734,13 @@ export type OrderServiceUpdateWithoutOrderInput = {
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   service?: Prisma.ServiceUpdateOneRequiredWithoutOrderServicesNestedInput
+  mechanic?: Prisma.UserUpdateOneWithoutServiceJobsNestedInput
 }
 
 export type OrderServiceUncheckedUpdateWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
+  mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -596,6 +748,7 @@ export type OrderServiceUncheckedUpdateWithoutOrderInput = {
 export type OrderServiceUncheckedUpdateManyWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
+  mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -606,52 +759,62 @@ export type OrderServiceSelect<ExtArgs extends runtime.Types.Extensions.Internal
   id?: boolean
   orderId?: boolean
   serviceId?: boolean
+  mechanicId?: boolean
   quantity?: boolean
   price?: boolean
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
+  mechanic?: boolean | Prisma.OrderService$mechanicArgs<ExtArgs>
 }, ExtArgs["result"]["orderService"]>
 
 export type OrderServiceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   orderId?: boolean
   serviceId?: boolean
+  mechanicId?: boolean
   quantity?: boolean
   price?: boolean
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
+  mechanic?: boolean | Prisma.OrderService$mechanicArgs<ExtArgs>
 }, ExtArgs["result"]["orderService"]>
 
 export type OrderServiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   orderId?: boolean
   serviceId?: boolean
+  mechanicId?: boolean
   quantity?: boolean
   price?: boolean
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
+  mechanic?: boolean | Prisma.OrderService$mechanicArgs<ExtArgs>
 }, ExtArgs["result"]["orderService"]>
 
 export type OrderServiceSelectScalar = {
   id?: boolean
   orderId?: boolean
   serviceId?: boolean
+  mechanicId?: boolean
   quantity?: boolean
   price?: boolean
 }
 
-export type OrderServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "serviceId" | "quantity" | "price", ExtArgs["result"]["orderService"]>
+export type OrderServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "serviceId" | "mechanicId" | "quantity" | "price", ExtArgs["result"]["orderService"]>
 export type OrderServiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
+  mechanic?: boolean | Prisma.OrderService$mechanicArgs<ExtArgs>
 }
 export type OrderServiceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
+  mechanic?: boolean | Prisma.OrderService$mechanicArgs<ExtArgs>
 }
 export type OrderServiceIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
+  mechanic?: boolean | Prisma.OrderService$mechanicArgs<ExtArgs>
 }
 
 export type $OrderServicePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -659,11 +822,13 @@ export type $OrderServicePayload<ExtArgs extends runtime.Types.Extensions.Intern
   objects: {
     order: Prisma.$OrderPayload<ExtArgs>
     service: Prisma.$ServicePayload<ExtArgs>
+    mechanic: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     orderId: string
     serviceId: string
+    mechanicId: string | null
     quantity: number
     price: runtime.Decimal
   }, ExtArgs["result"]["orderService"]>
@@ -1062,6 +1227,7 @@ export interface Prisma__OrderServiceClient<T, Null = never, ExtArgs extends run
   readonly [Symbol.toStringTag]: "PrismaPromise"
   order<T extends Prisma.OrderDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrderDefaultArgs<ExtArgs>>): Prisma.Prisma__OrderClient<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   service<T extends Prisma.ServiceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceDefaultArgs<ExtArgs>>): Prisma.Prisma__ServiceClient<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  mechanic<T extends Prisma.OrderService$mechanicArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrderService$mechanicArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1094,6 +1260,7 @@ export interface OrderServiceFieldRefs {
   readonly id: Prisma.FieldRef<"OrderService", 'String'>
   readonly orderId: Prisma.FieldRef<"OrderService", 'String'>
   readonly serviceId: Prisma.FieldRef<"OrderService", 'String'>
+  readonly mechanicId: Prisma.FieldRef<"OrderService", 'String'>
   readonly quantity: Prisma.FieldRef<"OrderService", 'Float'>
   readonly price: Prisma.FieldRef<"OrderService", 'Decimal'>
 }
@@ -1489,6 +1656,25 @@ export type OrderServiceDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many OrderServices to delete.
    */
   limit?: number
+}
+
+/**
+ * OrderService.mechanic
+ */
+export type OrderService$mechanicArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

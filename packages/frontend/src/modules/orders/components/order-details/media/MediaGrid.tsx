@@ -18,6 +18,14 @@ interface MediaGridProps {
 }
 
 export function MediaGrid({ media, onDelete, onDownload }: MediaGridProps) {
+	if (!media.length) {
+		return (
+			<div className='py-12 text-center text-sm text-muted-foreground'>
+				No media files
+			</div>
+		);
+	}
+
 	return (
 		<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
 			{media.map(file => (

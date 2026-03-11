@@ -231,11 +231,6 @@ export type PartsManufacturerUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type PartsManufacturerNullableScalarRelationFilter = {
-  is?: Prisma.PartsManufacturerWhereInput | null
-  isNot?: Prisma.PartsManufacturerWhereInput | null
-}
-
 export type PartsManufacturerCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -249,6 +244,11 @@ export type PartsManufacturerMaxOrderByAggregateInput = {
 export type PartsManufacturerMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+}
+
+export type PartsManufacturerNullableScalarRelationFilter = {
+  is?: Prisma.PartsManufacturerWhereInput | null
+  isNot?: Prisma.PartsManufacturerWhereInput | null
 }
 
 export type PartsManufacturerCreateNestedOneWithoutPartsInput = {

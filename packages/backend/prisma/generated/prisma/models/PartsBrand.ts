@@ -231,11 +231,6 @@ export type PartsBrandUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type PartsBrandScalarRelationFilter = {
-  is?: Prisma.PartsBrandWhereInput
-  isNot?: Prisma.PartsBrandWhereInput
-}
-
 export type PartsBrandCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -249,6 +244,11 @@ export type PartsBrandMaxOrderByAggregateInput = {
 export type PartsBrandMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+}
+
+export type PartsBrandScalarRelationFilter = {
+  is?: Prisma.PartsBrandWhereInput
+  isNot?: Prisma.PartsBrandWhereInput
 }
 
 export type PartsBrandCreateNestedOneWithoutPartsInput = {

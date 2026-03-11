@@ -868,78 +868,6 @@ export type PartUncheckedUpdateManyWithoutCategoryNestedInput = {
   deleteMany?: Prisma.PartScalarWhereInput | Prisma.PartScalarWhereInput[]
 }
 
-export type PartCreatecompatibilityInput = {
-  set: string[]
-}
-
-export type PartCreatecrossNumbersInput = {
-  set: string[]
-}
-
-export type PartUpdatecompatibilityInput = {
-  set?: string[]
-  push?: string | string[]
-}
-
-export type PartUpdatecrossNumbersInput = {
-  set?: string[]
-  push?: string | string[]
-}
-
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
-export type NullableEnumPartConditionFieldUpdateOperationsInput = {
-  set?: $Enums.PartCondition | null
-}
-
-export type PartCreateNestedOneWithoutInventoryInput = {
-  create?: Prisma.XOR<Prisma.PartCreateWithoutInventoryInput, Prisma.PartUncheckedCreateWithoutInventoryInput>
-  connectOrCreate?: Prisma.PartCreateOrConnectWithoutInventoryInput
-  connect?: Prisma.PartWhereUniqueInput
-}
-
-export type PartUpdateOneRequiredWithoutInventoryNestedInput = {
-  create?: Prisma.XOR<Prisma.PartCreateWithoutInventoryInput, Prisma.PartUncheckedCreateWithoutInventoryInput>
-  connectOrCreate?: Prisma.PartCreateOrConnectWithoutInventoryInput
-  upsert?: Prisma.PartUpsertWithoutInventoryInput
-  connect?: Prisma.PartWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.PartUpdateToOneWithWhereWithoutInventoryInput, Prisma.PartUpdateWithoutInventoryInput>, Prisma.PartUncheckedUpdateWithoutInventoryInput>
-}
-
-export type PartCreateNestedOneWithoutStockMovementsInput = {
-  create?: Prisma.XOR<Prisma.PartCreateWithoutStockMovementsInput, Prisma.PartUncheckedCreateWithoutStockMovementsInput>
-  connectOrCreate?: Prisma.PartCreateOrConnectWithoutStockMovementsInput
-  connect?: Prisma.PartWhereUniqueInput
-}
-
-export type PartUpdateOneRequiredWithoutStockMovementsNestedInput = {
-  create?: Prisma.XOR<Prisma.PartCreateWithoutStockMovementsInput, Prisma.PartUncheckedCreateWithoutStockMovementsInput>
-  connectOrCreate?: Prisma.PartCreateOrConnectWithoutStockMovementsInput
-  upsert?: Prisma.PartUpsertWithoutStockMovementsInput
-  connect?: Prisma.PartWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.PartUpdateToOneWithWhereWithoutStockMovementsInput, Prisma.PartUpdateWithoutStockMovementsInput>, Prisma.PartUncheckedUpdateWithoutStockMovementsInput>
-}
-
-export type PartCreateNestedOneWithoutPriceRulesInput = {
-  create?: Prisma.XOR<Prisma.PartCreateWithoutPriceRulesInput, Prisma.PartUncheckedCreateWithoutPriceRulesInput>
-  connectOrCreate?: Prisma.PartCreateOrConnectWithoutPriceRulesInput
-  connect?: Prisma.PartWhereUniqueInput
-}
-
-export type PartUpdateOneRequiredWithoutPriceRulesNestedInput = {
-  create?: Prisma.XOR<Prisma.PartCreateWithoutPriceRulesInput, Prisma.PartUncheckedCreateWithoutPriceRulesInput>
-  connectOrCreate?: Prisma.PartCreateOrConnectWithoutPriceRulesInput
-  upsert?: Prisma.PartUpsertWithoutPriceRulesInput
-  connect?: Prisma.PartWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.PartUpdateToOneWithWhereWithoutPriceRulesInput, Prisma.PartUpdateWithoutPriceRulesInput>, Prisma.PartUncheckedUpdateWithoutPriceRulesInput>
-}
-
 export type PartCreateNestedManyWithoutManufacturerInput = {
   create?: Prisma.XOR<Prisma.PartCreateWithoutManufacturerInput, Prisma.PartUncheckedCreateWithoutManufacturerInput> | Prisma.PartCreateWithoutManufacturerInput[] | Prisma.PartUncheckedCreateWithoutManufacturerInput[]
   connectOrCreate?: Prisma.PartCreateOrConnectWithoutManufacturerInput | Prisma.PartCreateOrConnectWithoutManufacturerInput[]
@@ -1064,6 +992,78 @@ export type PartUncheckedUpdateManyWithoutSupplierNestedInput = {
   update?: Prisma.PartUpdateWithWhereUniqueWithoutSupplierInput | Prisma.PartUpdateWithWhereUniqueWithoutSupplierInput[]
   updateMany?: Prisma.PartUpdateManyWithWhereWithoutSupplierInput | Prisma.PartUpdateManyWithWhereWithoutSupplierInput[]
   deleteMany?: Prisma.PartScalarWhereInput | Prisma.PartScalarWhereInput[]
+}
+
+export type PartCreatecompatibilityInput = {
+  set: string[]
+}
+
+export type PartCreatecrossNumbersInput = {
+  set: string[]
+}
+
+export type PartUpdatecompatibilityInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type PartUpdatecrossNumbersInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type NullableEnumPartConditionFieldUpdateOperationsInput = {
+  set?: $Enums.PartCondition | null
+}
+
+export type PartCreateNestedOneWithoutInventoryInput = {
+  create?: Prisma.XOR<Prisma.PartCreateWithoutInventoryInput, Prisma.PartUncheckedCreateWithoutInventoryInput>
+  connectOrCreate?: Prisma.PartCreateOrConnectWithoutInventoryInput
+  connect?: Prisma.PartWhereUniqueInput
+}
+
+export type PartUpdateOneRequiredWithoutInventoryNestedInput = {
+  create?: Prisma.XOR<Prisma.PartCreateWithoutInventoryInput, Prisma.PartUncheckedCreateWithoutInventoryInput>
+  connectOrCreate?: Prisma.PartCreateOrConnectWithoutInventoryInput
+  upsert?: Prisma.PartUpsertWithoutInventoryInput
+  connect?: Prisma.PartWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PartUpdateToOneWithWhereWithoutInventoryInput, Prisma.PartUpdateWithoutInventoryInput>, Prisma.PartUncheckedUpdateWithoutInventoryInput>
+}
+
+export type PartCreateNestedOneWithoutStockMovementsInput = {
+  create?: Prisma.XOR<Prisma.PartCreateWithoutStockMovementsInput, Prisma.PartUncheckedCreateWithoutStockMovementsInput>
+  connectOrCreate?: Prisma.PartCreateOrConnectWithoutStockMovementsInput
+  connect?: Prisma.PartWhereUniqueInput
+}
+
+export type PartUpdateOneRequiredWithoutStockMovementsNestedInput = {
+  create?: Prisma.XOR<Prisma.PartCreateWithoutStockMovementsInput, Prisma.PartUncheckedCreateWithoutStockMovementsInput>
+  connectOrCreate?: Prisma.PartCreateOrConnectWithoutStockMovementsInput
+  upsert?: Prisma.PartUpsertWithoutStockMovementsInput
+  connect?: Prisma.PartWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PartUpdateToOneWithWhereWithoutStockMovementsInput, Prisma.PartUpdateWithoutStockMovementsInput>, Prisma.PartUncheckedUpdateWithoutStockMovementsInput>
+}
+
+export type PartCreateNestedOneWithoutPriceRulesInput = {
+  create?: Prisma.XOR<Prisma.PartCreateWithoutPriceRulesInput, Prisma.PartUncheckedCreateWithoutPriceRulesInput>
+  connectOrCreate?: Prisma.PartCreateOrConnectWithoutPriceRulesInput
+  connect?: Prisma.PartWhereUniqueInput
+}
+
+export type PartUpdateOneRequiredWithoutPriceRulesNestedInput = {
+  create?: Prisma.XOR<Prisma.PartCreateWithoutPriceRulesInput, Prisma.PartUncheckedCreateWithoutPriceRulesInput>
+  connectOrCreate?: Prisma.PartCreateOrConnectWithoutPriceRulesInput
+  upsert?: Prisma.PartUpsertWithoutPriceRulesInput
+  connect?: Prisma.PartWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PartUpdateToOneWithWhereWithoutPriceRulesInput, Prisma.PartUpdateWithoutPriceRulesInput>, Prisma.PartUncheckedUpdateWithoutPriceRulesInput>
 }
 
 export type PartCreateNestedOneWithoutOrderPartsInput = {
@@ -1194,6 +1194,264 @@ export type PartScalarWhereInput = {
   manufacturerId?: Prisma.StringNullableFilter<"Part"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Part"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Part"> | Date | string
+}
+
+export type PartCreateWithoutManufacturerInput = {
+  id?: string
+  code?: string | null
+  name: string
+  sku: string
+  oem?: string | null
+  barcode?: string | null
+  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
+  unit?: string | null
+  minStock?: number | null
+  supplierContact?: string | null
+  condition?: $Enums.PartCondition | null
+  warrantyMonths?: number | null
+  warrantyKm?: number | null
+  weight?: string | null
+  dimensions?: string | null
+  photo?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
+  brand: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
+  supplier?: Prisma.PartsSupplierCreateNestedOneWithoutPartsInput
+  inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
+  orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
+}
+
+export type PartUncheckedCreateWithoutManufacturerInput = {
+  id?: string
+  code?: string | null
+  name: string
+  sku: string
+  oem?: string | null
+  categoryId: string
+  brandId: string
+  barcode?: string | null
+  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
+  unit?: string | null
+  minStock?: number | null
+  supplierId?: string | null
+  supplierContact?: string | null
+  condition?: $Enums.PartCondition | null
+  warrantyMonths?: number | null
+  warrantyKm?: number | null
+  weight?: string | null
+  dimensions?: string | null
+  photo?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
+  orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
+}
+
+export type PartCreateOrConnectWithoutManufacturerInput = {
+  where: Prisma.PartWhereUniqueInput
+  create: Prisma.XOR<Prisma.PartCreateWithoutManufacturerInput, Prisma.PartUncheckedCreateWithoutManufacturerInput>
+}
+
+export type PartCreateManyManufacturerInputEnvelope = {
+  data: Prisma.PartCreateManyManufacturerInput | Prisma.PartCreateManyManufacturerInput[]
+  skipDuplicates?: boolean
+}
+
+export type PartUpsertWithWhereUniqueWithoutManufacturerInput = {
+  where: Prisma.PartWhereUniqueInput
+  update: Prisma.XOR<Prisma.PartUpdateWithoutManufacturerInput, Prisma.PartUncheckedUpdateWithoutManufacturerInput>
+  create: Prisma.XOR<Prisma.PartCreateWithoutManufacturerInput, Prisma.PartUncheckedCreateWithoutManufacturerInput>
+}
+
+export type PartUpdateWithWhereUniqueWithoutManufacturerInput = {
+  where: Prisma.PartWhereUniqueInput
+  data: Prisma.XOR<Prisma.PartUpdateWithoutManufacturerInput, Prisma.PartUncheckedUpdateWithoutManufacturerInput>
+}
+
+export type PartUpdateManyWithWhereWithoutManufacturerInput = {
+  where: Prisma.PartScalarWhereInput
+  data: Prisma.XOR<Prisma.PartUpdateManyMutationInput, Prisma.PartUncheckedUpdateManyWithoutManufacturerInput>
+}
+
+export type PartCreateWithoutBrandInput = {
+  id?: string
+  code?: string | null
+  name: string
+  sku: string
+  oem?: string | null
+  barcode?: string | null
+  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
+  unit?: string | null
+  minStock?: number | null
+  supplierContact?: string | null
+  condition?: $Enums.PartCondition | null
+  warrantyMonths?: number | null
+  warrantyKm?: number | null
+  weight?: string | null
+  dimensions?: string | null
+  photo?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
+  supplier?: Prisma.PartsSupplierCreateNestedOneWithoutPartsInput
+  manufacturer?: Prisma.PartsManufacturerCreateNestedOneWithoutPartsInput
+  inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
+  orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
+}
+
+export type PartUncheckedCreateWithoutBrandInput = {
+  id?: string
+  code?: string | null
+  name: string
+  sku: string
+  oem?: string | null
+  categoryId: string
+  barcode?: string | null
+  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
+  unit?: string | null
+  minStock?: number | null
+  supplierId?: string | null
+  supplierContact?: string | null
+  condition?: $Enums.PartCondition | null
+  warrantyMonths?: number | null
+  warrantyKm?: number | null
+  weight?: string | null
+  dimensions?: string | null
+  photo?: string | null
+  notes?: string | null
+  manufacturerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
+  orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
+}
+
+export type PartCreateOrConnectWithoutBrandInput = {
+  where: Prisma.PartWhereUniqueInput
+  create: Prisma.XOR<Prisma.PartCreateWithoutBrandInput, Prisma.PartUncheckedCreateWithoutBrandInput>
+}
+
+export type PartCreateManyBrandInputEnvelope = {
+  data: Prisma.PartCreateManyBrandInput | Prisma.PartCreateManyBrandInput[]
+  skipDuplicates?: boolean
+}
+
+export type PartUpsertWithWhereUniqueWithoutBrandInput = {
+  where: Prisma.PartWhereUniqueInput
+  update: Prisma.XOR<Prisma.PartUpdateWithoutBrandInput, Prisma.PartUncheckedUpdateWithoutBrandInput>
+  create: Prisma.XOR<Prisma.PartCreateWithoutBrandInput, Prisma.PartUncheckedCreateWithoutBrandInput>
+}
+
+export type PartUpdateWithWhereUniqueWithoutBrandInput = {
+  where: Prisma.PartWhereUniqueInput
+  data: Prisma.XOR<Prisma.PartUpdateWithoutBrandInput, Prisma.PartUncheckedUpdateWithoutBrandInput>
+}
+
+export type PartUpdateManyWithWhereWithoutBrandInput = {
+  where: Prisma.PartScalarWhereInput
+  data: Prisma.XOR<Prisma.PartUpdateManyMutationInput, Prisma.PartUncheckedUpdateManyWithoutBrandInput>
+}
+
+export type PartCreateWithoutSupplierInput = {
+  id?: string
+  code?: string | null
+  name: string
+  sku: string
+  oem?: string | null
+  barcode?: string | null
+  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
+  unit?: string | null
+  minStock?: number | null
+  supplierContact?: string | null
+  condition?: $Enums.PartCondition | null
+  warrantyMonths?: number | null
+  warrantyKm?: number | null
+  weight?: string | null
+  dimensions?: string | null
+  photo?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
+  brand: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
+  manufacturer?: Prisma.PartsManufacturerCreateNestedOneWithoutPartsInput
+  inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
+  orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
+}
+
+export type PartUncheckedCreateWithoutSupplierInput = {
+  id?: string
+  code?: string | null
+  name: string
+  sku: string
+  oem?: string | null
+  categoryId: string
+  brandId: string
+  barcode?: string | null
+  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
+  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
+  unit?: string | null
+  minStock?: number | null
+  supplierContact?: string | null
+  condition?: $Enums.PartCondition | null
+  warrantyMonths?: number | null
+  warrantyKm?: number | null
+  weight?: string | null
+  dimensions?: string | null
+  photo?: string | null
+  notes?: string | null
+  manufacturerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
+  priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
+  orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
+}
+
+export type PartCreateOrConnectWithoutSupplierInput = {
+  where: Prisma.PartWhereUniqueInput
+  create: Prisma.XOR<Prisma.PartCreateWithoutSupplierInput, Prisma.PartUncheckedCreateWithoutSupplierInput>
+}
+
+export type PartCreateManySupplierInputEnvelope = {
+  data: Prisma.PartCreateManySupplierInput | Prisma.PartCreateManySupplierInput[]
+  skipDuplicates?: boolean
+}
+
+export type PartUpsertWithWhereUniqueWithoutSupplierInput = {
+  where: Prisma.PartWhereUniqueInput
+  update: Prisma.XOR<Prisma.PartUpdateWithoutSupplierInput, Prisma.PartUncheckedUpdateWithoutSupplierInput>
+  create: Prisma.XOR<Prisma.PartCreateWithoutSupplierInput, Prisma.PartUncheckedCreateWithoutSupplierInput>
+}
+
+export type PartUpdateWithWhereUniqueWithoutSupplierInput = {
+  where: Prisma.PartWhereUniqueInput
+  data: Prisma.XOR<Prisma.PartUpdateWithoutSupplierInput, Prisma.PartUncheckedUpdateWithoutSupplierInput>
+}
+
+export type PartUpdateManyWithWhereWithoutSupplierInput = {
+  where: Prisma.PartScalarWhereInput
+  data: Prisma.XOR<Prisma.PartUpdateManyMutationInput, Prisma.PartUncheckedUpdateManyWithoutSupplierInput>
 }
 
 export type PartCreateWithoutInventoryInput = {
@@ -1602,264 +1860,6 @@ export type PartUncheckedUpdateWithoutPriceRulesInput = {
   inventory?: Prisma.PartInventoryUncheckedUpdateManyWithoutPartNestedInput
   orderParts?: Prisma.OrderPartUncheckedUpdateManyWithoutPartNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutPartNestedInput
-}
-
-export type PartCreateWithoutManufacturerInput = {
-  id?: string
-  code?: string | null
-  name: string
-  sku: string
-  oem?: string | null
-  barcode?: string | null
-  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
-  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  unit?: string | null
-  minStock?: number | null
-  supplierContact?: string | null
-  condition?: $Enums.PartCondition | null
-  warrantyMonths?: number | null
-  warrantyKm?: number | null
-  weight?: string | null
-  dimensions?: string | null
-  photo?: string | null
-  notes?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  category: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
-  brand: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
-  supplier?: Prisma.PartsSupplierCreateNestedOneWithoutPartsInput
-  inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
-  priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
-  orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
-  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
-}
-
-export type PartUncheckedCreateWithoutManufacturerInput = {
-  id?: string
-  code?: string | null
-  name: string
-  sku: string
-  oem?: string | null
-  categoryId: string
-  brandId: string
-  barcode?: string | null
-  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
-  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  unit?: string | null
-  minStock?: number | null
-  supplierId?: string | null
-  supplierContact?: string | null
-  condition?: $Enums.PartCondition | null
-  warrantyMonths?: number | null
-  warrantyKm?: number | null
-  weight?: string | null
-  dimensions?: string | null
-  photo?: string | null
-  notes?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
-  priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
-  orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
-  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
-}
-
-export type PartCreateOrConnectWithoutManufacturerInput = {
-  where: Prisma.PartWhereUniqueInput
-  create: Prisma.XOR<Prisma.PartCreateWithoutManufacturerInput, Prisma.PartUncheckedCreateWithoutManufacturerInput>
-}
-
-export type PartCreateManyManufacturerInputEnvelope = {
-  data: Prisma.PartCreateManyManufacturerInput | Prisma.PartCreateManyManufacturerInput[]
-  skipDuplicates?: boolean
-}
-
-export type PartUpsertWithWhereUniqueWithoutManufacturerInput = {
-  where: Prisma.PartWhereUniqueInput
-  update: Prisma.XOR<Prisma.PartUpdateWithoutManufacturerInput, Prisma.PartUncheckedUpdateWithoutManufacturerInput>
-  create: Prisma.XOR<Prisma.PartCreateWithoutManufacturerInput, Prisma.PartUncheckedCreateWithoutManufacturerInput>
-}
-
-export type PartUpdateWithWhereUniqueWithoutManufacturerInput = {
-  where: Prisma.PartWhereUniqueInput
-  data: Prisma.XOR<Prisma.PartUpdateWithoutManufacturerInput, Prisma.PartUncheckedUpdateWithoutManufacturerInput>
-}
-
-export type PartUpdateManyWithWhereWithoutManufacturerInput = {
-  where: Prisma.PartScalarWhereInput
-  data: Prisma.XOR<Prisma.PartUpdateManyMutationInput, Prisma.PartUncheckedUpdateManyWithoutManufacturerInput>
-}
-
-export type PartCreateWithoutBrandInput = {
-  id?: string
-  code?: string | null
-  name: string
-  sku: string
-  oem?: string | null
-  barcode?: string | null
-  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
-  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  unit?: string | null
-  minStock?: number | null
-  supplierContact?: string | null
-  condition?: $Enums.PartCondition | null
-  warrantyMonths?: number | null
-  warrantyKm?: number | null
-  weight?: string | null
-  dimensions?: string | null
-  photo?: string | null
-  notes?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  category: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
-  supplier?: Prisma.PartsSupplierCreateNestedOneWithoutPartsInput
-  manufacturer?: Prisma.PartsManufacturerCreateNestedOneWithoutPartsInput
-  inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
-  priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
-  orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
-  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
-}
-
-export type PartUncheckedCreateWithoutBrandInput = {
-  id?: string
-  code?: string | null
-  name: string
-  sku: string
-  oem?: string | null
-  categoryId: string
-  barcode?: string | null
-  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
-  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  unit?: string | null
-  minStock?: number | null
-  supplierId?: string | null
-  supplierContact?: string | null
-  condition?: $Enums.PartCondition | null
-  warrantyMonths?: number | null
-  warrantyKm?: number | null
-  weight?: string | null
-  dimensions?: string | null
-  photo?: string | null
-  notes?: string | null
-  manufacturerId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
-  priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
-  orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
-  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
-}
-
-export type PartCreateOrConnectWithoutBrandInput = {
-  where: Prisma.PartWhereUniqueInput
-  create: Prisma.XOR<Prisma.PartCreateWithoutBrandInput, Prisma.PartUncheckedCreateWithoutBrandInput>
-}
-
-export type PartCreateManyBrandInputEnvelope = {
-  data: Prisma.PartCreateManyBrandInput | Prisma.PartCreateManyBrandInput[]
-  skipDuplicates?: boolean
-}
-
-export type PartUpsertWithWhereUniqueWithoutBrandInput = {
-  where: Prisma.PartWhereUniqueInput
-  update: Prisma.XOR<Prisma.PartUpdateWithoutBrandInput, Prisma.PartUncheckedUpdateWithoutBrandInput>
-  create: Prisma.XOR<Prisma.PartCreateWithoutBrandInput, Prisma.PartUncheckedCreateWithoutBrandInput>
-}
-
-export type PartUpdateWithWhereUniqueWithoutBrandInput = {
-  where: Prisma.PartWhereUniqueInput
-  data: Prisma.XOR<Prisma.PartUpdateWithoutBrandInput, Prisma.PartUncheckedUpdateWithoutBrandInput>
-}
-
-export type PartUpdateManyWithWhereWithoutBrandInput = {
-  where: Prisma.PartScalarWhereInput
-  data: Prisma.XOR<Prisma.PartUpdateManyMutationInput, Prisma.PartUncheckedUpdateManyWithoutBrandInput>
-}
-
-export type PartCreateWithoutSupplierInput = {
-  id?: string
-  code?: string | null
-  name: string
-  sku: string
-  oem?: string | null
-  barcode?: string | null
-  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
-  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  unit?: string | null
-  minStock?: number | null
-  supplierContact?: string | null
-  condition?: $Enums.PartCondition | null
-  warrantyMonths?: number | null
-  warrantyKm?: number | null
-  weight?: string | null
-  dimensions?: string | null
-  photo?: string | null
-  notes?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  category: Prisma.PartCategoryCreateNestedOneWithoutPartsInput
-  brand: Prisma.PartsBrandCreateNestedOneWithoutPartsInput
-  manufacturer?: Prisma.PartsManufacturerCreateNestedOneWithoutPartsInput
-  inventory?: Prisma.PartInventoryCreateNestedManyWithoutPartInput
-  priceRules?: Prisma.PartPriceRuleCreateNestedManyWithoutPartInput
-  orderParts?: Prisma.OrderPartCreateNestedManyWithoutPartInput
-  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutPartInput
-}
-
-export type PartUncheckedCreateWithoutSupplierInput = {
-  id?: string
-  code?: string | null
-  name: string
-  sku: string
-  oem?: string | null
-  categoryId: string
-  brandId: string
-  barcode?: string | null
-  compatibility?: Prisma.PartCreatecompatibilityInput | string[]
-  crossNumbers?: Prisma.PartCreatecrossNumbersInput | string[]
-  unit?: string | null
-  minStock?: number | null
-  supplierContact?: string | null
-  condition?: $Enums.PartCondition | null
-  warrantyMonths?: number | null
-  warrantyKm?: number | null
-  weight?: string | null
-  dimensions?: string | null
-  photo?: string | null
-  notes?: string | null
-  manufacturerId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  inventory?: Prisma.PartInventoryUncheckedCreateNestedManyWithoutPartInput
-  priceRules?: Prisma.PartPriceRuleUncheckedCreateNestedManyWithoutPartInput
-  orderParts?: Prisma.OrderPartUncheckedCreateNestedManyWithoutPartInput
-  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutPartInput
-}
-
-export type PartCreateOrConnectWithoutSupplierInput = {
-  where: Prisma.PartWhereUniqueInput
-  create: Prisma.XOR<Prisma.PartCreateWithoutSupplierInput, Prisma.PartUncheckedCreateWithoutSupplierInput>
-}
-
-export type PartCreateManySupplierInputEnvelope = {
-  data: Prisma.PartCreateManySupplierInput | Prisma.PartCreateManySupplierInput[]
-  skipDuplicates?: boolean
-}
-
-export type PartUpsertWithWhereUniqueWithoutSupplierInput = {
-  where: Prisma.PartWhereUniqueInput
-  update: Prisma.XOR<Prisma.PartUpdateWithoutSupplierInput, Prisma.PartUncheckedUpdateWithoutSupplierInput>
-  create: Prisma.XOR<Prisma.PartCreateWithoutSupplierInput, Prisma.PartUncheckedCreateWithoutSupplierInput>
-}
-
-export type PartUpdateWithWhereUniqueWithoutSupplierInput = {
-  where: Prisma.PartWhereUniqueInput
-  data: Prisma.XOR<Prisma.PartUpdateWithoutSupplierInput, Prisma.PartUncheckedUpdateWithoutSupplierInput>
-}
-
-export type PartUpdateManyWithWhereWithoutSupplierInput = {
-  where: Prisma.PartScalarWhereInput
-  data: Prisma.XOR<Prisma.PartUpdateManyMutationInput, Prisma.PartUncheckedUpdateManyWithoutSupplierInput>
 }
 
 export type PartCreateWithoutOrderPartsInput = {

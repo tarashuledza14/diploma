@@ -424,8 +424,6 @@ async function main() {
 	];
 
 	console.log(`✅ Services created`);
-
-	// --- 7. ЗАМОВЛЕННЯ (Orders) ---
 	const createOrder = async (
 		status: OrderStatus,
 		vehicleIdx: number,
@@ -452,6 +450,10 @@ async function main() {
 				clientId: clients[clientIdx].id,
 				managerId: manager.id,
 				mechanicId: mechanic ? mechanic.id : null,
+				// ДОДАНО: Обов'язкове поле пробігу. Беремо поточний пробіг автомобіля
+				mileage: vehicles[vehicleIdx].mileage,
+				// ДОДАНО (Опціонально): приклад знижки
+				discount: 0,
 			},
 		});
 
@@ -484,6 +486,8 @@ async function main() {
 						serviceId: services[item.idx].id,
 						quantity: item.qty,
 						price: item.price,
+						// ДОДАНО: Прив'язуємо конкретного механіка до конкретної роботи
+						mechanicId: mechanic ? mechanic.id : null,
 					},
 				});
 			}
@@ -494,8 +498,8 @@ async function main() {
 	// Створюємо замовлення-приклад, у якому використано Мастило та Фільтр
 	await createOrder(
 		OrderStatus.COMPLETED,
-		0,
-		0,
+		0, // VW Golf
+		0, // Тарас Шевченко
 		manager1,
 		mechanics[0],
 		'Планова заміна мастила',
@@ -510,7 +514,6 @@ async function main() {
 
 	console.log('🎉 Seed completed successfully!');
 }
-
 main()
 	.catch(e => {
 		console.error('❌ Seed failed:', e);

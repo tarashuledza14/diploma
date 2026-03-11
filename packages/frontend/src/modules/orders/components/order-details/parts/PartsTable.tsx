@@ -8,14 +8,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/shared/components/ui';
-import { cn } from '@/shared/lib/utils';
-import { Badge, Trash2 } from 'lucide-react';
-
-const partStatusColors = {
-	in_stock: 'bg-green-100 text-green-700',
-	ordered: 'bg-amber-100 text-amber-700',
-	out_of_stock: 'bg-red-100 text-red-700',
-};
+import { Trash2 } from 'lucide-react';
 
 interface Props {
 	parts: any;
@@ -24,15 +17,14 @@ export function PartsTable({ parts }: Props) {
 	return (
 		<Table>
 			<TableHeader>
-				<TableRow>
-					<TableHead>Part Name</TableHead>
-					<TableHead>SKU</TableHead>
-					<TableHead>Quantity</TableHead>
-					<TableHead>Unit Price</TableHead>
-					<TableHead>Status</TableHead>
-					<TableHead className='text-right'>Total</TableHead>
-					<TableHead className='w-12'></TableHead>
-				</TableRow>
+			<TableRow>
+				<TableHead>Part Name</TableHead>
+				<TableHead>SKU</TableHead>
+				<TableHead>Quantity</TableHead>
+				<TableHead>Unit Price</TableHead>
+				<TableHead className='text-right'>Total</TableHead>
+				<TableHead className='w-12'></TableHead>
+			</TableRow>
 			</TableHeader>
 			<TableBody>
 				{parts.map((part: any) => (
@@ -50,21 +42,12 @@ export function PartsTable({ parts }: Props) {
 								// TODO: Call OrderService.updatePartQuantity() on change
 							/>
 						</TableCell>
-						<TableCell>${part.unitPrice.toFixed(2)}</TableCell>
-						<TableCell>
-							<Badge
-								className={cn(
-									partStatusColors[
-										part.status as keyof typeof partStatusColors
-									],
-								)}
-							>
-								{part.status.replace('_', ' ')}
-							</Badge>
-						</TableCell>
+						<TableCell>${Number(part.unitPrice).toFixed(2)}</TableCell>
 						<TableCell className='text-right font-medium'>
-							{/* TODO: Calculate total price based on quantity * price */}$
-							{(part.quantity * part.unitPrice).toFixed(2)}
+							$
+							{(
+								(part.quantity ?? 0) * Number(part.unitPrice ?? 0)
+							).toFixed(2)}
 						</TableCell>
 						<TableCell>
 							<Button

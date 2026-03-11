@@ -268,10 +268,6 @@ export type PartCategoryOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
-}
-
 export type PartCategoryCreateNestedOneWithoutPartsInput = {
   create?: Prisma.XOR<Prisma.PartCategoryCreateWithoutPartsInput, Prisma.PartCategoryUncheckedCreateWithoutPartsInput>
   connectOrCreate?: Prisma.PartCategoryCreateOrConnectWithoutPartsInput

@@ -1,32 +1,31 @@
-import { InventoryDictionaries } from '@/modules/inventory/interfaces/inventory.interfaces';
 import {
 	Avatar,
 	AvatarFallback,
+	Badge,
 	Button,
 	Checkbox,
 	DataTableColumnHeader,
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 	getClientInitials,
 } from '@/shared';
 import { DataTableRowAction } from '@/types/data-table';
 import { ColumnDef } from '@tanstack/react-table';
-import { Edit, EllipsisVertical, Eye, History, Trash2 } from 'lucide-react';
-import { Order } from '../../interfaces/order.interface';
+import { Edit, EllipsisVertical, Eye, Trash2 } from 'lucide-react';
+import { OrderListItem } from '../../interfaces/order.interface';
 
 interface GetOrdersTableColumnsProps {
 	setRowAction: React.Dispatch<
-		React.SetStateAction<DataTableRowAction<Order> | null>
+		React.SetStateAction<DataTableRowAction<OrderListItem> | null>
 	>;
-	dictionaries?: InventoryDictionaries;
 }
 
 export function getOrdersTableColumns({
 	setRowAction,
-	dictionaries,
-}: GetOrdersTableColumnsProps): ColumnDef<Order>[] {
+}: GetOrdersTableColumnsProps): ColumnDef<OrderListItem>[] {
 	return [
 		{
 			id: 'select',
@@ -55,7 +54,7 @@ export function getOrdersTableColumns({
 		},
 		{
 			id: 'client',
-			accessorKey: 'client.fullName',
+			accessorFn: row => row.client.fullName,
 			header: ({ column }) => (
 				<DataTableColumnHeader column={column} label='Client' />
 			),
@@ -75,24 +74,28 @@ export function getOrdersTableColumns({
 			enableColumnFilter: true,
 			enableHiding: false,
 			meta: {
-				label: 'Part',
+				label: 'Client',
+				placeholder: 'Search client...',
 				variant: 'text',
 			},
 		},
 		{
 			id: 'vehicle',
-			accessorKey: 'vehicle',
+			accessorFn: row =>
+				`${row.vehicle.year} ${row.vehicle.brand} ${row.vehicle.model}`,
 			header: ({ column }) => (
 				<DataTableColumnHeader column={column} label='Vehicle' />
 			),
 			cell: ({ row }) => {
-				const { year, brand, model, color } = row.original.vehicle;
+				const v = row.original.vehicle;
 				return (
 					<div>
 						<p className='font-medium'>
-							{year} {brand} {model}
+							{v.year} {v.brand} {v.model}
 						</p>
-						<p className='text-xs text-muted-foreground'>{color}</p>
+						<p className='text-xs text-muted-foreground'>
+							{v.plateNumber || v.color || '—'}
+						</p>
 					</div>
 				);
 			},
@@ -101,25 +104,30 @@ export function getOrdersTableColumns({
 			enableHiding: false,
 			meta: {
 				label: 'Vehicle',
+				placeholder: 'Search vehicle...',
 				variant: 'text',
 			},
 		},
 		{
 			id: 'services',
-			accessorKey: 'services',
+			accessorFn: row => row.services.map(s => s.name).join(', '),
 			header: ({ column }) => (
 				<DataTableColumnHeader column={column} label='Services' />
 			),
-			cell: ({ row }) => {
-				const { services } = row.original;
-				return (
-					<div className='flex flex-wrap gap-1'>
-						{/* {services?.map(s => (
-							// <Badge key={s}>{s.}</Badge>
-						))} */}
-					</div>
-				);
-			},
+			cell: ({ row }) => (
+				<div className='flex flex-wrap gap-1'>
+					{row.original.services.slice(0, 2).map(s => (
+						<Badge key={s.id} variant='secondary' className='text-xs'>
+							{s.name}
+						</Badge>
+					))}
+					{row.original.services.length > 2 && (
+						<Badge variant='secondary' className='text-xs'>
+							+{row.original.services.length - 2}
+						</Badge>
+					)}
+				</div>
+			),
 			meta: {
 				label: 'Services',
 				placeholder: 'Search services...',
@@ -307,6 +315,79 @@ export function getOrdersTableColumns({
 		// 	},
 		// },
 		{
+			id: 'status',
+			accessorKey: 'status',
+			header: ({ column }) => (
+				<DataTableColumnHeader column={column} label='Status' />
+			),
+			cell: ({ row }) => (
+				<Badge variant='secondary'>
+					{String(row.original.status).replace(/_/g, ' ')}
+				</Badge>
+			),
+			meta: {
+				label: 'Status',
+				placeholder: 'Filter by status...',
+				variant: 'text',
+			},
+			enableColumnFilter: true,
+			enableSorting: true,
+		},
+		{
+			id: 'priority',
+			accessorKey: 'priority',
+			header: ({ column }) => (
+				<DataTableColumnHeader column={column} label='Priority' />
+			),
+			cell: ({ row }) => (
+				<Badge variant='outline'>
+					{String(row.original.priority)}
+				</Badge>
+			),
+			meta: {
+				label: 'Priority',
+				placeholder: 'Filter by priority...',
+				variant: 'text',
+			},
+			enableColumnFilter: true,
+			enableSorting: true,
+		},
+		{
+			id: 'endDate',
+			accessorKey: 'endDate',
+			header: ({ column }) => (
+				<DataTableColumnHeader column={column} label='End Date' />
+			),
+			cell: ({ row }) => {
+				const d = row.original.endDate;
+				return d ? new Date(d).toLocaleDateString() : '—';
+			},
+			meta: {
+				label: 'End Date',
+				variant: 'date',
+			},
+			enableColumnFilter: true,
+			enableSorting: true,
+		},
+		{
+			id: 'totalAmount',
+			accessorKey: 'totalAmount',
+			header: ({ column }) => (
+				<DataTableColumnHeader column={column} label='Total' className='text-right' />
+			),
+			cell: ({ row }) => (
+				<div className='text-right font-medium'>
+					{row.original.totalAmount}
+				</div>
+			),
+			meta: {
+				label: 'Total',
+				variant: 'text',
+			},
+			enableColumnFilter: true,
+			enableSorting: true,
+		},
+		{
 			id: 'actions',
 			cell: function Cell({ row }) {
 				return (
@@ -327,20 +408,16 @@ export function getOrdersTableColumns({
 								<Eye className='h-4 w-4 mr-2' />
 								View
 							</DropdownMenuItem>
+							<DropdownMenuSeparator />
 							<DropdownMenuItem
 								onSelect={() => setRowAction({ row, variant: 'update' })}
 							>
 								<Edit className='h-4 w-4 mr-2' />
 								Edit
 							</DropdownMenuItem>
-
+							<DropdownMenuSeparator />
 							<DropdownMenuItem
-								onSelect={() => setRowAction({ row, variant: 'history' })}
-							>
-								<History className='h-4 w-4 mr-2' />
-								Movement History
-							</DropdownMenuItem>
-							<DropdownMenuItem
+								className='text-destructive'
 								onSelect={() => setRowAction({ row, variant: 'delete' })}
 							>
 								<Trash2 className='h-4 w-4 mr-2' />

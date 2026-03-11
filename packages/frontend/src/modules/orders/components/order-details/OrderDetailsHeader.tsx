@@ -19,7 +19,7 @@ export function OrderDetailsHeader({ order }: Props) {
 	return (
 		<div className='mb-6 flex items-start justify-between'>
 			<div className='flex items-center gap-4'>
-				<Link to='/orders/board'>
+				<Link to='/orders'>
 					<Button variant='ghost' size='icon'>
 						<ArrowLeft className='h-5 w-5' />
 						<span className='sr-only'>Back to orders</span>
@@ -33,7 +33,7 @@ export function OrderDetailsHeader({ order }: Props) {
 								statusColors[order.status as keyof typeof statusColors],
 							)}
 						>
-							{order.status.replace('_', ' ')}
+							{String(order.status).replace(/_/g, ' ')}
 						</Badge>
 						<Badge
 							variant='outline'
@@ -45,20 +45,28 @@ export function OrderDetailsHeader({ order }: Props) {
 						</Badge>
 					</div>
 					<p className='text-muted-foreground'>
-						Created on {new Date(order.createdAt).toLocaleDateString()}
+						Created on{' '}
+						{order.createdAt
+							? new Date(order.createdAt).toLocaleDateString()
+							: '—'}
 					</p>
 				</div>
 			</div>
 			<div className='flex gap-2'>
-				<Select defaultValue={order.status}>
+					<Select
+						defaultValue={String(order.status)}
+						value={String(order.status)}
+					>
 					<SelectTrigger className='w-40'>
 						<SelectValue placeholder='Status' />
 					</SelectTrigger>
 					<SelectContent>
-						<SelectItem value='new'>New</SelectItem>
-						<SelectItem value='in_progress'>In Progress</SelectItem>
-						<SelectItem value='waiting_parts'>Waiting Parts</SelectItem>
-						<SelectItem value='done'>Done</SelectItem>
+						<SelectItem value='NEW'>New</SelectItem>
+						<SelectItem value='IN_PROGRESS'>In Progress</SelectItem>
+						<SelectItem value='WAITING_PARTS'>Waiting Parts</SelectItem>
+						<SelectItem value='COMPLETED'>Completed</SelectItem>
+						<SelectItem value='PAID'>Paid</SelectItem>
+						<SelectItem value='CANCELLED'>Cancelled</SelectItem>
 					</SelectContent>
 					{/* TODO: Call OrderService.updateStatus() on change */}
 				</Select>

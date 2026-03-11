@@ -85,6 +85,26 @@ export function getInventoryTableColumns({
 			},
 		},
 		{
+			id: 'category.name',
+			accessorKey: 'category.name',
+			header: ({ column }) => (
+				<DataTableColumnHeader column={column} label='Category' />
+			),
+			cell: ({ row }) => <Badge>{row.original.category?.name}</Badge>,
+			enableSorting: true,
+			enableColumnFilter: true,
+			enableHiding: true,
+			meta: {
+				label: 'Category',
+				variant: 'multiSelect',
+				options:
+					dictionaries?.categories.map(category => ({
+						value: category.name,
+						label: category.name,
+					})) ?? [],
+			},
+		},
+		{
 			id: 'oem',
 			accessorKey: 'oem',
 			meta: {

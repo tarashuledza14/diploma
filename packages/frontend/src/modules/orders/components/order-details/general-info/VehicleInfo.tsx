@@ -12,6 +12,11 @@ interface Props {
 	order: any;
 }
 export function VehicleInfo({ order }: Props) {
+	const vehicle = order.vehicle;
+	if (!vehicle) return null;
+
+	const make = vehicle.make ?? vehicle.brand;
+	const plate = vehicle.plate ?? vehicle.plateNumber;
 	return (
 		<Card>
 			<CardHeader className='flex flex-row items-center justify-between'>
@@ -29,35 +34,35 @@ export function VehicleInfo({ order }: Props) {
 				<div className='grid grid-cols-2 gap-4'>
 					<div>
 						<p className='text-sm text-muted-foreground'>Make</p>
-						<p className='font-medium'>{order.vehicle.make}</p>
+						<p className='font-medium'>{make}</p>
 					</div>
 					<div>
 						<p className='text-sm text-muted-foreground'>Model</p>
-						<p className='font-medium'>{order.vehicle.model}</p>
+						<p className='font-medium'>{vehicle.model}</p>
 					</div>
 					<div>
 						<p className='text-sm text-muted-foreground'>Year</p>
-						<p className='font-medium'>{order.vehicle.year}</p>
+						<p className='font-medium'>{vehicle.year}</p>
 					</div>
 					<div>
 						<p className='text-sm text-muted-foreground'>Color</p>
-						<p className='font-medium'>{order.vehicle.color}</p>
+						<p className='font-medium'>{vehicle.color ?? '—'}</p>
 					</div>
 					<div>
 						<p className='text-sm text-muted-foreground'>License Plate</p>
-						<p className='font-medium'>{order.vehicle.plate}</p>
+						<p className='font-medium'>{plate ?? '—'}</p>
 					</div>
 					<div>
 						<p className='text-sm text-muted-foreground'>Mileage</p>
 						<p className='font-medium'>
-							{order.vehicle.mileage.toLocaleString()} km
+							{(vehicle.mileage ?? 0).toLocaleString()} km
 						</p>
 					</div>
 				</div>
 				<Separator />
 				<div>
 					<p className='text-sm text-muted-foreground'>VIN</p>
-					<p className='font-mono text-sm'>{order.vehicle.vin}</p>
+					<p className='font-mono text-sm'>{vehicle.vin ?? '—'}</p>
 				</div>
 			</CardContent>
 		</Card>

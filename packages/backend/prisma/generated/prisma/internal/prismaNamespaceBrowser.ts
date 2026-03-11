@@ -51,18 +51,18 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  PartCategory: 'PartCategory',
-  ServiceCategory: 'ServiceCategory',
   User: 'User',
   Client: 'Client',
   Vehicle: 'Vehicle',
+  PartCategory: 'PartCategory',
+  ServiceCategory: 'ServiceCategory',
+  PartsManufacturer: 'PartsManufacturer',
+  PartsBrand: 'PartsBrand',
+  PartsSupplier: 'PartsSupplier',
   Part: 'Part',
   PartInventory: 'PartInventory',
   StockMovement: 'StockMovement',
   PartPriceRule: 'PartPriceRule',
-  PartsManufacturer: 'PartsManufacturer',
-  PartsBrand: 'PartsBrand',
-  PartsSupplier: 'PartsSupplier',
   Service: 'Service',
   Order: 'Order',
   OrderPart: 'OrderPart',
@@ -84,22 +84,6 @@ export const TransactionIsolationLevel = {
 } as const
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
-
-
-export const PartCategoryScalarFieldEnum = {
-  id: 'id',
-  name: 'name'
-} as const
-
-export type PartCategoryScalarFieldEnum = (typeof PartCategoryScalarFieldEnum)[keyof typeof PartCategoryScalarFieldEnum]
-
-
-export const ServiceCategoryScalarFieldEnum = {
-  id: 'id',
-  name: 'name'
-} as const
-
-export type ServiceCategoryScalarFieldEnum = (typeof ServiceCategoryScalarFieldEnum)[keyof typeof ServiceCategoryScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -154,6 +138,47 @@ export const VehicleScalarFieldEnum = {
 } as const
 
 export type VehicleScalarFieldEnum = (typeof VehicleScalarFieldEnum)[keyof typeof VehicleScalarFieldEnum]
+
+
+export const PartCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+} as const
+
+export type PartCategoryScalarFieldEnum = (typeof PartCategoryScalarFieldEnum)[keyof typeof PartCategoryScalarFieldEnum]
+
+
+export const ServiceCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+} as const
+
+export type ServiceCategoryScalarFieldEnum = (typeof ServiceCategoryScalarFieldEnum)[keyof typeof ServiceCategoryScalarFieldEnum]
+
+
+export const PartsManufacturerScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+} as const
+
+export type PartsManufacturerScalarFieldEnum = (typeof PartsManufacturerScalarFieldEnum)[keyof typeof PartsManufacturerScalarFieldEnum]
+
+
+export const PartsBrandScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+} as const
+
+export type PartsBrandScalarFieldEnum = (typeof PartsBrandScalarFieldEnum)[keyof typeof PartsBrandScalarFieldEnum]
+
+
+export const PartsSupplierScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  contact: 'contact'
+} as const
+
+export type PartsSupplierScalarFieldEnum = (typeof PartsSupplierScalarFieldEnum)[keyof typeof PartsSupplierScalarFieldEnum]
 
 
 export const PartScalarFieldEnum = {
@@ -225,40 +250,15 @@ export const PartPriceRuleScalarFieldEnum = {
 export type PartPriceRuleScalarFieldEnum = (typeof PartPriceRuleScalarFieldEnum)[keyof typeof PartPriceRuleScalarFieldEnum]
 
 
-export const PartsManufacturerScalarFieldEnum = {
-  id: 'id',
-  name: 'name'
-} as const
-
-export type PartsManufacturerScalarFieldEnum = (typeof PartsManufacturerScalarFieldEnum)[keyof typeof PartsManufacturerScalarFieldEnum]
-
-
-export const PartsBrandScalarFieldEnum = {
-  id: 'id',
-  name: 'name'
-} as const
-
-export type PartsBrandScalarFieldEnum = (typeof PartsBrandScalarFieldEnum)[keyof typeof PartsBrandScalarFieldEnum]
-
-
-export const PartsSupplierScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  contact: 'contact'
-} as const
-
-export type PartsSupplierScalarFieldEnum = (typeof PartsSupplierScalarFieldEnum)[keyof typeof PartsSupplierScalarFieldEnum]
-
-
 export const ServiceScalarFieldEnum = {
   id: 'id',
-  createdAt: 'createdAt',
   name: 'name',
   description: 'description',
-  categoryId: 'categoryId',
   price: 'price',
   estimatedTime: 'estimatedTime',
-  status: 'status'
+  status: 'status',
+  categoryId: 'categoryId',
+  createdAt: 'createdAt'
 } as const
 
 export type ServiceScalarFieldEnum = (typeof ServiceScalarFieldEnum)[keyof typeof ServiceScalarFieldEnum]
@@ -268,13 +268,16 @@ export const OrderScalarFieldEnum = {
   id: 'id',
   status: 'status',
   description: 'description',
+  mileage: 'mileage',
+  discount: 'discount',
+  recommendations: 'recommendations',
   totalAmount: 'totalAmount',
   priority: 'priority',
   vehicleId: 'vehicleId',
-  deletedAt: 'deletedAt',
+  clientId: 'clientId',
   managerId: 'managerId',
   mechanicId: 'mechanicId',
-  clientId: 'clientId',
+  deletedAt: 'deletedAt',
   startDate: 'startDate',
   endDate: 'endDate'
 } as const
@@ -297,6 +300,7 @@ export const OrderServiceScalarFieldEnum = {
   id: 'id',
   orderId: 'orderId',
   serviceId: 'serviceId',
+  mechanicId: 'mechanicId',
   quantity: 'quantity',
   price: 'price'
 } as const

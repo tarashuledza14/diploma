@@ -1,122 +1,50 @@
-import { NewOrder } from '@/modules/orders/interfaces/new-order.interface';
+import { CreateOrderPayload, OrdersService } from '@/modules/orders/api';
+import {
+	OrderPartItem,
+	OrderServiceItem,
+} from '@/modules/orders/interfaces/new-order.interface';
+import { ordersKeys } from '@/modules/orders/queries/keys';
 import {
 	Button,
 	Dialog,
 	DialogContent,
 	DialogDescription,
-	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-	ScrollArea,
-	Separator,
 } from '@/shared/components/ui';
-import { Loader2, Plus } from 'lucide-react';
-import React, { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { OrderStatus } from '../../../interfaces/order-status.enum';
-import { ClientSelect } from './components/ClientSelect';
-import { DueDateInput } from './components/DueDateInput';
-import { MechanicSelect } from './components/MechanicSelect';
-import { NotesInput } from './components/NotesInput';
-import { PrioritySelect } from './components/PrioritySelect';
-import { SelectedServicesTags } from './components/SelectedServicesTags';
-import { ServicesSelect } from './components/ServicesSelect';
-import { ServicesSummary } from './components/ServicesSummary';
-import { VehicleSelect } from './components/VehicleSelect';
-// TODO: Replace with actual data from API
-const mockClients = [
-	{
-		id: 'CLI-001',
-		name: 'John Smith',
-		email: 'john@example.com',
-		phone: '+1 555-123-4567',
-	},
-	{
-		id: 'CLI-002',
-		name: 'Sarah Davis',
-		email: 'sarah@example.com',
-		phone: '+1 555-234-5678',
-	},
-	{
-		id: 'CLI-003',
-		name: 'Robert Brown',
-		email: 'robert@example.com',
-		phone: '+1 555-345-6789',
-	},
-	{
-		id: 'CLI-004',
-		name: 'Emily Chen',
-		email: 'emily@example.com',
-		phone: '+1 555-456-7890',
-	},
-	{
-		id: 'CLI-005',
-		name: 'Michael Lee',
-		email: 'michael@example.com',
-		phone: '+1 555-567-8901',
-	},
-];
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Plus } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import { OrderPriority, OrderStatus } from '../../../interfaces/order.enums';
+import { NewOrderFormContent } from './NewOrderFormContent';
 
-const mockVehicles = [
-	{
-		id: 'VEH-001',
-		clientId: 'CLI-001',
-		make: 'BMW',
-		model: 'X5',
-		year: 2022,
-		plate: 'ABC-1234',
-	},
-	{
-		id: 'VEH-002',
-		clientId: 'CLI-002',
-		make: 'Mercedes',
-		model: 'C-Class',
-		year: 2021,
-		plate: 'XYZ-5678',
-	},
-	{
-		id: 'VEH-003',
-		clientId: 'CLI-003',
-		make: 'Audi',
-		model: 'A4',
-		year: 2023,
-		plate: 'DEF-9012',
-	},
-	{
-		id: 'VEH-004',
-		clientId: 'CLI-004',
-		make: 'VW',
-		model: 'Golf',
-		year: 2020,
-		plate: 'GHI-3456',
-	},
-	{
-		id: 'VEH-005',
-		clientId: 'CLI-005',
-		make: 'Toyota',
-		model: 'Camry',
-		year: 2019,
-		plate: 'JKL-7890',
-	},
-];
+const newOrderSchema = z.object({
+	clientId: z.string().min(1, 'Client is required'),
+	vehicleId: z.string().min(1, 'Vehicle is required'),
+	mileage: z.number().min(0, 'Mileage must be a positive number'),
+	priority: z.nativeEnum(OrderPriority),
+	services: z.array(
+		z.object({
+			serviceId: z.string().min(1, 'Service is required'),
+			mechanicId: z.string().optional(),
+		}),
+	),
+	parts: z.array(
+		z.object({
+			partId: z.string().min(1, 'Part is required'),
+			quantity: z.number().min(1, 'Quantity must be at least 1'),
+		}),
+	),
+	notes: z.string(),
+	status: z.nativeEnum(OrderStatus),
+});
 
-const mockServices = [
-	{ id: 'SRV-001', name: 'Oil Change', price: 49.99, duration: 0.5 },
-	{ id: 'SRV-002', name: 'Brake Inspection', price: 79.99, duration: 1 },
-	{ id: 'SRV-003', name: 'Full Service', price: 299.99, duration: 3 },
-	{ id: 'SRV-004', name: 'Tire Rotation', price: 39.99, duration: 0.5 },
-	{ id: 'SRV-005', name: 'Filter Replacement', price: 29.99, duration: 0.5 },
-	{ id: 'SRV-006', name: 'AC Repair', price: 149.99, duration: 2 },
-	{ id: 'SRV-007', name: 'Battery Replacement', price: 99.99, duration: 0.5 },
-	{ id: 'SRV-008', name: 'Engine Diagnostic', price: 89.99, duration: 1 },
-];
-
-const mockMechanics = [
-	{ id: 'MECH-001', name: 'Mike Johnson', specialty: 'Engine & Transmission' },
-	{ id: 'MECH-002', name: 'Tom Wilson', specialty: 'Brakes & Suspension' },
-	{ id: 'MECH-003', name: 'Alex Rodriguez', specialty: 'Electrical Systems' },
-];
+type NewOrderForm = z.infer<typeof newOrderSchema>;
 
 interface NewOrderModalProps {
 	trigger?: React.ReactNode;
@@ -128,70 +56,233 @@ export function NewOrderModal({
 	defaultStatus = OrderStatus.NEW,
 }: NewOrderModalProps) {
 	const [open, setOpen] = useState(false);
-	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [clientOpen, setClientOpen] = useState(false);
-	const [vehicleOpen, setVehicleOpen] = useState(false);
-	const [servicesOpen, setServicesOpen] = useState(false);
-	const [dueDateOpen, setDueDateOpen] = useState(false);
-	const {
-		control,
-		setValue,
-		handleSubmit,
-		watch,
-		reset,
-		formState: { isValid },
-	} = useForm<NewOrder>({
-		mode: 'onChange',
+	const queryClient = useQueryClient();
+
+	const form = useForm<NewOrderForm>({
+		resolver: zodResolver(newOrderSchema),
 		defaultValues: {
 			clientId: '',
 			vehicleId: '',
+			mileage: 0,
+			priority: OrderPriority.MEDIUM,
 			services: [],
-			priority: 'medium',
-			assignedMechanic: '',
-			dueDate: undefined,
+			parts: [],
 			notes: '',
 			status: defaultStatus,
 		},
 	});
 
-	const clientId = watch('clientId');
-	const vehicleId = watch('vehicleId');
-	const services = watch('services');
+	const {
+		fields: serviceFields,
+		append: appendService,
+		remove: removeService,
+		update: updateService,
+	} = useFieldArray({
+		control: form.control,
+		name: 'services',
+	});
+
+	const {
+		fields: partFields,
+		append: appendPart,
+		remove: removePart,
+		update: updatePart,
+	} = useFieldArray({
+		control: form.control,
+		name: 'parts',
+	});
+
+	const { data: meta } = useQuery({
+		queryKey: ordersKeys.meta(),
+		queryFn: () => OrdersService.getNewOrderMeta(),
+	});
+
+	const clients = meta?.clients ?? [];
+	const vehicles = meta?.vehicles ?? [];
+	const servicesMeta = meta?.services ?? [];
+	const mechanics = meta?.mechanics ?? [];
+	const parts = meta?.parts ?? [];
+
+	const clientId = form.watch('clientId');
+	const vehicleId = form.watch('vehicleId');
+	const selectedServices = form.watch('services');
+	const selectedParts = form.watch('parts');
 
 	const clientVehicles = clientId
-		? mockVehicles.filter(v => v.clientId === clientId)
-		: mockVehicles;
+		? vehicles.filter((v: any) => v.clientId === clientId)
+		: vehicles;
 
-	const clientData = mockClients.find(c => c.id === clientId);
-	const vehicleData = mockVehicles.find(v => v.id === vehicleId);
-	const servicesData = mockServices.filter(s => services.includes(s.id));
+	const [autoFilledParts, setAutoFilledParts] = useState<Set<string>>(
+		new Set(),
+	);
 
-	const totalPrice = servicesData.reduce((sum, s) => sum + s.price, 0);
-	const totalDuration = servicesData.reduce((sum, s) => sum + s.duration, 0);
+	useEffect(() => {
+		if (!vehicleId) {
+			return;
+		}
 
-	const handleServiceToggle = (serviceId: string) => {
-		const current = watch('services');
-		const updated = current.includes(serviceId)
-			? current.filter((id: string) => id !== serviceId)
-			: [...current, serviceId];
-		setValue('services', updated as any);
-	};
+		const activeServiceIds = selectedServices
+			.map(s => s.serviceId)
+			.filter(Boolean);
 
-	const removeService = (serviceId: string) => {
-		const current = watch('services');
-		setValue(
-			'services',
-			current.filter((id: string) => id !== serviceId) as any,
+		if (activeServiceIds.length === 0) {
+			const currentParts = form.getValues('parts');
+			const manualParts = currentParts.filter(
+				part => !autoFilledParts.has(part.partId),
+			);
+
+			if (manualParts.length !== currentParts.length) {
+				form.setValue('parts', manualParts);
+				setAutoFilledParts(new Set());
+				toast.info(
+					'Smart Auto-Fill: Cleared recommended parts (no services selected)',
+				);
+			}
+			return;
+		}
+
+		const fetchAllRecommendedParts = async () => {
+			try {
+				const allRecommendedParts = new Set<string>();
+
+				for (const serviceId of activeServiceIds) {
+					try {
+						const serviceParts = await OrdersService.getRecommendedParts(
+							vehicleId,
+							serviceId,
+						);
+						serviceParts?.forEach((part: any) => {
+							allRecommendedParts.add(part.id);
+						});
+					} catch (error) {
+						console.warn(
+							`Failed to get parts for service ${serviceId}:`,
+							error,
+						);
+					}
+				}
+
+				const currentParts = form.getValues('parts');
+				const manualParts = currentParts.filter(
+					part => !autoFilledParts.has(part.partId),
+				);
+
+				const allPartsMeta = parts || [];
+				const newAutoParts = Array.from(allRecommendedParts)
+					.map(partId => allPartsMeta.find((p: any) => p.id === partId))
+					.filter(Boolean)
+					.map((part: any) => ({
+						partId: part.id,
+						quantity: 1,
+					}));
+
+				const updatedParts = [...manualParts, ...newAutoParts];
+
+				form.setValue('parts', updatedParts);
+				setAutoFilledParts(new Set(Array.from(allRecommendedParts)));
+
+				if (newAutoParts.length > 0) {
+					toast.success(
+						`Smart Auto-Fill: Updated with ${newAutoParts.length} recommended part(s)`,
+						{ duration: 3000 },
+					);
+				}
+			} catch (error) {
+				console.error('Smart Auto-Fill error:', error);
+			}
+		};
+
+		const timeoutId = setTimeout(fetchAllRecommendedParts, 300);
+		return () => clearTimeout(timeoutId);
+	}, [selectedServices, vehicleId, parts, form]);
+
+	useEffect(() => {
+		setAutoFilledParts(new Set());
+	}, [vehicleId]);
+
+	const servicesTotal = selectedServices.reduce((sum, service) => {
+		const serviceData = servicesMeta.find(
+			(s: any) => s.id === service.serviceId,
 		);
+		return sum + (serviceData?.price || 0);
+	}, 0);
+
+	const partsTotal = selectedParts.reduce((sum, part) => {
+		const partData = parts.find((p: any) => p.id === part.partId);
+		return sum + (partData?.price || 0) * part.quantity;
+	}, 0);
+
+	const totalAmount = servicesTotal + partsTotal;
+
+	const addNewService = () => {
+		appendService({ serviceId: '', mechanicId: undefined });
 	};
 
-	const onSubmit = async (data: NewOrder) => {
-		console.log('data', data);
-		setIsSubmitting(true);
-		await new Promise(resolve => setTimeout(resolve, 1000));
-		setIsSubmitting(false);
-		setOpen(false);
-		reset();
+	const addNewPart = () => {
+		appendPart({ partId: '', quantity: 1 });
+	};
+
+	const handleServiceChange = (
+		index: number,
+		field: keyof OrderServiceItem,
+		value: string,
+	) => {
+		const currentService = serviceFields[index];
+		updateService(index, { ...currentService, [field]: value });
+	};
+
+	const handlePartChange = (
+		index: number,
+		field: keyof OrderPartItem,
+		value: string | number,
+	) => {
+		const currentPart = partFields[index];
+		const oldPartId = currentPart.partId;
+
+		updatePart(index, { ...currentPart, [field]: value });
+
+		if (field === 'partId' && oldPartId && autoFilledParts.has(oldPartId)) {
+			setAutoFilledParts(prev => {
+				const updated = new Set(prev);
+				updated.delete(oldPartId);
+				return updated;
+			});
+		}
+	};
+
+	const handleRemovePart = (index: number) => {
+		const partToRemove = partFields[index];
+		if (partToRemove?.partId && autoFilledParts.has(partToRemove.partId)) {
+			setAutoFilledParts(prev => {
+				const updated = new Set(prev);
+				updated.delete(partToRemove.partId);
+				return updated;
+			});
+		}
+		removePart(index);
+	};
+
+	const { mutateAsync: createOrder, isPending } = useMutation({
+		mutationFn: (payload: CreateOrderPayload) =>
+			OrdersService.createOrder(payload),
+		onSuccess: () => {
+			toast.success('Work order created successfully');
+			queryClient.invalidateQueries({ queryKey: ordersKeys.all });
+			setOpen(false);
+			form.reset();
+			setAutoFilledParts(new Set());
+		},
+		onError: (error: any) => {
+			toast.error(`Failed to create order: ${error.message}`);
+		},
+	});
+
+	const onSubmit = async (data: NewOrderForm) => {
+		try {
+			await createOrder(data as CreateOrderPayload);
+		} catch (error) {
+			console.error('Failed to create order:', error);
+		}
 	};
 
 	return (
@@ -200,145 +291,41 @@ export function NewOrderModal({
 				{trigger || (
 					<Button>
 						<Plus className='mr-2 h-4 w-4' />
-						New Order
+						New Work Order
 					</Button>
 				)}
 			</DialogTrigger>
-			<DialogContent className='max-w-2xl overflow-hidden'>
+			<DialogContent className='sm:max-w-4xl max-h-[90vh] overflow-hidden'>
 				<DialogHeader>
-					<DialogTitle>Create New Order</DialogTitle>
+					<DialogTitle>Work Order Builder</DialogTitle>
 					<DialogDescription>
-						Fill in the details to create a new service order.
+						Create a comprehensive work order with services and parts for the
+						selected vehicle.
 					</DialogDescription>
 				</DialogHeader>
-
-				<ScrollArea className='max-h-[60vh] pr-4'>
-					<div className='space-y-6 py-4'>
-						<Controller
-							name='clientId'
-							control={control}
-							render={({ field }) => (
-								<ClientSelect
-									clients={mockClients}
-									selectedClient={field.value}
-									setSelectedClient={value => {
-										field.onChange(value);
-										setValue('vehicleId', '');
-									}}
-									setSelectedVehicle={value => setValue('vehicleId', value)}
-									open={clientOpen}
-									setOpen={setClientOpen}
-								/>
-							)}
-						/>
-						<Controller
-							name='vehicleId'
-							control={control}
-							render={({ field }) => (
-								<VehicleSelect
-									vehicles={clientVehicles}
-									selectedVehicle={field.value}
-									setSelectedVehicle={field.onChange}
-									open={vehicleOpen}
-									setOpen={setVehicleOpen}
-									disabled={!clientId && clientVehicles.length === 0}
-									selectedClient={clientId}
-								/>
-							)}
-						/>
-						<Separator />
-						<Controller
-							name='services'
-							control={control}
-							render={({ field }) => (
-								<ServicesSelect
-									services={mockServices}
-									selectedServices={field.value}
-									handleServiceToggle={handleServiceToggle}
-									open={servicesOpen}
-									setOpen={setServicesOpen}
-								/>
-							)}
-						/>
-						<SelectedServicesTags
-							selectedServicesData={servicesData}
-							removeService={removeService}
-						/>
-						<ServicesSummary
-							totalDuration={totalDuration}
-							totalPrice={totalPrice}
-						/>
-						<Separator />
-						<div className='grid grid-cols-2 gap-4'>
-							<Controller
-								name='priority'
-								control={control}
-								render={({ field }) => (
-									<PrioritySelect
-										priority={field.value}
-										setPriority={field.onChange}
-									/>
-								)}
-							/>
-							<Controller
-								name='assignedMechanic'
-								control={control}
-								render={({ field }) => (
-									<MechanicSelect
-										mechanics={mockMechanics}
-										assignedMechanic={field.value}
-										setAssignedMechanic={field.onChange}
-									/>
-								)}
-							/>
-						</div>
-						<Controller
-							name='dueDate'
-							control={control}
-							render={({ field }) => (
-								<DueDateInput
-									dueDate={field.value}
-									setDueDate={field.onChange}
-									dueDateOpen={dueDateOpen}
-									setDueDateOpen={setDueDateOpen}
-								/>
-							)}
-						/>
-						<Controller
-							name='notes'
-							control={control}
-							render={({ field }) => (
-								<NotesInput notes={field.value} setNotes={field.onChange} />
-							)}
-						/>
-					</div>
-				</ScrollArea>
-
-				<DialogFooter className='border-t pt-4'>
-					<Button
-						variant='outline'
-						onClick={() => setOpen(false)}
-						disabled={isSubmitting}
-					>
-						Cancel
-					</Button>
-					<Button
-						onClick={handleSubmit(onSubmit)}
-						disabled={!isValid || isSubmitting}
-					>
-						{isSubmitting ? (
-							<>
-								<Loader2 className='mr-2 h-4 w-4 animate-spin' />
-								Creating...
-							</>
-						) : (
-							<>
-								<Plus className='mr-2 h-4 w-4' />
-								Create Order
-							</>
-						)}
-					</Button>
-				</DialogFooter>
+				<NewOrderFormContent
+					form={form}
+					handleSubmit={form.handleSubmit(onSubmit)}
+					clients={clients}
+					clientId={clientId}
+					clientVehicles={clientVehicles}
+					servicesMeta={servicesMeta}
+					mechanics={mechanics}
+					parts={parts}
+					serviceFields={serviceFields}
+					partFields={partFields}
+					addNewService={addNewService}
+					addNewPart={addNewPart}
+					handleServiceChange={handleServiceChange}
+					handlePartChange={handlePartChange}
+					handleRemoveService={removeService}
+					handleRemovePart={handleRemovePart}
+					servicesTotal={servicesTotal}
+					partsTotal={partsTotal}
+					totalAmount={totalAmount}
+					isPending={isPending}
+					onCancel={() => setOpen(false)}
+				/>
 			</DialogContent>
 		</Dialog>
 	);

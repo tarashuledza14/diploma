@@ -113,7 +113,8 @@ export class FilterService {
 
 	getSortFilter(sort: SortItem[]): Record<string, 'asc' | 'desc'>[] {
 		if (!sort || sort.length === 0) {
-			return [{ createdAt: 'desc' }];
+			// return [{ createdAt: 'desc' }];
+			return [];
 		}
 
 		return sort.map(sortItem => {

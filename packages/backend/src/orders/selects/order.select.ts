@@ -1,0 +1,31 @@
+export const orderSelect = {
+	id: true,
+	status: true,
+	vehicle: {
+		select: {
+			brand: true,
+			model: true,
+			year: true,
+			plateNumber: true,
+		},
+	},
+	client: {
+		select: {
+			id: true,
+			fullName: true,
+		},
+	},
+	services: {
+		select: {
+			service: {
+				select: {
+					id: true,
+					name: true,
+				},
+			},
+		},
+	},
+	priority: true,
+	endDate: true,
+	totalAmount: true,
+};

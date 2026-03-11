@@ -250,11 +250,6 @@ export type PartsSupplierUncheckedUpdateManyInput = {
   contact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
-export type PartsSupplierNullableScalarRelationFilter = {
-  is?: Prisma.PartsSupplierWhereInput | null
-  isNot?: Prisma.PartsSupplierWhereInput | null
-}
-
 export type PartsSupplierCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -271,6 +266,11 @@ export type PartsSupplierMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   contact?: Prisma.SortOrder
+}
+
+export type PartsSupplierNullableScalarRelationFilter = {
+  is?: Prisma.PartsSupplierWhereInput | null
+  isNot?: Prisma.PartsSupplierWhereInput | null
 }
 
 export type PartsSupplierCreateNestedOneWithoutPartsInput = {

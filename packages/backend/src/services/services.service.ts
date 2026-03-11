@@ -118,14 +118,12 @@ export class ServiceService {
 				false,
 			);
 			const sorts = this.filterService.getSortFilter(input.sort || []);
-			console.log('filters', JSON.stringify(filters));
 			const [services, total] = await Promise.all([
 				this.db.service.findMany({
 					skip: offset,
 					where: filters,
 					take: input.perPage,
 					orderBy: sorts,
-					// ОСЬ ТУТ ЗМІНИ:
 					include: {
 						category: true,
 						requiredCategories: {

@@ -27,8 +27,8 @@ export * from "./enums"
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more PartCategories
- * const partCategories = await prisma.partCategory.findMany()
+ * // Fetch zero or more Users
+ * const users = await prisma.user.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -37,16 +37,6 @@ export const PrismaClient = $Class.getPrismaClientClass()
 export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts extends Prisma.PrismaClientOptions["omit"] = Prisma.PrismaClientOptions["omit"], ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = $Class.PrismaClient<LogOpts, OmitOpts, ExtArgs>
 export { Prisma }
 
-/**
- * Model PartCategory
- * 
- */
-export type PartCategory = Prisma.PartCategoryModel
-/**
- * Model ServiceCategory
- * 
- */
-export type ServiceCategory = Prisma.ServiceCategoryModel
 /**
  * Model User
  * 
@@ -62,6 +52,31 @@ export type Client = Prisma.ClientModel
  * 
  */
 export type Vehicle = Prisma.VehicleModel
+/**
+ * Model PartCategory
+ * 
+ */
+export type PartCategory = Prisma.PartCategoryModel
+/**
+ * Model ServiceCategory
+ * 
+ */
+export type ServiceCategory = Prisma.ServiceCategoryModel
+/**
+ * Model PartsManufacturer
+ * 
+ */
+export type PartsManufacturer = Prisma.PartsManufacturerModel
+/**
+ * Model PartsBrand
+ * 
+ */
+export type PartsBrand = Prisma.PartsBrandModel
+/**
+ * Model PartsSupplier
+ * 
+ */
+export type PartsSupplier = Prisma.PartsSupplierModel
 /**
  * Model Part
  * 
@@ -82,21 +97,6 @@ export type StockMovement = Prisma.StockMovementModel
  * 
  */
 export type PartPriceRule = Prisma.PartPriceRuleModel
-/**
- * Model PartsManufacturer
- * 
- */
-export type PartsManufacturer = Prisma.PartsManufacturerModel
-/**
- * Model PartsBrand
- * 
- */
-export type PartsBrand = Prisma.PartsBrandModel
-/**
- * Model PartsSupplier
- * 
- */
-export type PartsSupplier = Prisma.PartsSupplierModel
 /**
  * Model Service
  * 

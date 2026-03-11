@@ -1,27 +1,5 @@
-// 6a. Категорії запчастин
-model PartCategory {
-  id                 String    @id @default(cuid())
-  name               String // Назва категорії (наприклад, "Fluids")
-  parts              Part[]
-  requiredByServices Service[] @relation("ServiceToCategory")
-
-  @@map("part_categories")
-}
-
-// 7a. Категорії послуг
-model ServiceCategory {
-  id       String    @id @default(cuid())
-  name     String // Назва категорії (наприклад, "Діагностика")
-  services Service[]
-
-  @@map("service_categories")
-}
-
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client"
@@ -31,6 +9,10 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+// ==========================================
+// ENUMS (Перерахування)
+// ==========================================
 
 enum Role {
   ADMIN
@@ -61,25 +43,48 @@ enum VehicleStatus {
   READY // Готова, стоїть на парковці видачі (чекає клієнта)
 }
 
+enum MovementType {
+  RECEIVED // Прихід (зелений на графіку)
+  ISSUED // Видано на ремонт/продаж (синій)
+  RESERVED // Зарезервовано під замовлення (помаранчевий)
+  RETURNED // Повернено з резерву або клієнтом (фіолетовий)
+  ADJUSTMENT // Ручне коригування (через форму Edit Part)
+}
+
+enum ClientType {
+  RETAIL
+  WHOLESALE
+  VIP
+}
+
+enum PartCondition {
+  NEW
+  USED
+  REFURBISHED
+}
+
+// ==========================================
+// PEOPLE & VEHICLES (Люди та Автомобілі)
+// ==========================================
+
 // 1. Таблиця ТІЛЬКИ для персоналу (Admin, Manager, Mechanic)
 model User {
-  id       String @id @default(cuid())
-  email    String @unique
-  password String // Обов'язкове поле!
-  role     Role   @default(MECHANIC) // Ролі тільки персоналу
-
-  fullName String
-  avatar   String?
-
+  id        String    @id @default(cuid())
+  email     String    @unique
+  password  String // Обов'язкове поле!
+  role      Role      @default(MECHANIC)
+  fullName  String
+  avatar    String?
   deletedAt DateTime?
 
   // Зв'язки співробітника
-  managerOrders  Order[] @relation("ManagerOrders")
-  mechanicOrders Order[] @relation("MechanicOrders")
-
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  managerOrders  Order[]         @relation("ManagerOrders")
+  mechanicOrders Order[]         @relation("MechanicOrders")
+  serviceJobs    OrderService[]  @relation("ServiceMechanic") // Зв'язок з конкретними виконаними роботами
   stockMovements StockMovement[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("users")
 }
@@ -89,24 +94,22 @@ model Client {
   id       String  @id @default(cuid())
   fullName String
   phone    String  @unique // Для СТО телефон важливіший за email
-  email    String? // Email може бути необов'язковим
-
-  notes String? // Нотатки про клієнта ("Любить каву", "Проблемний")
+  email    String?
+  notes    String? // Нотатки про клієнта ("Любить каву", "Проблемний")
 
   // Денормалізовані поля для швидкого сортування
-  totalSpent   Decimal   @default(0) @map("total_spent") // Загальна сума всіх замовлень
-  totalOrders  Int       @default(0) @map("total_orders") // Кількість замовлень
-  vehicleCount Int       @default(0) @map("vehicle_count") // Кількість автомобілів
-  latestVisit  DateTime? @map("latest_visit") // Дата останнього замовлення
+  totalSpent   Decimal   @default(0) @map("total_spent")
+  totalOrders  Int       @default(0) @map("total_orders")
+  vehicleCount Int       @default(0) @map("vehicle_count")
+  latestVisit  DateTime? @map("latest_visit")
 
   // Зв'язки клієнта
   vehicles Vehicle[]
   orders   Order[]
 
   deletedAt DateTime?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@index([totalSpent])
   @@index([totalOrders])
@@ -115,7 +118,7 @@ model Client {
   @@map("clients")
 }
 
-// 5. Автомобілі
+// 3. Автомобілі
 model Vehicle {
   id          String  @id @default(cuid())
   vin         String  @unique // VIN-код унікальний
@@ -123,23 +126,70 @@ model Vehicle {
   model       String // Модель (X5)
   year        Int // Рік випуску
   plateNumber String? @map("plate_number") // Держ. номер
-  mileage     Int
-  ownerId     String  @map("owner_id")
-  owner       Client  @relation(fields: [ownerId], references: [id])
+  mileage     Int // Поточний загальний пробіг
 
-  lastService   DateTime? @map("last_service_date")
-  totalServices Int       @default(0) @map("total_services") // Кількість виконаних робіт
+  ownerId String @map("owner_id")
+  owner   Client @relation(fields: [ownerId], references: [id])
 
-  notes String? // Нотатки про авто ("Потрібна заміна ременя ГРМ", "Любить дизель")
+  lastService   DateTime?     @map("last_service_date")
+  totalServices Int           @default(0) @map("total_services") // Кількість виконаних робіт
+  notes         String? // Нотатки про авто
+  color         String?
+  status        VehicleStatus @default(OUT)
 
-  color     String?
-  status    VehicleStatus @default(OUT)
-  orders    Order[]
+  orders Order[]
+
   deletedAt DateTime?
-
-  createdAt DateTime @default(now()) @map("created_at")
+  createdAt DateTime  @default(now()) @map("created_at")
 
   @@map("vehicles")
+}
+
+// ==========================================
+// CATALOGS & INVENTORY (Склад та Довідники)
+// ==========================================
+
+model PartCategory {
+  id   String @id @default(cuid())
+  name String // Назва категорії (наприклад, "Fluids")
+
+  parts              Part[]
+  requiredByServices Service[] @relation("ServiceToCategory")
+
+  @@map("part_categories")
+}
+
+model ServiceCategory {
+  id       String    @id @default(cuid())
+  name     String // Назва категорії (наприклад, "Діагностика")
+  services Service[]
+
+  @@map("service_categories")
+}
+
+model PartsManufacturer {
+  id    String @id @default(cuid())
+  name  String @unique
+  parts Part[]
+
+  @@map("parts_manufacturers")
+}
+
+model PartsBrand {
+  id    String @id @default(cuid())
+  name  String @unique
+  parts Part[]
+
+  @@map("parts_brands")
+}
+
+model PartsSupplier {
+  id      String  @id @default(cuid())
+  name    String  @unique
+  contact String?
+  parts   Part[]
+
+  @@map("parts_suppliers")
 }
 
 model Part {
@@ -166,8 +216,7 @@ model Part {
   supplier        PartsSupplier? @relation(fields: [supplierId], references: [id])
   supplierContact String?
 
-  condition PartCondition?
-
+  condition      PartCondition?
   warrantyMonths Int?
   warrantyKm     Int?
 
@@ -179,66 +228,41 @@ model Part {
   manufacturerId String?
   manufacturer   PartsManufacturer? @relation(fields: [manufacturerId], references: [id])
 
-  inventory  PartInventory[]
-  priceRules PartPriceRule[]
-
-  orderParts OrderPart[]
-
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  inventory      PartInventory[]
+  priceRules     PartPriceRule[]
+  orderParts     OrderPart[]
   stockMovements StockMovement[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("parts")
 }
 
 model PartInventory {
-  id String @id @default(cuid())
-
-  partId String
-  part   Part   @relation(fields: [partId], references: [id])
-
-  quantity Int
-
-  purchasePrice Decimal @db.Decimal(10, 2)
-
-  location String?
-
-  batchNumber String? // номер партії
-
-  receivedAt DateTime @default(now())
+  id            String   @id @default(cuid())
+  partId        String
+  part          Part     @relation(fields: [partId], references: [id])
+  quantity      Int
+  purchasePrice Decimal  @db.Decimal(10, 2)
+  location      String?
+  batchNumber   String? // номер партії
+  receivedAt    DateTime @default(now())
 
   @@index([partId])
 }
 
-// 1. Додаємо типи рухів
-enum MovementType {
-  RECEIVED // Прихід (зелений на графіку)
-  ISSUED // Видано на ремонт/продаж (синій)
-  RESERVED // Зарезервовано під замовлення (помаранчевий)
-  RETURNED // Повернено з резерву або клієнтом (фіолетовий)
-  ADJUSTMENT // Ручне коригування (через форму Edit Part)
-}
-
-// 2. Створюємо таблицю історії рухів
 model StockMovement {
-  id String @id @default(cuid())
-
-  // Яка запчастина
-  partId String @map("part_id")
-  part   Part   @relation(fields: [partId], references: [id], onDelete: Cascade)
-
-  // Деталі руху
+  id       String       @id @default(cuid())
+  partId   String       @map("part_id")
+  part     Part         @relation(fields: [partId], references: [id], onDelete: Cascade)
   type     MovementType
   quantity Int // Може бути +10 (прихід) або -2 (видача)
-  reason   String? // Опис ("Початковий залишок", "Регулярне ТО", "Коригування")
-
-  // Хто це зробив (Іван Петров з твого скріна)
-  userId String? @map("user_id")
-  user   User?   @relation(fields: [userId], references: [id])
-
-  // До якого замовлення це прив'язано (ORD-044 з твого скріна)
-  orderId String? @map("order_id")
-  order   Order?  @relation(fields: [orderId], references: [id])
+  reason   String? // Опис
+  userId   String?      @map("user_id")
+  user     User?        @relation(fields: [userId], references: [id])
+  orderId  String?      @map("order_id")
+  order    Order?       @relation(fields: [orderId], references: [id])
 
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -246,161 +270,116 @@ model StockMovement {
 }
 
 model PartPriceRule {
-  id String @id @default(cuid())
-
-  partId String
-  part   Part   @relation(fields: [partId], references: [id])
-
-  clientType ClientType?
-
+  id            String      @id @default(cuid())
+  partId        String
+  part          Part        @relation(fields: [partId], references: [id])
+  clientType    ClientType?
   markupPercent Int?
-  fixedPrice    Decimal? @db.Decimal(10, 2)
-
-  createdAt DateTime @default(now())
+  fixedPrice    Decimal?    @db.Decimal(10, 2)
+  createdAt     DateTime    @default(now())
 
   @@index([partId])
 }
 
-enum ClientType {
-  RETAIL
-  WHOLESALE
-  VIP
-}
+// ==========================================
+// SERVICES & ORDERS (Послуги та Замовлення)
+// ==========================================
 
-enum PartCondition {
-  NEW
-  USED
-  REFURBISHED
-}
-
-model PartsManufacturer {
-  id    String @id @default(cuid())
-  name  String @unique // Назва виробника
-  parts Part[]
-
-  @@map("parts_manufacturers")
-}
-
-model PartsBrand {
-  id    String @id @default(cuid())
-  name  String @unique // Назва бренду
-  parts Part[]
-
-  @@map("parts_brands")
-}
-
-model PartsSupplier {
-  id      String  @id @default(cuid())
-  name    String  @unique // Назва постачальника
-  contact String? // Контактна інформація
-  parts   Part[]
-
-  @@map("parts_suppliers")
-}
-
-// 7. Довідник послуг (Services Catalog)
 model Service {
-  id                 String           @id @default(cuid())
-  createdAt          DateTime         @default(now()) @map("created_at")
-  name               String // Назва роботи (Заміна мастила)
-  description        String // Опис роботи (для клієнта)
-  categoryId         String? // ID категорії
-  category           ServiceCategory? @relation(fields: [categoryId], references: [id])
-  price              Decimal          @default(0) @map("price") @db.Decimal(10, 2) // Ціна нормо-години
-  estimatedTime      Float            @default(1.0) @map("estimated_time") // Орієнтовний час (годин)
-  status             Boolean          @default(true) // Чи активна послуга (може бути тимчасово вимкнена)
+  id            String  @id @default(cuid())
+  name          String // Назва роботи (Заміна мастила)
+  description   String  @db.Text
+  price         Decimal @default(0) @map("price") @db.Decimal(10, 2)
+  estimatedTime Float   @default(1.0) @map("estimated_time")
+  status        Boolean @default(true)
+
+  categoryId String?
+  category   ServiceCategory? @relation(fields: [categoryId], references: [id])
+
+  requiredCategories PartCategory[] @relation("ServiceToCategory")
   orderServices      OrderService[]
-  requiredCategories PartCategory[]   @relation("ServiceToCategory")
+
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@map("services")
 }
 
-// 8. Замовлення (Order / Repair Ticket)
 model Order {
-  id     String      @id @default(cuid())
-  status OrderStatus @default(NEW)
+  id          String      @id @default(cuid())
+  status      OrderStatus @default(NEW)
+  description String?     @db.Text
 
-  description String? @db.Text // Скарги клієнта / опис проблеми
+  mileage         Int      @map("vehicle_mileage") // Пробіг на момент ремонту
+  discount        Decimal? @default(0) @db.Decimal(10, 2) // Сума знижки
+  recommendations String?  @db.Text // Рекомендації для клієнта (на майбутнє)
 
-  totalAmount Decimal       @default(0) @map("total_amount") @db.Decimal(10, 2) // Загальна сума
+  totalAmount Decimal       @default(0) @map("total_amount") @db.Decimal(10, 2)
   priority    OrderPriority @default(MEDIUM)
 
-  // Зв'язки з людьми
-  vehicleId String    @map("vehicle_id")
-  vehicle   Vehicle   @relation(fields: [vehicleId], references: [id])
-  deletedAt DateTime?
+  vehicleId String  @map("vehicle_id")
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
 
-  // Хто прийняв замовлення? (Менеджер - User)
-  managerId String? @map("manager_id")
-  manager   User?   @relation("ManagerOrders", fields: [managerId], references: [id])
-
-  // Хто робить ремонт? (Механік - User)
-  mechanicId String? @map("mechanic_id")
-  mechanic   User?   @relation("MechanicOrders", fields: [mechanicId], references: [id])
-
-  // Хто клієнт? (Обов'язково)
   clientId String @map("client_id")
   client   Client @relation(fields: [clientId], references: [id])
 
-  // Деталі замовлення (що конкретно робили і які запчастини ставили)
-  parts    OrderPart[]
-  services OrderService[]
+  managerId String? @map("manager_id")
+  manager   User?   @relation("ManagerOrders", fields: [managerId], references: [id])
 
-  startDate      DateTime        @default(now()) @map("start_date")
-  endDate        DateTime?       @map("end_date")
+  mechanicId String? @map("mechanic_id")
+  mechanic   User?   @relation("MechanicOrders", fields: [mechanicId], references: [id])
+
+  parts          OrderPart[]
+  services       OrderService[]
   stockMovements StockMovement[]
+
+  deletedAt DateTime?
+  startDate DateTime  @default(now()) @map("start_date")
+  endDate   DateTime? @map("end_date")
 
   @@map("orders")
 }
 
-// 9. Проміжна таблиця: Запчастини в замовленні
 model OrderPart {
-  id String @id @default(cuid())
-
+  id      String @id @default(cuid())
   orderId String @map("order_id")
   order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   partId String @map("part_id")
   part   Part   @relation(fields: [partId], references: [id])
 
-  quantity Int @default(1) // Скільки штук використали
-
-  // Важливо: зберігаємо ціну на момент замовлення (історія цін)
-  price Decimal @db.Decimal(10, 2)
+  quantity Int     @default(1)
+  price    Decimal @db.Decimal(10, 2) // Фіксація ціни на момент продажу
 
   @@map("order_parts")
 }
 
-// 10. Проміжна таблиця: Послуги (роботи) в замовленні
 model OrderService {
-  id String @id @default(cuid())
-
+  id      String @id @default(cuid())
   orderId String @map("order_id")
   order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   serviceId String  @map("service_id")
   service   Service @relation(fields: [serviceId], references: [id])
 
-  quantity Float @default(1) // Кількість нормо-годин або кількість операцій
+  mechanicId String? @map("mechanic_id")
+  mechanic   User?   @relation("ServiceMechanic", fields: [mechanicId], references: [id]) // Конкретний виконавець роботи
 
-  // Важливо: ціна на момент виконання
-  price Decimal @db.Decimal(10, 2)
+  quantity Float   @default(1)
+  price    Decimal @db.Decimal(10, 2) // Фіксація ціни на момент продажу
 
   @@map("order_services")
 }
 
-// 11. Для AI RAG (Технічна документація)
+// ==========================================
+// KNOWLEDGE BASE (База знань AI)
+// ==========================================
+
 model Document {
-  id       String @id @default(cuid())
-  filename String // Назва файлу (Manual_Golf_5.pdf)
-  content  String @db.Text // Текст, витягнутий з PDF
-
-  // Вектори зберігаються окремо або через розширення pgvector. 
-  // Для диплома часто достатньо зберігати текст і шукати по ньому, 
-  // або використовувати Pinecone, тоді тут зберігаємо тільки метадані.
-  externalId String? @map("external_id") // ID вектора в Pinecone
-
-  createdAt DateTime @default(now()) @map("created_at")
+  id         String   @id @default(cuid())
+  filename   String // Назва файлу (Manual_Golf_5.pdf)
+  content    String   @db.Text // Текст, витягнутий з PDF
+  externalId String?  @map("external_id") // ID вектора в Pinecone
+  createdAt  DateTime @default(now()) @map("created_at")
 
   @@map("documents")
 }

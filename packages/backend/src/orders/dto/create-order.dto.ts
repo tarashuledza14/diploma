@@ -1,11 +1,35 @@
+import { Type } from 'class-transformer';
 import {
 	IsArray,
 	IsEnum,
 	IsNotEmpty,
+	IsNumber,
 	IsOptional,
+	IsPositive,
 	IsString,
-} from 'class-validator'
-import { OrderStatus } from 'prisma/generated/prisma/enums'
+	ValidateNested,
+} from 'class-validator';
+import { OrderPriority, OrderStatus } from 'prisma/generated/prisma/enums';
+
+class CreateOrderServiceDto {
+	@IsString()
+	@IsNotEmpty()
+	serviceId: string;
+
+	@IsString()
+	@IsOptional()
+	mechanicId?: string;
+}
+
+class CreateOrderPartDto {
+	@IsString()
+	@IsNotEmpty()
+	partId: string;
+
+	@IsNumber()
+	@IsPositive()
+	quantity: number;
+}
 
 export class CreateOrderDto {
 	@IsString()
@@ -14,29 +38,35 @@ export class CreateOrderDto {
 
 	@IsString()
 	@IsNotEmpty()
-	carId: string;
+	vehicleId: string;
+
+	@IsNumber()
+	@IsPositive()
+	mileage: number;
 
 	@IsArray()
-	@IsNotEmpty()
-	services: string[];
+	@ValidateNested({ each: true })
+	@Type(() => CreateOrderServiceDto)
+	services: CreateOrderServiceDto[];
+
+	@IsArray()
+	@ValidateNested({ each: true })
+	@Type(() => CreateOrderPartDto)
+	parts: CreateOrderPartDto[];
 
 	@IsEnum(OrderStatus)
 	@IsNotEmpty()
 	status: OrderStatus;
 
-	@IsString()
+	@IsEnum(OrderPriority)
 	@IsNotEmpty()
-	priority: string;
-
-	@IsString()
-	@IsOptional()
-	assignedMechanic: string;
-
-	@IsString()
-	@IsNotEmpty()
-	dueDate: string;
+	priority: OrderPriority;
 
 	@IsString()
 	@IsOptional()
 	notes: string;
+
+	@IsString()
+	@IsOptional()
+	endDate?: string;
 }

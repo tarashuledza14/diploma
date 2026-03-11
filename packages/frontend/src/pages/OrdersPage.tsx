@@ -1,59 +1,24 @@
-import {
-	mockOrders,
-	OrdersFilters,
-	OrdersSummary,
-	OrdersTable,
-	PageHeader,
-	priorityColors,
-	statusColors,
-} from '@/modules/orders';
-import { Card, CardContent } from '@/shared/components/ui';
-import { useState } from 'react';
+import { OrdersTable, PageHeader } from '@/modules/orders';
+import { OrdersService } from '@/modules/orders/api';
+import { ordersKeys } from '@/modules/orders/queries/keys';
+import { useTableSearchParams } from '@/shared';
+import { useQuery } from '@tanstack/react-query';
 
 export function OrdersPage() {
-	const [searchQuery, setSearchQuery] = useState('');
-	const [statusFilter, setStatusFilter] = useState('all');
-	const [priorityFilter, setPriorityFilter] = useState('all');
-
-	const filteredOrders = mockOrders.filter(order => {
-		const matchesSearch =
-			order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			order.client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			order.vehicle.plate.toLowerCase().includes(searchQuery.toLowerCase());
-		const matchesStatus =
-			statusFilter === 'all' || order.status === statusFilter;
-		const matchesPriority =
-			priorityFilter === 'all' || order.priority === priorityFilter;
-		return matchesSearch && matchesStatus && matchesPriority;
+	const searchParams = useTableSearchParams();
+	const { data } = useQuery({
+		queryKey: ordersKeys.list(searchParams),
+		queryFn: () => OrdersService.getAll(searchParams),
+		placeholderData: previousData => previousData,
 	});
-
 	return (
 		<div className='flex flex-col gap-6'>
 			<PageHeader
 				title='Orders'
 				subtitle='Manage and track all service orders'
 			/>
-			<OrdersFilters
-				searchQuery={searchQuery}
-				setSearchQuery={setSearchQuery}
-				statusFilter={statusFilter}
-				setStatusFilter={setStatusFilter}
-				priorityFilter={priorityFilter}
-				setPriorityFilter={setPriorityFilter}
-			/>
-			<Card>
-				<CardContent className='p-0'>
-					<OrdersTable
-						orders={filteredOrders}
-						statusColors={statusColors}
-						priorityColors={priorityColors}
-					/>
-				</CardContent>
-			</Card>
-			<OrdersSummary
-				filteredCount={filteredOrders.length}
-				totalCount={mockOrders.length}
-			/>
+
+			<OrdersTable data={data?.data ?? []} pageCount={data?.pageCount ?? 0} />
 		</div>
 	);
 }
