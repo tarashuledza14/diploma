@@ -16,7 +16,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -26,7 +26,7 @@ import { NewOrderFormContent } from './NewOrderFormContent';
 const newOrderSchema = z.object({
 	clientId: z.string().min(1, 'Client is required'),
 	vehicleId: z.string().min(1, 'Vehicle is required'),
-	mileage: z.number().min(0, 'Mileage must be a positive number'),
+	mileage: z.number().min(1, 'Mileage must be greater than 0'),
 	priority: z.nativeEnum(OrderPriority),
 	services: z.array(
 		z.object({
@@ -57,6 +57,7 @@ export function NewOrderModal({
 }: NewOrderModalProps) {
 	const [open, setOpen] = useState(false);
 	const queryClient = useQueryClient();
+	const minMileageRef = useRef(0);
 
 	const form = useForm<NewOrderForm>({
 		resolver: zodResolver(newOrderSchema),
@@ -71,6 +72,12 @@ export function NewOrderModal({
 			status: defaultStatus,
 		},
 	});
+
+	useEffect(() => {
+		if (open) {
+			form.setValue('status', defaultStatus);
+		}
+	}, [open, defaultStatus, form]);
 
 	const {
 		fields: serviceFields,
@@ -111,6 +118,23 @@ export function NewOrderModal({
 	const clientVehicles = clientId
 		? vehicles.filter((v: any) => v.clientId === clientId)
 		: vehicles;
+
+	useEffect(() => {
+		if (vehicleId) {
+			const selectedVehicle = vehicles.find((v: any) => v.id === vehicleId);
+			const newMinMileage = selectedVehicle?.lastMileage || 0;
+			minMileageRef.current = newMinMileage;
+
+			const currentMileage = form.getValues('mileage');
+			if (newMinMileage > 0 && currentMileage < newMinMileage) {
+				form.setValue('mileage', newMinMileage, { shouldValidate: false });
+				form.clearErrors('mileage');
+			}
+		} else {
+			minMileageRef.current = 0;
+			form.clearErrors('mileage');
+		}
+	}, [vehicleId, vehicles]);
 
 	const [autoFilledParts, setAutoFilledParts] = useState<Set<string>>(
 		new Set(),
@@ -265,19 +289,34 @@ export function NewOrderModal({
 	const { mutateAsync: createOrder, isPending } = useMutation({
 		mutationFn: (payload: CreateOrderPayload) =>
 			OrdersService.createOrder(payload),
-		onSuccess: () => {
+		onSuccess: async () => {
 			toast.success('Work order created successfully');
-			queryClient.invalidateQueries({ queryKey: ordersKeys.all });
+			await queryClient.refetchQueries({
+				queryKey: ordersKeys.list({ filters: [], page: 1, perPage: 500 }),
+			});
+
 			setOpen(false);
 			form.reset();
 			setAutoFilledParts(new Set());
 		},
 		onError: (error: any) => {
-			toast.error(`Failed to create order: ${error.message}`);
+			console.error('Error creating order:', error);
+			const errorMessage =
+				error?.response?.data?.message ||
+				error.message ||
+				'Failed to create order';
+			toast.error(errorMessage);
 		},
 	});
 
 	const onSubmit = async (data: NewOrderForm) => {
+		const minMil = minMileageRef.current;
+		if (minMil > 0 && data.mileage < minMil) {
+			form.setError('mileage', {
+				message: `Mileage must be at least ${minMil.toLocaleString()} km (last recorded)`,
+			});
+			return;
+		}
 		try {
 			await createOrder(data as CreateOrderPayload);
 		} catch (error) {
@@ -325,6 +364,7 @@ export function NewOrderModal({
 					totalAmount={totalAmount}
 					isPending={isPending}
 					onCancel={() => setOpen(false)}
+					minMileage={minMileageRef.current}
 				/>
 			</DialogContent>
 		</Dialog>

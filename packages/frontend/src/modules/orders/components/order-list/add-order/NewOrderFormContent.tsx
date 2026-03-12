@@ -61,6 +61,7 @@ interface NewOrderFormContentProps {
 	pendingSubmitLabel?: string;
 	showStatusField?: boolean;
 	showEndDateField?: boolean;
+	minMileage?: number;
 }
 
 export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
@@ -89,6 +90,7 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 	pendingSubmitLabel = 'Creating Work Order...',
 	showStatusField = false,
 	showEndDateField = false,
+	minMileage = 0,
 }) => {
 	return (
 		<div>
@@ -159,15 +161,40 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 
 								<div className='grid grid-cols-2 gap-4'>
 									<div className='space-y-2'>
-										<Label>Current Mileage *</Label>
+										<Label>
+											Current Mileage *
+											{minMileage > 0 && (
+												<span className='ml-1 text-xs text-muted-foreground'>
+													(min: {minMileage.toLocaleString()} km)
+												</span>
+											)}
+										</Label>
 										<Input
 											type='number'
-											min='0'
+											min={minMileage || 1}
 											placeholder='Enter current mileage'
-											value={form.watch('mileage')}
-											onChange={e =>
-												form.setValue('mileage', parseInt(e.target.value) || 0)
+											value={form.watch('mileage') || ''}
+											className={
+												form.formState.errors.mileage
+													? 'border-red-500 focus-visible:ring-red-500'
+													: ''
 											}
+											onChange={e => {
+												const val = parseInt(e.target.value);
+												const numVal = isNaN(val) ? 0 : val;
+												form.setValue('mileage', numVal, { shouldDirty: true });
+												if (numVal < 1) {
+													form.setError('mileage', {
+														message: 'Mileage must be greater than 0',
+													});
+												} else if (minMileage > 0 && numVal < minMileage) {
+													form.setError('mileage', {
+														message: `Mileage must be at least ${minMileage.toLocaleString()} km (last recorded)`,
+													});
+												} else {
+													form.clearErrors('mileage');
+												}
+											}}
 										/>
 										{form.formState.errors.mileage && (
 											<p className='text-sm text-red-500'>

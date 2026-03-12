@@ -1,6 +1,12 @@
 export const orderSelect = {
 	id: true,
 	status: true,
+	mechanic: {
+		select: {
+			id: true,
+			fullName: true,
+		},
+	},
 	vehicle: {
 		select: {
 			brand: true,

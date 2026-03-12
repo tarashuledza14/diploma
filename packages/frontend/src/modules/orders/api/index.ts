@@ -40,6 +40,14 @@ export class OrdersService {
 		return instance.patch(`/orders/${id}`, data);
 	}
 
+	static async quickUpdateOrder(
+		id: string,
+		data: { mechanicId?: string | null; endDate?: string | null },
+	) {
+		const response = await instance.patch(`/orders/${id}/quick`, data);
+		return response.data;
+	}
+
 	static async updateBulk(
 		ids: string[],
 		data: { status?: string; priority?: string },

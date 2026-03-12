@@ -1,2 +1,4 @@
-export { KanbanColumnsList } from './components/column/KanbanColumnsList.tsx';
-export { KanbanPageHeader } from './components/page/KanbanPageHeader.tsx';
+export {
+	KanbanColumnsList,
+	KanbanPageHeader,
+} from '@/modules/orders/components/order-kanban';

@@ -12,6 +12,7 @@ export interface NewOrderVehicle {
 	model: string;
 	year: number;
 	licensePlate: string;
+	lastMileage: number;
 }
 
 export interface NewOrderServiceMeta {

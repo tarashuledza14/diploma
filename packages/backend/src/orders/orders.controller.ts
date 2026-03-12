@@ -10,6 +10,7 @@ import {
 import { BulkUpdateOrderDto } from './dto/bulk-update.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { GetOrdersDto } from './dto/filter.dto';
+import { QuickUpdateOrderDto } from './dto/quick-update-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrdersService } from './orders.service';
 
@@ -32,10 +33,6 @@ export class OrdersController {
 		return this.ordersService.getNewOrderMeta();
 	}
 
-	/**
-	 * Get recommended parts for a vehicle and service
-	 * GET /orders/recommended-parts?vehicleId=...&serviceId=...
-	 */
 	@Get('recommended-parts')
 	async getRecommendedParts(
 		@Query('vehicleId') vehicleId: string,
@@ -52,6 +49,11 @@ export class OrdersController {
 	@Patch('bulk')
 	updateBulk(@Body() data: BulkUpdateOrderDto) {
 		return this.ordersService.updateBulk(data);
+	}
+
+	@Patch(':id/quick')
+	quickUpdate(@Param('id') id: string, @Body() dto: QuickUpdateOrderDto) {
+		return this.ordersService.quickUpdate(id, dto);
 	}
 
 	@Patch(':id')

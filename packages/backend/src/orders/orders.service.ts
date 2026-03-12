@@ -10,6 +10,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { BulkUpdateOrderDto } from './dto/bulk-update.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { GetOrdersDto } from './dto/filter.dto';
+import { QuickUpdateOrderDto } from './dto/quick-update-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { orderDetailSelect } from './selects/order-detail.select';
 import { orderSelect } from './selects/order.select';
@@ -27,14 +28,12 @@ export class OrdersService {
 			throw new BadRequestException('vehicleId and serviceId are required');
 		}
 
-		// Find service with required categories
 		const service = await this.db.service.findUnique({
 			where: { id: serviceId },
 			include: { requiredCategories: true },
 		});
 		if (!service) throw new NotFoundException('Service not found');
 
-		// Get client info to determine pricing rules
 		const vehicle = await this.db.vehicle.findUnique({
 			where: { id: vehicleId },
 			include: { owner: true },
@@ -45,13 +44,12 @@ export class OrdersService {
 		if (service.requiredCategories && service.requiredCategories.length > 0) {
 			const categoryIds = service.requiredCategories.map(c => c.id);
 
-			// Find parts with inventory and price rules
 			const partsWithInventory = await this.db.part.findMany({
 				where: {
 					categoryId: { in: categoryIds },
 					inventory: {
 						some: {
-							quantity: { gt: 0 }, // Only parts in stock
+							quantity: { gt: 0 },
 						},
 					},
 				},
@@ -62,22 +60,18 @@ export class OrdersService {
 				},
 			});
 
-			// Calculate proper prices considering client rules
 			parts = partsWithInventory.map(part => {
-				// Calculate total stock from all inventory entries
 				const totalStock = part.inventory.reduce(
 					(sum, inv) => sum + inv.quantity,
 					0,
 				);
 
-				// Get average purchase price
 				const avgPurchasePrice =
 					part.inventory.reduce(
 						(sum, inv) => sum + Number(inv.purchasePrice) * inv.quantity,
 						0,
 					) / totalStock;
 
-				// Find applicable price rule (default to RETAIL if no specific rule)
 				const applicableRule = part.priceRules.find(
 					rule => rule.clientType === null || rule.clientType === 'RETAIL',
 				);
@@ -92,7 +86,6 @@ export class OrdersService {
 							avgPurchasePrice * (1 + applicableRule.markupPercent / 100);
 					}
 				} else {
-					// Default markup if no rule found (e.g., 30%)
 					finalPrice = avgPurchasePrice * 1.3;
 				}
 
@@ -210,7 +203,6 @@ export class OrdersService {
 			throw new NotFoundException('Order not found');
 		}
 
-		// Normalize response for frontend
 		const assignedTo = order.mechanic ?? order.manager;
 		const services = order.services.map(os => ({
 			id: os.id,
@@ -348,6 +340,28 @@ export class OrdersService {
 		});
 	}
 
+	async quickUpdate(id: string, dto: QuickUpdateOrderDto) {
+		const existing = await this.db.order.findUnique({ where: { id } });
+		if (!existing) throw new NotFoundException('Order not found');
+
+		return this.db.order.update({
+			where: { id },
+			data: {
+				...(dto.mechanicId !== undefined
+					? {
+							mechanic: dto.mechanicId
+								? { connect: { id: dto.mechanicId } }
+								: { disconnect: true },
+						}
+					: {}),
+				...(dto.endDate !== undefined
+					? { endDate: dto.endDate ? new Date(dto.endDate) : null }
+					: {}),
+			},
+			select: { id: true, mechanicId: true, endDate: true },
+		});
+	}
+
 	async updateBulk(data: BulkUpdateOrderDto) {
 		const { ids, status, priority } = data;
 
@@ -437,6 +451,17 @@ export class OrdersService {
 				],
 			);
 
+			const vehicleMileages = await this.db.order.groupBy({
+				by: ['vehicleId'],
+				_max: {
+					mileage: true,
+				},
+			});
+
+			const mileageMap = new Map(
+				vehicleMileages.map(vm => [vm.vehicleId, vm._max.mileage || 0]),
+			);
+
 			return {
 				clients: clients.map(client => ({
 					id: client.id,
@@ -451,6 +476,7 @@ export class OrdersService {
 					model: vehicle.model,
 					year: vehicle.year,
 					licensePlate: vehicle.plateNumber ?? '',
+					lastMileage: mileageMap.get(vehicle.id) || 0,
 				})),
 				services: services.map(service => ({
 					id: service.id,
@@ -465,7 +491,6 @@ export class OrdersService {
 					specialty: '',
 				})),
 				parts: parts.map(part => {
-					// Calculate total stock and average price
 					const totalStock = part.inventory.reduce(
 						(sum, inv) => sum + inv.quantity,
 						0,
@@ -476,7 +501,6 @@ export class OrdersService {
 							0,
 						) / totalStock;
 
-					// Default retail price calculation (30% markup)
 					const retailRule = part.priceRules.find(
 						rule => rule.clientType === null || rule.clientType === 'RETAIL',
 					);
@@ -490,7 +514,7 @@ export class OrdersService {
 								avgPurchasePrice * (1 + retailRule.markupPercent / 100);
 						}
 					} else {
-						finalPrice = avgPurchasePrice * 1.3; // Default 30% markup
+						finalPrice = avgPurchasePrice * 1.3;
 					}
 
 					return {

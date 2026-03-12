@@ -1,6 +1,7 @@
 export { OrderDetailsPage } from '../../pages/OrderDetailsPage';
 export { OrdersPage } from '../../pages/OrdersPage';
 
+export { KanbanColumnsList, KanbanPageHeader } from './components/order-kanban';
 export { mockOrders } from './components/order-list/mockOrders';
 export {
 	priorityColors,
