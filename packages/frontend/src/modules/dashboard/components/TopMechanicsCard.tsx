@@ -9,8 +9,13 @@ import {
 	CardTitle,
 } from '@/shared/components/ui';
 import { TrendingUp, Wrench } from 'lucide-react';
+import type { DashboardTopMechanic } from '../types';
 
-export function TopMechanicsCard({ topMechanics }: { topMechanics: any[] }) {
+interface TopMechanicsCardProps {
+	topMechanics: DashboardTopMechanic[];
+}
+
+export function TopMechanicsCard({ topMechanics }: TopMechanicsCardProps) {
 	return (
 		<Card>
 			<CardHeader>
@@ -22,9 +27,14 @@ export function TopMechanicsCard({ topMechanics }: { topMechanics: any[] }) {
 			</CardHeader>
 			<CardContent>
 				<div className='space-y-4'>
+					{topMechanics.length === 0 && (
+						<div className='rounded-lg border p-3 text-sm text-muted-foreground'>
+							No mechanics assigned to orders yet.
+						</div>
+					)}
 					{topMechanics.map((mechanic, index) => (
 						<div
-							key={mechanic.name}
+							key={mechanic.id}
 							className='flex items-center justify-between rounded-lg border p-3'
 						>
 							<div className='flex items-center gap-3'>
@@ -36,7 +46,7 @@ export function TopMechanicsCard({ topMechanics }: { topMechanics: any[] }) {
 									<AvatarFallback>
 										{mechanic.name
 											.split(' ')
-											// .map(n => n[0])
+											.map(name => name[0])
 											.join('')}
 									</AvatarFallback>
 								</Avatar>

@@ -1,3 +1,4 @@
+import { OrderStatus } from '@/modules/orders/interfaces/order.enums';
 import {
 	Avatar,
 	AvatarFallback,
@@ -11,13 +12,23 @@ import {
 	CardTitle,
 } from '@/shared/components/ui';
 import { Link } from 'react-router-dom';
+import type { DashboardRecentOrder } from '../types';
+
+const statusLabels: Record<OrderStatus, string> = {
+	[OrderStatus.NEW]: 'New',
+	[OrderStatus.IN_PROGRESS]: 'In Progress',
+	[OrderStatus.WAITING_PARTS]: 'Waiting Parts',
+	[OrderStatus.COMPLETED]: 'Completed',
+	[OrderStatus.PAID]: 'Paid',
+	[OrderStatus.CANCELLED]: 'Cancelled',
+};
 
 export function RecentOrdersCard({
 	recentOrders,
 	statusColors,
 }: {
-	recentOrders: any[];
-	statusColors: Record<string, string>;
+	recentOrders: DashboardRecentOrder[];
+	statusColors: Record<OrderStatus, string>;
 }) {
 	return (
 		<Card>
@@ -36,6 +47,11 @@ export function RecentOrdersCard({
 			</CardHeader>
 			<CardContent>
 				<div className='space-y-4'>
+					{recentOrders.length === 0 && (
+						<div className='rounded-lg border p-3 text-sm text-muted-foreground'>
+							No recent orders found.
+						</div>
+					)}
 					{recentOrders.map(order => (
 						<Link key={order.id} to={`/orders/${order.id}`}>
 							<div className='flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50'>
@@ -45,7 +61,7 @@ export function RecentOrdersCard({
 										<AvatarFallback>
 											{order.client
 												.split(' ')
-												// .map(n => n[0])
+												.map(name => name[0])
 												.join('')}
 										</AvatarFallback>
 									</Avatar>
@@ -57,7 +73,7 @@ export function RecentOrdersCard({
 									</div>
 								</div>
 								<Badge className={statusColors[order.status]}>
-									{order.status.replace('_', ' ')}
+									{statusLabels[order.status]}
 								</Badge>
 							</div>
 						</Link>

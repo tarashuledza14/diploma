@@ -6,8 +6,13 @@ import {
 } from '@/shared/components/ui';
 import { AlertTriangle, CheckCircle2, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import type { DashboardAlert } from '../types';
 
-export function AlertsCard({ alerts }: { alerts: any[] }) {
+interface AlertsCardProps {
+	alerts: DashboardAlert[];
+}
+
+export function AlertsCard({ alerts }: AlertsCardProps) {
 	return (
 		<Card>
 			<CardHeader>
@@ -17,6 +22,11 @@ export function AlertsCard({ alerts }: { alerts: any[] }) {
 				</CardTitle>
 			</CardHeader>
 			<CardContent className='space-y-3'>
+				{alerts.length === 0 && (
+					<div className='rounded-lg border p-3 text-sm text-muted-foreground'>
+						No active alerts right now.
+					</div>
+				)}
 				{alerts.map((alert, index) => (
 					<Link key={index} to={alert.link}>
 						<div className='flex items-start gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50'>

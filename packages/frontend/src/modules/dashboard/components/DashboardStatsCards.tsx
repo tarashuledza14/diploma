@@ -5,8 +5,13 @@ import {
 	CardTitle,
 } from '@/shared/components/ui';
 import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
+import type { DashboardStat } from '../types';
 
-export function DashboardStatsCards({ stats }: { stats: any[] }) {
+interface DashboardStatsCardsProps {
+	stats: DashboardStat[];
+}
+
+export function DashboardStatsCards({ stats }: DashboardStatsCardsProps) {
 	return (
 		<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
 			{stats.map(stat => (
@@ -22,12 +27,16 @@ export function DashboardStatsCards({ stats }: { stats: any[] }) {
 						<div className='flex items-center gap-1 text-xs'>
 							{stat.trend === 'up' ? (
 								<ArrowUpRight className='h-3 w-3 text-green-500' />
-							) : (
+							) : stat.trend === 'down' ? (
 								<ArrowDownRight className='h-3 w-3 text-red-500' />
-							)}
+							) : null}
 							<span
 								className={
-									stat.trend === 'up' ? 'text-green-500' : 'text-red-500'
+									stat.trend === 'up'
+										? 'text-green-500'
+										: stat.trend === 'down'
+											? 'text-red-500'
+											: 'text-muted-foreground'
 								}
 							>
 								{stat.change}

@@ -8,12 +8,13 @@ import {
 	Progress,
 } from '@/shared/components/ui';
 import { Link } from 'react-router-dom';
+import type { DashboardOrderStatusItem } from '../types';
 
 export function OrdersOverviewCard({
 	ordersByStatus,
 	totalOrders,
 }: {
-	ordersByStatus: any[];
+	ordersByStatus: DashboardOrderStatusItem[];
 	totalOrders: number;
 }) {
 	return (
@@ -35,10 +36,10 @@ export function OrdersOverviewCard({
 				<div className='space-y-4'>
 					{ordersByStatus.map(item => (
 						<div key={item.status} className='flex items-center gap-4'>
-							<div className='w-24 text-sm font-medium'>{item.status}</div>
+							<div className='w-24 text-sm font-medium'>{item.label}</div>
 							<div className='flex-1'>
 								<Progress
-									value={(item.count / totalOrders) * 100}
+									value={totalOrders > 0 ? (item.count / totalOrders) * 100 : 0}
 									className='h-2'
 								/>
 							</div>
