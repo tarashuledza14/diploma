@@ -4,22 +4,22 @@ import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { OrdersService, UpdateOrderPayload } from '../modules/orders/api';
-import { EditOrderModal } from '../modules/orders/components/order-list/EditOrderModal';
 import { GeneralInfoTab } from '../modules/orders/components/order-details/general-info/GeneralInfoTab';
 import { MediaGallery } from '../modules/orders/components/order-details/media/MediaGallery';
 import { OrderDetailsHeader } from '../modules/orders/components/order-details/OrderDetailsHeader';
 import { PartsTab } from '../modules/orders/components/order-details/parts/PartsTab';
 import { ServicesTab } from '../modules/orders/components/order-details/services/ServicesTab';
 import { TabsNav } from '../modules/orders/components/order-details/tabs/TabsNav';
+import { EditOrderModal } from '../modules/orders/components/order-list/EditOrderModal';
 import { NewOrderMeta } from '../modules/orders/interfaces/new-order-meta.interface';
 import {
 	OrderPartItem,
 	OrderServiceItem,
 } from '../modules/orders/interfaces/new-order.interface';
 import {
+	OrderDetails,
 	OrderDetailsPart,
 	OrderDetailsService,
-	OrderDetails,
 } from '../modules/orders/interfaces/order-details.interface';
 import {
 	OrderPriority,
@@ -268,32 +268,33 @@ export function OrderDetailsPage() {
 		},
 	});
 
-	const { mutate: updateOrderStatus, isPending: isUpdatingStatus } = useMutation({
-		mutationKey: [...ordersKeys.all, 'mutations', 'order-details-status', id],
-		mutationFn: async (status: OrderStatus) => {
-			if (!order?.id) {
-				throw new Error('Order not found');
-			}
+	const { mutate: updateOrderStatus, isPending: isUpdatingStatus } =
+		useMutation({
+			mutationKey: [...ordersKeys.all, 'mutations', 'order-details-status', id],
+			mutationFn: async (status: OrderStatus) => {
+				if (!order?.id) {
+					throw new Error('Order not found');
+				}
 
-			await OrdersService.updateBulk([order.id], { status });
-		},
-		onSuccess: async () => {
-			toast.success('Order status updated');
-			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ordersKeys.lists() }),
-				id
-					? queryClient.invalidateQueries({ queryKey: ordersKeys.detail(id) })
-					: Promise.resolve(),
-			]);
-		},
-		onError: (mutationError: any) => {
-			const message =
-				mutationError?.response?.data?.message ||
-				mutationError?.message ||
-				'Failed to update order status';
-			toast.error(message);
-		},
-	});
+				await OrdersService.updateBulk([order.id], { status });
+			},
+			onSuccess: async () => {
+				toast.success('Order status updated');
+				await Promise.all([
+					queryClient.invalidateQueries({ queryKey: ordersKeys.lists() }),
+					id
+						? queryClient.invalidateQueries({ queryKey: ordersKeys.detail(id) })
+						: Promise.resolve(),
+				]);
+			},
+			onError: (mutationError: any) => {
+				const message =
+					mutationError?.response?.data?.message ||
+					mutationError?.message ||
+					'Failed to update order status';
+				toast.error(message);
+			},
+		});
 
 	const handleStatusChange = (status: string) => {
 		if (!order) {
