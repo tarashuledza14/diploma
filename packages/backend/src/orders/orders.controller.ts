@@ -1,6 +1,7 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
 	Param,
 	Patch,
@@ -59,5 +60,15 @@ export class OrdersController {
 	@Patch(':id')
 	update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
 		return this.ordersService.update(id, updateOrderDto);
+	}
+
+	@Delete(':id')
+	delete(@Param('id') id: string) {
+		return this.ordersService.delete(id);
+	}
+
+	@Delete()
+	deleteBulk(@Body('ids') ids: string[]) {
+		return this.ordersService.deleteBulk(ids);
 	}
 }

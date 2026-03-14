@@ -27,12 +27,14 @@ export type AggregateOrder = {
 }
 
 export type OrderAvgAggregateOutputType = {
+  orderNumber: number | null
   mileage: number | null
   discount: runtime.Decimal | null
   totalAmount: runtime.Decimal | null
 }
 
 export type OrderSumAggregateOutputType = {
+  orderNumber: number | null
   mileage: number | null
   discount: runtime.Decimal | null
   totalAmount: runtime.Decimal | null
@@ -40,6 +42,7 @@ export type OrderSumAggregateOutputType = {
 
 export type OrderMinAggregateOutputType = {
   id: string | null
+  orderNumber: number | null
   status: $Enums.OrderStatus | null
   description: string | null
   mileage: number | null
@@ -58,6 +61,7 @@ export type OrderMinAggregateOutputType = {
 
 export type OrderMaxAggregateOutputType = {
   id: string | null
+  orderNumber: number | null
   status: $Enums.OrderStatus | null
   description: string | null
   mileage: number | null
@@ -76,6 +80,7 @@ export type OrderMaxAggregateOutputType = {
 
 export type OrderCountAggregateOutputType = {
   id: number
+  orderNumber: number
   status: number
   description: number
   mileage: number
@@ -95,12 +100,14 @@ export type OrderCountAggregateOutputType = {
 
 
 export type OrderAvgAggregateInputType = {
+  orderNumber?: true
   mileage?: true
   discount?: true
   totalAmount?: true
 }
 
 export type OrderSumAggregateInputType = {
+  orderNumber?: true
   mileage?: true
   discount?: true
   totalAmount?: true
@@ -108,6 +115,7 @@ export type OrderSumAggregateInputType = {
 
 export type OrderMinAggregateInputType = {
   id?: true
+  orderNumber?: true
   status?: true
   description?: true
   mileage?: true
@@ -126,6 +134,7 @@ export type OrderMinAggregateInputType = {
 
 export type OrderMaxAggregateInputType = {
   id?: true
+  orderNumber?: true
   status?: true
   description?: true
   mileage?: true
@@ -144,6 +153,7 @@ export type OrderMaxAggregateInputType = {
 
 export type OrderCountAggregateInputType = {
   id?: true
+  orderNumber?: true
   status?: true
   description?: true
   mileage?: true
@@ -249,6 +259,7 @@ export type OrderGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 
 export type OrderGroupByOutputType = {
   id: string
+  orderNumber: number
   status: $Enums.OrderStatus
   description: string | null
   mileage: number
@@ -290,6 +301,7 @@ export type OrderWhereInput = {
   OR?: Prisma.OrderWhereInput[]
   NOT?: Prisma.OrderWhereInput | Prisma.OrderWhereInput[]
   id?: Prisma.StringFilter<"Order"> | string
+  orderNumber?: Prisma.IntFilter<"Order"> | number
   status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
   description?: Prisma.StringNullableFilter<"Order"> | string | null
   mileage?: Prisma.IntFilter<"Order"> | number
@@ -315,6 +327,7 @@ export type OrderWhereInput = {
 
 export type OrderOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  orderNumber?: Prisma.SortOrder
   status?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   mileage?: Prisma.SortOrder
@@ -340,6 +353,7 @@ export type OrderOrderByWithRelationInput = {
 
 export type OrderWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  orderNumber?: number
   AND?: Prisma.OrderWhereInput | Prisma.OrderWhereInput[]
   OR?: Prisma.OrderWhereInput[]
   NOT?: Prisma.OrderWhereInput | Prisma.OrderWhereInput[]
@@ -364,10 +378,11 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   parts?: Prisma.OrderPartListRelationFilter
   services?: Prisma.OrderServiceListRelationFilter
   stockMovements?: Prisma.StockMovementListRelationFilter
-}, "id">
+}, "id" | "orderNumber">
 
 export type OrderOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  orderNumber?: Prisma.SortOrder
   status?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   mileage?: Prisma.SortOrder
@@ -394,6 +409,7 @@ export type OrderScalarWhereWithAggregatesInput = {
   OR?: Prisma.OrderScalarWhereWithAggregatesInput[]
   NOT?: Prisma.OrderScalarWhereWithAggregatesInput | Prisma.OrderScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Order"> | string
+  orderNumber?: Prisma.IntWithAggregatesFilter<"Order"> | number
   status?: Prisma.EnumOrderStatusWithAggregatesFilter<"Order"> | $Enums.OrderStatus
   description?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   mileage?: Prisma.IntWithAggregatesFilter<"Order"> | number
@@ -412,6 +428,7 @@ export type OrderScalarWhereWithAggregatesInput = {
 
 export type OrderCreateInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -433,6 +450,7 @@ export type OrderCreateInput = {
 
 export type OrderUncheckedCreateInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -475,6 +493,7 @@ export type OrderUpdateInput = {
 
 export type OrderUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mileage?: Prisma.IntFieldUpdateOperationsInput | number
@@ -496,6 +515,7 @@ export type OrderUncheckedUpdateInput = {
 
 export type OrderCreateManyInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -528,6 +548,7 @@ export type OrderUpdateManyMutationInput = {
 
 export type OrderUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mileage?: Prisma.IntFieldUpdateOperationsInput | number
@@ -561,6 +582,7 @@ export type OrderNullableScalarRelationFilter = {
 
 export type OrderCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  orderNumber?: Prisma.SortOrder
   status?: Prisma.SortOrder
   description?: Prisma.SortOrder
   mileage?: Prisma.SortOrder
@@ -578,6 +600,7 @@ export type OrderCountOrderByAggregateInput = {
 }
 
 export type OrderAvgOrderByAggregateInput = {
+  orderNumber?: Prisma.SortOrder
   mileage?: Prisma.SortOrder
   discount?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
@@ -585,6 +608,7 @@ export type OrderAvgOrderByAggregateInput = {
 
 export type OrderMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  orderNumber?: Prisma.SortOrder
   status?: Prisma.SortOrder
   description?: Prisma.SortOrder
   mileage?: Prisma.SortOrder
@@ -603,6 +627,7 @@ export type OrderMaxOrderByAggregateInput = {
 
 export type OrderMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  orderNumber?: Prisma.SortOrder
   status?: Prisma.SortOrder
   description?: Prisma.SortOrder
   mileage?: Prisma.SortOrder
@@ -620,6 +645,7 @@ export type OrderMinOrderByAggregateInput = {
 }
 
 export type OrderSumOrderByAggregateInput = {
+  orderNumber?: Prisma.SortOrder
   mileage?: Prisma.SortOrder
   discount?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
@@ -852,6 +878,7 @@ export type OrderUpdateOneRequiredWithoutServicesNestedInput = {
 
 export type OrderCreateWithoutManagerInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -872,6 +899,7 @@ export type OrderCreateWithoutManagerInput = {
 
 export type OrderUncheckedCreateWithoutManagerInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -902,6 +930,7 @@ export type OrderCreateManyManagerInputEnvelope = {
 
 export type OrderCreateWithoutMechanicInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -922,6 +951,7 @@ export type OrderCreateWithoutMechanicInput = {
 
 export type OrderUncheckedCreateWithoutMechanicInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -971,6 +1001,7 @@ export type OrderScalarWhereInput = {
   OR?: Prisma.OrderScalarWhereInput[]
   NOT?: Prisma.OrderScalarWhereInput | Prisma.OrderScalarWhereInput[]
   id?: Prisma.StringFilter<"Order"> | string
+  orderNumber?: Prisma.IntFilter<"Order"> | number
   status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
   description?: Prisma.StringNullableFilter<"Order"> | string | null
   mileage?: Prisma.IntFilter<"Order"> | number
@@ -1005,6 +1036,7 @@ export type OrderUpdateManyWithWhereWithoutMechanicInput = {
 
 export type OrderCreateWithoutClientInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -1025,6 +1057,7 @@ export type OrderCreateWithoutClientInput = {
 
 export type OrderUncheckedCreateWithoutClientInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -1071,6 +1104,7 @@ export type OrderUpdateManyWithWhereWithoutClientInput = {
 
 export type OrderCreateWithoutVehicleInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -1091,6 +1125,7 @@ export type OrderCreateWithoutVehicleInput = {
 
 export type OrderUncheckedCreateWithoutVehicleInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -1137,6 +1172,7 @@ export type OrderUpdateManyWithWhereWithoutVehicleInput = {
 
 export type OrderCreateWithoutStockMovementsInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -1157,6 +1193,7 @@ export type OrderCreateWithoutStockMovementsInput = {
 
 export type OrderUncheckedCreateWithoutStockMovementsInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -1213,6 +1250,7 @@ export type OrderUpdateWithoutStockMovementsInput = {
 
 export type OrderUncheckedUpdateWithoutStockMovementsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mileage?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1233,6 +1271,7 @@ export type OrderUncheckedUpdateWithoutStockMovementsInput = {
 
 export type OrderCreateWithoutPartsInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -1253,6 +1292,7 @@ export type OrderCreateWithoutPartsInput = {
 
 export type OrderUncheckedCreateWithoutPartsInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -1309,6 +1349,7 @@ export type OrderUpdateWithoutPartsInput = {
 
 export type OrderUncheckedUpdateWithoutPartsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mileage?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1329,6 +1370,7 @@ export type OrderUncheckedUpdateWithoutPartsInput = {
 
 export type OrderCreateWithoutServicesInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -1349,6 +1391,7 @@ export type OrderCreateWithoutServicesInput = {
 
 export type OrderUncheckedCreateWithoutServicesInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -1405,6 +1448,7 @@ export type OrderUpdateWithoutServicesInput = {
 
 export type OrderUncheckedUpdateWithoutServicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mileage?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1425,6 +1469,7 @@ export type OrderUncheckedUpdateWithoutServicesInput = {
 
 export type OrderCreateManyManagerInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -1442,6 +1487,7 @@ export type OrderCreateManyManagerInput = {
 
 export type OrderCreateManyMechanicInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -1479,6 +1525,7 @@ export type OrderUpdateWithoutManagerInput = {
 
 export type OrderUncheckedUpdateWithoutManagerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mileage?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1499,6 +1546,7 @@ export type OrderUncheckedUpdateWithoutManagerInput = {
 
 export type OrderUncheckedUpdateManyWithoutManagerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mileage?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1536,6 +1584,7 @@ export type OrderUpdateWithoutMechanicInput = {
 
 export type OrderUncheckedUpdateWithoutMechanicInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mileage?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1556,6 +1605,7 @@ export type OrderUncheckedUpdateWithoutMechanicInput = {
 
 export type OrderUncheckedUpdateManyWithoutMechanicInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mileage?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1573,6 +1623,7 @@ export type OrderUncheckedUpdateManyWithoutMechanicInput = {
 
 export type OrderCreateManyClientInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -1610,6 +1661,7 @@ export type OrderUpdateWithoutClientInput = {
 
 export type OrderUncheckedUpdateWithoutClientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mileage?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1630,6 +1682,7 @@ export type OrderUncheckedUpdateWithoutClientInput = {
 
 export type OrderUncheckedUpdateManyWithoutClientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mileage?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1647,6 +1700,7 @@ export type OrderUncheckedUpdateManyWithoutClientInput = {
 
 export type OrderCreateManyVehicleInput = {
   id?: string
+  orderNumber?: number
   status?: $Enums.OrderStatus
   description?: string | null
   mileage: number
@@ -1684,6 +1738,7 @@ export type OrderUpdateWithoutVehicleInput = {
 
 export type OrderUncheckedUpdateWithoutVehicleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mileage?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1704,6 +1759,7 @@ export type OrderUncheckedUpdateWithoutVehicleInput = {
 
 export type OrderUncheckedUpdateManyWithoutVehicleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mileage?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1770,6 +1826,7 @@ export type OrderCountOutputTypeCountStockMovementsArgs<ExtArgs extends runtime.
 
 export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  orderNumber?: boolean
   status?: boolean
   description?: boolean
   mileage?: boolean
@@ -1796,6 +1853,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 
 export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  orderNumber?: boolean
   status?: boolean
   description?: boolean
   mileage?: boolean
@@ -1818,6 +1876,7 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 
 export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  orderNumber?: boolean
   status?: boolean
   description?: boolean
   mileage?: boolean
@@ -1840,6 +1899,7 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 
 export type OrderSelectScalar = {
   id?: boolean
+  orderNumber?: boolean
   status?: boolean
   description?: boolean
   mileage?: boolean
@@ -1856,7 +1916,7 @@ export type OrderSelectScalar = {
   endDate?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "description" | "mileage" | "discount" | "recommendations" | "totalAmount" | "priority" | "vehicleId" | "clientId" | "managerId" | "mechanicId" | "deletedAt" | "startDate" | "endDate", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderNumber" | "status" | "description" | "mileage" | "discount" | "recommendations" | "totalAmount" | "priority" | "vehicleId" | "clientId" | "managerId" | "mechanicId" | "deletedAt" | "startDate" | "endDate", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vehicle?: boolean | Prisma.VehicleDefaultArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
@@ -1893,6 +1953,7 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    orderNumber: number
     status: $Enums.OrderStatus
     description: string | null
     mileage: number
@@ -2338,6 +2399,7 @@ export interface Prisma__OrderClient<T, Null = never, ExtArgs extends runtime.Ty
  */
 export interface OrderFieldRefs {
   readonly id: Prisma.FieldRef<"Order", 'String'>
+  readonly orderNumber: Prisma.FieldRef<"Order", 'Int'>
   readonly status: Prisma.FieldRef<"Order", 'OrderStatus'>
   readonly description: Prisma.FieldRef<"Order", 'String'>
   readonly mileage: Prisma.FieldRef<"Order", 'Int'>

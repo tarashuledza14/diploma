@@ -9,7 +9,7 @@ import {
 	OrderPriority,
 	OrderStatus,
 } from '@/modules/orders/interfaces/order.enums';
-import { OrderListItem } from '@/modules/orders/interfaces/order.interface';
+import type { OrderListItem } from '@/modules/orders/interfaces/order.interface';
 import { ordersKeys } from '@/modules/orders/queries/keys';
 import {
 	ResponsiveDialog,
@@ -30,8 +30,13 @@ import { NewOrderFormContent } from './add-order/NewOrderFormContent';
 interface EditOrderModalProps {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	order: OrderListItem | null;
+	order: EditOrderSource | null;
 }
+
+type EditOrderSource = Pick<OrderListItem, 'id' | 'priority' | 'status'> & {
+	client?: Pick<OrderListItem['client'], 'id'> | null;
+	vehicle?: Pick<OrderListItem['vehicle'], 'id'> | null;
+};
 
 const editOrderSchema = z.object({
 	clientId: z.string().min(1, 'Client is required'),

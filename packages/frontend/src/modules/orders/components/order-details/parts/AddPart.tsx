@@ -1,23 +1,59 @@
 import {
 	Button,
-	DialogFooter,
-	DialogHeader,
-	Input,
-} from '@/shared/components/ui';
-import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
+	DialogFooter,
+	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from '@radix-ui/react-dialog';
+	Input,
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/shared/components/ui';
 import { Plus } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
-export function AddPart() {
+interface AddPartProps {
+	partOptions: Array<{
+		id: string;
+		name: string;
+		price: number;
+		stock: number;
+	}>;
+	onAddPart: (partId: string, quantity: number) => Promise<void>;
+	isPending?: boolean;
+}
+
+export function AddPart({
+	partOptions,
+	onAddPart,
+	isPending = false,
+}: AddPartProps) {
+	const [open, setOpen] = useState(false);
+	const [selectedPartId, setSelectedPartId] = useState('');
+	const [quantity, setQuantity] = useState(1);
+
+	const handleAdd = async () => {
+		if (!selectedPartId) {
+			toast.error('Select a part first');
+			return;
+		}
+
+		await onAddPart(selectedPartId, Math.max(1, quantity));
+		setSelectedPartId('');
+		setQuantity(1);
+		setOpen(false);
+	};
+
 	return (
-		<Dialog>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button>
+				<Button disabled={isPending}>
 					<Plus className='mr-2 h-4 w-4' />
 					Add Part
 				</Button>
@@ -29,21 +65,44 @@ export function AddPart() {
 						Search for a part in the inventory to add to this order.
 					</DialogDescription>
 				</DialogHeader>
-				{/* TODO: Implement parts search with PartsService.search() */}
 				<div className='space-y-4 py-4'>
-					<Input placeholder='Search parts by name or SKU...' />
+					<Select value={selectedPartId} onValueChange={setSelectedPartId}>
+						<SelectTrigger>
+							<SelectValue placeholder='Select part' />
+						</SelectTrigger>
+						<SelectContent>
+							{partOptions.map(part => (
+								<SelectItem key={part.id} value={part.id}>
+									{part.name} - ${part.price} (Stock: {part.stock})
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
 					<div className='grid grid-cols-2 gap-4'>
 						<div>
 							<label className='text-sm font-medium'>Quantity</label>
-							<Input type='number' defaultValue='1' min='1' />
+							<Input
+								type='number'
+								value={quantity}
+								min='1'
+								onChange={e => setQuantity(parseInt(e.target.value, 10) || 1)}
+							/>
 						</div>
 					</div>
 				</div>
 				<DialogFooter>
-					<Button variant='outline'>Cancel</Button>
-					<Button>
+					<Button
+						variant='outline'
+						onClick={() => {
+							setOpen(false);
+							setSelectedPartId('');
+							setQuantity(1);
+						}}
+					>
+						Cancel
+					</Button>
+					<Button onClick={handleAdd} disabled={isPending || !selectedPartId}>
 						Add Part
-						{/* TODO: Call OrderService.addPart() */}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

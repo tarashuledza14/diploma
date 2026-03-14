@@ -39,6 +39,12 @@ async function clearDatabase() {
 	await prisma.document.deleteMany({});
 	await prisma.client.deleteMany({});
 	await prisma.user.deleteMany({});
+
+	// Після deleteMany sequence не скидаються автоматично.
+	// Скидаємо order_number, щоб seed був детермінованим.
+	await prisma.$executeRawUnsafe(
+		'ALTER SEQUENCE "orders_order_number_seq" RESTART WITH 1;',
+	);
 }
 
 async function main() {

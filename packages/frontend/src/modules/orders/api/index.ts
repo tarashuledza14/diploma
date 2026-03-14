@@ -55,6 +55,16 @@ export class OrdersService {
 		return instance.patch('/orders/bulk', { ids, ...data });
 	}
 
+	static async deleteOrder(id: string) {
+		return instance.delete(`/orders/${id}`);
+	}
+
+	static async deleteBulk(ids: string[]) {
+		return instance.delete('/orders', {
+			data: { ids },
+		});
+	}
+
 	static async getRecommendedParts(vehicleId: string, serviceId: string) {
 		const response = await instance.get('/orders/recommended-parts', {
 			params: { vehicleId, serviceId },

@@ -1,5 +1,6 @@
 export const orderDetailSelect = {
 	id: true,
+	orderNumber: true,
 	status: true,
 	priority: true,
 	description: true,

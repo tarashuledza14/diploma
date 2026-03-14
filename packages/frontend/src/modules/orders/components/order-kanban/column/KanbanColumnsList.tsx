@@ -77,6 +77,7 @@ function mapOrderToKanbanOrder(order: OrderListItem): KanbanOrder {
 	const mechanic = (order as any).mechanic;
 	return {
 		id: order.id,
+		orderNumber: order.orderNumber,
 		status: order.status,
 		vehicle: {
 			make: (order.vehicle as any).make ?? order.vehicle.brand ?? '—',

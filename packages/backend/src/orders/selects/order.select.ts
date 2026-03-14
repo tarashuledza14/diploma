@@ -1,5 +1,6 @@
 export const orderSelect = {
 	id: true,
+	orderNumber: true,
 	status: true,
 	mechanic: {
 		select: {

@@ -18,6 +18,7 @@ import { DataTableRowAction } from '@/types/data-table';
 import { ColumnDef } from '@tanstack/react-table';
 import { Edit, EllipsisVertical, Eye, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { formatOrderNumber } from '../../../utils/format-order-number';
 
 interface GetOrderTableColumnsProps {
 	setRowAction?: React.Dispatch<
@@ -57,6 +58,25 @@ export function getOrderTableColumns({
 			enableHiding: false,
 			enableSorting: false,
 			size: 40,
+		},
+		{
+			id: 'orderNumber',
+			accessorKey: 'orderNumber',
+			header: ({ column }) => (
+				<DataTableColumnHeader column={column} label='Order' />
+			),
+			cell: ({ row }) => (
+				<div className='font-medium'>
+					{formatOrderNumber(row.original.orderNumber)}
+				</div>
+			),
+			meta: {
+				label: 'Order',
+				placeholder: 'Search order number...',
+				variant: 'text',
+			},
+			enableColumnFilter: true,
+			enableSorting: true,
 		},
 		{
 			id: 'client',

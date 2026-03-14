@@ -10,12 +10,26 @@ import {
 import { cn } from '@/shared/lib/utils';
 import { ArrowLeft, CheckCircle2, Edit } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { orderStatusOptions } from '../../constants/order-status.constants';
+import { formatOrderNumber } from '../../utils/format-order-number';
 import { priorityColors, statusColors } from '../order-list/orderColors';
 
 interface Props {
 	order: any;
+	onStatusChange: (status: string) => void;
+	onEditOrder: () => void;
+	onCompleteOrder: () => void;
+	isUpdatingStatus?: boolean;
+	isCompletingOrder?: boolean;
 }
-export function OrderDetailsHeader({ order }: Props) {
+export function OrderDetailsHeader({
+	order,
+	onStatusChange,
+	onEditOrder,
+	onCompleteOrder,
+	isUpdatingStatus = false,
+	isCompletingOrder = false,
+}: Props) {
 	return (
 		<div className='mb-6 flex items-start justify-between'>
 			<div className='flex items-center gap-4'>
@@ -27,7 +41,9 @@ export function OrderDetailsHeader({ order }: Props) {
 				</Link>
 				<div>
 					<div className='flex items-center gap-3'>
-						<h1 className='text-2xl font-bold'>{order.id}</h1>
+						<h1 className='text-2xl font-bold'>
+							{formatOrderNumber(order.orderNumber)}
+						</h1>
 						<Badge
 							className={cn(
 								statusColors[order.status as keyof typeof statusColors],
@@ -53,32 +69,29 @@ export function OrderDetailsHeader({ order }: Props) {
 				</div>
 			</div>
 			<div className='flex gap-2'>
-					<Select
-						defaultValue={String(order.status)}
-						value={String(order.status)}
-					>
-					<SelectTrigger className='w-40'>
+				<Select
+					defaultValue={String(order.status)}
+					value={String(order.status)}
+					onValueChange={onStatusChange}
+				>
+					<SelectTrigger className='w-40' disabled={isUpdatingStatus}>
 						<SelectValue placeholder='Status' />
 					</SelectTrigger>
 					<SelectContent>
-						<SelectItem value='NEW'>New</SelectItem>
-						<SelectItem value='IN_PROGRESS'>In Progress</SelectItem>
-						<SelectItem value='WAITING_PARTS'>Waiting Parts</SelectItem>
-						<SelectItem value='COMPLETED'>Completed</SelectItem>
-						<SelectItem value='PAID'>Paid</SelectItem>
-						<SelectItem value='CANCELLED'>Cancelled</SelectItem>
+						{orderStatusOptions.map(option => (
+							<SelectItem key={option.value} value={option.value}>
+								{option.label}
+							</SelectItem>
+						))}
 					</SelectContent>
-					{/* TODO: Call OrderService.updateStatus() on change */}
 				</Select>
-				<Button variant='outline'>
+				<Button variant='outline' onClick={onEditOrder}>
 					<Edit className='mr-2 h-4 w-4' />
 					Edit Order
-					{/* TODO: Open EditOrderModal */}
 				</Button>
-				<Button>
+				<Button onClick={onCompleteOrder} disabled={isCompletingOrder}>
 					<CheckCircle2 className='mr-2 h-4 w-4' />
 					Complete Order
-					{/* TODO: Call OrderService.complete() */}
 				</Button>
 			</div>
 		</div>

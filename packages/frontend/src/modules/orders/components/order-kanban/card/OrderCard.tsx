@@ -6,6 +6,7 @@ import { OrderCardVehicle } from './OrderCardVehicle';
 
 export interface KanbanOrder {
 	id: string;
+	orderNumber: number;
 	status: string;
 	vehicle: {
 		make: string;

@@ -9,6 +9,7 @@ import {
 import { cn } from '@/shared/lib/utils';
 import { MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { formatOrderNumber } from '../../../utils/format-order-number';
 import { KanbanOrder } from './OrderCard';
 
 const priorityColors: Record<KanbanOrder['priority'], string> = {
@@ -28,7 +29,7 @@ export function OrderCardHeader({ order }: { order: KanbanOrder }) {
 		<div className='mb-2 flex items-start justify-between'>
 			<div className='flex items-center gap-2'>
 				<span className='font-mono text-xs font-medium text-muted-foreground'>
-					{order.id.slice(0, 8)}
+					{formatOrderNumber(order.orderNumber)}
 				</span>
 				<Badge
 					variant='outline'

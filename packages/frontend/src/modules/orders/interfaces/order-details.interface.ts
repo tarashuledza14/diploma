@@ -52,6 +52,7 @@ export interface OrderDetailsPart {
 
 export interface OrderDetails {
 	id: string;
+	orderNumber: number;
 	status: string;
 	priority: string;
 	mileage?: number;

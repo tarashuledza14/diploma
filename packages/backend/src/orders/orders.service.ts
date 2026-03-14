@@ -387,6 +387,24 @@ export class OrdersService {
 		});
 	}
 
+	async delete(id: string) {
+		return this.db.order.update({
+			where: { id },
+			data: { deletedAt: new Date() },
+		});
+	}
+
+	async deleteBulk(ids: string[]) {
+		if (!ids?.length) {
+			throw new BadRequestException('ids are required for bulk delete');
+		}
+
+		return this.db.order.updateMany({
+			where: { id: { in: ids } },
+			data: { deletedAt: new Date() },
+		});
+	}
+
 	async getNewOrderMeta() {
 		try {
 			const [clients, vehicles, services, mechanics, parts] = await Promise.all(

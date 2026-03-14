@@ -305,7 +305,8 @@ model Service {
 }
 
 model Order {
-  id          String      @id @default(cuid())
+  id          String      @id @default(uuid())
+  orderNumber Int         @unique @default(autoincrement()) @map("order_number")
   status      OrderStatus @default(NEW)
   description String?     @db.Text
 

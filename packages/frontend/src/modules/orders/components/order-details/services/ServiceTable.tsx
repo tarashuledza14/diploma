@@ -11,20 +11,26 @@ import { Trash2 } from 'lucide-react';
 
 interface Props {
 	services: any;
+	onRemoveService: (serviceRowId: string) => Promise<void>;
+	isPending?: boolean;
 }
 
-export function ServiceTable({ services }: Props) {
+export function ServiceTable({
+	services,
+	onRemoveService,
+	isPending = false,
+}: Props) {
 	return (
 		<Table>
 			<TableHeader>
-			<TableRow>
-				<TableHead>Service</TableHead>
-				<TableHead>Description</TableHead>
-				<TableHead>Qty</TableHead>
-				<TableHead>Labor (hrs)</TableHead>
-				<TableHead className='text-right'>Price</TableHead>
-				<TableHead className='w-12'></TableHead>
-			</TableRow>
+				<TableRow>
+					<TableHead>Service</TableHead>
+					<TableHead>Description</TableHead>
+					<TableHead>Qty</TableHead>
+					<TableHead>Labor (hrs)</TableHead>
+					<TableHead className='text-right'>Price</TableHead>
+					<TableHead className='w-12'></TableHead>
+				</TableRow>
 			</TableHeader>
 			<TableBody>
 				{services.map((service: any) => (
@@ -43,10 +49,11 @@ export function ServiceTable({ services }: Props) {
 								variant='ghost'
 								size='icon'
 								className='text-destructive hover:text-destructive'
+								disabled={isPending}
+								onClick={() => onRemoveService(service.id)}
 							>
 								<Trash2 className='h-4 w-4' />
 								<span className='sr-only'>Remove service</span>
-								{/* TODO: Call OrderService.removeService() */}
 							</Button>
 						</TableCell>
 					</TableRow>

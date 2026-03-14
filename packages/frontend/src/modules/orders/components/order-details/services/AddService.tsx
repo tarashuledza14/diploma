@@ -14,12 +14,38 @@ import {
 	SelectValue,
 } from '@/shared/components/ui';
 import { Plus } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
-export function AddService() {
+interface AddServiceProps {
+	serviceOptions: Array<{ id: string; name: string; price: number }>;
+	onAddService: (serviceId: string) => Promise<void>;
+	isPending?: boolean;
+}
+
+export function AddService({
+	serviceOptions,
+	onAddService,
+	isPending = false,
+}: AddServiceProps) {
+	const [open, setOpen] = useState(false);
+	const [selectedServiceId, setSelectedServiceId] = useState('');
+
+	const handleAdd = async () => {
+		if (!selectedServiceId) {
+			toast.error('Select a service first');
+			return;
+		}
+
+		await onAddService(selectedServiceId);
+		setSelectedServiceId('');
+		setOpen(false);
+	};
+
 	return (
-		<Dialog>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button>
+				<Button disabled={isPending}>
 					<Plus className='mr-2 h-4 w-4' />
 					Add Service
 				</Button>
@@ -31,32 +57,38 @@ export function AddService() {
 						Select a service from the catalog to add to this order.
 					</DialogDescription>
 				</DialogHeader>
-				{/* TODO: Open modal to select service from catalog */}
-				{/* TODO: Fetch services from ServiceCatalogService.getAll() */}
 				<div className='py-4'>
-					<Select>
+					<Select
+						value={selectedServiceId}
+						onValueChange={setSelectedServiceId}
+					>
 						<SelectTrigger>
 							<SelectValue placeholder='Select a service' />
 						</SelectTrigger>
 						<SelectContent>
-							<SelectItem value='oil-change'>Oil Change - $49.99</SelectItem>
-							<SelectItem value='brake-service'>
-								Brake Service - $149.99
-							</SelectItem>
-							<SelectItem value='tire-rotation'>
-								Tire Rotation - $29.99
-							</SelectItem>
-							<SelectItem value='full-service'>
-								Full Service - $299.99
-							</SelectItem>
+							{serviceOptions.map(service => (
+								<SelectItem key={service.id} value={service.id}>
+									{service.name} - ${service.price}
+								</SelectItem>
+							))}
 						</SelectContent>
 					</Select>
 				</div>
 				<DialogFooter>
-					<Button variant='outline'>Cancel</Button>
-					<Button>
+					<Button
+						variant='outline'
+						onClick={() => {
+							setOpen(false);
+							setSelectedServiceId('');
+						}}
+					>
+						Cancel
+					</Button>
+					<Button
+						onClick={handleAdd}
+						disabled={isPending || !selectedServiceId}
+					>
 						Add Service
-						{/* TODO: Call OrderService.addService() */}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

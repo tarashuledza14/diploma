@@ -5,6 +5,7 @@ import { OrderPriority, OrderStatus } from './order.enums';
 
 export interface OrderListItem {
 	id: string;
+	orderNumber: number;
 	endDate: string | null;
 	priority: OrderPriority;
 	status: OrderStatus;

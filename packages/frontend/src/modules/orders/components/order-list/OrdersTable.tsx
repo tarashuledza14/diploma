@@ -9,6 +9,7 @@ import { DataTableRowAction } from '@/types/data-table';
 import { useMemo, useState } from 'react';
 import { OrderList, OrderListItem } from '../../interfaces/order.interface';
 import { getOrderTableColumns } from './columns-data/order-table-columns';
+import { DeleteConfirmOrderModal } from './DeleteConfirmOrderModal';
 import { EditOrderModal } from './EditOrderModal';
 import { priorityColors, statusColors } from './orderColors';
 import { OrdersTableActionBar } from './OrdersTableActionBar';
@@ -65,6 +66,14 @@ export function OrdersTable({ data, pageCount }: OrdersTableProps) {
 					if (!open) setRowAction(null);
 				}}
 				order={rowAction?.row?.original ?? null}
+			/>
+
+			<DeleteConfirmOrderModal
+				open={!!rowAction && rowAction.variant === 'delete'}
+				onOpenChange={open => {
+					if (!open) setRowAction(null);
+				}}
+				selectedOrder={rowAction?.row?.original ?? null}
 			/>
 		</>
 	);
