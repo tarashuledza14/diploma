@@ -15,11 +15,13 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { vehicleStatusOptions } from '../constants/vehicle-status.constans';
 import { VehicleStatus } from '../enums/vehicle-status.enum';
 import { AddVehicleData } from '../interfaces/add-vehicle.interface';
 
 export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
+	const { t } = useTranslation();
 	const [searchQuery, setSearchQuery] = useState('');
 
 	const { data: clientOptions = [], isLoading: isLoadingClients } = useQuery({
@@ -79,7 +81,7 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 		<ScrollArea>
 			<div className='grid gap-4 py-4 pr-4'>
 				<div className='grid gap-2'>
-					<Label>Owner *</Label>
+					<Label>{t('vehicles.fields.owner')} *</Label>
 
 					<AutoComplete
 						value={selectedOwnerId}
@@ -90,8 +92,8 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 						onSelect={id => {
 							form.setValue('ownerId', id || '', { shouldValidate: true });
 						}}
-						placeholder='Select client...'
-						emptyMessage='No clients found.'
+						placeholder={t('vehicles.placeholders.selectClient')}
+						emptyMessage={t('vehicles.empty.noClients')}
 					/>
 
 					{form.formState.errors.ownerId && (
@@ -103,7 +105,7 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 
 				<div className='grid grid-cols-2 gap-4'>
 					<div className='grid gap-2'>
-						<Label htmlFor='brand'>Brand *</Label>
+						<Label htmlFor='brand'>{t('vehicles.fields.brand')} *</Label>
 						<Input
 							id='brand'
 							placeholder='BMW'
@@ -111,12 +113,13 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 						/>
 						{form.formState.errors.brand && (
 							<span className='text-red-500 text-xs'>
-								{form.formState.errors.brand.message || 'Brand is required'}
+								{form.formState.errors.brand.message ||
+									t('vehicles.errors.brandRequired')}
 							</span>
 						)}
 					</div>
 					<div className='grid gap-2'>
-						<Label htmlFor='model'>Model *</Label>
+						<Label htmlFor='model'>{t('vehicles.fields.model')} *</Label>
 						<Input
 							id='model'
 							placeholder='X5'
@@ -124,14 +127,15 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 						/>
 						{form.formState.errors.model && (
 							<span className='text-red-500 text-xs'>
-								{form.formState.errors.model.message || 'Model is required'}
+								{form.formState.errors.model.message ||
+									t('vehicles.errors.modelRequired')}
 							</span>
 						)}
 					</div>
 				</div>
 				<div className='grid grid-cols-2 gap-4'>
 					<div className='grid gap-2'>
-						<Label htmlFor='year'>Year *</Label>
+						<Label htmlFor='year'>{t('vehicles.fields.year')} *</Label>
 						<Input
 							id='year'
 							placeholder='2023'
@@ -143,17 +147,18 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 						/>
 						{form.formState.errors.year && (
 							<span className='text-red-500 text-xs'>
-								{form.formState.errors.year.message || 'Year is required'}
+								{form.formState.errors.year.message ||
+									t('vehicles.errors.yearRequired')}
 							</span>
 						)}
 					</div>
 					<div className='grid gap-2'>
-						<Label htmlFor='color'>Color</Label>
+						<Label htmlFor='color'>{t('vehicles.fields.color')}</Label>
 						<Input id='color' placeholder='Black' {...form.register('color')} />
 					</div>
 				</div>
 				<div className='grid gap-2'>
-					<Label htmlFor='plate'>License Plate *</Label>
+					<Label htmlFor='plate'>{t('vehicles.fields.licensePlate')} *</Label>
 					<Input
 						id='plate'
 						placeholder='ABC-1234'
@@ -169,12 +174,12 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 					{form.formState.errors.plateNumber && (
 						<span className='text-red-500 text-xs'>
 							{form.formState.errors.plateNumber.message ||
-								'License plate is required'}
+								t('vehicles.errors.licensePlateRequired')}
 						</span>
 					)}
 				</div>
 				<div className='grid gap-2'>
-					<Label htmlFor='vin'>VIN</Label>
+					<Label htmlFor='vin'>{t('vehicles.fields.vin')}</Label>
 					<Input
 						id='vin'
 						placeholder='WBAPH5C55BA123456'
@@ -183,7 +188,7 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 				</div>
 				<div className='grid grid-cols-2 gap-4'>
 					<div className='grid gap-2'>
-						<Label htmlFor='mileage'>Mileage (km)</Label>
+						<Label htmlFor='mileage'>{t('vehicles.fields.mileageKm')}</Label>
 						<Input
 							id='mileage'
 							placeholder='35000'
@@ -192,7 +197,7 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 						/>
 					</div>
 					<div className='grid gap-2'>
-						<Label>Status</Label>
+						<Label>{t('common.status')}</Label>
 						<Select
 							value={form.watch('status')}
 							onValueChange={(v: VehicleStatus) => form.setValue('status', v)}
@@ -203,7 +208,7 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 							<SelectContent defaultValue={vehicleStatusOptions[1].value}>
 								{vehicleStatusOptions.map(status => (
 									<SelectItem key={status.value} value={status.value}>
-										{status.label}
+										{t(`vehicleStatus.${status.value}`)}
 									</SelectItem>
 								))}
 							</SelectContent>
@@ -211,10 +216,10 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 					</div>
 				</div>
 				<div className='grid gap-2'>
-					<Label htmlFor='notes'>Notes</Label>
+					<Label htmlFor='notes'>{t('common.notes')}</Label>
 					<Textarea
 						id='notes'
-						placeholder='Additional notes about the vehicle...'
+						placeholder={t('vehicles.placeholders.notes')}
 						rows={3}
 						{...form.register('notes')}
 					/>

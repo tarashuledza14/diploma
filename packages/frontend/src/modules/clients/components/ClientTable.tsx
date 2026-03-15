@@ -7,6 +7,7 @@ import {
 import { useDataTable } from '@/shared/hooks/use-data-table';
 import { DataTableRowAction } from '@/types/data-table';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Client } from '../interfaces/client.interface';
 import { getClientTableColumns } from './client-table-columns';
 import { ClientsTableActionBar } from './clients-table-action-bar';
@@ -21,11 +22,15 @@ interface ClientTableProps {
 }
 
 export function ClientTable({ data, pageCount, isLoading }: ClientTableProps) {
+	const { t } = useTranslation();
 	const [rowAction, setRowAction] = useState<DataTableRowAction<Client> | null>(
 		null,
 	);
 
-	const columns = useMemo(() => getClientTableColumns({ setRowAction }), []);
+	const columns = useMemo(
+		() => getClientTableColumns({ setRowAction, t }),
+		[setRowAction, t],
+	);
 	const { table, shallow, debounceMs, throttleMs } = useDataTable<Client>({
 		data,
 		columns,

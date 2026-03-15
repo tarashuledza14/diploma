@@ -10,6 +10,7 @@ import {
 	Wrench,
 	type LucideIcon,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 
 import {
@@ -36,34 +37,54 @@ interface NavGroup {
 	items: NavItem[];
 }
 
-const NAV_GROUPS: NavGroup[] = [
-	{
-		label: 'Platform',
-		items: [
-			{ title: 'Dashboard', url: '/', icon: LayoutDashboard },
-			{ title: 'AI Assistant', url: '/assistant', icon: Bot },
-		],
-	},
-	{
-		label: 'Management',
-		items: [
-			{ title: 'Orders', url: '/orders', icon: ClipboardList },
-			{ title: 'Kanban Board', url: '/orders/board', icon: Kanban },
-			{ title: 'Clients', url: '/clients', icon: Users },
-		],
-	},
-	{
-		label: 'Inventory & Service',
-		items: [
-			{ title: 'Vehicles', url: '/vehicles', icon: Car },
-			{ title: 'Services', url: '/services', icon: Wrench },
-			{ title: 'Parts Inventory', url: '/inventory', icon: Package },
-		],
-	},
-];
-
 export function AppSidebar() {
+	const { t } = useTranslation();
 	const { pathname } = useLocation();
+	const navGroups: NavGroup[] = [
+		{
+			label: t('sidebar.groups.platform'),
+			items: [
+				{
+					title: t('sidebar.items.dashboard'),
+					url: '/',
+					icon: LayoutDashboard,
+				},
+				{
+					title: t('sidebar.items.aiAssistant'),
+					url: '/assistant',
+					icon: Bot,
+				},
+			],
+		},
+		{
+			label: t('sidebar.groups.management'),
+			items: [
+				{
+					title: t('sidebar.items.orders'),
+					url: '/orders',
+					icon: ClipboardList,
+				},
+				{
+					title: t('sidebar.items.kanbanBoard'),
+					url: '/orders/board',
+					icon: Kanban,
+				},
+				{ title: t('sidebar.items.clients'), url: '/clients', icon: Users },
+			],
+		},
+		{
+			label: t('sidebar.groups.inventoryService'),
+			items: [
+				{ title: t('sidebar.items.vehicles'), url: '/vehicles', icon: Car },
+				{ title: t('sidebar.items.services'), url: '/services', icon: Wrench },
+				{
+					title: t('sidebar.items.partsInventory'),
+					url: '/inventory',
+					icon: Package,
+				},
+			],
+		},
+	];
 
 	const isActive = (url: string) => pathname === url;
 
@@ -78,8 +99,12 @@ export function AppSidebar() {
 									<Car className='size-4' />
 								</div>
 								<div className='grid flex-1 text-left text-sm leading-tight'>
-									<span className='truncate font-semibold'>AutoCRM</span>
-									<span className='truncate text-xs'>Enterprise</span>
+									<span className='truncate font-semibold'>
+										{t('sidebar.brand.name')}
+									</span>
+									<span className='truncate text-xs'>
+										{t('sidebar.brand.plan')}
+									</span>
 								</div>
 							</Link>
 						</SidebarMenuButton>
@@ -88,7 +113,7 @@ export function AppSidebar() {
 			</SidebarHeader>
 
 			<SidebarContent>
-				{NAV_GROUPS.map(group => (
+				{navGroups.map(group => (
 					<SidebarGroup key={group.label}>
 						<SidebarGroupLabel>{group.label}</SidebarGroupLabel>
 						<SidebarGroupContent>
@@ -119,11 +144,11 @@ export function AppSidebar() {
 								<SidebarMenuButton
 									asChild
 									isActive={isActive('/settings')}
-									tooltip='Settings'
+									tooltip={t('sidebar.items.settings')}
 								>
 									<Link to='/settings'>
 										<Settings />
-										<span>Settings</span>
+										<span>{t('sidebar.items.settings')}</span>
 									</Link>
 								</SidebarMenuButton>
 							</SidebarMenuItem>

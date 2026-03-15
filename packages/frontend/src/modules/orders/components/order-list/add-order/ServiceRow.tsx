@@ -10,6 +10,7 @@ import {
 } from '@/shared/components/ui';
 import { AlertCircle, Wrench, X } from 'lucide-react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ServiceRowProps {
 	index: number;
@@ -28,6 +29,7 @@ export const ServiceRow: React.FC<ServiceRowProps> = ({
 	onRemove,
 	onChange,
 }) => {
+	const { t } = useTranslation();
 	const selectedService = services.find(s => s.id === service.serviceId);
 	const hasRequiredCategories = selectedService?.requiredCategories?.length > 0;
 
@@ -36,7 +38,9 @@ export const ServiceRow: React.FC<ServiceRowProps> = ({
 			<div className='flex items-center justify-between'>
 				<div className='flex items-center gap-2'>
 					<Wrench className='h-4 w-4 text-blue-500' />
-					<span className='font-medium'>Service {index + 1}</span>
+					<span className='font-medium'>
+						{t('orders.newOrder.labels.serviceN', { index: index + 1 })}
+					</span>
 				</div>
 				<Button
 					type='button'
@@ -51,13 +55,17 @@ export const ServiceRow: React.FC<ServiceRowProps> = ({
 
 			<div className='grid grid-cols-2 gap-4'>
 				<div>
-					<label className='text-sm font-medium'>Service *</label>
+					<label className='text-sm font-medium'>
+						{t('orders.newOrder.fields.service')} *
+					</label>
 					<Select
 						value={service.serviceId}
 						onValueChange={value => onChange('serviceId', value)}
 					>
 						<SelectTrigger>
-							<SelectValue placeholder='Select service' />
+							<SelectValue
+								placeholder={t('orders.newOrder.placeholders.selectService')}
+							/>
 						</SelectTrigger>
 						<SelectContent>
 							{services.map(svc => (
@@ -70,7 +78,9 @@ export const ServiceRow: React.FC<ServiceRowProps> = ({
 				</div>
 
 				<div>
-					<label className='text-sm font-medium'>Assigned Mechanic</label>
+					<label className='text-sm font-medium'>
+						{t('orders.newOrder.fields.assignedMechanic')}
+					</label>
 					<Select
 						value={service.mechanicId || 'none'}
 						onValueChange={value =>
@@ -78,10 +88,16 @@ export const ServiceRow: React.FC<ServiceRowProps> = ({
 						}
 					>
 						<SelectTrigger>
-							<SelectValue placeholder='Select mechanic (optional)' />
+							<SelectValue
+								placeholder={t(
+									'orders.newOrder.placeholders.selectMechanicOptional',
+								)}
+							/>
 						</SelectTrigger>
 						<SelectContent>
-							<SelectItem value='none'>No mechanic assigned</SelectItem>
+							<SelectItem value='none'>
+								{t('orders.newOrder.labels.noMechanicAssigned')}
+							</SelectItem>
 							{mechanics.map(mechanic => (
 								<SelectItem key={mechanic.id} value={mechanic.id}>
 									{mechanic.name}
@@ -98,7 +114,7 @@ export const ServiceRow: React.FC<ServiceRowProps> = ({
 						<AlertCircle className='h-4 w-4 text-blue-500 mt-0.5' />
 						<div>
 							<p className='text-sm font-medium text-blue-800'>
-								Required part categories:
+								{t('orders.newOrder.labels.requiredPartCategories')}
 							</p>
 							<div className='flex flex-wrap gap-1 mt-1'>
 								{selectedService.requiredCategories.map((category: any) => (

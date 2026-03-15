@@ -6,6 +6,7 @@ import {
 import { inventoryKeys } from '@/modules/inventory/query/keys';
 import { Button, ResponsiveDialogFooter } from '@/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { EditPartForm } from './EditPartForm';
 
@@ -18,6 +19,7 @@ export function AddInventoryPart({
 	dictionaries,
 	onCancel,
 }: AddInventoryPartProps) {
+	const { t } = useTranslation();
 	const queryClient = useQueryClient();
 
 	const mutation = useMutation({
@@ -26,12 +28,12 @@ export function AddInventoryPart({
 		onSuccess: part => {
 			queryClient.invalidateQueries({ queryKey: inventoryKeys.lists() });
 			queryClient.invalidateQueries({ queryKey: inventoryKeys.stats() });
-			toast.success(`Part "${part.name}" added successfully!`);
+			toast.success(t('inventory.messages.addSuccess', { name: part.name }));
 			onCancel();
 		},
 		onError: error => {
 			console.error('Failed to create part:', error);
-			toast.error('Failed to create part. Please try again.');
+			toast.error(t('inventory.messages.addError'));
 		},
 	});
 
@@ -54,14 +56,16 @@ export function AddInventoryPart({
 					disabled={mutation.isPending}
 					onClick={onCancel}
 				>
-					Cancel
+					{t('common.cancel')}
 				</Button>
 				<Button
 					type='submit'
 					form='edit-part-form' // Має збігатися з ID форми всередині EditPartForm
 					disabled={mutation.isPending}
 				>
-					{mutation.isPending ? 'Adding...' : 'Add Part'}
+					{mutation.isPending
+						? t('common.adding')
+						: t('inventory.actions.addPart')}
 				</Button>
 			</ResponsiveDialogFooter>
 		</>

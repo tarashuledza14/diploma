@@ -7,6 +7,7 @@ import {
 } from '@/shared';
 import { DataTableRowAction } from '@/types/data-table';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
 	InventoryDictionaries,
 	InventoryPart,
@@ -26,6 +27,7 @@ export function InventoryTable({
 	pageCount,
 	dictionaries,
 }: InventoryTableProps) {
+	const { t } = useTranslation();
 	const [rowAction, setRowAction] =
 		useState<DataTableRowAction<InventoryPart> | null>(null);
 
@@ -36,8 +38,8 @@ export function InventoryTable({
 	// });
 
 	const columns = useMemo(
-		() => getInventoryTableColumns({ setRowAction, dictionaries }),
-		[setRowAction, dictionaries],
+		() => getInventoryTableColumns({ setRowAction, dictionaries, t }),
+		[setRowAction, dictionaries, t],
 	);
 	const { table, shallow, debounceMs, throttleMs } = useDataTable({
 		data,

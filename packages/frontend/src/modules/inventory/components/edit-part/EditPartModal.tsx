@@ -16,6 +16,7 @@ import {
 } from '@/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { EditPartForm } from './form/EditPartForm';
 
@@ -31,6 +32,7 @@ export function EditPartModal({
 	inventoryPart,
 	dictionaries,
 }: EditPartModalProps) {
+	const { t } = useTranslation();
 	if (!inventoryPart || !open || !dictionaries) return null;
 	const queryClient = useQueryClient();
 	const [loading, setLoading] = useState(false);
@@ -39,11 +41,11 @@ export function EditPartModal({
 		mutationKey: inventoryKeys.mutations.update(inventoryPart.id ?? ''),
 		onSuccess: () => {
 			onOpenChange(false);
-			toast.success('Part updated successfully');
+			toast.success(t('inventory.messages.updateSuccess'));
 			queryClient.invalidateQueries({ queryKey: inventoryKeys.all });
 		},
 		onError: () => {
-			toast.error('Failed to update part');
+			toast.error(t('inventory.messages.updateError'));
 		},
 	});
 	const handleSubmit = async (data: InventoryPart) => {
@@ -61,9 +63,11 @@ export function EditPartModal({
 		<ResponsiveDialog open={open} onOpenChange={onOpenChange}>
 			<ResponsiveDialogContent className='max-w-2xl max-h-[90vh] overflow-hidden'>
 				<ResponsiveDialogHeader>
-					<ResponsiveDialogTitle>Edit Part</ResponsiveDialogTitle>
+					<ResponsiveDialogTitle>
+						{t('inventory.dialogs.editTitle')}
+					</ResponsiveDialogTitle>
 					<ResponsiveDialogDescription>
-						Update the part information. Changes will be saved immediately.
+						{t('inventory.dialogs.editDescription')}
 					</ResponsiveDialogDescription>
 				</ResponsiveDialogHeader>
 				<ScrollArea className='max-h-[55vh] pr-2'>
@@ -78,10 +82,10 @@ export function EditPartModal({
 				</ScrollArea>
 				<ResponsiveDialogFooter>
 					<Button variant='outline' onClick={() => onOpenChange(false)}>
-						Cancel
+						{t('common.cancel')}
 					</Button>
 					<Button form='edit-part-form' type='submit' disabled={loading}>
-						Save Changes
+						{t('common.saveChanges')}
 					</Button>
 				</ResponsiveDialogFooter>
 			</ResponsiveDialogContent>

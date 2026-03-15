@@ -15,6 +15,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Table } from '@tanstack/react-table';
 import { CheckCircle2, Trash2, X } from 'lucide-react';
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { VehicleService } from '../api/vehicles.service';
 import { vehicleStatusInfo } from '../constants/vehicle-status.constans';
@@ -27,6 +28,7 @@ interface VehicleTableActionBarProps {
 }
 
 export function VehicleTableActionBar({ table }: VehicleTableActionBarProps) {
+	const { t } = useTranslation();
 	const rows = table.getFilteredSelectedRowModel().rows;
 	const queryClient = useQueryClient();
 
@@ -35,14 +37,16 @@ export function VehicleTableActionBar({ table }: VehicleTableActionBarProps) {
 		mutationFn: async (vehicleIds: string[]) =>
 			VehicleService.deleteVehiclesBulk(vehicleIds),
 		onSuccess: () => {
-			toast.success(`${rows.length} vehicle(s) deleted`);
+			toast.success(
+				t('vehicles.messages.bulkDeleteSuccess', { count: rows.length }),
+			);
 			table.toggleAllRowsSelected(false);
 			queryClient.invalidateQueries({
 				queryKey: vehicleKeys.all,
 			});
 		},
 		onError: () => {
-			toast.error('Failed to delete vehicles');
+			toast.error(t('vehicles.messages.bulkDeleteError'));
 		},
 	});
 
@@ -52,7 +56,9 @@ export function VehicleTableActionBar({ table }: VehicleTableActionBarProps) {
 			VehicleService.updateVehicleBulk(data);
 		},
 		onSuccess: () => {
-			toast.success(`${rows.length} vehicle(s) updated`);
+			toast.success(
+				t('vehicles.messages.bulkUpdateSuccess', { count: rows.length }),
+			);
 			table.toggleAllRowsSelected(false);
 			queryClient.invalidateQueries({
 				queryKey: vehicleKeys.lists(),
@@ -83,7 +89,7 @@ export function VehicleTableActionBar({ table }: VehicleTableActionBarProps) {
 		<ActionBar open={rows.length > 0} onOpenChange={onOpenChange}>
 			<ActionBarSelection>
 				<span className='font-medium'>{rows.length}</span>
-				<span>selected</span>
+				<span>{t('common.selected')}</span>
 				<ActionBarSeparator />
 				<ActionBarClose>
 					<X />
@@ -95,7 +101,7 @@ export function VehicleTableActionBar({ table }: VehicleTableActionBarProps) {
 					<DropdownMenuTrigger asChild>
 						<ActionBarItem>
 							<CheckCircle2 />
-							Status
+							{t('common.status')}
 						</ActionBarItem>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>
@@ -112,7 +118,7 @@ export function VehicleTableActionBar({ table }: VehicleTableActionBarProps) {
 				</DropdownMenu>
 				<ActionBarItem variant='destructive' onClick={onVehicleDelete}>
 					<Trash2 />
-					Delete
+					{t('common.delete')}
 				</ActionBarItem>
 			</ActionBarGroup>
 		</ActionBar>

@@ -15,6 +15,7 @@ import {
 } from '@/shared';
 import { DataTableRowAction } from '@/types/data-table';
 import { ColumnDef } from '@tanstack/react-table';
+import { TFunction } from 'i18next';
 import {
 	Edit,
 	EllipsisVertical,
@@ -29,18 +30,20 @@ interface GetInventoryTableColumnsProps {
 		React.SetStateAction<DataTableRowAction<InventoryPart> | null>
 	>;
 	dictionaries?: InventoryDictionaries;
+	t: TFunction;
 }
 
 export function getInventoryTableColumns({
 	setRowAction,
 	dictionaries,
+	t,
 }: GetInventoryTableColumnsProps): ColumnDef<InventoryPart>[] {
 	return [
 		{
 			id: 'select',
 			header: ({ table }) => (
 				<Checkbox
-					aria-label='Select all'
+					aria-label={t('table.selectAll')}
 					className='translate-y-0.5'
 					checked={
 						table.getIsAllPageRowsSelected() ||
@@ -51,7 +54,7 @@ export function getInventoryTableColumns({
 			),
 			cell: ({ row }) => (
 				<Checkbox
-					aria-label='Select row'
+					aria-label={t('table.selectRow')}
 					className='translate-y-0.5'
 					checked={row.getIsSelected()}
 					onCheckedChange={value => row.toggleSelected(!!value)}
@@ -65,14 +68,17 @@ export function getInventoryTableColumns({
 			id: 'name',
 			accessorKey: 'name',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Part' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('inventory.columns.part')}
+				/>
 			),
 			cell: ({ row }) => (
 				<div>
 					<p className='font-medium'>{row.original.name}</p>
 					<p className='text-xs text-muted-foreground'>
-						{row.original.barcode || 'No barcode'} |{' '}
-						{row.original.oem || 'No OEM'}
+						{row.original.barcode || t('inventory.noBarcode')} |{' '}
+						{row.original.oem || t('inventory.noOem')}
 					</p>
 				</div>
 			),
@@ -80,7 +86,7 @@ export function getInventoryTableColumns({
 			enableColumnFilter: true,
 			enableHiding: false,
 			meta: {
-				label: 'Part',
+				label: t('inventory.columns.part'),
 				variant: 'text',
 			},
 		},
@@ -88,14 +94,17 @@ export function getInventoryTableColumns({
 			id: 'category.name',
 			accessorKey: 'category.name',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Category' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('inventory.columns.category')}
+				/>
 			),
 			cell: ({ row }) => <Badge>{row.original.category?.name}</Badge>,
 			enableSorting: true,
 			enableColumnFilter: true,
 			enableHiding: true,
 			meta: {
-				label: 'Category',
+				label: t('inventory.columns.category'),
 				variant: 'multiSelect',
 				options:
 					dictionaries?.categories.map(category => ({
@@ -109,7 +118,7 @@ export function getInventoryTableColumns({
 			accessorKey: 'oem',
 			meta: {
 				label: 'OEM',
-				placeholder: 'Search OEM...',
+				placeholder: t('inventory.filters.searchOem'),
 				variant: 'text',
 			},
 			enableColumnFilter: true,
@@ -120,8 +129,8 @@ export function getInventoryTableColumns({
 			id: 'barcode',
 			accessorKey: 'barcode',
 			meta: {
-				label: 'Barcode',
-				placeholder: 'Search barcode...',
+				label: t('inventory.columns.barcode'),
+				placeholder: t('inventory.filters.searchBarcode'),
 				variant: 'text',
 			},
 			enableColumnFilter: true,
@@ -132,14 +141,17 @@ export function getInventoryTableColumns({
 			id: 'brand',
 			accessorKey: 'brand.name',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Brand' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('inventory.columns.brand')}
+				/>
 			),
 			cell: ({ cell }) => <Badge>{cell.getValue<string>()}</Badge>,
 			enableSorting: true,
 			enableColumnFilter: true,
 			enableHiding: true,
 			meta: {
-				label: 'Brand',
+				label: t('inventory.columns.brand'),
 				variant: 'multiSelect',
 				options:
 					dictionaries?.brands.map(brand => ({
@@ -157,7 +169,10 @@ export function getInventoryTableColumns({
 				return Array.from(new Set(locations)).join(', ');
 			},
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Location' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('inventory.columns.location')}
+				/>
 			),
 			cell: ({ cell }) => {
 				const value = cell.getValue<string>();
@@ -172,7 +187,7 @@ export function getInventoryTableColumns({
 			enableColumnFilter: true,
 			enableHiding: true,
 			meta: {
-				label: 'Location',
+				label: t('inventory.columns.location'),
 				variant: 'text',
 			},
 		},
@@ -182,7 +197,10 @@ export function getInventoryTableColumns({
 			accessorFn: row =>
 				row.inventory?.reduce((sum, item) => sum + item.quantity, 0) || 0,
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Stock' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('inventory.columns.stock')}
+				/>
 			),
 			cell: ({ row }) => {
 				const minStock = row.original.minStock || 1;
@@ -215,7 +233,7 @@ export function getInventoryTableColumns({
 			enableColumnFilter: true,
 			enableHiding: true,
 			meta: {
-				label: 'Stock',
+				label: t('inventory.columns.stock'),
 				variant: 'number',
 			},
 		},
@@ -223,19 +241,22 @@ export function getInventoryTableColumns({
 			id: 'supplier',
 			accessorKey: 'supplier.name',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Supplier' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('inventory.columns.supplier')}
+				/>
 			),
 			cell: ({ cell }) => <span>{cell.getValue<string>() || '—'}</span>,
 			enableSorting: true,
 			enableColumnFilter: true,
 			enableHiding: true,
 			meta: {
-				label: 'Supplier',
+				label: t('inventory.columns.supplier'),
 				variant: 'multiSelect',
 				options: dictionaries?.suppliers.map(supplier => ({
 					value: supplier.name,
 					label: supplier.name,
-				})) ?? [{ value: 'Unknown', label: 'Unknown' }],
+				})) ?? [{ value: 'Unknown', label: t('inventory.unknown') }],
 			},
 		},
 		{
@@ -248,7 +269,10 @@ export function getInventoryTableColumns({
 				return retailRule?.fixedPrice ? Number(retailRule.fixedPrice) : 0;
 			},
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Price' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('inventory.columns.price')}
+				/>
 			),
 			cell: ({ row }) => {
 				// Беремо роздрібну ціну
@@ -289,7 +313,7 @@ export function getInventoryTableColumns({
 			enableColumnFilter: true,
 			enableHiding: true,
 			meta: {
-				label: 'Price',
+				label: t('inventory.columns.price'),
 				variant: 'number',
 			},
 		},
@@ -300,7 +324,7 @@ export function getInventoryTableColumns({
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button
-								aria-label='Open menu'
+								aria-label={t('table.openMenu')}
 								variant='ghost'
 								className='flex size-8 p-0 data-[state=open]:bg-muted'
 							>
@@ -312,26 +336,26 @@ export function getInventoryTableColumns({
 								onSelect={() => setRowAction({ row, variant: 'view' })}
 							>
 								<Eye className='h-4 w-4 mr-2' />
-								View
+								{t('common.view')}
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onSelect={() => setRowAction({ row, variant: 'update' })}
 							>
 								<Edit className='h-4 w-4 mr-2' />
-								Edit
+								{t('common.edit')}
 							</DropdownMenuItem>
 
 							<DropdownMenuItem
 								onSelect={() => setRowAction({ row, variant: 'history' })}
 							>
 								<History className='h-4 w-4 mr-2' />
-								Movement History
+								{t('inventory.actions.movementHistory')}
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onSelect={() => setRowAction({ row, variant: 'delete' })}
 							>
 								<Trash2 className='h-4 w-4 mr-2' />
-								Delete
+								{t('common.delete')}
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>

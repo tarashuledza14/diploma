@@ -9,6 +9,7 @@ import {
 } from '@/shared/components/ui';
 import { cn } from '@/shared/lib/utils';
 import { ArrowLeft, CheckCircle2, Edit } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { orderStatusOptions } from '../../constants/order-status.constants';
 import { formatOrderNumber } from '../../utils/format-order-number';
@@ -30,13 +31,14 @@ export function OrderDetailsHeader({
 	isUpdatingStatus = false,
 	isCompletingOrder = false,
 }: Props) {
+	const { t } = useTranslation();
 	return (
 		<div className='mb-6 flex items-start justify-between'>
 			<div className='flex items-center gap-4'>
 				<Link to='/orders'>
 					<Button variant='ghost' size='icon'>
 						<ArrowLeft className='h-5 w-5' />
-						<span className='sr-only'>Back to orders</span>
+						<span className='sr-only'>{t('orders.backToOrders')}</span>
 					</Button>
 				</Link>
 				<div>
@@ -57,11 +59,11 @@ export function OrderDetailsHeader({
 								priorityColors[order.priority as keyof typeof priorityColors],
 							)}
 						>
-							{order.priority} priority
+							{t('orders.priorityLabel', { value: order.priority })}
 						</Badge>
 					</div>
 					<p className='text-muted-foreground'>
-						Created on{' '}
+						{t('orders.createdOn')}{' '}
 						{order.createdAt
 							? new Date(order.createdAt).toLocaleDateString()
 							: '—'}
@@ -75,23 +77,23 @@ export function OrderDetailsHeader({
 					onValueChange={onStatusChange}
 				>
 					<SelectTrigger className='w-40' disabled={isUpdatingStatus}>
-						<SelectValue placeholder='Status' />
+						<SelectValue placeholder={t('common.status')} />
 					</SelectTrigger>
 					<SelectContent>
 						{orderStatusOptions.map(option => (
 							<SelectItem key={option.value} value={option.value}>
-								{option.label}
+								{t(`orderStatus.${option.value}`)}
 							</SelectItem>
 						))}
 					</SelectContent>
 				</Select>
 				<Button variant='outline' onClick={onEditOrder}>
 					<Edit className='mr-2 h-4 w-4' />
-					Edit Order
+					{t('orders.actions.editOrder')}
 				</Button>
 				<Button onClick={onCompleteOrder} disabled={isCompletingOrder}>
 					<CheckCircle2 className='mr-2 h-4 w-4' />
-					Complete Order
+					{t('orders.actions.completeOrder')}
 				</Button>
 			</div>
 		</div>

@@ -14,22 +14,26 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Table } from '@tanstack/react-table';
 import { CheckCircle2, CircleSlash, Trash2, X } from 'lucide-react';
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { ServicesService } from '../api/services.service';
 import { Service } from '../interfaces/services.interface';
 import { serviceKeys } from '../queries/keys';
-
-const statusOptions: { value: boolean; label: string; icon: typeof CheckCircle2 }[] =
-	[
-		{ value: true, label: 'Active', icon: CheckCircle2 },
-		{ value: false, label: 'Inactive', icon: CircleSlash },
-	];
 
 interface ServicesTableActionBarProps {
 	table: Table<Service>;
 }
 
 export function ServicesTableActionBar({ table }: ServicesTableActionBarProps) {
+	const { t } = useTranslation();
+	const statusOptions: {
+		value: boolean;
+		label: string;
+		icon: typeof CheckCircle2;
+	}[] = [
+		{ value: true, label: t('services.status.active'), icon: CheckCircle2 },
+		{ value: false, label: t('services.status.inactive'), icon: CircleSlash },
+	];
 	const rows = table.getFilteredSelectedRowModel().rows;
 	const queryClient = useQueryClient();
 
@@ -37,35 +41,34 @@ export function ServicesTableActionBar({ table }: ServicesTableActionBarProps) {
 		mutationKey: serviceKeys.mutations.delete(),
 		mutationFn: async (ids: string[]) => ServicesService.deleteBulk(ids),
 		onSuccess: () => {
-			toast.success(`${rows.length} service(s) deleted`);
+			toast.success(
+				t('services.messages.bulkDeleteSuccess', { count: rows.length }),
+			);
 			table.toggleAllRowsSelected(false);
 			queryClient.invalidateQueries({
 				queryKey: serviceKeys.all,
 			});
 		},
 		onError: () => {
-			toast.error('Failed to delete services');
+			toast.error(t('services.messages.bulkDeleteError'));
 		},
 	});
 
 	const { mutate: updateStatus } = useMutation({
 		mutationKey: serviceKeys.mutations.updateBulk(),
-		mutationFn: async ({
-			ids,
-			status,
-		}: {
-			ids: string[];
-			status: boolean;
-		}) => ServicesService.updateBulkStatus(ids, status),
+		mutationFn: async ({ ids, status }: { ids: string[]; status: boolean }) =>
+			ServicesService.updateBulkStatus(ids, status),
 		onSuccess: () => {
-			toast.success(`${rows.length} service(s) updated`);
+			toast.success(
+				t('services.messages.bulkUpdateSuccess', { count: rows.length }),
+			);
 			table.toggleAllRowsSelected(false);
 			queryClient.invalidateQueries({
 				queryKey: serviceKeys.all,
 			});
 		},
 		onError: () => {
-			toast.error('Failed to update services');
+			toast.error(t('services.messages.bulkUpdateError'));
 		},
 	});
 
@@ -96,7 +99,7 @@ export function ServicesTableActionBar({ table }: ServicesTableActionBarProps) {
 		<ActionBar open={rows.length > 0} onOpenChange={onOpenChange}>
 			<ActionBarSelection>
 				<span className='font-medium'>{rows.length}</span>
-				<span>selected</span>
+				<span>{t('common.selected')}</span>
 				<ActionBarSeparator />
 				<ActionBarClose>
 					<X />
@@ -108,7 +111,7 @@ export function ServicesTableActionBar({ table }: ServicesTableActionBarProps) {
 					<DropdownMenuTrigger asChild>
 						<ActionBarItem>
 							<CheckCircle2 />
-							Status
+							{t('common.status')}
 						</ActionBarItem>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>
@@ -125,7 +128,7 @@ export function ServicesTableActionBar({ table }: ServicesTableActionBarProps) {
 				</DropdownMenu>
 				<ActionBarItem variant='destructive' onClick={onDelete}>
 					<Trash2 />
-					Delete
+					{t('common.delete')}
 				</ActionBarItem>
 			</ActionBarGroup>
 		</ActionBar>

@@ -22,6 +22,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { useOrderDetailsQuery } from '../../query/useOrderDetailsQuery';
@@ -67,6 +68,7 @@ export function EditOrderModal({
 	onOpenChange,
 	order,
 }: EditOrderModalProps) {
+	const { t } = useTranslation();
 	const queryClient = useQueryClient();
 	const [autoFilledParts, setAutoFilledParts] = useState<Set<string>>(
 		new Set(),
@@ -367,7 +369,7 @@ export function EditOrderModal({
 			return OrdersService.updateOrder(order.id, payload);
 		},
 		onSuccess: () => {
-			toast.success('Order updated successfully');
+			toast.success(t('orders.newOrder.messages.updateSuccess'));
 			queryClient.invalidateQueries({ queryKey: ordersKeys.all });
 			if (order?.id) {
 				queryClient.invalidateQueries({
@@ -377,7 +379,7 @@ export function EditOrderModal({
 			onOpenChange(false);
 		},
 		onError: () => {
-			toast.error('Failed to update order');
+			toast.error(t('orders.newOrder.messages.updateError'));
 		},
 	});
 
@@ -393,9 +395,11 @@ export function EditOrderModal({
 		<ResponsiveDialog open={open} onOpenChange={onOpenChange}>
 			<ResponsiveDialogContent className='max-w-4xl max-h-[90vh] overflow-hidden'>
 				<ResponsiveDialogHeader>
-					<ResponsiveDialogTitle>Edit Order</ResponsiveDialogTitle>
+					<ResponsiveDialogTitle>
+						{t('orders.newOrder.dialogs.editTitle')}
+					</ResponsiveDialogTitle>
 					<ResponsiveDialogDescription>
-						Update the full work order for the selected client and vehicle.
+						{t('orders.newOrder.dialogs.editDescription')}
 					</ResponsiveDialogDescription>
 				</ResponsiveDialogHeader>
 				{isLoading || !fetchedMeta || !orderDetails ? null : (
@@ -421,8 +425,8 @@ export function EditOrderModal({
 						totalAmount={totalAmount}
 						isPending={isPending}
 						onCancel={() => onOpenChange(false)}
-						submitLabel='Save Changes'
-						pendingSubmitLabel='Saving Changes...'
+						submitLabel={t('common.saveChanges')}
+						pendingSubmitLabel={t('common.savingChanges')}
 						showStatusField
 						showEndDateField
 					/>

@@ -8,6 +8,7 @@ import {
 import { DataTableRowAction } from '@/types/data-table';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ServicesService } from '../api/services.service';
 import { Service } from '../interfaces/services.interface';
 import { serviceKeys } from '../queries/keys';
@@ -21,6 +22,7 @@ interface ServiceTableProps {
 	pageCount: number;
 }
 export function ServiceTable({ data, pageCount }: ServiceTableProps) {
+	const { t } = useTranslation();
 	const { data: dictionaries } = useSuspenseQuery({
 		queryKey: serviceKeys.categories(),
 		queryFn: () => ServicesService.getDictionaries(),
@@ -30,8 +32,8 @@ export function ServiceTable({ data, pageCount }: ServiceTableProps) {
 		useState<DataTableRowAction<Service> | null>(null);
 
 	const columns = useMemo(
-		() => getServicesTableColumns({ setRowAction, dictionaries }),
-		[setRowAction, dictionaries],
+		() => getServicesTableColumns({ setRowAction, dictionaries, t }),
+		[setRowAction, dictionaries, t],
 	);
 
 	const { table, shallow, debounceMs, throttleMs } = useDataTable({

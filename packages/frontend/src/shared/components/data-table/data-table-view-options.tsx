@@ -16,6 +16,7 @@ import { cn } from '@/shared/lib/utils';
 import type { Table } from '@tanstack/react-table';
 import { Check, Settings2 } from 'lucide-react';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface DataTableViewOptionsProps<TData> extends React.ComponentProps<
 	typeof PopoverContent
@@ -29,6 +30,7 @@ export function DataTableViewOptions<TData>({
 	disabled,
 	...props
 }: DataTableViewOptionsProps<TData>) {
+	const { t } = useTranslation();
 	const columns = React.useMemo(
 		() =>
 			table
@@ -45,7 +47,7 @@ export function DataTableViewOptions<TData>({
 		<Popover>
 			<PopoverTrigger asChild>
 				<Button
-					aria-label='Toggle columns'
+					aria-label={t('table.toggleColumns')}
 					role='combobox'
 					variant='outline'
 					size='sm'
@@ -53,14 +55,14 @@ export function DataTableViewOptions<TData>({
 					disabled={disabled}
 				>
 					<Settings2 className='text-muted-foreground' />
-					View
+					{t('table.view')}
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent className='w-44 p-0' {...props}>
 				<Command>
-					<CommandInput placeholder='Search columns...' />
+					<CommandInput placeholder={t('table.searchColumns')} />
 					<CommandList>
-						<CommandEmpty>No columns found.</CommandEmpty>
+						<CommandEmpty>{t('table.noColumnsFound')}</CommandEmpty>
 						<CommandGroup>
 							{columns.map(column => (
 								<CommandItem

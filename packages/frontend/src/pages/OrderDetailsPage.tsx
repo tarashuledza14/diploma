@@ -1,6 +1,7 @@
 import { Tabs, TabsContent } from '@/shared/components/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { OrdersService, UpdateOrderPayload } from '../modules/orders/api';
@@ -53,6 +54,7 @@ interface ServicePartGroup {
 }
 
 export function OrderDetailsPage() {
+	const { t } = useTranslation();
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const { data: order, isLoading, error } = useOrderDetailsQuery(id);
@@ -241,12 +243,12 @@ export function OrderDetailsPage() {
 			parts: OrderPartItem[];
 		}) => {
 			if (!order?.id) {
-				throw new Error('Order not found');
+				throw new Error(t('orders.messages.notFound'));
 			}
 
 			const payload = buildPayload(data.services, data.parts);
 			if (!payload) {
-				throw new Error('Order client/vehicle data is missing');
+				throw new Error(t('orders.messages.clientVehicleDataMissing'));
 			}
 
 			return OrdersService.updateOrder(order.id, payload);
@@ -263,7 +265,7 @@ export function OrderDetailsPage() {
 			const message =
 				mutationError?.response?.data?.message ||
 				mutationError?.message ||
-				'Failed to update order items';
+				t('orders.messages.updateItemsError');
 			toast.error(message);
 		},
 	});
@@ -273,13 +275,13 @@ export function OrderDetailsPage() {
 			mutationKey: [...ordersKeys.all, 'mutations', 'order-details-status', id],
 			mutationFn: async (status: OrderStatus) => {
 				if (!order?.id) {
-					throw new Error('Order not found');
+					throw new Error(t('orders.messages.notFound'));
 				}
 
 				await OrdersService.updateBulk([order.id], { status });
 			},
 			onSuccess: async () => {
-				toast.success('Order status updated');
+				toast.success(t('orders.messages.statusUpdated'));
 				await Promise.all([
 					queryClient.invalidateQueries({ queryKey: ordersKeys.lists() }),
 					id
@@ -291,7 +293,7 @@ export function OrderDetailsPage() {
 				const message =
 					mutationError?.response?.data?.message ||
 					mutationError?.message ||
-					'Failed to update order status';
+					t('orders.messages.updateStatusError');
 				toast.error(message);
 			},
 		});
@@ -312,7 +314,7 @@ export function OrderDetailsPage() {
 		mutationKey: [...ordersKeys.all, 'mutations', 'order-details-complete', id],
 		mutationFn: async () => {
 			if (!order?.id) {
-				throw new Error('Order not found');
+				throw new Error(t('orders.messages.notFound'));
 			}
 
 			await OrdersService.updateBulk([order.id], {
@@ -320,7 +322,7 @@ export function OrderDetailsPage() {
 			});
 		},
 		onSuccess: async () => {
-			toast.success('Order completed');
+			toast.success(t('orders.messages.completed'));
 			await queryClient.invalidateQueries({ queryKey: ordersKeys.all });
 			navigate('/orders');
 		},
@@ -328,7 +330,7 @@ export function OrderDetailsPage() {
 			const message =
 				mutationError?.response?.data?.message ||
 				mutationError?.message ||
-				'Failed to complete order';
+				t('orders.messages.completeError');
 			toast.error(message);
 		},
 	});
@@ -416,7 +418,7 @@ export function OrderDetailsPage() {
 
 		await updateOrderItems({ services: nextServices, parts: nextParts });
 		setAutoFilledPartIds(nextAutoFilled);
-		toast.success('Service added');
+		toast.success(t('orders.messages.serviceAdded'));
 	};
 
 	const handleRemoveService = async (serviceRowId: string) => {
@@ -462,7 +464,7 @@ export function OrderDetailsPage() {
 
 		await updateOrderItems({ services: nextServices, parts: nextParts });
 		setAutoFilledPartIds(remainingRecommendedPartIds);
-		toast.success('Service removed');
+		toast.success(t('orders.messages.serviceRemoved'));
 	};
 
 	const handleAddPart = async (partId: string, quantity: number) => {
@@ -479,7 +481,7 @@ export function OrderDetailsPage() {
 		}
 
 		await updateOrderItems({ services: mappedServices, parts: nextParts });
-		toast.success('Part added');
+		toast.success(t('orders.messages.partAdded'));
 	};
 
 	const handleRemovePart = async (partId: string) => {
@@ -493,7 +495,7 @@ export function OrderDetailsPage() {
 				return updated;
 			});
 		}
-		toast.success('Part removed');
+		toast.success(t('orders.messages.partRemoved'));
 	};
 
 	const handleUpdatePartQuantity = async (partId: string, quantity: number) => {
@@ -517,7 +519,9 @@ export function OrderDetailsPage() {
 		return (
 			<div className='flex h-full items-center justify-center'>
 				<p className='text-destructive'>
-					{error instanceof Error ? error.message : 'Замовлення не знайдено'}
+					{error instanceof Error
+						? error.message
+						: t('orders.messages.notFound')}
 				</p>
 			</div>
 		);

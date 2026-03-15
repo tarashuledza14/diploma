@@ -21,6 +21,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Table } from '@tanstack/react-table';
 import { CheckCircle2, Flag, Trash2, X } from 'lucide-react';
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 interface OrdersTableActionBarProps {
@@ -28,6 +29,7 @@ interface OrdersTableActionBarProps {
 }
 
 export function OrdersTableActionBar({ table }: OrdersTableActionBarProps) {
+	const { t } = useTranslation();
 	const rows = table.getFilteredSelectedRowModel().rows;
 	const queryClient = useQueryClient();
 
@@ -43,14 +45,16 @@ export function OrdersTableActionBar({ table }: OrdersTableActionBarProps) {
 				priority: data.priority,
 			}),
 		onSuccess: () => {
-			toast.success(`${rows.length} order(s) updated`);
+			toast.success(
+				t('orders.messages.bulkUpdateSuccess', { count: rows.length }),
+			);
 			table.toggleAllRowsSelected(false);
 			queryClient.invalidateQueries({
 				queryKey: ordersKeys.lists(),
 			});
 		},
 		onError: () => {
-			toast.error('Failed to update orders');
+			toast.error(t('orders.messages.bulkUpdateError'));
 		},
 	});
 
@@ -58,14 +62,16 @@ export function OrdersTableActionBar({ table }: OrdersTableActionBarProps) {
 		mutationKey: [...ordersKeys.all, 'mutations', 'delete-bulk'],
 		mutationFn: async (ids: string[]) => OrdersService.deleteBulk(ids),
 		onSuccess: () => {
-			toast.success(`${rows.length} order(s) deleted`);
+			toast.success(
+				t('orders.messages.bulkDeleteSuccess', { count: rows.length }),
+			);
 			table.toggleAllRowsSelected(false);
 			queryClient.invalidateQueries({
 				queryKey: ordersKeys.lists(),
 			});
 		},
 		onError: () => {
-			toast.error('Failed to delete orders');
+			toast.error(t('orders.messages.bulkDeleteError'));
 		},
 	});
 
@@ -106,7 +112,7 @@ export function OrdersTableActionBar({ table }: OrdersTableActionBarProps) {
 		<ActionBar open={rows.length > 0} onOpenChange={onOpenChange}>
 			<ActionBarSelection>
 				<span className='font-medium'>{rows.length}</span>
-				<span>selected</span>
+				<span>{t('common.selected')}</span>
 				<ActionBarSeparator />
 				<ActionBarClose>
 					<X />
@@ -118,7 +124,7 @@ export function OrdersTableActionBar({ table }: OrdersTableActionBarProps) {
 					<DropdownMenuTrigger asChild>
 						<ActionBarItem>
 							<CheckCircle2 />
-							Status
+							{t('common.status')}
 						</ActionBarItem>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>
@@ -128,7 +134,7 @@ export function OrdersTableActionBar({ table }: OrdersTableActionBarProps) {
 								className='capitalize'
 								onClick={() => onStatusChange(option.value)}
 							>
-								{option.label}
+								{t(`orderStatus.${option.value}`)}
 							</DropdownMenuItem>
 						))}
 					</DropdownMenuContent>
@@ -137,7 +143,7 @@ export function OrdersTableActionBar({ table }: OrdersTableActionBarProps) {
 					<DropdownMenuTrigger asChild>
 						<ActionBarItem>
 							<Flag />
-							Priority
+							{t('common.priority')}
 						</ActionBarItem>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>
@@ -147,14 +153,14 @@ export function OrdersTableActionBar({ table }: OrdersTableActionBarProps) {
 								className='capitalize'
 								onClick={() => onPriorityChange(option.value)}
 							>
-								{option.label}
+								{t(`orderPriority.${option.value}`)}
 							</DropdownMenuItem>
 						))}
 					</DropdownMenuContent>
 				</DropdownMenu>
 				<ActionBarItem variant='destructive' onClick={onDelete}>
 					<Trash2 />
-					Delete
+					{t('common.delete')}
 				</ActionBarItem>
 			</ActionBarGroup>
 		</ActionBar>

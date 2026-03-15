@@ -1,5 +1,6 @@
 import { Button, Card, CardContent } from '@/shared/components/ui';
 import { Download, FileText, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface MediaFile {
 	id: string;
@@ -18,10 +19,11 @@ interface MediaGridProps {
 }
 
 export function MediaGrid({ media, onDelete, onDownload }: MediaGridProps) {
+	const { t } = useTranslation();
 	if (!media.length) {
 		return (
 			<div className='py-12 text-center text-sm text-muted-foreground'>
-				No media files
+				{t('orders.media.empty')}
 			</div>
 		);
 	}
@@ -48,7 +50,7 @@ export function MediaGrid({ media, onDelete, onDownload }: MediaGridProps) {
 						</p>
 						<div className='mt-2 flex items-center justify-between'>
 							<span className='text-xs text-muted-foreground'>
-								By {file.uploadedBy}
+								{t('orders.media.by', { name: file.uploadedBy })}
 							</span>
 							<div className='flex gap-1'>
 								<Button
@@ -58,7 +60,7 @@ export function MediaGrid({ media, onDelete, onDownload }: MediaGridProps) {
 									onClick={() => onDownload && onDownload(file.id)}
 								>
 									<Download className='h-4 w-4' />
-									<span className='sr-only'>Download</span>
+									<span className='sr-only'>{t('orders.media.download')}</span>
 								</Button>
 								<Button
 									variant='ghost'
@@ -67,7 +69,7 @@ export function MediaGrid({ media, onDelete, onDownload }: MediaGridProps) {
 									onClick={() => onDelete && onDelete(file.id)}
 								>
 									<Trash2 className='h-4 w-4' />
-									<span className='sr-only'>Delete</span>
+									<span className='sr-only'>{t('common.delete')}</span>
 								</Button>
 							</div>
 						</div>

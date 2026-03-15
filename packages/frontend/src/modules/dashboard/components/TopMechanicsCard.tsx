@@ -9,6 +9,7 @@ import {
 	CardTitle,
 } from '@/shared/components/ui';
 import { TrendingUp, Wrench } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { DashboardTopMechanic } from '../types';
 
 interface TopMechanicsCardProps {
@@ -16,20 +17,23 @@ interface TopMechanicsCardProps {
 }
 
 export function TopMechanicsCard({ topMechanics }: TopMechanicsCardProps) {
+	const { t } = useTranslation();
 	return (
 		<Card>
 			<CardHeader>
 				<CardTitle className='flex items-center gap-2'>
 					<Wrench className='h-5 w-5' />
-					Top Mechanics
+					{t('dashboard.topMechanics.title')}
 				</CardTitle>
-				<CardDescription>Best performing this month</CardDescription>
+				<CardDescription>
+					{t('dashboard.topMechanics.subtitle')}
+				</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<div className='space-y-4'>
 					{topMechanics.length === 0 && (
 						<div className='rounded-lg border p-3 text-sm text-muted-foreground'>
-							No mechanics assigned to orders yet.
+							{t('dashboard.topMechanics.empty')}
 						</div>
 					)}
 					{topMechanics.map((mechanic, index) => (
@@ -53,7 +57,9 @@ export function TopMechanicsCard({ topMechanics }: TopMechanicsCardProps) {
 								<div>
 									<p className='text-sm font-medium'>{mechanic.name}</p>
 									<p className='text-xs text-muted-foreground'>
-										{mechanic.orders} orders completed
+										{t('dashboard.topMechanics.ordersCompleted', {
+											count: mechanic.orders,
+										})}
 									</p>
 								</div>
 							</div>

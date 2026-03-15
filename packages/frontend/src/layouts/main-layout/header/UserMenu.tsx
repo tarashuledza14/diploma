@@ -1,4 +1,5 @@
 import { LogOut, Settings, User } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import {
 	Avatar,
 	AvatarFallback,
@@ -22,6 +23,7 @@ const user = {
 };
 
 export function UserMenu() {
+	const { t } = useTranslation();
 	const onLogout = () => {};
 	return (
 		<DropdownMenu>
@@ -46,22 +48,22 @@ export function UserMenu() {
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='end' className='w-56'>
-				<DropdownMenuLabel>My Account</DropdownMenuLabel>
+				<DropdownMenuLabel>{t('userMenu.myAccount')}</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem>
 					<User className='mr-2 h-4 w-4' />
-					Profile
+					{t('userMenu.profile')}
 					{/* TODO: Navigate to /profile */}
 				</DropdownMenuItem>
 				<DropdownMenuItem>
 					<Settings className='mr-2 h-4 w-4' />
-					Settings
+					{t('userMenu.settings')}
 					{/* TODO: Navigate to /settings */}
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem onClick={onLogout} className='text-destructive'>
 					<LogOut className='mr-2 h-4 w-4' />
-					Log out
+					{t('userMenu.logout')}
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

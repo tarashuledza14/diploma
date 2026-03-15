@@ -18,6 +18,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { OrderPriority, OrderStatus } from '../../../interfaces/order.enums';
@@ -55,6 +56,7 @@ export function NewOrderModal({
 	trigger,
 	defaultStatus = OrderStatus.NEW,
 }: NewOrderModalProps) {
+	const { t } = useTranslation();
 	const [open, setOpen] = useState(false);
 	const queryClient = useQueryClient();
 	const minMileageRef = useRef(0);
@@ -158,9 +160,7 @@ export function NewOrderModal({
 			if (manualParts.length !== currentParts.length) {
 				form.setValue('parts', manualParts);
 				setAutoFilledParts(new Set());
-				toast.info(
-					'Smart Auto-Fill: Cleared recommended parts (no services selected)',
-				);
+				toast.info(t('orders.newOrder.messages.autoFillCleared'));
 			}
 			return;
 		}
@@ -207,7 +207,9 @@ export function NewOrderModal({
 
 				if (newAutoParts.length > 0) {
 					toast.success(
-						`Smart Auto-Fill: Updated with ${newAutoParts.length} recommended part(s)`,
+						t('orders.newOrder.messages.autoFillUpdated', {
+							count: newAutoParts.length,
+						}),
 						{ duration: 3000 },
 					);
 				}
@@ -290,7 +292,7 @@ export function NewOrderModal({
 		mutationFn: (payload: CreateOrderPayload) =>
 			OrdersService.createOrder(payload),
 		onSuccess: async () => {
-			toast.success('Work order created successfully');
+			toast.success(t('orders.newOrder.messages.createSuccess'));
 			await queryClient.refetchQueries({
 				queryKey: ordersKeys.list({ filters: [], page: 1, perPage: 500 }),
 			});
@@ -304,7 +306,7 @@ export function NewOrderModal({
 			const errorMessage =
 				error?.response?.data?.message ||
 				error.message ||
-				'Failed to create order';
+				t('orders.newOrder.messages.createError');
 			toast.error(errorMessage);
 		},
 	});
@@ -313,7 +315,9 @@ export function NewOrderModal({
 		const minMil = minMileageRef.current;
 		if (minMil > 0 && data.mileage < minMil) {
 			form.setError('mileage', {
-				message: `Mileage must be at least ${minMil.toLocaleString()} km (last recorded)`,
+				message: t('orders.newOrder.messages.minMileageError', {
+					min: minMil.toLocaleString(),
+				}),
 			});
 			return;
 		}
@@ -330,16 +334,15 @@ export function NewOrderModal({
 				{trigger || (
 					<Button>
 						<Plus className='mr-2 h-4 w-4' />
-						New Work Order
+						{t('orders.newOrder.actions.newWorkOrder')}
 					</Button>
 				)}
 			</DialogTrigger>
 			<DialogContent className='sm:max-w-4xl max-h-[90vh] overflow-hidden'>
 				<DialogHeader>
-					<DialogTitle>Work Order Builder</DialogTitle>
+					<DialogTitle>{t('orders.newOrder.dialogs.builderTitle')}</DialogTitle>
 					<DialogDescription>
-						Create a comprehensive work order with services and parts for the
-						selected vehicle.
+						{t('orders.newOrder.dialogs.builderDescription')}
 					</DialogDescription>
 				</DialogHeader>
 				<NewOrderFormContent
@@ -364,6 +367,8 @@ export function NewOrderModal({
 					totalAmount={totalAmount}
 					isPending={isPending}
 					onCancel={() => setOpen(false)}
+					submitLabel={t('orders.newOrder.actions.createWorkOrder')}
+					pendingSubmitLabel={t('orders.newOrder.actions.creatingWorkOrder')}
 					minMileage={minMileageRef.current}
 				/>
 			</DialogContent>

@@ -5,6 +5,7 @@ import {
 	CardTitle,
 } from '@/shared/components/ui';
 import { AlertTriangle, CheckCircle2, Clock } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import type { DashboardAlert } from '../types';
 
@@ -13,18 +14,19 @@ interface AlertsCardProps {
 }
 
 export function AlertsCard({ alerts }: AlertsCardProps) {
+	const { t } = useTranslation();
 	return (
 		<Card>
 			<CardHeader>
 				<CardTitle className='flex items-center gap-2'>
 					<AlertTriangle className='h-5 w-5' />
-					Alerts
+					{t('dashboard.alerts.title')}
 				</CardTitle>
 			</CardHeader>
 			<CardContent className='space-y-3'>
 				{alerts.length === 0 && (
 					<div className='rounded-lg border p-3 text-sm text-muted-foreground'>
-						No active alerts right now.
+						{t('dashboard.alerts.empty')}
 					</div>
 				)}
 				{alerts.map((alert, index) => (

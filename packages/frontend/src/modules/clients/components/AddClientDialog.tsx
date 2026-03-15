@@ -17,18 +17,22 @@ import { toast } from 'sonner';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import z from 'zod';
 import { ClientService } from '../api/client.service';
 import { CreateClientData } from '../interfaces/create-client.interface';
 import { clientKeys } from '../queries/keys';
 
-const schema = z.object({
-	fullName: z.string().min(1, 'Full Name is required'),
-	phone: z.string().min(1, 'Phone is required'),
-	email: z.email('Invalid email').optional().or(z.literal('')),
-});
-
 export function AddClientDialog() {
+	const { t } = useTranslation();
+	const schema = z.object({
+		fullName: z.string().min(1, t('clients.form.errors.fullNameRequired')),
+		phone: z.string().min(1, t('clients.form.errors.phoneRequired')),
+		email: z
+			.email(t('clients.form.errors.invalidEmail'))
+			.optional()
+			.or(z.literal('')),
+	});
 	const [open, setOpen] = useState(false);
 	const queryClient = useQueryClient();
 	const {
@@ -45,12 +49,12 @@ export function AddClientDialog() {
 		mutationFn: (data: CreateClientData) => ClientService.createClient(data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: clientKeys.all });
-			toast.success('Client added successfully');
+			toast.success(t('clients.messages.addSuccess'));
 			setOpen(false);
 			reset();
 		},
 		onError: () => {
-			toast.error('Failed to add client');
+			toast.error(t('clients.messages.addError'));
 		},
 	});
 
@@ -69,23 +73,26 @@ export function AddClientDialog() {
 			<DialogTrigger asChild>
 				<Button>
 					<Plus className='mr-2 h-4 w-4' />
-					Add Client
+					{t('clients.actions.addClient')}
 				</Button>
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Add New Client</DialogTitle>
-					<DialogDescription>Enter the client details below.</DialogDescription>
+					<DialogTitle>{t('clients.dialogs.addTitle')}</DialogTitle>
+					<DialogDescription>
+						{t('clients.dialogs.addDescription')}
+					</DialogDescription>
 				</DialogHeader>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<div className='grid gap-4 py-4'>
 						<div className='grid gap-2'>
 							<Label htmlFor='name'>
-								Full Name <span className='text-red-500'>*</span>
+								{t('clients.fields.fullName')}{' '}
+								<span className='text-red-500'>*</span>
 							</Label>
 							<Input
 								id='name'
-								placeholder='John Doe'
+								placeholder={t('clients.placeholders.fullName')}
 								{...register('fullName')}
 								disabled={isSubmitting}
 							/>
@@ -98,11 +105,11 @@ export function AddClientDialog() {
 
 						<div className='grid gap-2'>
 							<Label htmlFor='phone'>
-								Phone <span className='text-red-500'>*</span>
+								{t('common.phone')} <span className='text-red-500'>*</span>
 							</Label>
 							<Input
 								id='phone'
-								placeholder='+1 (555) 000-0000'
+								placeholder={t('clients.placeholders.phone')}
 								{...register('phone')}
 								disabled={isSubmitting}
 							/>
@@ -113,11 +120,11 @@ export function AddClientDialog() {
 							)}
 						</div>
 						<div className='grid gap-2'>
-							<Label htmlFor='email'>Email</Label>
+							<Label htmlFor='email'>{t('common.email')}</Label>
 							<Input
 								id='email'
 								type='email'
-								placeholder='john@example.com'
+								placeholder={t('clients.placeholders.email')}
 								{...register('email')}
 								disabled={isSubmitting}
 							/>
@@ -133,10 +140,12 @@ export function AddClientDialog() {
 							}}
 							disabled={isSubmitting}
 						>
-							Cancel
+							{t('common.cancel')}
 						</Button>
 						<Button type='submit' disabled={isSubmitting}>
-							{isSubmitting ? 'Adding...' : 'Add Client'}
+							{isSubmitting
+								? t('common.adding')
+								: t('clients.actions.addClient')}
 						</Button>
 					</DialogFooter>
 				</form>

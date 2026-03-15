@@ -13,6 +13,7 @@ import {
 } from '@/shared';
 import { DataTableRowAction } from '@/types/data-table';
 import { ColumnDef } from '@tanstack/react-table';
+import { TFunction } from 'i18next';
 import { Edit, EllipsisVertical, Trash2 } from 'lucide-react';
 import {
 	Service,
@@ -24,17 +25,19 @@ interface GetServicesTableColumnsProps {
 		React.SetStateAction<DataTableRowAction<Service> | null>
 	>;
 	dictionaries: ServiceDictionaries | undefined;
+	t: TFunction;
 }
 export function getServicesTableColumns({
 	setRowAction,
 	dictionaries,
+	t,
 }: GetServicesTableColumnsProps): ColumnDef<Service>[] {
 	return [
 		{
 			id: 'select',
 			header: ({ table }) => (
 				<Checkbox
-					aria-label='Select all'
+					aria-label={t('table.selectAll')}
 					className='translate-y-0.5'
 					checked={
 						table.getIsAllPageRowsSelected() ||
@@ -45,7 +48,7 @@ export function getServicesTableColumns({
 			),
 			cell: ({ row }) => (
 				<Checkbox
-					aria-label='Select row'
+					aria-label={t('table.selectRow')}
 					className='translate-y-0.5'
 					checked={row.getIsSelected()}
 					onCheckedChange={value => row.toggleSelected(!!value)}
@@ -60,7 +63,10 @@ export function getServicesTableColumns({
 			id: 'name',
 			accessorKey: 'name',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Name' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('services.columns.name')}
+				/>
 			),
 			cell: ({ row }) => (
 				<div>
@@ -76,14 +82,17 @@ export function getServicesTableColumns({
 			enableColumnFilter: true,
 			enableHiding: false,
 			meta: {
-				label: 'Name',
+				label: t('services.columns.name'),
 			},
 		},
 		{
 			id: 'category.id',
 			accessorKey: 'category.id',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Category' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('services.columns.category')}
+				/>
 			),
 			cell: ({ row }) => {
 				const category = row.original.category;
@@ -97,7 +106,7 @@ export function getServicesTableColumns({
 			enableColumnFilter: true,
 			enableHiding: true,
 			meta: {
-				label: 'Category',
+				label: t('services.columns.category'),
 				variant: 'multiSelect',
 				options: dictionaries?.serviceCategories.map(c => ({
 					label: c.name,
@@ -109,14 +118,17 @@ export function getServicesTableColumns({
 			id: 'estimatedTime',
 			accessorKey: 'estimatedTime',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Labor' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('services.columns.labor')}
+				/>
 			),
 			cell: ({ row }) => <div>{row.original.estimatedTime}h</div>,
 			enableSorting: true,
 			enableColumnFilter: true,
 			enableHiding: true,
 			meta: {
-				label: 'Labor',
+				label: t('services.columns.labor'),
 				variant: 'number',
 			},
 		},
@@ -125,7 +137,10 @@ export function getServicesTableColumns({
 			id: 'requiredCategories',
 			accessorKey: 'requiredCategories',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Parts Included' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('services.columns.partsIncluded')}
+				/>
 			),
 			cell: ({ row }) => {
 				const categories = row.original.requiredCategories || [];
@@ -176,12 +191,12 @@ export function getServicesTableColumns({
 				);
 			},
 			meta: {
-				label: 'Parts Included',
+				label: t('services.columns.partsIncluded'),
 				variant: 'multiSelect',
 				options: dictionaries?.partCategories.map(c => ({
 					label: c.name,
 					value: c.id,
-				})) || [{ label: 'No categories', value: 'none' }],
+				})) || [{ label: t('services.noCategories'), value: 'none' }],
 			},
 			enableSorting: false,
 			enableColumnFilter: true,
@@ -191,14 +206,17 @@ export function getServicesTableColumns({
 			id: 'price',
 			accessorKey: 'price',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Price' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('services.columns.price')}
+				/>
 			),
 			cell: ({ row }) => {
 				const retail = row.original.price;
 				return <div className='font-medium'>${retail}</div>;
 			},
 			meta: {
-				label: 'Price',
+				label: t('services.columns.price'),
 				variant: 'number',
 			},
 			enableSorting: true,
@@ -208,13 +226,18 @@ export function getServicesTableColumns({
 		{
 			id: 'status',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Status' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('services.columns.status')}
+				/>
 			),
 			cell: ({ row }) => {
-				const status = row.original.status ? 'Active' : 'Inactive';
+				const status = row.original.status
+					? t('services.status.active')
+					: t('services.status.inactive');
 
 				return (
-					<Badge variant={status === 'Active' ? 'default' : 'secondary'}>
+					<Badge variant={row.original.status ? 'default' : 'secondary'}>
 						{status}
 					</Badge>
 				);
@@ -223,11 +246,11 @@ export function getServicesTableColumns({
 			enableColumnFilter: true,
 			enableHiding: true,
 			meta: {
-				label: 'Status',
+				label: t('services.columns.status'),
 				variant: 'boolean',
 				options: [
-					{ label: 'Active', value: 'true' },
-					{ label: 'Inactive', value: 'false' },
+					{ label: t('services.status.active'), value: 'true' },
+					{ label: t('services.status.inactive'), value: 'false' },
 				],
 			},
 		},
@@ -239,7 +262,7 @@ export function getServicesTableColumns({
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button
-								aria-label='Open menu'
+								aria-label={t('table.openMenu')}
 								variant='ghost'
 								className='flex size-8 p-0 data-[state=open]:bg-muted'
 							>
@@ -251,14 +274,14 @@ export function getServicesTableColumns({
 								onSelect={() => setRowAction({ row, variant: 'update' })}
 							>
 								<Edit className=' h-4 w-4' />
-								Edit
+								{t('common.edit')}
 							</DropdownMenuItem>
 
 							<DropdownMenuItem
 								onSelect={() => setRowAction({ row, variant: 'delete' })}
 							>
 								<Trash2 className='h-4 w-4' />
-								Delete
+								{t('common.delete')}
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>

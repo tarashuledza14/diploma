@@ -13,17 +13,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { ClientService } from '../api/client.service';
 import { Client } from '../interfaces/client.interface';
 
-const clientSchema = z.object({
-	fullName: z.string().min(1, 'Name is required'),
-	email: z.email('Invalid email'),
-	phone: z.string().min(1, 'Phone is required'),
-});
-
-export type ClientFormData = z.infer<typeof clientSchema>;
+export type ClientFormData = {
+	fullName: string;
+	email: string;
+	phone: string;
+};
 
 interface EditClientDialogProps {
 	open: boolean;
@@ -36,6 +35,12 @@ export function EditClientDialog({
 	onOpenChange,
 	selectedClient,
 }: EditClientDialogProps) {
+	const { t } = useTranslation();
+	const clientSchema = z.object({
+		fullName: z.string().min(1, t('clients.form.errors.fullNameRequired')),
+		email: z.email(t('clients.form.errors.invalidEmail')),
+		phone: z.string().min(1, t('clients.form.errors.phoneRequired')),
+	});
 	const {
 		register,
 		handleSubmit,
@@ -72,18 +77,22 @@ export function EditClientDialog({
 		<ResponsiveDialog open={open} onOpenChange={onOpenChange}>
 			<ResponsiveDialogContent className='max-w-lg'>
 				<ResponsiveDialogHeader>
-					<ResponsiveDialogTitle>Edit Client</ResponsiveDialogTitle>
+					<ResponsiveDialogTitle>
+						{t('clients.dialogs.editTitle')}
+					</ResponsiveDialogTitle>
 					<ResponsiveDialogDescription>
-						Update the client information below.
+						{t('clients.dialogs.editDescription')}
 					</ResponsiveDialogDescription>
 				</ResponsiveDialogHeader>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<div className='grid gap-4 py-4'>
 						<div className='grid gap-2'>
-							<Label htmlFor='edit-name'>Full Name *</Label>
+							<Label htmlFor='edit-name'>
+								{t('clients.fields.fullName')} *
+							</Label>
 							<Input
 								id='edit-name'
-								placeholder='John Doe'
+								placeholder={t('clients.placeholders.fullName')}
 								{...register('fullName')}
 							/>
 							{errors.fullName && (
@@ -94,11 +103,11 @@ export function EditClientDialog({
 						</div>
 						<div className='grid grid-cols-2 gap-4'>
 							<div className='grid gap-2'>
-								<Label htmlFor='edit-email'>Email *</Label>
+								<Label htmlFor='edit-email'>{t('common.email')} *</Label>
 								<Input
 									id='edit-email'
 									type='email'
-									placeholder='john@example.com'
+									placeholder={t('clients.placeholders.email')}
 									{...register('email')}
 								/>
 								{errors.email && (
@@ -108,10 +117,10 @@ export function EditClientDialog({
 								)}
 							</div>
 							<div className='grid gap-2'>
-								<Label htmlFor='edit-phone'>Phone *</Label>
+								<Label htmlFor='edit-phone'>{t('common.phone')} *</Label>
 								<Input
 									id='edit-phone'
-									placeholder='+1 (555) 000-0000'
+									placeholder={t('clients.placeholders.phone')}
 									{...register('phone')}
 								/>
 								{errors.phone && (
@@ -128,7 +137,7 @@ export function EditClientDialog({
 							type='button'
 							onClick={() => onOpenChange(false)}
 						>
-							Cancel
+							{t('common.cancel')}
 						</Button>
 						<Button
 							type='submit'
@@ -142,10 +151,10 @@ export function EditClientDialog({
 							{isPending ? (
 								<>
 									<Loader2 className='mr-2 h-4 w-4 animate-spin' />
-									Saving...
+									{t('common.saving')}
 								</>
 							) : (
-								'Save Changes'
+								t('common.saveChanges')
 							)}
 						</Button>
 					</ResponsiveDialogFooter>

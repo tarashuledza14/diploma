@@ -7,11 +7,13 @@ import {
 } from '@/shared/components/ui';
 import { Separator } from '@radix-ui/react-dropdown-menu';
 import { Car, Edit } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
 	order: any;
 }
 export function VehicleInfo({ order }: Props) {
+	const { t } = useTranslation();
 	const vehicle = order.vehicle;
 	if (!vehicle) return null;
 
@@ -22,38 +24,50 @@ export function VehicleInfo({ order }: Props) {
 			<CardHeader className='flex flex-row items-center justify-between'>
 				<CardTitle className='flex items-center gap-2'>
 					<Car className='h-5 w-5' />
-					Vehicle Information
+					{t('orders.generalInfo.vehicleInformation')}
 				</CardTitle>
 				<Button variant='ghost' size='sm'>
 					<Edit className='mr-2 h-4 w-4' />
-					Edit
+					{t('common.edit')}
 					{/* TODO: Open EditVehicleModal */}
 				</Button>
 			</CardHeader>
 			<CardContent className='grid gap-4'>
 				<div className='grid grid-cols-2 gap-4'>
 					<div>
-						<p className='text-sm text-muted-foreground'>Make</p>
+						<p className='text-sm text-muted-foreground'>
+							{t('orders.generalInfo.make')}
+						</p>
 						<p className='font-medium'>{make}</p>
 					</div>
 					<div>
-						<p className='text-sm text-muted-foreground'>Model</p>
+						<p className='text-sm text-muted-foreground'>
+							{t('orders.generalInfo.model')}
+						</p>
 						<p className='font-medium'>{vehicle.model}</p>
 					</div>
 					<div>
-						<p className='text-sm text-muted-foreground'>Year</p>
+						<p className='text-sm text-muted-foreground'>
+							{t('vehicles.fields.year')}
+						</p>
 						<p className='font-medium'>{vehicle.year}</p>
 					</div>
 					<div>
-						<p className='text-sm text-muted-foreground'>Color</p>
+						<p className='text-sm text-muted-foreground'>
+							{t('vehicles.fields.color')}
+						</p>
 						<p className='font-medium'>{vehicle.color ?? '—'}</p>
 					</div>
 					<div>
-						<p className='text-sm text-muted-foreground'>License Plate</p>
+						<p className='text-sm text-muted-foreground'>
+							{t('vehicles.fields.licensePlate')}
+						</p>
 						<p className='font-medium'>{plate ?? '—'}</p>
 					</div>
 					<div>
-						<p className='text-sm text-muted-foreground'>Mileage</p>
+						<p className='text-sm text-muted-foreground'>
+							{t('vehicles.fields.mileageKm')}
+						</p>
 						<p className='font-medium'>
 							{(vehicle.mileage ?? 0).toLocaleString()} km
 						</p>
@@ -61,7 +75,9 @@ export function VehicleInfo({ order }: Props) {
 				</div>
 				<Separator />
 				<div>
-					<p className='text-sm text-muted-foreground'>VIN</p>
+					<p className='text-sm text-muted-foreground'>
+						{t('vehicles.fields.vin')}
+					</p>
 					<p className='font-mono text-sm'>{vehicle.vin ?? '—'}</p>
 				</div>
 			</CardContent>

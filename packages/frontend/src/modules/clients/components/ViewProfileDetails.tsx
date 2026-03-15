@@ -7,20 +7,21 @@ import {
 	TabsContent,
 	TabsList,
 	TabsTrigger,
-} from '@/shared/components/ui'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { ClientService } from '../api/client.service'
-import { clientKeys } from '../queries/keys'
-import { EditClientDialog } from './EditClientDialog'
-import { ClientHeader } from './profile/ClientHeader'
-import { ClientStats } from './profile/ClientStats'
-import { NotesTab } from './profile/tabs/NotesTab'
-import { OrdersTab } from './profile/tabs/OrdersTab'
-import { VehiclesTab } from './profile/tabs/VehiclesTab'
+} from '@/shared/components/ui';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
+import { ClientService } from '../api/client.service';
+import { clientKeys } from '../queries/keys';
+import { EditClientDialog } from './EditClientDialog';
+import { ClientHeader } from './profile/ClientHeader';
+import { ClientStats } from './profile/ClientStats';
+import { NotesTab } from './profile/tabs/NotesTab';
+import { OrdersTab } from './profile/tabs/OrdersTab';
+import { VehiclesTab } from './profile/tabs/VehiclesTab';
 
 const notesSchema = z.object({
 	notes: z.string(),
@@ -39,6 +40,7 @@ export function ViewProfileDetails({
 	setProfileModalOpen,
 	selectedClientId,
 }: ViewProfileDetailsProps) {
+	const { t } = useTranslation();
 	const [isEditingNotes, setIsEditingNotes] = useState(false);
 	const [editDialogOpen, setEditDialogOpen] = useState(false);
 
@@ -90,7 +92,7 @@ export function ViewProfileDetails({
 			<Dialog open={profileModalOpen} onOpenChange={setProfileModalOpen}>
 				<DialogContent className='max-w-3xl max-h-[90vh] overflow-hidden flex flex-col'>
 					<DialogHeader>
-						<DialogTitle>Client Profile</DialogTitle>
+						<DialogTitle>{t('clients.profile.title')}</DialogTitle>
 					</DialogHeader>
 
 					{clientDetails && (
@@ -107,9 +109,15 @@ export function ViewProfileDetails({
 								className='flex-1 flex flex-col min-h-0'
 							>
 								<TabsList className='grid w-full grid-cols-3'>
-									<TabsTrigger value='vehicles'>Vehicles</TabsTrigger>
-									<TabsTrigger value='orders'>Order History</TabsTrigger>
-									<TabsTrigger value='notes'>Notes</TabsTrigger>
+									<TabsTrigger value='vehicles'>
+										{t('clients.profile.tabs.vehicles')}
+									</TabsTrigger>
+									<TabsTrigger value='orders'>
+										{t('clients.profile.tabs.orderHistory')}
+									</TabsTrigger>
+									<TabsTrigger value='notes'>
+										{t('clients.profile.tabs.notes')}
+									</TabsTrigger>
 								</TabsList>
 
 								<TabsContent value='vehicles' className='flex-1 min-h-0 mt-4'>

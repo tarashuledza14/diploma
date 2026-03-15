@@ -16,6 +16,7 @@ import {
 import { cn } from '@/shared/lib/utils';
 import { DataTableRowAction } from '@/types/data-table';
 import { ColumnDef } from '@tanstack/react-table';
+import { TFunction } from 'i18next';
 import { Edit, EllipsisVertical, Eye, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { formatOrderNumber } from '../../../utils/format-order-number';
@@ -26,19 +27,21 @@ interface GetOrderTableColumnsProps {
 	>;
 	statusColors: Record<string, string>;
 	priorityColors: Record<string, string>;
+	t: TFunction;
 }
 
 export function getOrderTableColumns({
 	setRowAction,
 	statusColors,
 	priorityColors,
+	t,
 }: GetOrderTableColumnsProps): ColumnDef<OrderListItem>[] {
 	return [
 		{
 			id: 'select',
 			header: ({ table }) => (
 				<Checkbox
-					aria-label='Select all'
+					aria-label={t('table.selectAll')}
 					className='translate-y-0.5'
 					checked={
 						table.getIsAllPageRowsSelected() ||
@@ -49,7 +52,7 @@ export function getOrderTableColumns({
 			),
 			cell: ({ row }) => (
 				<Checkbox
-					aria-label='Select row'
+					aria-label={t('table.selectRow')}
 					className='translate-y-0.5'
 					checked={row.getIsSelected()}
 					onCheckedChange={value => row.toggleSelected(!!value)}
@@ -63,7 +66,10 @@ export function getOrderTableColumns({
 			id: 'orderNumber',
 			accessorKey: 'orderNumber',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Order' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('orders.columns.order')}
+				/>
 			),
 			cell: ({ row }) => (
 				<div className='font-medium'>
@@ -71,8 +77,8 @@ export function getOrderTableColumns({
 				</div>
 			),
 			meta: {
-				label: 'Order',
-				placeholder: 'Search order number...',
+				label: t('orders.columns.order'),
+				placeholder: t('orders.filters.searchOrderNumber'),
 				variant: 'text',
 			},
 			enableColumnFilter: true,
@@ -82,7 +88,10 @@ export function getOrderTableColumns({
 			id: 'client',
 			accessorFn: row => row.client.fullName,
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Client' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('orders.columns.client')}
+				/>
 			),
 			cell: ({ row }) => {
 				const fullName = row.original.client.fullName;
@@ -96,8 +105,8 @@ export function getOrderTableColumns({
 				);
 			},
 			meta: {
-				label: 'Client',
-				placeholder: 'Search client...',
+				label: t('orders.columns.client'),
+				placeholder: t('orders.filters.searchClient'),
 				variant: 'text',
 			},
 			enableColumnFilter: true,
@@ -108,7 +117,10 @@ export function getOrderTableColumns({
 			accessorFn: row =>
 				`${row.vehicle.year} ${row.vehicle.brand} ${row.vehicle.model}`,
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Vehicle' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('orders.columns.vehicle')}
+				/>
 			),
 			cell: ({ row }) => {
 				const v = row.original.vehicle;
@@ -124,8 +136,8 @@ export function getOrderTableColumns({
 				);
 			},
 			meta: {
-				label: 'Vehicle',
-				placeholder: 'Search vehicle...',
+				label: t('orders.columns.vehicle'),
+				placeholder: t('orders.filters.searchVehicle'),
 				variant: 'text',
 			},
 			enableColumnFilter: true,
@@ -135,7 +147,10 @@ export function getOrderTableColumns({
 			id: 'services',
 			accessorFn: row => row.services.map(s => s.name).join(', '),
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Services' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('orders.columns.services')}
+				/>
 			),
 			cell: ({ row }) => (
 				<div className='flex flex-wrap gap-1'>
@@ -152,8 +167,8 @@ export function getOrderTableColumns({
 				</div>
 			),
 			meta: {
-				label: 'Services',
-				placeholder: 'Search services...',
+				label: t('orders.columns.services'),
+				placeholder: t('orders.filters.searchServices'),
 				variant: 'text',
 			},
 			enableColumnFilter: true,
@@ -163,7 +178,7 @@ export function getOrderTableColumns({
 			id: 'status',
 			accessorKey: 'status',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Status' />
+				<DataTableColumnHeader column={column} label={t('common.status')} />
 			),
 			cell: ({ row }) => (
 				<Badge className={cn(statusColors[String(row.original.status)])}>
@@ -171,8 +186,8 @@ export function getOrderTableColumns({
 				</Badge>
 			),
 			meta: {
-				label: 'Status',
-				placeholder: 'Filter by status...',
+				label: t('common.status'),
+				placeholder: t('orders.filters.filterByStatus'),
 				variant: 'text',
 			},
 			enableColumnFilter: true,
@@ -182,7 +197,7 @@ export function getOrderTableColumns({
 			id: 'priority',
 			accessorKey: 'priority',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Priority' />
+				<DataTableColumnHeader column={column} label={t('common.priority')} />
 			),
 			cell: ({ row }) => (
 				<Badge
@@ -193,8 +208,8 @@ export function getOrderTableColumns({
 				</Badge>
 			),
 			meta: {
-				label: 'Priority',
-				placeholder: 'Filter by priority...',
+				label: t('common.priority'),
+				placeholder: t('orders.filters.filterByPriority'),
 				variant: 'text',
 			},
 			enableColumnFilter: true,
@@ -204,14 +219,17 @@ export function getOrderTableColumns({
 			id: 'endDate',
 			accessorKey: 'endDate',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='End Date' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('orders.columns.endDate')}
+				/>
 			),
 			cell: ({ row }) => {
 				const d = row.original.endDate;
 				return d ? formatDate(d) : '—';
 			},
 			meta: {
-				label: 'End Date',
+				label: t('orders.columns.endDate'),
 				variant: 'date',
 			},
 			enableColumnFilter: true,
@@ -223,7 +241,7 @@ export function getOrderTableColumns({
 			header: ({ column }) => (
 				<DataTableColumnHeader
 					column={column}
-					label='Total'
+					label={t('orders.columns.total')}
 					className='text-right'
 				/>
 			),
@@ -231,7 +249,7 @@ export function getOrderTableColumns({
 				<div className='font-medium'>{row.original.totalAmount}</div>
 			),
 			meta: {
-				label: 'Total',
+				label: t('orders.columns.total'),
 				variant: 'text',
 			},
 			enableColumnFilter: true,
@@ -244,7 +262,7 @@ export function getOrderTableColumns({
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button
-								aria-label='Open menu'
+								aria-label={t('table.openMenu')}
 								variant='ghost'
 								className='flex size-8 p-0 data-[state=open]:bg-muted'
 							>
@@ -255,7 +273,7 @@ export function getOrderTableColumns({
 							<DropdownMenuItem asChild>
 								<Link to={`/orders/${row.original.id}`}>
 									<Eye className='mr-2 h-4 w-4' />
-									View Details
+									{t('orders.actions.viewDetails')}
 								</Link>
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
@@ -263,14 +281,14 @@ export function getOrderTableColumns({
 								onSelect={() => setRowAction?.({ row, variant: 'update' })}
 							>
 								<Edit className='mr-2 h-4 w-4' />
-								Edit Order
+								{t('orders.actions.editOrder')}
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								className='text-destructive'
 								onSelect={() => setRowAction?.({ row, variant: 'delete' })}
 							>
 								<Trash2 className='mr-2 h-4 w-4' />
-								Delete Order
+								{t('orders.actions.deleteOrder')}
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>

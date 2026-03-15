@@ -9,6 +9,7 @@ import {
 } from '@/shared/components/ui';
 import { Loader2 } from 'lucide-react';
 import { ReactNode, RefObject } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface DialogFormLayoutProps {
 	open: boolean;
@@ -37,6 +38,7 @@ export function DialogFormLayout({
 	isSubmitDisabled = false,
 	children,
 }: DialogFormLayoutProps) {
+	const { t } = useTranslation();
 	const handleCancel = () => {
 		onCancelClick?.();
 		onOpenChange(false);
@@ -63,7 +65,7 @@ export function DialogFormLayout({
 						{isLoading ? (
 							<>
 								<Loader2 className='mr-2 h-4 w-4 animate-spin' />
-								Saving...
+								{t('common.saving')}
 							</>
 						) : (
 							submitButtonText

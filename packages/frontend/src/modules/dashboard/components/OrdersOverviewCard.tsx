@@ -7,6 +7,7 @@ import {
 	CardTitle,
 	Progress,
 } from '@/shared/components/ui';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import type { DashboardOrderStatusItem } from '../types';
 
@@ -17,17 +18,20 @@ export function OrdersOverviewCard({
 	ordersByStatus: DashboardOrderStatusItem[];
 	totalOrders: number;
 }) {
+	const { t } = useTranslation();
 	return (
 		<Card className='lg:col-span-2'>
 			<CardHeader>
 				<div className='flex items-center justify-between'>
 					<div>
-						<CardTitle>Orders Overview</CardTitle>
-						<CardDescription>Order distribution by status</CardDescription>
+						<CardTitle>{t('dashboard.ordersOverview.title')}</CardTitle>
+						<CardDescription>
+							{t('dashboard.ordersOverview.subtitle')}
+						</CardDescription>
 					</div>
 					<Link to='/orders/board'>
 						<Button variant='outline' size='sm'>
-							View Board
+							{t('dashboard.ordersOverview.viewBoard')}
 						</Button>
 					</Link>
 				</div>

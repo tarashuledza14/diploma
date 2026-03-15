@@ -7,8 +7,10 @@ import {
 import { useTableSearchParams } from '@/shared';
 import { useQuery } from '@tanstack/react-query';
 import { Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export function ServicesPage() {
+	const { t } = useTranslation();
 	const searchParams = useTableSearchParams();
 
 	const { data } = useQuery({
@@ -19,10 +21,10 @@ export function ServicesPage() {
 
 	return (
 		<div className='flex flex-col gap-6'>
-			<Suspense fallback={<div>Loading...</div>}>
+			<Suspense fallback={<div>{t('common.loading')}</div>}>
 				<ServicesHeader />
 			</Suspense>
-			<Suspense fallback={<div>Loading...</div>}>
+			<Suspense fallback={<div>{t('common.loading')}</div>}>
 				<ServiceTable
 					data={data?.data || []}
 					pageCount={data?.pageCount || 0}

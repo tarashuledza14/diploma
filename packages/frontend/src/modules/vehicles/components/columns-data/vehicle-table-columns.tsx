@@ -16,6 +16,7 @@ import {
 } from '@/shared';
 import { DataTableRowAction } from '@/types/data-table';
 import { ColumnDef } from '@tanstack/react-table';
+import { TFunction } from 'i18next';
 import { Car, Edit, EllipsisVertical, Eye, Trash2, Wrench } from 'lucide-react';
 import { vehicleStatusInfo } from '../../constants/vehicle-status.constans';
 import { VehicleStatus } from '../../enums/vehicle-status.enum';
@@ -27,18 +28,20 @@ interface GetVehicleTableColumnsProps {
 	setRowAction: React.Dispatch<
 		React.SetStateAction<DataTableRowAction<VehicleWithOwnerInfo> | null>
 	>;
+	t: TFunction;
 }
 
 export function getVehicleTableColumns({
 	setRowAction,
 	statusCounts,
+	t,
 }: GetVehicleTableColumnsProps): ColumnDef<VehicleWithOwnerInfo>[] {
 	return [
 		{
 			id: 'select',
 			header: ({ table }) => (
 				<Checkbox
-					aria-label='Select all'
+					aria-label={t('table.selectAll')}
 					className='translate-y-0.5'
 					checked={
 						table.getIsAllPageRowsSelected() ||
@@ -49,7 +52,7 @@ export function getVehicleTableColumns({
 			),
 			cell: ({ row }) => (
 				<Checkbox
-					aria-label='Select row'
+					aria-label={t('table.selectRow')}
 					className='translate-y-0.5'
 					checked={row.getIsSelected()}
 					onCheckedChange={value => row.toggleSelected(!!value)}
@@ -62,7 +65,10 @@ export function getVehicleTableColumns({
 		{
 			id: 'avatar',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Vehicle' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('vehicles.columns.vehicle')}
+				/>
 			),
 			cell: () => {
 				return (
@@ -104,8 +110,8 @@ export function getVehicleTableColumns({
 			id: 'brand',
 			accessorKey: 'brand',
 			meta: {
-				label: 'Brand',
-				placeholder: 'Search brand...',
+				label: t('vehicles.columns.brand'),
+				placeholder: t('vehicles.filters.searchBrand'),
 				variant: 'text',
 			},
 			enableColumnFilter: true, // Вмикаємо, щоб з'явилось у списку фільтрів
@@ -116,8 +122,8 @@ export function getVehicleTableColumns({
 			id: 'model',
 			accessorKey: 'model',
 			meta: {
-				label: 'Model',
-				placeholder: 'Search model...',
+				label: t('vehicles.columns.model'),
+				placeholder: t('vehicles.filters.searchModel'),
 				variant: 'text',
 			},
 			enableColumnFilter: true, // Вмикаємо, щоб з'явилось у списку фільтрів
@@ -128,8 +134,8 @@ export function getVehicleTableColumns({
 			id: 'year',
 			accessorKey: 'year',
 			meta: {
-				label: 'Year',
-				placeholder: 'Search year...',
+				label: t('vehicles.columns.year'),
+				placeholder: t('vehicles.filters.searchYear'),
 				variant: 'number',
 			},
 			enableColumnFilter: true, // Вмикаємо, щоб з'явилось у списку фільтрів
@@ -140,11 +146,14 @@ export function getVehicleTableColumns({
 			id: 'vin',
 			accessorKey: 'vin',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Plate / VIN' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('vehicles.columns.plateVin')}
+				/>
 			),
 			meta: {
-				label: 'Plate / VIN',
-				placeholder: 'Search Plate / VIN...',
+				label: t('vehicles.columns.plateVin'),
+				placeholder: t('vehicles.filters.searchPlateVin'),
 				variant: 'text',
 			},
 			enableColumnFilter: true, // Вмикаємо, щоб з'явилось у списку фільтрів
@@ -155,7 +164,10 @@ export function getVehicleTableColumns({
 			id: 'owner.fullName',
 			accessorFn: row => row.owner.fullName,
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Owner' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('vehicles.columns.owner')}
+				/>
 			),
 			cell: ({ cell }) => {
 				const ownerName = cell.getValue<string>();
@@ -169,8 +181,8 @@ export function getVehicleTableColumns({
 				);
 			},
 			meta: {
-				label: 'Owner',
-				placeholder: 'Search owner...',
+				label: t('vehicles.columns.owner'),
+				placeholder: t('vehicles.filters.searchOwner'),
 				variant: 'text',
 			},
 			enableColumnFilter: true,
@@ -181,7 +193,10 @@ export function getVehicleTableColumns({
 			id: 'mileage',
 			accessorKey: 'mileage',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Mileage' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('vehicles.columns.mileage')}
+				/>
 			),
 			cell: ({ cell }) => {
 				return (
@@ -191,7 +206,7 @@ export function getVehicleTableColumns({
 				);
 			},
 			meta: {
-				label: 'Mileage',
+				label: t('vehicles.columns.mileage'),
 				variant: 'number',
 			},
 			enableColumnFilter: true,
@@ -201,7 +216,10 @@ export function getVehicleTableColumns({
 			id: 'totalServices',
 			accessorKey: 'totalServices',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Services' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('vehicles.columns.services')}
+				/>
 			),
 			cell: ({ cell }) => {
 				return (
@@ -212,7 +230,7 @@ export function getVehicleTableColumns({
 				);
 			},
 			meta: {
-				label: 'Services',
+				label: t('vehicles.columns.services'),
 				variant: 'number',
 			},
 
@@ -223,11 +241,14 @@ export function getVehicleTableColumns({
 			id: 'lastService',
 			accessorKey: 'lastService',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Last Service' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('vehicles.columns.lastService')}
+				/>
 			),
 			cell: ({ cell }) => formatDate(cell.getValue<Date>()),
 			meta: {
-				label: 'Last Service',
+				label: t('vehicles.columns.lastService'),
 				variant: 'date',
 			},
 			enableColumnFilter: true,
@@ -237,30 +258,31 @@ export function getVehicleTableColumns({
 			id: 'status',
 			accessorKey: 'status',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Status' />
+				<DataTableColumnHeader column={column} label={t('common.status')} />
 			),
 			cell: ({ cell }) => {
 				const value = cell.getValue<VehicleStatus>();
 				const statusInfo = vehicleStatusInfo[value] || {
-					label: value,
+					label: String(value),
 					variant: 'default' as const,
 				};
+				const translatedStatusLabel = t(`vehicleStatus.${value}`);
 
 				return (
 					<Status variant={statusInfo.variant}>
-						<StatusLabel>{statusInfo.label}</StatusLabel>
+						<StatusLabel>{translatedStatusLabel}</StatusLabel>
 					</Status>
 				);
 			},
 			enableColumnFilter: true,
 			enableSorting: true,
 			meta: {
-				label: 'Status',
-				placeholder: 'Filter by status...',
+				label: t('common.status'),
+				placeholder: t('vehicles.filters.filterByStatus'),
 				variant: 'multiSelect',
 				options: Object.entries(vehicleStatusInfo).map(([value, info]) => ({
 					value: value as string,
-					label: `${info.label}	`,
+					label: t(`vehicleStatus.${value}`),
 					variant: info.variant,
 					count: statusCounts?.[value as unknown as VehicleStatus] || 0,
 				})),
@@ -273,7 +295,7 @@ export function getVehicleTableColumns({
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button
-								aria-label='Open menu'
+								aria-label={t('table.openMenu')}
 								variant='ghost'
 								className='flex size-8 p-0 data-[state=open]:bg-muted'
 							>
@@ -285,14 +307,14 @@ export function getVehicleTableColumns({
 								onSelect={() => setRowAction({ row, variant: 'view' })}
 							>
 								<Eye className='h-4 w-4' />
-								View
+								{t('common.view')}
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem
 								onSelect={() => setRowAction({ row, variant: 'update' })}
 							>
 								<Edit className=' h-4 w-4' />
-								Edit
+								{t('common.edit')}
 							</DropdownMenuItem>
 
 							<DropdownMenuSeparator />
@@ -300,7 +322,7 @@ export function getVehicleTableColumns({
 								onSelect={() => setRowAction({ row, variant: 'delete' })}
 							>
 								<Trash2 className='h-4 w-4' />
-								Delete
+								{t('common.delete')}
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>

@@ -4,7 +4,554 @@
 	"error": "Failed to load languages",
 	"switchLanguage": "Switch Language",
 	"languages": {
-		"english": "UK",
+		"english": "EN",
 		"ukrainian": "UA"
+	},
+	"common": {
+		"loading": "Loading...",
+		"cancel": "Cancel",
+		"delete": "Delete",
+		"deleting": "Deleting...",
+		"saving": "Saving...",
+		"saveChanges": "Save changes",
+		"savingChanges": "Saving changes...",
+		"notAvailable": "N/A",
+		"edit": "Edit",
+		"view": "View",
+		"viewAll": "View all",
+		"status": "Status",
+		"priority": "Priority",
+		"selected": "selected",
+		"export": "Export",
+		"email": "Email",
+		"phone": "Phone",
+		"password": "Password",
+		"notes": "Notes",
+		"adding": "Adding..."
+	},
+	"theme": {
+		"toggle": "Toggle theme",
+		"light": "Light",
+		"dark": "Dark",
+		"system": "System"
+	},
+	"search": {
+		"globalPlaceholder": "Search orders, clients, vehicles..."
+	},
+	"table": {
+		"selectAll": "Select all",
+		"selectRow": "Select row",
+		"openMenu": "Open menu",
+		"selectionSummary": "{{selected}} of {{total}} row(s) selected.",
+		"rowsPerPage": "Rows per page",
+		"pageOf": "Page {{page}} of {{total}}",
+		"goToFirstPage": "Go to first page",
+		"goToPreviousPage": "Go to previous page",
+		"goToNextPage": "Go to next page",
+		"goToLastPage": "Go to last page",
+		"toggleColumns": "Toggle columns",
+		"view": "View",
+		"searchColumns": "Search columns...",
+		"noColumnsFound": "No columns found."
+	},
+	"sidebar": {
+		"brand": {
+			"name": "AutoCRM",
+			"plan": "Enterprise"
+		},
+		"groups": {
+			"platform": "Platform",
+			"management": "Management",
+			"inventoryService": "Inventory & Service"
+		},
+		"items": {
+			"dashboard": "Dashboard",
+			"aiAssistant": "AI Assistant",
+			"orders": "Orders",
+			"kanbanBoard": "Kanban Board",
+			"clients": "Clients",
+			"vehicles": "Vehicles",
+			"services": "Services",
+			"partsInventory": "Parts Inventory",
+			"settings": "Settings"
+		}
+	},
+	"userMenu": {
+		"myAccount": "My account",
+		"profile": "Profile",
+		"settings": "Settings",
+		"logout": "Log out"
+	},
+	"auth": {
+		"welcomeBack": "Welcome back",
+		"signInSubtitle": "Sign in to your account to continue",
+		"signIn": "Sign in",
+		"signingIn": "Signing in...",
+		"hidePassword": "Hide password",
+		"showPassword": "Show password",
+		"placeholders": {
+			"email": "name@company.com",
+			"password": "Enter your password"
+		},
+		"errors": {
+			"loginFailed": "Login failed",
+			"enterEmailAndPassword": "Please enter email and password"
+		},
+		"messages": {
+			"loggedInSuccessfully": "Logged in successfully"
+		}
+	},
+	"dashboard": {
+		"title": "Dashboard",
+		"subtitle": "Welcome back! Here is an overview of your auto service business.",
+		"loading": "Loading dashboard data...",
+		"errorLoad": "Failed to load dashboard data. Please try again.",
+		"stats": {
+			"totalOrders": {
+				"title": "Total Orders",
+				"description": "completion ratio"
+			},
+			"activeClients": {
+				"title": "Active Clients",
+				"description": "orders in current sample"
+			},
+			"vehiclesServiced": {
+				"title": "Vehicles Serviced",
+				"description": "completed or paid orders"
+			},
+			"revenue": {
+				"title": "Revenue",
+				"description": "from completed and paid"
+			}
+		},
+		"alerts": {
+			"title": "Alerts",
+			"empty": "No active alerts right now.",
+			"waitingParts": "{{count}} order(s) are waiting for parts",
+			"inProgress": "{{count}} order(s) are currently in progress",
+			"completedOrPaid": "{{count}} order(s) are completed or paid"
+		},
+		"recentOrders": {
+			"title": "Recent Orders",
+			"subtitle": "Latest service orders",
+			"empty": "No recent orders found."
+		},
+		"ordersOverview": {
+			"title": "Orders Overview",
+			"subtitle": "Order distribution by status",
+			"viewBoard": "View board"
+		},
+		"topMechanics": {
+			"title": "Top Mechanics",
+			"subtitle": "Best performing this month",
+			"empty": "No mechanics assigned to orders yet.",
+			"ordersCompleted": "{{count}} order(s) completed"
+		}
+	},
+	"clients": {
+		"title": "Clients",
+		"subtitle": "Manage your client database",
+		"actions": {
+			"addClient": "Add Client"
+		},
+		"dialogs": {
+			"addTitle": "Add New Client",
+			"addDescription": "Enter the client details below.",
+			"editTitle": "Edit Client",
+			"editDescription": "Update the client information below.",
+			"deleteTitle": "Delete Client",
+			"deleteDescription": "Are you sure you want to delete this client? This action cannot be undone."
+		},
+		"fields": {
+			"fullName": "Full name"
+		},
+		"placeholders": {
+			"fullName": "John Doe",
+			"phone": "+1 (555) 000-0000",
+			"email": "john@example.com"
+		},
+		"form": {
+			"errors": {
+				"fullNameRequired": "Full name is required",
+				"phoneRequired": "Phone is required",
+				"invalidEmail": "Invalid email"
+			}
+		},
+		"columns": {
+			"client": "Client",
+			"fullName": "Full name",
+			"contacts": "Contacts",
+			"vehicleCount": "Vehicle count",
+			"orders": "Orders",
+			"totalSpent": "Total spent",
+			"latestVisit": "Latest visit"
+		},
+		"filters": {
+			"searchFullName": "Search full name...",
+			"searchEmail": "Search email...",
+			"searchPhone": "Search phone..."
+		},
+		"messages": {
+			"addSuccess": "Client added successfully",
+			"addError": "Failed to add client",
+			"deleteSuccess": "Client deleted successfully",
+			"deleteError": "Failed to delete client. Please try again.",
+			"bulkDeleteSuccess": "{{count}} client(s) deleted",
+			"bulkDeleteError": "Failed to delete clients"
+		},
+		"profile": {
+			"title": "Client Profile",
+			"tabs": {
+				"vehicles": "Vehicles",
+				"orderHistory": "Order History",
+				"notes": "Notes"
+			},
+			"stats": {
+				"vehicles": "Vehicles",
+				"orders": "Orders",
+				"totalSpent": "Total Spent",
+				"lastVisit": "Last Visit"
+			},
+			"notes": {
+				"empty": "No notes for this client.",
+				"placeholder": "Add notes about this client...",
+				"save": "Save notes",
+				"clientSince": "Client since"
+			}
+		}
+	},
+	"inventory": {
+		"title": "Parts Inventory",
+		"subtitle": "Manage your parts stock and orders",
+		"actions": {
+			"addPart": "Add Part",
+			"movementHistory": "Movement history"
+		},
+		"dialogs": {
+			"addTitle": "Add New Part",
+			"addDescription": "Add a new part to your inventory.",
+			"editTitle": "Edit Part",
+			"editDescription": "Update the part information. Changes will be saved immediately."
+		},
+		"columns": {
+			"part": "Part",
+			"category": "Category",
+			"barcode": "Barcode",
+			"brand": "Brand",
+			"location": "Location",
+			"stock": "Stock",
+			"supplier": "Supplier",
+			"price": "Price"
+		},
+		"filters": {
+			"searchOem": "Search OEM...",
+			"searchBarcode": "Search barcode..."
+		},
+		"unknown": "Unknown",
+		"noBarcode": "No barcode",
+		"noOem": "No OEM",
+		"messages": {
+			"addSuccess": "Part \"{{name}}\" added successfully!",
+			"addError": "Failed to create part. Please try again.",
+			"updateSuccess": "Part updated successfully",
+			"updateError": "Failed to update part",
+			"bulkDeleteSuccess": "{{count}} part(s) deleted",
+			"bulkDeleteError": "Failed to delete parts"
+		}
+	},
+	"services": {
+		"title": "Services",
+		"subtitle": "Manage service catalog",
+		"actions": {
+			"addService": "Add Service"
+		},
+		"dialogs": {
+			"addTitle": "Add Service",
+			"addDescription": "Create a new service. Fill in the details below.",
+			"editTitle": "Edit Service",
+			"editDescription": "Update the service information. Changes will be saved immediately.",
+			"deleteTitle": "Delete Service",
+			"deleteDescription": "Are you sure you want to delete this service? This action cannot be undone."
+		},
+		"fields": {
+			"estimatedTimeHours": "Estimated Time (hours)",
+			"description": "Description"
+		},
+		"placeholders": {
+			"name": "Service name",
+			"selectCategory": "Select category",
+			"description": "Short description of the service",
+			"selectPartCategories": "Select part categories"
+		},
+		"columns": {
+			"name": "Name",
+			"category": "Category",
+			"labor": "Labor",
+			"partsIncluded": "Parts Included",
+			"price": "Price",
+			"status": "Status"
+		},
+		"status": {
+			"active": "Active",
+			"inactive": "Inactive"
+		},
+		"noCategories": "No categories",
+		"messages": {
+			"addSuccess": "Service added successfully",
+			"addError": "Failed to add service",
+			"updateSuccess": "Service updated successfully",
+			"updateError": "Failed to update service",
+			"deleteSuccess": "Service deleted successfully",
+			"deleteError": "Failed to delete service. Please try again.",
+			"bulkDeleteSuccess": "{{count}} service(s) deleted",
+			"bulkDeleteError": "Failed to delete services",
+			"bulkUpdateSuccess": "{{count}} service(s) updated",
+			"bulkUpdateError": "Failed to update services"
+		}
+	},
+	"vehicles": {
+		"title": "Vehicles",
+		"subtitle": "Manage registered vehicles",
+		"actions": {
+			"addVehicle": "Add Vehicle"
+		},
+		"dialogs": {
+			"addTitle": "Add New Vehicle",
+			"addDescription": "Enter the vehicle details below."
+		},
+		"fields": {
+			"owner": "Owner",
+			"brand": "Brand",
+			"model": "Model",
+			"year": "Year",
+			"color": "Color",
+			"licensePlate": "License Plate",
+			"vin": "VIN",
+			"mileageKm": "Mileage (km)"
+		},
+		"placeholders": {
+			"selectClient": "Select client...",
+			"notes": "Additional notes about the vehicle..."
+		},
+		"empty": {
+			"noClients": "No clients found."
+		},
+		"columns": {
+			"vehicle": "Vehicle",
+			"brand": "Brand",
+			"model": "Model",
+			"year": "Year",
+			"plateVin": "Plate / VIN",
+			"owner": "Owner",
+			"mileage": "Mileage",
+			"services": "Services",
+			"lastService": "Last service"
+		},
+		"filters": {
+			"searchBrand": "Search brand...",
+			"searchModel": "Search model...",
+			"searchYear": "Search year...",
+			"searchPlateVin": "Search plate / VIN...",
+			"searchOwner": "Search owner...",
+			"filterByStatus": "Filter by status..."
+		},
+		"errors": {
+			"brandRequired": "Brand is required",
+			"modelRequired": "Model is required",
+			"yearRequired": "Year is required",
+			"licensePlateRequired": "License plate is required"
+		},
+		"messages": {
+			"addSuccess": "Vehicle added successfully",
+			"addError": "Failed to add vehicle",
+			"formHasErrors": "Please check the form for errors",
+			"bulkDeleteSuccess": "{{count}} vehicle(s) deleted",
+			"bulkDeleteError": "Failed to delete vehicles",
+			"bulkUpdateSuccess": "{{count}} vehicle(s) updated"
+		}
+	},
+	"orders": {
+		"pageTitle": "Orders",
+		"pageSubtitle": "Manage and track all service orders",
+		"backToOrders": "Back to orders",
+		"createdOn": "Created on",
+		"priorityLabel": "{{value}} priority",
+		"actions": {
+			"kanbanView": "Kanban View",
+			"viewDetails": "View details",
+			"editOrder": "Edit order",
+			"completeOrder": "Complete order",
+			"deleteOrder": "Delete order"
+		},
+		"detailsTabs": {
+			"general": "General",
+			"services": "Services ({{count}})",
+			"parts": "Parts ({{count}})",
+			"media": "Media ({{count}})"
+		},
+		"generalInfo": {
+			"assignedMechanic": "Assigned Mechanic",
+			"noMechanicAssigned": "No mechanic assigned",
+			"reassign": "Reassign",
+			"clientInformation": "Client Information",
+			"clientId": "Client ID",
+			"address": "Address",
+			"vehicleInformation": "Vehicle Information",
+			"make": "Make",
+			"model": "Model"
+		},
+		"media": {
+			"dropzoneTitle": "Drag and drop files here",
+			"dropzoneHint": "or click to browse (Max 10MB per file)",
+			"empty": "No media files",
+			"by": "By {{name}}",
+			"download": "Download"
+		},
+		"newOrder": {
+			"sections": {
+				"vehicleClientDetails": "Vehicle & Client Details",
+				"orderItems": "Order Items",
+				"orderSummary": "Order Summary"
+			},
+			"fields": {
+				"client": "Client",
+				"vehicle": "Vehicle",
+				"currentMileage": "Current Mileage",
+				"endDate": "End Date",
+				"parts": "Parts",
+				"service": "Service",
+				"assignedMechanic": "Assigned mechanic",
+				"assignMechanic": "Assign mechanic",
+				"part": "Part",
+				"quantity": "Quantity"
+			},
+			"placeholders": {
+				"selectClient": "Select client",
+				"selectVehicle": "Select vehicle",
+				"currentMileage": "Enter current mileage",
+				"additionalNotes": "Additional notes or special instructions...",
+				"selectService": "Select service",
+				"selectMechanicOptional": "Select mechanic (optional)",
+				"selectPart": "Select part"
+			},
+			"labels": {
+				"serviceN": "Service {{index}}",
+				"partN": "Part {{index}}",
+				"requiredPartCategories": "Required part categories:",
+				"noMechanicAssigned": "No mechanic assigned",
+				"noDueDate": "No due date",
+				"unassigned": "Unassigned"
+			},
+			"actions": {
+				"newWorkOrder": "New Work Order",
+				"createWorkOrder": "Create Work Order",
+				"creatingWorkOrder": "Creating Work Order...",
+				"addService": "Add Service",
+				"addPart": "Add Part",
+				"clearDate": "Clear date",
+				"orderActions": "Order actions"
+			},
+			"dialogs": {
+				"builderTitle": "Work Order Builder",
+				"builderDescription": "Create a comprehensive work order with services and parts for the selected vehicle.",
+				"editTitle": "Edit Order",
+				"editDescription": "Update the full work order for the selected client and vehicle.",
+				"addServiceTitle": "Add Service",
+				"addServiceDescription": "Select a service from the catalog to add to this order.",
+				"addPartTitle": "Add Part",
+				"addPartDescription": "Search for a part in the inventory to add to this order."
+			},
+			"empty": {
+				"noServices": "No services added yet",
+				"clickAddService": "Click \"Add Service\" to get started",
+				"noParts": "No parts added yet",
+				"clickAddPart": "Click \"Add Part\" to get started"
+			},
+			"summary": {
+				"servicesTotal": "Services Total:",
+				"partsTotal": "Parts Total:",
+				"totalAmount": "Total Amount:",
+				"subtotal": "Subtotal"
+			},
+			"messages": {
+				"autoFillCleared": "Smart Auto-Fill: Cleared recommended parts (no services selected)",
+				"autoFillUpdated": "Smart Auto-Fill: Updated with {{count}} recommended part(s)",
+				"createSuccess": "Work order created successfully",
+				"createError": "Failed to create order",
+				"updateSuccess": "Order updated successfully",
+				"updateError": "Failed to update order",
+				"minMileageError": "Mileage must be at least {{min}} km (last recorded)",
+				"mileageGreaterThanZero": "Mileage must be greater than 0",
+				"selectServiceFirst": "Select a service first",
+				"selectPartFirst": "Select a part first"
+			}
+		},
+		"dialogs": {
+			"deleteTitle": "Delete Order",
+			"deleteDescription": "Are you sure you want to delete this order? This action cannot be undone."
+		},
+		"columns": {
+			"order": "Order",
+			"client": "Client",
+			"vehicle": "Vehicle",
+			"services": "Services",
+			"endDate": "End date",
+			"total": "Total"
+		},
+		"filters": {
+			"searchOrderNumber": "Search order number...",
+			"searchClient": "Search client...",
+			"searchVehicle": "Search vehicle...",
+			"searchServices": "Search services...",
+			"filterByStatus": "Filter by status...",
+			"filterByPriority": "Filter by priority...",
+			"searchPlaceholder": "Search by order ID, client, or plate...",
+			"allStatus": "All status",
+			"allPriority": "All priority",
+			"done": "Done"
+		},
+		"messages": {
+			"deleteSuccess": "Order deleted successfully",
+			"deleteError": "Failed to delete order",
+			"bulkUpdateSuccess": "{{count}} order(s) updated",
+			"bulkUpdateError": "Failed to update orders",
+			"bulkDeleteSuccess": "{{count}} order(s) deleted",
+			"bulkDeleteError": "Failed to delete orders",
+			"notFound": "Order not found",
+			"clientVehicleDataMissing": "Order client/vehicle data is missing",
+			"updateItemsError": "Failed to update order items",
+			"statusUpdated": "Order status updated",
+			"updateStatusError": "Failed to update order status",
+			"completed": "Order completed",
+			"completeError": "Failed to complete order",
+			"serviceAdded": "Service added",
+			"serviceRemoved": "Service removed",
+			"partAdded": "Part added",
+			"partRemoved": "Part removed"
+		}
+	},
+	"orderStatus": {
+		"NEW": "New",
+		"IN_PROGRESS": "In Progress",
+		"WAITING_PARTS": "Waiting Parts",
+		"COMPLETED": "Completed",
+		"PAID": "Paid",
+		"CANCELLED": "Cancelled"
+	},
+	"orderPriority": {
+		"LOW": "Low",
+		"MEDIUM": "Medium",
+		"HIGH": "High"
+	},
+	"vehicleStatus": {
+		"OUT": "Out",
+		"PENDING": "Pending",
+		"IN_SERVICE": "In Service",
+		"TEST_DRIVE": "Test Drive",
+		"READY": "Ready"
+	},
+	"kanban": {
+		"title": "Kanban Board",
+		"subtitle": "Drag and drop orders to update their status"
 	}
 }

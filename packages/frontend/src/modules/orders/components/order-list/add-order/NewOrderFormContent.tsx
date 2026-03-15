@@ -23,6 +23,7 @@ import {
 import { Loader2, Package, Plus, Wrench } from 'lucide-react';
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { OrderPriority, OrderStatus } from '../../../interfaces/order.enums';
 import { PartRow } from './PartRow';
 import { ServiceRow } from './ServiceRow';
@@ -92,6 +93,7 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 	showEndDateField = false,
 	minMileage = 0,
 }) => {
+	const { t } = useTranslation();
 	return (
 		<div>
 			<form onSubmit={handleSubmit}>
@@ -100,13 +102,13 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 						<Card>
 							<CardHeader>
 								<CardTitle className='text-lg'>
-									Vehicle & Client Details
+									{t('orders.newOrder.sections.vehicleClientDetails')}
 								</CardTitle>
 							</CardHeader>
 							<CardContent className='space-y-4'>
 								<div className='grid grid-cols-2 gap-4'>
 									<div className='space-y-2'>
-										<Label>Client *</Label>
+										<Label>{t('orders.newOrder.fields.client')} *</Label>
 										<Select
 											onValueChange={value => {
 												form.setValue('clientId', value);
@@ -115,7 +117,11 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 											value={form.watch('clientId')}
 										>
 											<SelectTrigger>
-												<SelectValue placeholder='Select client' />
+												<SelectValue
+													placeholder={t(
+														'orders.newOrder.placeholders.selectClient',
+													)}
+												/>
 											</SelectTrigger>
 											<SelectContent>
 												{clients.map(client => (
@@ -133,14 +139,18 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 									</div>
 
 									<div className='space-y-2'>
-										<Label>Vehicle *</Label>
+										<Label>{t('orders.newOrder.fields.vehicle')} *</Label>
 										<Select
 											onValueChange={value => form.setValue('vehicleId', value)}
 											value={form.watch('vehicleId')}
 											disabled={!clientId || clientVehicles.length === 0}
 										>
 											<SelectTrigger>
-												<SelectValue placeholder='Select vehicle' />
+												<SelectValue
+													placeholder={t(
+														'orders.newOrder.placeholders.selectVehicle',
+													)}
+												/>
 											</SelectTrigger>
 											<SelectContent>
 												{clientVehicles.map(vehicle => (
@@ -162,7 +172,7 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 								<div className='grid grid-cols-2 gap-4'>
 									<div className='space-y-2'>
 										<Label>
-											Current Mileage *
+											{t('orders.newOrder.fields.currentMileage')} *
 											{minMileage > 0 && (
 												<span className='ml-1 text-xs text-muted-foreground'>
 													(min: {minMileage.toLocaleString()} km)
@@ -172,7 +182,9 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 										<Input
 											type='number'
 											min={minMileage || 1}
-											placeholder='Enter current mileage'
+											placeholder={t(
+												'orders.newOrder.placeholders.currentMileage',
+											)}
 											value={form.watch('mileage') || ''}
 											className={
 												form.formState.errors.mileage
@@ -185,11 +197,18 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 												form.setValue('mileage', numVal, { shouldDirty: true });
 												if (numVal < 1) {
 													form.setError('mileage', {
-														message: 'Mileage must be greater than 0',
+														message: t(
+															'orders.newOrder.messages.mileageGreaterThanZero',
+														),
 													});
 												} else if (minMileage > 0 && numVal < minMileage) {
 													form.setError('mileage', {
-														message: `Mileage must be at least ${minMileage.toLocaleString()} km (last recorded)`,
+														message: t(
+															'orders.newOrder.messages.minMileageError',
+															{
+																min: minMileage.toLocaleString(),
+															},
+														),
 													});
 												} else {
 													form.clearErrors('mileage');
@@ -204,7 +223,7 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 									</div>
 
 									<div className='space-y-2'>
-										<Label>Priority</Label>
+										<Label>{t('common.priority')}</Label>
 										<Select
 											onValueChange={value =>
 												form.setValue('priority', value as OrderPriority)
@@ -217,7 +236,7 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 											<SelectContent>
 												{Object.values(OrderPriority).map(priority => (
 													<SelectItem key={priority} value={priority}>
-														{priority}
+														{t(`orderPriority.${priority}`)}
 													</SelectItem>
 												))}
 											</SelectContent>
@@ -233,7 +252,7 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 								{showStatusField && (
 									<div className='grid grid-cols-1 gap-4'>
 										<div className='space-y-2'>
-											<Label>Status</Label>
+											<Label>{t('common.status')}</Label>
 											<Select
 												onValueChange={value =>
 													form.setValue('status', value as OrderStatus)
@@ -246,7 +265,7 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 												<SelectContent>
 													{Object.values(OrderStatus).map(status => (
 														<SelectItem key={status} value={status}>
-															{status.replace(/_/g, ' ')}
+															{t(`orderStatus.${status}`)}
 														</SelectItem>
 													))}
 												</SelectContent>
@@ -263,7 +282,7 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 								{showEndDateField && (
 									<div className='grid grid-cols-1 gap-4'>
 										<div className='space-y-2'>
-											<Label>End Date</Label>
+											<Label>{t('orders.newOrder.fields.endDate')}</Label>
 											<Input
 												type='date'
 												value={form.watch('endDate') || ''}
@@ -277,14 +296,16 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 
 						<Card>
 							<CardHeader>
-								<CardTitle className='text-lg'>Order Items</CardTitle>
+								<CardTitle className='text-lg'>
+									{t('orders.newOrder.sections.orderItems')}
+								</CardTitle>
 							</CardHeader>
 							<CardContent className='space-y-6'>
 								<div className='space-y-4'>
 									<div className='flex items-center justify-between'>
 										<h3 className='text-base font-medium flex items-center gap-2'>
 											<Wrench className='h-4 w-4 text-blue-500' />
-											Services
+											{t('orders.columns.services')}
 										</h3>
 										<Button
 											type='button'
@@ -293,16 +314,16 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 											onClick={addNewService}
 										>
 											<Plus className='h-4 w-4 mr-2' />
-											Add Service
+											{t('orders.newOrder.actions.addService')}
 										</Button>
 									</div>
 
 									{serviceFields.length === 0 ? (
 										<div className='text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg'>
 											<Wrench className='h-8 w-8 mx-auto mb-2 opacity-50' />
-											<p>No services added yet</p>
+											<p>{t('orders.newOrder.empty.noServices')}</p>
 											<p className='text-sm'>
-												Click "Add Service" to get started
+												{t('orders.newOrder.empty.clickAddService')}
 											</p>
 										</div>
 									) : (
@@ -330,7 +351,7 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 									<div className='flex items-center justify-between'>
 										<h3 className='text-base font-medium flex items-center gap-2'>
 											<Package className='h-4 w-4 text-green-500' />
-											Parts
+											{t('orders.newOrder.fields.parts')}
 										</h3>
 										<Button
 											type='button'
@@ -339,15 +360,17 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 											onClick={addNewPart}
 										>
 											<Plus className='h-4 w-4 mr-2' />
-											Add Part
+											{t('orders.newOrder.actions.addPart')}
 										</Button>
 									</div>
 
 									{partFields.length === 0 ? (
 										<div className='text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg'>
 											<Package className='h-8 w-8 mx-auto mb-2 opacity-50' />
-											<p>No parts added yet</p>
-											<p className='text-sm'>Click "Add Part" to get started</p>
+											<p>{t('orders.newOrder.empty.noParts')}</p>
+											<p className='text-sm'>
+												{t('orders.newOrder.empty.clickAddPart')}
+											</p>
 										</div>
 									) : (
 										<div className='space-y-3'>
@@ -371,13 +394,17 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 
 						<Card>
 							<CardHeader>
-								<CardTitle className='text-lg'>Order Summary</CardTitle>
+								<CardTitle className='text-lg'>
+									{t('orders.newOrder.sections.orderSummary')}
+								</CardTitle>
 							</CardHeader>
 							<CardContent className='space-y-4'>
 								<div className='space-y-2'>
-									<Label>Notes</Label>
+									<Label>{t('common.notes')}</Label>
 									<Textarea
-										placeholder='Additional notes or special instructions...'
+										placeholder={t(
+											'orders.newOrder.placeholders.additionalNotes',
+										)}
 										rows={3}
 										value={form.watch('notes')}
 										onChange={e => form.setValue('notes', e.target.value)}
@@ -393,20 +420,20 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 
 								<div className='space-y-2'>
 									<div className='flex justify-between text-sm'>
-										<span>Services Total:</span>
+										<span>{t('orders.newOrder.summary.servicesTotal')}</span>
 										<span className='font-medium'>
 											${servicesTotal.toFixed(2)}
 										</span>
 									</div>
 									<div className='flex justify-between text-sm'>
-										<span>Parts Total:</span>
+										<span>{t('orders.newOrder.summary.partsTotal')}</span>
 										<span className='font-medium'>
 											${partsTotal.toFixed(2)}
 										</span>
 									</div>
 									<Separator />
 									<div className='flex justify-between text-base font-semibold'>
-										<span>Total Amount:</span>
+										<span>{t('orders.newOrder.summary.totalAmount')}</span>
 										<span>${totalAmount.toFixed(2)}</span>
 									</div>
 								</div>
@@ -422,7 +449,7 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 						onClick={onCancel}
 						disabled={isPending}
 					>
-						Cancel
+						{t('common.cancel')}
 					</Button>
 					<Button type='submit' disabled={isPending || !form.formState.isValid}>
 						{isPending ? (

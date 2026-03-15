@@ -8,6 +8,7 @@ import {
 } from '@/shared/components/ui';
 import { cn } from '@/shared/lib/utils';
 import { MoreVertical } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { formatOrderNumber } from '../../../utils/format-order-number';
 import { KanbanOrder } from './OrderCard';
@@ -19,6 +20,7 @@ const priorityColors: Record<KanbanOrder['priority'], string> = {
 };
 
 export function OrderCardHeader({ order }: { order: KanbanOrder }) {
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 
 	const stopDrag = (e: React.PointerEvent | React.MouseEvent) => {
@@ -35,7 +37,7 @@ export function OrderCardHeader({ order }: { order: KanbanOrder }) {
 					variant='outline'
 					className={cn('text-xs', priorityColors[order.priority])}
 				>
-					{order.priority}
+					{t(`orderPriority.${order.priority.toUpperCase()}`)}
 				</Badge>
 			</div>
 			<DropdownMenu>
@@ -49,7 +51,9 @@ export function OrderCardHeader({ order }: { order: KanbanOrder }) {
 						onClick={e => e.stopPropagation()}
 					>
 						<MoreVertical className='h-4 w-4' />
-						<span className='sr-only'>Order actions</span>
+						<span className='sr-only'>
+							{t('orders.newOrder.actions.orderActions')}
+						</span>
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent
@@ -64,7 +68,7 @@ export function OrderCardHeader({ order }: { order: KanbanOrder }) {
 							navigate(`/orders/${order.id}`);
 						}}
 					>
-						View Details
+						{t('orders.actions.viewDetails')}
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>

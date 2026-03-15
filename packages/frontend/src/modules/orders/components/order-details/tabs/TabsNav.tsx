@@ -1,4 +1,5 @@
 import { TabsList, TabsTrigger } from '@/shared/components/ui';
+import { useTranslation } from 'react-i18next';
 
 interface TabsNavProps {
 	servicesCount: number;
@@ -11,12 +12,21 @@ export function TabsNav({
 	partsCount,
 	mediaCount,
 }: TabsNavProps) {
+	const { t } = useTranslation();
 	return (
 		<TabsList className='mb-4'>
-			<TabsTrigger value='general'>General</TabsTrigger>
-			<TabsTrigger value='services'>Services ({servicesCount})</TabsTrigger>
-			<TabsTrigger value='parts'>Parts ({partsCount})</TabsTrigger>
-			<TabsTrigger value='media'>Media ({mediaCount})</TabsTrigger>
+			<TabsTrigger value='general'>
+				{t('orders.detailsTabs.general')}
+			</TabsTrigger>
+			<TabsTrigger value='services'>
+				{t('orders.detailsTabs.services', { count: servicesCount })}
+			</TabsTrigger>
+			<TabsTrigger value='parts'>
+				{t('orders.detailsTabs.parts', { count: partsCount })}
+			</TabsTrigger>
+			<TabsTrigger value='media'>
+				{t('orders.detailsTabs.media', { count: mediaCount })}
+			</TabsTrigger>
 		</TabsList>
 	);
 }

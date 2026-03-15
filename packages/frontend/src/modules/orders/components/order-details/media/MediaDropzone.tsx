@@ -1,16 +1,20 @@
 import { Upload } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface MediaDropzoneProps {
 	onUpload?: (files: FileList) => void;
 }
 
 export function MediaDropzone({ onUpload }: MediaDropzoneProps) {
+	const { t } = useTranslation();
 	return (
 		<div className='mb-6 rounded-lg border-2 border-dashed border-muted-foreground/25 p-8 text-center transition-colors hover:border-muted-foreground/50'>
 			<Upload className='mx-auto h-12 w-12 text-muted-foreground/50' />
-			<p className='mt-2 text-sm font-medium'>Drag and drop files here</p>
+			<p className='mt-2 text-sm font-medium'>
+				{t('orders.media.dropzoneTitle')}
+			</p>
 			<p className='text-xs text-muted-foreground'>
-				or click to browse (Max 10MB per file)
+				{t('orders.media.dropzoneHint')}
 			</p>
 			<input
 				type='file'

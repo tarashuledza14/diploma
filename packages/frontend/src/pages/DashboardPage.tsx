@@ -17,21 +17,13 @@ import { OrderStatus } from '@/modules/orders/interfaces/order.enums';
 import { VehicleService } from '@/modules/vehicles/api/vehicles.service';
 import { useQuery } from '@tanstack/react-query';
 import { Car, ClipboardList, DollarSign, Users } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 type DashboardOrder = Awaited<
 	ReturnType<typeof OrdersService.getAll>
 >['data'][number] & {
 	mechanic?: { id: string; fullName: string } | null;
 };
-
-const ORDER_STATUSES: Array<{ status: OrderStatus; label: string }> = [
-	{ status: OrderStatus.NEW, label: 'New' },
-	{ status: OrderStatus.IN_PROGRESS, label: 'In Progress' },
-	{ status: OrderStatus.WAITING_PARTS, label: 'Waiting Parts' },
-	{ status: OrderStatus.COMPLETED, label: 'Completed' },
-	{ status: OrderStatus.PAID, label: 'Paid' },
-	{ status: OrderStatus.CANCELLED, label: 'Cancelled' },
-];
 
 const statusColors: Record<OrderStatus, string> = {
 	[OrderStatus.NEW]: 'bg-blue-100 text-blue-700',
@@ -63,6 +55,18 @@ function parseAmount(value: string | number | null | undefined) {
 }
 
 export function DashboardPage() {
+	const { t } = useTranslation();
+	const orderStatuses: Array<{ status: OrderStatus; label: string }> = [
+		{ status: OrderStatus.NEW, label: t('orderStatus.NEW') },
+		{ status: OrderStatus.IN_PROGRESS, label: t('orderStatus.IN_PROGRESS') },
+		{
+			status: OrderStatus.WAITING_PARTS,
+			label: t('orderStatus.WAITING_PARTS'),
+		},
+		{ status: OrderStatus.COMPLETED, label: t('orderStatus.COMPLETED') },
+		{ status: OrderStatus.PAID, label: t('orderStatus.PAID') },
+		{ status: OrderStatus.CANCELLED, label: t('orderStatus.CANCELLED') },
+	];
 	const {
 		data: ordersResponse,
 		isLoading: isOrdersLoading,
@@ -134,41 +138,41 @@ export function DashboardPage() {
 
 	const stats: DashboardStat[] = [
 		{
-			title: 'Total Orders',
+			title: t('dashboard.stats.totalOrders.title'),
 			value: totalOrders.toString(),
 			change: `${completionRate.toFixed(0)}%`,
 			trend:
 				completionRate >= 60 ? 'up' : completionRate >= 35 ? 'neutral' : 'down',
 			icon: ClipboardList,
-			description: 'completion ratio',
+			description: t('dashboard.stats.totalOrders.description'),
 		},
 		{
-			title: 'Active Clients',
+			title: t('dashboard.stats.activeClients.title'),
 			value: totalClients.toString(),
 			change: `${orders.length}`,
 			trend: 'neutral',
 			icon: Users,
-			description: 'orders in current sample',
+			description: t('dashboard.stats.activeClients.description'),
 		},
 		{
-			title: 'Vehicles Serviced',
+			title: t('dashboard.stats.vehiclesServiced.title'),
 			value: totalVehicles.toString(),
 			change: `${completedCount}`,
 			trend: 'neutral',
 			icon: Car,
-			description: 'completed or paid orders',
+			description: t('dashboard.stats.vehiclesServiced.description'),
 		},
 		{
-			title: 'Revenue',
+			title: t('dashboard.stats.revenue.title'),
 			value: formatMoney(paidOrCompletedRevenue),
 			change: `${completedCount}`,
 			trend: paidOrCompletedRevenue > 0 ? 'up' : 'neutral',
 			icon: DollarSign,
-			description: 'from completed and paid',
+			description: t('dashboard.stats.revenue.description'),
 		},
 	];
 
-	const ordersByStatus: DashboardOrderStatusItem[] = ORDER_STATUSES.map(
+	const ordersByStatus: DashboardOrderStatusItem[] = orderStatuses.map(
 		item => ({
 			status: item.status,
 			label: item.label,
@@ -236,11 +240,11 @@ export function DashboardPage() {
 			? [
 					{
 						type: 'warning' as const,
-						message: `${
-							ordersByStatus.find(
+						message: t('dashboard.alerts.waitingParts', {
+							count: ordersByStatus.find(
 								item => item.status === OrderStatus.WAITING_PARTS,
-							)?.count
-						} orders are waiting for parts`,
+							)?.count,
+						}),
 						link: '/orders/board',
 					},
 				]
@@ -250,11 +254,11 @@ export function DashboardPage() {
 			? [
 					{
 						type: 'info' as const,
-						message: `${
-							ordersByStatus.find(
+						message: t('dashboard.alerts.inProgress', {
+							count: ordersByStatus.find(
 								item => item.status === OrderStatus.IN_PROGRESS,
-							)?.count
-						} orders are currently in progress`,
+							)?.count,
+						}),
 						link: '/orders/board',
 					},
 				]
@@ -263,7 +267,9 @@ export function DashboardPage() {
 			? [
 					{
 						type: 'success' as const,
-						message: `${completedCount} orders are completed or paid`,
+						message: t('dashboard.alerts.completedOrPaid', {
+							count: completedCount,
+						}),
 						link: '/orders',
 					},
 				]
@@ -275,7 +281,7 @@ export function DashboardPage() {
 			<div className='flex flex-col gap-6'>
 				<DashboardHeader />
 				<div className='rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive'>
-					Failed to load dashboard data. Please try again.
+					{t('dashboard.errorLoad')}
 				</div>
 			</div>
 		);
@@ -286,7 +292,7 @@ export function DashboardPage() {
 			<div className='flex flex-col gap-6'>
 				<DashboardHeader />
 				<div className='rounded-lg border p-4 text-sm text-muted-foreground'>
-					Loading dashboard data...
+					{t('dashboard.loading')}
 				</div>
 			</div>
 		);

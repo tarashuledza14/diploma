@@ -5,6 +5,7 @@ import {
 	UseFormHandleSubmit,
 	UseFormRegister,
 } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 interface NotesFormData {
 	notes: string;
@@ -31,6 +32,7 @@ export function NotesTab({
 	handleSaveNotes,
 	handleCancelNotes,
 }: NotesTabProps) {
+	const { t } = useTranslation();
 	return (
 		<>
 			{!isEditingNotes ? (
@@ -43,7 +45,7 @@ export function NotesTab({
 										<p className='text-sm'>{selectedClient.notes}</p>
 									) : (
 										<p className='text-sm text-muted-foreground italic'>
-											No notes for this client.
+											{t('clients.profile.notes.empty')}
 										</p>
 									)}
 								</div>
@@ -59,10 +61,10 @@ export function NotesTab({
 					</Card>
 					<div className='mt-3 text-xs text-muted-foreground'>
 						<p>
-							Client since:{' '}
+							{t('clients.profile.notes.clientSince')}:{' '}
 							{selectedClient.createdAt
 								? new Date(selectedClient.createdAt).toLocaleDateString()
-								: 'N/A'}
+								: t('common.notAvailable')}
 						</p>
 					</div>
 				</>
@@ -71,7 +73,7 @@ export function NotesTab({
 					<CardContent className='p-4'>
 						<form onSubmit={handleSubmitNotes(handleSaveNotes)}>
 							<Textarea
-								placeholder='Add notes about this client...'
+								placeholder={t('clients.profile.notes.placeholder')}
 								{...registerNotes('notes')}
 								rows={5}
 								className='mb-3'
@@ -89,11 +91,11 @@ export function NotesTab({
 									onClick={handleCancelNotes}
 								>
 									<X className='h-4 w-4 mr-1' />
-									Cancel
+									{t('common.cancel')}
 								</Button>
 								<Button type='submit' size='sm'>
 									<Save className='h-4 w-4 mr-1' />
-									Save Notes
+									{t('clients.profile.notes.save')}
 								</Button>
 							</div>
 						</form>

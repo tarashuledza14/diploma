@@ -14,6 +14,7 @@ import {
 import { formatDate } from '@/shared/lib/format';
 import { DataTableRowAction } from '@/types/data-table';
 import { ColumnDef } from '@tanstack/react-table';
+import { TFunction } from 'i18next';
 import {
 	Car,
 	Edit,
@@ -33,17 +34,19 @@ interface GetClientTableColumnsProps {
 	setRowAction: React.Dispatch<
 		React.SetStateAction<DataTableRowAction<Client> | null>
 	>;
+	t: TFunction;
 }
 
 export function getClientTableColumns({
 	setRowAction,
+	t,
 }: GetClientTableColumnsProps): ColumnDef<Client>[] {
 	return [
 		{
 			id: 'select',
 			header: ({ table }) => (
 				<Checkbox
-					aria-label='Select all'
+					aria-label={t('table.selectAll')}
 					className='translate-y-0.5'
 					checked={
 						table.getIsAllPageRowsSelected() ||
@@ -54,7 +57,7 @@ export function getClientTableColumns({
 			),
 			cell: ({ row }) => (
 				<Checkbox
-					aria-label='Select row'
+					aria-label={t('table.selectRow')}
 					className='translate-y-0.5'
 					checked={row.getIsSelected()}
 					onCheckedChange={value => row.toggleSelected(!!value)}
@@ -67,7 +70,10 @@ export function getClientTableColumns({
 		{
 			id: 'avatar',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Client' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('clients.columns.client')}
+				/>
 			),
 			cell: ({ row }) => {
 				const fullName = row.original.fullName;
@@ -87,11 +93,14 @@ export function getClientTableColumns({
 			id: 'fullName',
 			accessorKey: 'fullName',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Full Name' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('clients.columns.fullName')}
+				/>
 			),
 			meta: {
-				label: 'Full Name',
-				placeholder: 'Search full name...',
+				label: t('clients.columns.fullName'),
+				placeholder: t('clients.filters.searchFullName'),
 				variant: 'text',
 			},
 			enableSorting: true,
@@ -102,11 +111,11 @@ export function getClientTableColumns({
 			id: 'email',
 			accessorKey: 'email',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Email' />
+				<DataTableColumnHeader column={column} label={t('common.email')} />
 			),
 			meta: {
-				label: 'Email',
-				placeholder: 'Search email...',
+				label: t('common.email'),
+				placeholder: t('clients.filters.searchEmail'),
 				variant: 'text',
 			},
 			enableColumnFilter: true, // Вмикаємо, щоб з'явилось у списку фільтрів
@@ -117,11 +126,11 @@ export function getClientTableColumns({
 			id: 'phone',
 			accessorKey: 'phone',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Phone' />
+				<DataTableColumnHeader column={column} label={t('common.phone')} />
 			),
 			meta: {
-				label: 'Phone',
-				placeholder: 'Search phone...',
+				label: t('common.phone'),
+				placeholder: t('clients.filters.searchPhone'),
 				variant: 'text',
 			},
 			enableColumnFilter: true,
@@ -132,7 +141,10 @@ export function getClientTableColumns({
 			id: 'contacts',
 			accessorFn: row => `${row.email || ''} ${row.phone || ''}`,
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Contacts' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('clients.columns.contacts')}
+				/>
 			),
 			cell: ({ row }) => {
 				const email = row.original.email;
@@ -155,7 +167,7 @@ export function getClientTableColumns({
 				);
 			},
 			meta: {
-				label: 'Contacts',
+				label: t('clients.columns.contacts'),
 			},
 			enableColumnFilter: false,
 			enableSorting: false,
@@ -164,7 +176,10 @@ export function getClientTableColumns({
 			id: 'vehicleCount',
 			accessorKey: 'vehicleCount',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Vehicle Count' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('clients.columns.vehicleCount')}
+				/>
 			),
 			cell: ({ cell }) => {
 				return (
@@ -175,7 +190,7 @@ export function getClientTableColumns({
 				);
 			},
 			meta: {
-				label: 'Vehicle Count',
+				label: t('clients.columns.vehicleCount'),
 				variant: 'number',
 			},
 
@@ -186,10 +201,13 @@ export function getClientTableColumns({
 			id: 'totalOrders',
 			accessorKey: 'totalOrders',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Orders' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('clients.columns.orders')}
+				/>
 			),
 			meta: {
-				label: 'Orders',
+				label: t('clients.columns.orders'),
 				variant: 'number',
 			},
 			enableColumnFilter: true,
@@ -198,7 +216,10 @@ export function getClientTableColumns({
 			id: 'totalSpent',
 			accessorKey: 'totalSpent',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Total Spent' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('clients.columns.totalSpent')}
+				/>
 			),
 			cell: ({ cell }) => {
 				const totalSpent = cell.getValue<number>();
@@ -206,7 +227,7 @@ export function getClientTableColumns({
 			},
 
 			meta: {
-				label: 'Total Spent',
+				label: t('clients.columns.totalSpent'),
 				variant: 'number',
 			},
 			enableColumnFilter: true,
@@ -215,11 +236,14 @@ export function getClientTableColumns({
 			id: 'latestVisit',
 			accessorKey: 'latestVisit',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Latest Visit' />
+				<DataTableColumnHeader
+					column={column}
+					label={t('clients.columns.latestVisit')}
+				/>
 			),
 			cell: ({ cell }) => formatDate(cell.getValue<Date>()),
 			meta: {
-				label: 'Latest Visit',
+				label: t('clients.columns.latestVisit'),
 				variant: 'date',
 			},
 			enableColumnFilter: true,
@@ -231,7 +255,7 @@ export function getClientTableColumns({
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button
-								aria-label='Open menu'
+								aria-label={t('table.openMenu')}
 								variant='ghost'
 								className='flex size-8 p-0 data-[state=open]:bg-muted'
 							>
@@ -243,14 +267,14 @@ export function getClientTableColumns({
 								onSelect={() => setRowAction({ row, variant: 'view' })}
 							>
 								<Eye className='h-4 w-4' />
-								View
+								{t('common.view')}
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem
 								onSelect={() => setRowAction({ row, variant: 'update' })}
 							>
 								<Edit className=' h-4 w-4' />
-								Edit
+								{t('common.edit')}
 							</DropdownMenuItem>
 
 							<DropdownMenuSeparator />
@@ -258,7 +282,7 @@ export function getClientTableColumns({
 								onSelect={() => setRowAction({ row, variant: 'delete' })}
 							>
 								<Trash2 className='h-4 w-4' />
-								Delete
+								{t('common.delete')}
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>

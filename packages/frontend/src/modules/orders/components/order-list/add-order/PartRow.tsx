@@ -10,6 +10,7 @@ import {
 } from '@/shared/components/ui';
 import { Package, X } from 'lucide-react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface PartRowProps {
 	index: number;
@@ -26,6 +27,7 @@ export const PartRow: React.FC<PartRowProps> = ({
 	onRemove,
 	onChange,
 }) => {
+	const { t } = useTranslation();
 	const selectedPart = parts.find(p => p.id === part.partId);
 
 	return (
@@ -33,7 +35,9 @@ export const PartRow: React.FC<PartRowProps> = ({
 			<div className='flex items-center justify-between'>
 				<div className='flex items-center gap-2'>
 					<Package className='h-4 w-4 text-green-500' />
-					<span className='font-medium'>Part {index + 1}</span>
+					<span className='font-medium'>
+						{t('orders.newOrder.labels.partN', { index: index + 1 })}
+					</span>
 				</div>
 				<Button
 					type='button'
@@ -48,13 +52,17 @@ export const PartRow: React.FC<PartRowProps> = ({
 
 			<div className='grid grid-cols-3 gap-4'>
 				<div className='col-span-2'>
-					<label className='text-sm font-medium'>Part *</label>
+					<label className='text-sm font-medium'>
+						{t('orders.newOrder.fields.part')} *
+					</label>
 					<Select
 						value={part.partId}
 						onValueChange={value => onChange('partId', value)}
 					>
 						<SelectTrigger>
-							<SelectValue placeholder='Select part' />
+							<SelectValue
+								placeholder={t('orders.newOrder.placeholders.selectPart')}
+							/>
 						</SelectTrigger>
 						<SelectContent>
 							{parts.map(partItem => (
@@ -67,7 +75,9 @@ export const PartRow: React.FC<PartRowProps> = ({
 				</div>
 
 				<div>
-					<label className='text-sm font-medium'>Quantity *</label>
+					<label className='text-sm font-medium'>
+						{t('orders.newOrder.fields.quantity')} *
+					</label>
 					<Input
 						type='number'
 						min='1'
@@ -79,7 +89,8 @@ export const PartRow: React.FC<PartRowProps> = ({
 
 			{selectedPart && (
 				<div className='text-sm text-muted-foreground'>
-					Subtotal: ${(selectedPart.price * part.quantity).toFixed(2)}
+					{t('orders.newOrder.summary.subtotal')}: $
+					{(selectedPart.price * part.quantity).toFixed(2)}
 				</div>
 			)}
 		</div>

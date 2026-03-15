@@ -7,6 +7,7 @@ import {
 } from '@/shared';
 import { DataTableRowAction } from '@/types/data-table';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { OrderList, OrderListItem } from '../../interfaces/order.interface';
 import { getOrderTableColumns } from './columns-data/order-table-columns';
 import { DeleteConfirmOrderModal } from './DeleteConfirmOrderModal';
@@ -20,12 +21,14 @@ interface OrdersTableProps {
 }
 
 export function OrdersTable({ data, pageCount }: OrdersTableProps) {
+	const { t } = useTranslation();
 	const [rowAction, setRowAction] =
 		useState<DataTableRowAction<OrderListItem> | null>(null);
 
 	const columns = useMemo(
-		() => getOrderTableColumns({ setRowAction, statusColors, priorityColors }),
-		[setRowAction],
+		() =>
+			getOrderTableColumns({ setRowAction, statusColors, priorityColors, t }),
+		[setRowAction, t],
 	);
 
 	const { table, shallow, debounceMs, throttleMs } =

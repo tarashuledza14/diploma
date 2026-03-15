@@ -18,6 +18,7 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CalendarIcon, UserIcon } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { KanbanOrder } from './OrderCard';
 
@@ -32,6 +33,7 @@ interface OrderCardFooterProps {
 }
 
 export function OrderCardFooter({ order, mechanics }: OrderCardFooterProps) {
+	const { t } = useTranslation();
 	const queryClient = useQueryClient();
 	const [mechanicOpen, setMechanicOpen] = useState(false);
 	const [dateOpen, setDateOpen] = useState(false);
@@ -46,7 +48,7 @@ export function OrderCardFooter({ order, mechanics }: OrderCardFooterProps) {
 				queryKey: ordersKeys.list({ filters: [], page: 1, perPage: 500 }),
 			});
 		},
-		onError: () => toast.error('Failed to update order'),
+		onError: () => toast.error(t('orders.newOrder.messages.updateError')),
 	});
 
 	const handleMechanicSelect = (mechanicId: string) => {
@@ -96,7 +98,9 @@ export function OrderCardFooter({ order, mechanics }: OrderCardFooterProps) {
 							onClick={e => e.stopPropagation()}
 						>
 							<CalendarIcon className='h-3 w-3' />
-							{currentDate ? currentDate.toLocaleDateString() : 'No due date'}
+							{currentDate
+								? currentDate.toLocaleDateString()
+								: t('orders.newOrder.labels.noDueDate')}
 						</Button>
 					</PopoverTrigger>
 					<PopoverContent
@@ -124,7 +128,7 @@ export function OrderCardFooter({ order, mechanics }: OrderCardFooterProps) {
 									onMouseDownCapture={stopDrag}
 									onClick={() => handleDateSelect(undefined)}
 								>
-									Clear date
+									{t('orders.newOrder.actions.clearDate')}
 								</Button>
 							</div>
 						)}
@@ -155,7 +159,7 @@ export function OrderCardFooter({ order, mechanics }: OrderCardFooterProps) {
 						onMouseDownCapture={stopDrag}
 					>
 						<p className='mb-1.5 text-xs font-medium text-muted-foreground'>
-							Assign mechanic
+							{t('orders.newOrder.fields.assignMechanic')}
 						</p>
 						<Select
 							value={order.assignedTo.id ?? 'unassigned'}
@@ -166,7 +170,7 @@ export function OrderCardFooter({ order, mechanics }: OrderCardFooterProps) {
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value='unassigned' className='text-xs'>
-									Unassigned
+									{t('orders.newOrder.labels.unassigned')}
 								</SelectItem>
 								{mechanics.map(m => (
 									<SelectItem key={m.id} value={m.id} className='text-xs'>

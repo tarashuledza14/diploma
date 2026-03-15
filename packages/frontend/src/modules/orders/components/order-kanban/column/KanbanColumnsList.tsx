@@ -23,6 +23,7 @@ import {
 	Wrench,
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { KanbanOrder, OrderCard } from '../card/OrderCard';
 import { KanbanColumnAddButton } from './KanbanColumnAddButton';
@@ -120,6 +121,7 @@ function getColumnConfig(columnId: string) {
 }
 
 export function KanbanColumnsList() {
+	const { t } = useTranslation();
 	const queryClient = useQueryClient();
 	const [columns, setColumns] = useState<
 		Record<UniqueIdentifier, KanbanOrder[]>
@@ -154,7 +156,7 @@ export function KanbanColumnsList() {
 			});
 		},
 		onError: () => {
-			toast.error('Failed to update order status');
+			toast.error(t('orders.messages.updateStatusError'));
 			queryClient.invalidateQueries({
 				queryKey: ordersKeys.list({ filters: [], page: 1, perPage: 500 }),
 			});
@@ -220,6 +222,7 @@ export function KanbanColumnsList() {
 					{columnEntries.map(([columnId, items]) => {
 						const config = getColumnConfig(columnId);
 						if (!config) return null;
+						const localizedTitle = t(`orderStatus.${config.id}`);
 
 						return (
 							<KanbanColumn
@@ -229,12 +232,12 @@ export function KanbanColumnsList() {
 							>
 								<div className='flex items-center justify-between px-3 pb-2 pt-3'>
 									<KanbanColumnHeader
-										title={config.title}
+										title={localizedTitle}
 										color={config.color}
 										count={items.length}
 									/>
 									<KanbanColumnAddButton
-										title={config.title}
+										title={localizedTitle}
 										defaultStatus={config.id}
 									/>
 								</div>
@@ -262,12 +265,13 @@ export function KanbanColumnsList() {
 							const config = getColumnConfig(value as string);
 							const items = columns[value] ?? [];
 							if (!config) return null;
+							const localizedTitle = t(`orderStatus.${config.id}`);
 
 							return (
 								<div className='flex min-w-[320px] flex-col rounded-lg bg-muted/50 opacity-90 shadow-lg'>
 									<div className='flex items-center justify-between px-3 pb-2 pt-3'>
 										<KanbanColumnHeader
-											title={config.title}
+											title={localizedTitle}
 											color={config.color}
 											count={items.length}
 										/>

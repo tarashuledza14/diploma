@@ -6,5 +6,552 @@
 	"languages": {
 		"english": "EN",
 		"ukrainian": "UA"
+	},
+	"common": {
+		"loading": "Завантаження...",
+		"cancel": "Скасувати",
+		"delete": "Видалити",
+		"deleting": "Видалення...",
+		"saving": "Збереження...",
+		"saveChanges": "Зберегти зміни",
+		"savingChanges": "Збереження змін...",
+		"notAvailable": "Н/Д",
+		"edit": "Редагувати",
+		"view": "Переглянути",
+		"viewAll": "Переглянути всі",
+		"status": "Статус",
+		"priority": "Пріоритет",
+		"selected": "обрано",
+		"export": "Експорт",
+		"email": "Email",
+		"phone": "Телефон",
+		"password": "Пароль",
+		"notes": "Нотатки",
+		"adding": "Додавання..."
+	},
+	"theme": {
+		"toggle": "Перемкнути тему",
+		"light": "Світла",
+		"dark": "Темна",
+		"system": "Системна"
+	},
+	"search": {
+		"globalPlaceholder": "Пошук замовлень, клієнтів, авто..."
+	},
+	"table": {
+		"selectAll": "Обрати всі",
+		"selectRow": "Обрати рядок",
+		"openMenu": "Відкрити меню",
+		"selectionSummary": "Обрано {{selected}} з {{total}} рядків.",
+		"rowsPerPage": "Рядків на сторінці",
+		"pageOf": "Сторінка {{page}} з {{total}}",
+		"goToFirstPage": "Перейти на першу сторінку",
+		"goToPreviousPage": "Перейти на попередню сторінку",
+		"goToNextPage": "Перейти на наступну сторінку",
+		"goToLastPage": "Перейти на останню сторінку",
+		"toggleColumns": "Показати/сховати колонки",
+		"view": "Вигляд",
+		"searchColumns": "Пошук колонок...",
+		"noColumnsFound": "Колонки не знайдено."
+	},
+	"sidebar": {
+		"brand": {
+			"name": "AutoCRM",
+			"plan": "Enterprise"
+		},
+		"groups": {
+			"platform": "Платформа",
+			"management": "Керування",
+			"inventoryService": "Склад і сервіс"
+		},
+		"items": {
+			"dashboard": "Дашборд",
+			"aiAssistant": "AI асистент",
+			"orders": "Замовлення",
+			"kanbanBoard": "Канбан-дошка",
+			"clients": "Клієнти",
+			"vehicles": "Авто",
+			"services": "Послуги",
+			"partsInventory": "Склад запчастин",
+			"settings": "Налаштування"
+		}
+	},
+	"userMenu": {
+		"myAccount": "Мій акаунт",
+		"profile": "Профіль",
+		"settings": "Налаштування",
+		"logout": "Вийти"
+	},
+	"auth": {
+		"welcomeBack": "З поверненням",
+		"signInSubtitle": "Увійдіть у свій акаунт, щоб продовжити",
+		"signIn": "Увійти",
+		"signingIn": "Вхід...",
+		"hidePassword": "Сховати пароль",
+		"showPassword": "Показати пароль",
+		"placeholders": {
+			"email": "name@company.com",
+			"password": "Введіть пароль"
+		},
+		"errors": {
+			"loginFailed": "Помилка входу",
+			"enterEmailAndPassword": "Будь ласка, введіть email і пароль"
+		},
+		"messages": {
+			"loggedInSuccessfully": "Вхід успішний"
+		}
+	},
+	"dashboard": {
+		"title": "Дашборд",
+		"subtitle": "Вітаємо! Ось огляд вашого автосервісу.",
+		"loading": "Завантаження даних дашборду...",
+		"errorLoad": "Не вдалося завантажити дані дашборду. Спробуйте ще раз.",
+		"stats": {
+			"totalOrders": {
+				"title": "Усього замовлень",
+				"description": "коефіцієнт виконання"
+			},
+			"activeClients": {
+				"title": "Активні клієнти",
+				"description": "замовлень у поточній вибірці"
+			},
+			"vehiclesServiced": {
+				"title": "Обслуговано авто",
+				"description": "завершені або оплачені"
+			},
+			"revenue": {
+				"title": "Дохід",
+				"description": "із завершених та оплачених"
+			}
+		},
+		"alerts": {
+			"title": "Сповіщення",
+			"empty": "Наразі активних сповіщень немає.",
+			"waitingParts": "{{count}} замовлень очікують на запчастини",
+			"inProgress": "{{count}} замовлень зараз у роботі",
+			"completedOrPaid": "{{count}} замовлень завершено або оплачено"
+		},
+		"recentOrders": {
+			"title": "Останні замовлення",
+			"subtitle": "Останні сервісні замовлення",
+			"empty": "Останніх замовлень не знайдено."
+		},
+		"ordersOverview": {
+			"title": "Огляд замовлень",
+			"subtitle": "Розподіл замовлень за статусами",
+			"viewBoard": "Переглянути дошку"
+		},
+		"topMechanics": {
+			"title": "Топ механіки",
+			"subtitle": "Найкращі цього місяця",
+			"empty": "Ще немає механіків, призначених на замовлення.",
+			"ordersCompleted": "Виконано замовлень: {{count}}"
+		}
+	},
+	"clients": {
+		"title": "Клієнти",
+		"subtitle": "Керуйте базою клієнтів",
+		"actions": {
+			"addClient": "Додати клієнта"
+		},
+		"dialogs": {
+			"addTitle": "Додати нового клієнта",
+			"addDescription": "Введіть дані клієнта нижче.",
+			"editTitle": "Редагувати клієнта",
+			"editDescription": "Оновіть інформацію про клієнта нижче.",
+			"deleteTitle": "Видалити клієнта",
+			"deleteDescription": "Ви впевнені, що хочете видалити цього клієнта? Цю дію неможливо скасувати."
+		},
+		"fields": {
+			"fullName": "ПІБ"
+		},
+		"placeholders": {
+			"fullName": "Іван Петренко",
+			"phone": "+380 (00) 000-00-00",
+			"email": "ivan@example.com"
+		},
+		"form": {
+			"errors": {
+				"fullNameRequired": "ПІБ обов'язковий",
+				"phoneRequired": "Телефон обов'язковий",
+				"invalidEmail": "Некоректний email"
+			}
+		},
+		"columns": {
+			"client": "Клієнт",
+			"fullName": "ПІБ",
+			"contacts": "Контакти",
+			"vehicleCount": "К-сть авто",
+			"orders": "Замовлення",
+			"totalSpent": "Всього витрачено",
+			"latestVisit": "Останній візит"
+		},
+		"filters": {
+			"searchFullName": "Пошук за ПІБ...",
+			"searchEmail": "Пошук за email...",
+			"searchPhone": "Пошук за телефоном..."
+		},
+		"messages": {
+			"addSuccess": "Клієнта успішно додано",
+			"addError": "Не вдалося додати клієнта",
+			"deleteSuccess": "Клієнта успішно видалено",
+			"deleteError": "Не вдалося видалити клієнта. Спробуйте ще раз.",
+			"bulkDeleteSuccess": "Видалено клієнтів: {{count}}",
+			"bulkDeleteError": "Не вдалося видалити клієнтів"
+		},
+		"profile": {
+			"title": "Профіль клієнта",
+			"tabs": {
+				"vehicles": "Авто",
+				"orderHistory": "Історія замовлень",
+				"notes": "Нотатки"
+			},
+			"stats": {
+				"vehicles": "Авто",
+				"orders": "Замовлення",
+				"totalSpent": "Загалом витрачено",
+				"lastVisit": "Останній візит"
+			},
+			"notes": {
+				"empty": "Для цього клієнта немає нотаток.",
+				"placeholder": "Додайте нотатки про цього клієнта...",
+				"save": "Зберегти нотатки",
+				"clientSince": "Клієнт з"
+			}
+		}
+	},
+	"inventory": {
+		"title": "Склад запчастин",
+		"subtitle": "Керуйте запасами та замовленнями запчастин",
+		"actions": {
+			"addPart": "Додати запчастину",
+			"movementHistory": "Історія руху"
+		},
+		"dialogs": {
+			"addTitle": "Додати нову запчастину",
+			"addDescription": "Додайте нову запчастину на склад.",
+			"editTitle": "Редагувати запчастину",
+			"editDescription": "Оновіть інформацію про запчастину. Зміни буде збережено одразу."
+		},
+		"columns": {
+			"part": "Запчастина",
+			"category": "Категорія",
+			"barcode": "Штрихкод",
+			"brand": "Бренд",
+			"location": "Локація",
+			"stock": "Залишок",
+			"supplier": "Постачальник",
+			"price": "Ціна"
+		},
+		"filters": {
+			"searchOem": "Пошук OEM...",
+			"searchBarcode": "Пошук штрихкоду..."
+		},
+		"unknown": "Невідомо",
+		"noBarcode": "Немає штрихкоду",
+		"noOem": "Немає OEM",
+		"messages": {
+			"addSuccess": "Запчастину \"{{name}}\" успішно додано!",
+			"addError": "Не вдалося створити запчастину. Спробуйте ще раз.",
+			"updateSuccess": "Запчастину успішно оновлено",
+			"updateError": "Не вдалося оновити запчастину",
+			"bulkDeleteSuccess": "Видалено запчастин: {{count}}",
+			"bulkDeleteError": "Не вдалося видалити запчастини"
+		}
+	},
+	"services": {
+		"title": "Послуги",
+		"subtitle": "Керуйте каталогом послуг",
+		"actions": {
+			"addService": "Додати послугу"
+		},
+		"dialogs": {
+			"addTitle": "Додати послугу",
+			"addDescription": "Створіть нову послугу. Заповніть деталі нижче.",
+			"editTitle": "Редагувати послугу",
+			"editDescription": "Оновіть інформацію про послугу. Зміни буде збережено одразу.",
+			"deleteTitle": "Видалити послугу",
+			"deleteDescription": "Ви впевнені, що хочете видалити цю послугу? Цю дію неможливо скасувати."
+		},
+		"fields": {
+			"estimatedTimeHours": "Орієнтовний час (години)",
+			"description": "Опис"
+		},
+		"placeholders": {
+			"name": "Назва послуги",
+			"selectCategory": "Оберіть категорію",
+			"description": "Короткий опис послуги",
+			"selectPartCategories": "Оберіть категорії запчастин"
+		},
+		"columns": {
+			"name": "Назва",
+			"category": "Категорія",
+			"labor": "Роботи",
+			"partsIncluded": "Запчастини в наборі",
+			"price": "Ціна",
+			"status": "Статус"
+		},
+		"status": {
+			"active": "Активна",
+			"inactive": "Неактивна"
+		},
+		"noCategories": "Немає категорій",
+		"messages": {
+			"addSuccess": "Послугу успішно додано",
+			"addError": "Не вдалося додати послугу",
+			"updateSuccess": "Послугу успішно оновлено",
+			"updateError": "Не вдалося оновити послугу",
+			"deleteSuccess": "Послугу успішно видалено",
+			"deleteError": "Не вдалося видалити послугу. Спробуйте ще раз.",
+			"bulkDeleteSuccess": "Видалено послуг: {{count}}",
+			"bulkDeleteError": "Не вдалося видалити послуги",
+			"bulkUpdateSuccess": "Оновлено послуг: {{count}}",
+			"bulkUpdateError": "Не вдалося оновити послуги"
+		}
+	},
+	"vehicles": {
+		"title": "Автомобілі",
+		"subtitle": "Керуйте зареєстрованими авто",
+		"actions": {
+			"addVehicle": "Додати авто"
+		},
+		"dialogs": {
+			"addTitle": "Додати нове авто",
+			"addDescription": "Введіть дані автомобіля нижче."
+		},
+		"fields": {
+			"owner": "Власник",
+			"brand": "Марка",
+			"model": "Модель",
+			"year": "Рік",
+			"color": "Колір",
+			"licensePlate": "Номерний знак",
+			"vin": "VIN",
+			"mileageKm": "Пробіг (км)"
+		},
+		"placeholders": {
+			"selectClient": "Оберіть клієнта...",
+			"notes": "Додаткові нотатки про авто..."
+		},
+		"empty": {
+			"noClients": "Клієнтів не знайдено."
+		},
+		"columns": {
+			"vehicle": "Авто",
+			"brand": "Марка",
+			"model": "Модель",
+			"year": "Рік",
+			"plateVin": "Номер / VIN",
+			"owner": "Власник",
+			"mileage": "Пробіг",
+			"services": "Послуги",
+			"lastService": "Останній сервіс"
+		},
+		"filters": {
+			"searchBrand": "Пошук марки...",
+			"searchModel": "Пошук моделі...",
+			"searchYear": "Пошук року...",
+			"searchPlateVin": "Пошук номера / VIN...",
+			"searchOwner": "Пошук власника...",
+			"filterByStatus": "Фільтр за статусом..."
+		},
+		"errors": {
+			"brandRequired": "Марка обов'язкова",
+			"modelRequired": "Модель обов'язкова",
+			"yearRequired": "Рік обов'язковий",
+			"licensePlateRequired": "Номерний знак обов'язковий"
+		},
+		"messages": {
+			"addSuccess": "Авто успішно додано",
+			"addError": "Не вдалося додати авто",
+			"formHasErrors": "Перевірте форму на помилки",
+			"bulkDeleteSuccess": "Видалено авто: {{count}}",
+			"bulkDeleteError": "Не вдалося видалити авто",
+			"bulkUpdateSuccess": "Оновлено авто: {{count}}"
+		}
+	},
+	"orders": {
+		"pageTitle": "Замовлення",
+		"pageSubtitle": "Керуйте та відстежуйте всі сервісні замовлення",
+		"backToOrders": "Назад до замовлень",
+		"createdOn": "Створено",
+		"priorityLabel": "Пріоритет: {{value}}",
+		"actions": {
+			"kanbanView": "Канбан",
+			"viewDetails": "Деталі",
+			"editOrder": "Редагувати замовлення",
+			"completeOrder": "Завершити замовлення",
+			"deleteOrder": "Видалити замовлення"
+		},
+		"detailsTabs": {
+			"general": "Загальні",
+			"services": "Послуги ({{count}})",
+			"parts": "Запчастини ({{count}})",
+			"media": "Медіа ({{count}})"
+		},
+		"generalInfo": {
+			"assignedMechanic": "Призначений механік",
+			"noMechanicAssigned": "Механіка не призначено",
+			"reassign": "Перепризначити",
+			"clientInformation": "Інформація про клієнта",
+			"clientId": "ID клієнта",
+			"address": "Адреса",
+			"vehicleInformation": "Інформація про авто",
+			"make": "Марка",
+			"model": "Модель"
+		},
+		"media": {
+			"dropzoneTitle": "Перетягніть файли сюди",
+			"dropzoneHint": "або натисніть для вибору (макс. 10MB на файл)",
+			"empty": "Медіафайлів немає",
+			"by": "Від {{name}}",
+			"download": "Завантажити"
+		},
+		"newOrder": {
+			"sections": {
+				"vehicleClientDetails": "Дані авто та клієнта",
+				"orderItems": "Позиції замовлення",
+				"orderSummary": "Підсумок замовлення"
+			},
+			"fields": {
+				"client": "Клієнт",
+				"vehicle": "Авто",
+				"currentMileage": "Поточний пробіг",
+				"endDate": "Дата завершення",
+				"parts": "Запчастини",
+				"service": "Послуга",
+				"assignedMechanic": "Призначений механік",
+				"assignMechanic": "Призначити механіка",
+				"part": "Запчастина",
+				"quantity": "Кількість"
+			},
+			"placeholders": {
+				"selectClient": "Оберіть клієнта",
+				"selectVehicle": "Оберіть авто",
+				"currentMileage": "Введіть поточний пробіг",
+				"additionalNotes": "Додаткові нотатки або особливі інструкції...",
+				"selectService": "Оберіть послугу",
+				"selectMechanicOptional": "Оберіть механіка (необов'язково)",
+				"selectPart": "Оберіть запчастину"
+			},
+			"labels": {
+				"serviceN": "Послуга {{index}}",
+				"partN": "Запчастина {{index}}",
+				"requiredPartCategories": "Потрібні категорії запчастин:",
+				"noMechanicAssigned": "Механіка не призначено",
+				"noDueDate": "Немає дати",
+				"unassigned": "Не призначено"
+			},
+			"actions": {
+				"newWorkOrder": "Нове замовлення",
+				"createWorkOrder": "Створити замовлення",
+				"creatingWorkOrder": "Створення замовлення...",
+				"addService": "Додати послугу",
+				"addPart": "Додати запчастину",
+				"clearDate": "Очистити дату",
+				"orderActions": "Дії замовлення"
+			},
+			"dialogs": {
+				"builderTitle": "Конструктор замовлення",
+				"builderDescription": "Створіть комплексне замовлення з послугами та запчастинами для вибраного авто.",
+				"editTitle": "Редагувати замовлення",
+				"editDescription": "Оновіть повне замовлення для вибраного клієнта та авто.",
+				"addServiceTitle": "Додати послугу",
+				"addServiceDescription": "Оберіть послугу з каталогу, щоб додати до цього замовлення.",
+				"addPartTitle": "Додати запчастину",
+				"addPartDescription": "Знайдіть запчастину на складі, щоб додати до цього замовлення."
+			},
+			"empty": {
+				"noServices": "Ще не додано жодної послуги",
+				"clickAddService": "Натисніть \"Додати послугу\", щоб почати",
+				"noParts": "Ще не додано жодної запчастини",
+				"clickAddPart": "Натисніть \"Додати запчастину\", щоб почати"
+			},
+			"summary": {
+				"servicesTotal": "Разом за послуги:",
+				"partsTotal": "Разом за запчастини:",
+				"totalAmount": "Загальна сума:",
+				"subtotal": "Проміжний підсумок"
+			},
+			"messages": {
+				"autoFillCleared": "Розумне автозаповнення: рекомендовані запчастини очищено (послуги не вибрані)",
+				"autoFillUpdated": "Розумне автозаповнення: оновлено, додано рекомендованих запчастин: {{count}}",
+				"createSuccess": "Робоче замовлення успішно створено",
+				"createError": "Не вдалося створити замовлення",
+				"updateSuccess": "Замовлення успішно оновлено",
+				"updateError": "Не вдалося оновити замовлення",
+				"minMileageError": "Пробіг має бути не менше {{min}} км (останнє зафіксоване)",
+				"mileageGreaterThanZero": "Пробіг має бути більше 0",
+				"selectServiceFirst": "Спочатку оберіть послугу",
+				"selectPartFirst": "Спочатку оберіть запчастину"
+			}
+		},
+		"dialogs": {
+			"deleteTitle": "Видалити замовлення",
+			"deleteDescription": "Ви впевнені, що хочете видалити це замовлення? Цю дію неможливо скасувати."
+		},
+		"columns": {
+			"order": "Замовлення",
+			"client": "Клієнт",
+			"vehicle": "Авто",
+			"services": "Послуги",
+			"endDate": "Дата завершення",
+			"total": "Сума"
+		},
+		"filters": {
+			"searchOrderNumber": "Пошук номера замовлення...",
+			"searchClient": "Пошук клієнта...",
+			"searchVehicle": "Пошук авто...",
+			"searchServices": "Пошук послуг...",
+			"filterByStatus": "Фільтр за статусом...",
+			"filterByPriority": "Фільтр за пріоритетом...",
+			"searchPlaceholder": "Пошук за ID замовлення, клієнтом або номером...",
+			"allStatus": "Усі статуси",
+			"allPriority": "Усі пріоритети",
+			"done": "Готово"
+		},
+		"messages": {
+			"deleteSuccess": "Замовлення успішно видалено",
+			"deleteError": "Не вдалося видалити замовлення",
+			"bulkUpdateSuccess": "Оновлено замовлень: {{count}}",
+			"bulkUpdateError": "Не вдалося оновити замовлення",
+			"bulkDeleteSuccess": "Видалено замовлень: {{count}}",
+			"bulkDeleteError": "Не вдалося видалити замовлення",
+			"notFound": "Замовлення не знайдено",
+			"clientVehicleDataMissing": "Відсутні дані клієнта або авто в замовленні",
+			"updateItemsError": "Не вдалося оновити позиції замовлення",
+			"statusUpdated": "Статус замовлення оновлено",
+			"updateStatusError": "Не вдалося оновити статус замовлення",
+			"completed": "Замовлення завершено",
+			"completeError": "Не вдалося завершити замовлення",
+			"serviceAdded": "Послугу додано",
+			"serviceRemoved": "Послугу видалено",
+			"partAdded": "Запчастину додано",
+			"partRemoved": "Запчастину видалено"
+		}
+	},
+	"orderStatus": {
+		"NEW": "Нове",
+		"IN_PROGRESS": "В роботі",
+		"WAITING_PARTS": "Очікує запчастини",
+		"COMPLETED": "Завершено",
+		"PAID": "Оплачено",
+		"CANCELLED": "Скасовано"
+	},
+	"orderPriority": {
+		"LOW": "Низький",
+		"MEDIUM": "Середній",
+		"HIGH": "Високий"
+	},
+	"vehicleStatus": {
+		"OUT": "Поза сервісом",
+		"PENDING": "Очікує",
+		"IN_SERVICE": "В сервісі",
+		"TEST_DRIVE": "Тест-драйв",
+		"READY": "Готово"
+	},
+	"kanban": {
+		"title": "Канбан-дошка",
+		"subtitle": "Перетягуйте замовлення, щоб оновити їх статус"
 	}
 }

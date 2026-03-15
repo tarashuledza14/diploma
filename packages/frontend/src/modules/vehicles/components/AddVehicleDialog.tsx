@@ -13,6 +13,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Loader2, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod/v3';
 import { VehicleService } from '../api/vehicles.service';
@@ -38,6 +39,7 @@ const addVehicleSchema = z.object({
 });
 
 export function AddVehicleDialog() {
+	const { t } = useTranslation();
 	const [addModalOpen, setAddModalOpen] = useState(false);
 	const queryClient = useQueryClient();
 	const form = useForm<AddVehicleData>({
@@ -50,12 +52,12 @@ export function AddVehicleDialog() {
 		mutationFn: async (data: AddVehicleData) => VehicleService.add(data),
 		onSuccess: () => {
 			setAddModalOpen(false);
-			toast.success('Vehicle added successfully');
+			toast.success(t('vehicles.messages.addSuccess'));
 			form.reset();
 			queryClient.invalidateQueries({ queryKey: vehicleKeys.all });
 		},
 		onError: () => {
-			toast.error('Failed to add vehicle');
+			toast.error(t('vehicles.messages.addError'));
 		},
 	});
 
@@ -66,7 +68,8 @@ export function AddVehicleDialog() {
 		},
 		error => {
 			toast.error(
-				'Error: ' + error.root?.message || 'Please check the form for errors',
+				'Error: ' +
+					(error.root?.message || t('vehicles.messages.formHasErrors')),
 			);
 		},
 	);
@@ -76,15 +79,15 @@ export function AddVehicleDialog() {
 			<DialogTrigger asChild>
 				<Button>
 					<Plus className='mr-2 h-4 w-4' />
-					Add Vehicle
+					{t('vehicles.actions.addVehicle')}
 				</Button>
 			</DialogTrigger>
 			<DialogContent className='max-w-lg'>
 				<form onSubmit={handleAddVehicle}>
 					<DialogHeader>
-						<DialogTitle>Add New Vehicle</DialogTitle>
+						<DialogTitle>{t('vehicles.dialogs.addTitle')}</DialogTitle>
 						<DialogDescription>
-							Enter the vehicle details below.
+							{t('vehicles.dialogs.addDescription')}
 						</DialogDescription>
 					</DialogHeader>
 					<VehicleForm form={form} />
@@ -94,7 +97,7 @@ export function AddVehicleDialog() {
 							onClick={() => setAddModalOpen(false)}
 							type='button'
 						>
-							Cancel
+							{t('common.cancel')}
 						</Button>
 						<Button
 							disabled={
@@ -108,7 +111,7 @@ export function AddVehicleDialog() {
 							type='submit'
 						>
 							{isPending && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
-							Add Vehicle
+							{t('vehicles.actions.addVehicle')}
 						</Button>
 					</DialogFooter>
 				</form>

@@ -11,17 +11,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/shared/components/ui';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import type { DashboardRecentOrder } from '../types';
-
-const statusLabels: Record<OrderStatus, string> = {
-	[OrderStatus.NEW]: 'New',
-	[OrderStatus.IN_PROGRESS]: 'In Progress',
-	[OrderStatus.WAITING_PARTS]: 'Waiting Parts',
-	[OrderStatus.COMPLETED]: 'Completed',
-	[OrderStatus.PAID]: 'Paid',
-	[OrderStatus.CANCELLED]: 'Cancelled',
-};
 
 export function RecentOrdersCard({
 	recentOrders,
@@ -30,17 +22,28 @@ export function RecentOrdersCard({
 	recentOrders: DashboardRecentOrder[];
 	statusColors: Record<OrderStatus, string>;
 }) {
+	const { t } = useTranslation();
+	const statusLabels: Record<OrderStatus, string> = {
+		[OrderStatus.NEW]: t('orderStatus.NEW'),
+		[OrderStatus.IN_PROGRESS]: t('orderStatus.IN_PROGRESS'),
+		[OrderStatus.WAITING_PARTS]: t('orderStatus.WAITING_PARTS'),
+		[OrderStatus.COMPLETED]: t('orderStatus.COMPLETED'),
+		[OrderStatus.PAID]: t('orderStatus.PAID'),
+		[OrderStatus.CANCELLED]: t('orderStatus.CANCELLED'),
+	};
 	return (
 		<Card>
 			<CardHeader>
 				<div className='flex items-center justify-between'>
 					<div>
-						<CardTitle>Recent Orders</CardTitle>
-						<CardDescription>Latest service orders</CardDescription>
+						<CardTitle>{t('dashboard.recentOrders.title')}</CardTitle>
+						<CardDescription>
+							{t('dashboard.recentOrders.subtitle')}
+						</CardDescription>
 					</div>
 					<Link to='/orders'>
 						<Button variant='outline' size='sm'>
-							View All
+							{t('common.viewAll')}
 						</Button>
 					</Link>
 				</div>
@@ -49,7 +52,7 @@ export function RecentOrdersCard({
 				<div className='space-y-4'>
 					{recentOrders.length === 0 && (
 						<div className='rounded-lg border p-3 text-sm text-muted-foreground'>
-							No recent orders found.
+							{t('dashboard.recentOrders.empty')}
 						</div>
 					)}
 					{recentOrders.map(order => (

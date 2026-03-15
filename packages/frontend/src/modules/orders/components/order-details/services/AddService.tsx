@@ -15,6 +15,7 @@ import {
 } from '@/shared/components/ui';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 interface AddServiceProps {
@@ -28,12 +29,13 @@ export function AddService({
 	onAddService,
 	isPending = false,
 }: AddServiceProps) {
+	const { t } = useTranslation();
 	const [open, setOpen] = useState(false);
 	const [selectedServiceId, setSelectedServiceId] = useState('');
 
 	const handleAdd = async () => {
 		if (!selectedServiceId) {
-			toast.error('Select a service first');
+			toast.error(t('orders.newOrder.messages.selectServiceFirst'));
 			return;
 		}
 
@@ -47,14 +49,16 @@ export function AddService({
 			<DialogTrigger asChild>
 				<Button disabled={isPending}>
 					<Plus className='mr-2 h-4 w-4' />
-					Add Service
+					{t('orders.newOrder.actions.addService')}
 				</Button>
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Add Service</DialogTitle>
+					<DialogTitle>
+						{t('orders.newOrder.dialogs.addServiceTitle')}
+					</DialogTitle>
 					<DialogDescription>
-						Select a service from the catalog to add to this order.
+						{t('orders.newOrder.dialogs.addServiceDescription')}
 					</DialogDescription>
 				</DialogHeader>
 				<div className='py-4'>
@@ -63,7 +67,9 @@ export function AddService({
 						onValueChange={setSelectedServiceId}
 					>
 						<SelectTrigger>
-							<SelectValue placeholder='Select a service' />
+							<SelectValue
+								placeholder={t('orders.newOrder.placeholders.selectService')}
+							/>
 						</SelectTrigger>
 						<SelectContent>
 							{serviceOptions.map(service => (
@@ -82,13 +88,13 @@ export function AddService({
 							setSelectedServiceId('');
 						}}
 					>
-						Cancel
+						{t('common.cancel')}
 					</Button>
 					<Button
 						onClick={handleAdd}
 						disabled={isPending || !selectedServiceId}
 					>
-						Add Service
+						{t('orders.newOrder.actions.addService')}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

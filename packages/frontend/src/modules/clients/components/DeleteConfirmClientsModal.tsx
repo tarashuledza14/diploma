@@ -1,6 +1,7 @@
 import { DeleteConfirmationModal } from '@/shared';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/components/ui';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { ClientService } from '../api/client.service';
 import { Client } from '../interfaces/client.interface';
@@ -17,19 +18,20 @@ export function DeleteConfirmClientModal({
 	onOpenChange,
 	selectedClient,
 }: DeleteConfirmClientModalProps) {
+	const { t } = useTranslation();
 	const queryClient = useQueryClient();
 	const { mutate, isPending } = useMutation({
 		mutationKey: clientKeys.mutations.delete,
 		mutationFn: (clientId: string) => ClientService.deleteClient(clientId),
 		onSuccess: () => {
-			toast.success('Client deleted successfully');
+			toast.success(t('clients.messages.deleteSuccess'));
 			onOpenChange(false);
 			queryClient.invalidateQueries({
 				queryKey: clientKeys.all,
 			});
 		},
 		onError: () => {
-			toast.error('Failed to delete client. Please try again.');
+			toast.error(t('clients.messages.deleteError'));
 		},
 	});
 
@@ -42,13 +44,11 @@ export function DeleteConfirmClientModal({
 		<DeleteConfirmationModal
 			open={open}
 			onOpenChange={onOpenChange}
-			title={'Delete Client'}
-			description={
-				'Are you sure you want to delete this client? This action cannot be undone.'
-			}
-			confirmText={'Delete'}
-			cancelText={'Cancel'}
-			loadingText={'Deleting...'}
+			title={t('clients.dialogs.deleteTitle')}
+			description={t('clients.dialogs.deleteDescription')}
+			confirmText={t('common.delete')}
+			cancelText={t('common.cancel')}
+			loadingText={t('common.deleting')}
 			isLoading={isPending}
 			onConfirm={onConfirm}
 		>

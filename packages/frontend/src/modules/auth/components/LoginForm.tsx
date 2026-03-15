@@ -6,10 +6,12 @@ import { Label } from '@/shared/components/ui/label';
 import { useMutation } from '@tanstack/react-query';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 export function LoginForm() {
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
@@ -32,15 +34,17 @@ export function LoginForm() {
 			{ email, password },
 			{
 				onError: (error: any) => {
-					setError(error.response?.data?.message || 'Login failed');
+					setError(
+						error.response?.data?.message || t('auth.errors.loginFailed'),
+					);
 				},
 				onSuccess: data => {
 					if (email && password) {
-						toast.success('Logged in successfully');
+						toast.success(t('auth.messages.loggedInSuccessfully'));
 						setUser(data?.user);
 						navigate('/');
 					} else {
-						setError('Please enter email and password');
+						setError(t('auth.errors.enterEmailAndPassword'));
 					}
 				},
 			},
@@ -58,11 +62,11 @@ export function LoginForm() {
 			)}
 
 			<div className='space-y-2'>
-				<Label htmlFor='email'>Email</Label>
+				<Label htmlFor='email'>{t('common.email')}</Label>
 				<Input
 					id='email'
 					type='email'
-					placeholder='name@company.com'
+					placeholder={t('auth.placeholders.email')}
 					value={email}
 					onChange={e => setEmail(e.target.value)}
 					required
@@ -72,13 +76,13 @@ export function LoginForm() {
 
 			<div className='space-y-2'>
 				<div className='flex items-center justify-between'>
-					<Label htmlFor='password'>Password</Label>
+					<Label htmlFor='password'>{t('common.password')}</Label>
 				</div>
 				<div className='relative'>
 					<Input
 						id='password'
 						type={showPassword ? 'text' : 'password'}
-						placeholder='Enter your password'
+						placeholder={t('auth.placeholders.password')}
 						value={password}
 						onChange={e => setPassword(e.target.value)}
 						required
@@ -99,7 +103,7 @@ export function LoginForm() {
 							<Eye className='h-4 w-4 text-muted-foreground' />
 						)}
 						<span className='sr-only'>
-							{showPassword ? 'Hide password' : 'Show password'}
+							{showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
 						</span>
 					</Button>
 				</div>
@@ -109,10 +113,10 @@ export function LoginForm() {
 				{isLoading ? (
 					<>
 						<Loader2 className='mr-2 h-4 w-4 animate-spin' />
-						Signing in...
+						{t('auth.signingIn')}
 					</>
 				) : (
-					'Sign in'
+					t('auth.signIn')
 				)}
 			</Button>
 		</form>

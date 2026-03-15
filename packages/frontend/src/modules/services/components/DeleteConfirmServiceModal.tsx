@@ -1,5 +1,6 @@
 import { DeleteConfirmationModal } from '@/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { ServicesService } from '../api/services.service';
 import { Service } from '../interfaces/services.interface';
@@ -16,20 +17,21 @@ export function DeleteConfirmServiceModal({
 	onOpenChange,
 	selectedService,
 }: DeleteConfirmServiceModalProps) {
+	const { t } = useTranslation();
 	const queryClient = useQueryClient();
 
 	const { mutate, isPending } = useMutation({
 		mutationKey: serviceKeys.mutations.delete(),
 		mutationFn: (serviceId: string) => ServicesService.delete(serviceId),
 		onSuccess: () => {
-			toast.success('Service deleted successfully');
+			toast.success(t('services.messages.deleteSuccess'));
 			onOpenChange(false);
 			queryClient.invalidateQueries({
 				queryKey: serviceKeys.lists(),
 			});
 		},
 		onError: () => {
-			toast.error('Failed to delete service. Please try again.');
+			toast.error(t('services.messages.deleteError'));
 		},
 	});
 
@@ -43,11 +45,11 @@ export function DeleteConfirmServiceModal({
 		<DeleteConfirmationModal
 			open={open}
 			onOpenChange={onOpenChange}
-			title='Delete Service'
-			description='Are you sure you want to delete this service? This action cannot be undone.'
-			confirmText='Delete'
-			cancelText='Cancel'
-			loadingText='Deleting...'
+			title={t('services.dialogs.deleteTitle')}
+			description={t('services.dialogs.deleteDescription')}
+			confirmText={t('common.delete')}
+			cancelText={t('common.cancel')}
+			loadingText={t('common.deleting')}
 			isLoading={isPending}
 			onConfirm={onConfirm}
 		>

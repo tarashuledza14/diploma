@@ -4,6 +4,7 @@ import { ordersKeys } from '@/modules/orders/queries/keys';
 import { formatOrderNumber } from '@/modules/orders/utils/format-order-number';
 import { DeleteConfirmationModal } from '@/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 interface DeleteConfirmOrderModalProps {
@@ -17,20 +18,21 @@ export function DeleteConfirmOrderModal({
 	onOpenChange,
 	selectedOrder,
 }: DeleteConfirmOrderModalProps) {
+	const { t } = useTranslation();
 	const queryClient = useQueryClient();
 
 	const { mutate, isPending } = useMutation({
 		mutationKey: [...ordersKeys.all, 'mutations', 'delete-single'],
 		mutationFn: (orderId: string) => OrdersService.deleteOrder(orderId),
 		onSuccess: () => {
-			toast.success('Order deleted successfully');
+			toast.success(t('orders.messages.deleteSuccess'));
 			onOpenChange(false);
 			queryClient.invalidateQueries({
 				queryKey: ordersKeys.lists(),
 			});
 		},
 		onError: () => {
-			toast.error('Failed to delete order');
+			toast.error(t('orders.messages.deleteError'));
 		},
 	});
 
@@ -44,11 +46,11 @@ export function DeleteConfirmOrderModal({
 		<DeleteConfirmationModal
 			open={open}
 			onOpenChange={onOpenChange}
-			title='Delete Order'
-			description='Are you sure you want to delete this order? This action cannot be undone.'
-			confirmText='Delete'
-			cancelText='Cancel'
-			loadingText='Deleting...'
+			title={t('orders.dialogs.deleteTitle')}
+			description={t('orders.dialogs.deleteDescription')}
+			confirmText={t('common.delete')}
+			cancelText={t('common.cancel')}
+			loadingText={t('common.deleting')}
 			isLoading={isPending}
 			onConfirm={onConfirm}
 		>

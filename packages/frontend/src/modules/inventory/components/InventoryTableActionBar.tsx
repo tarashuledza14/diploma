@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Table } from '@tanstack/react-table';
 import { Trash2, X } from 'lucide-react';
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { InventoryService } from '../api/inventory.service';
 import { InventoryPart } from '../interfaces/inventory.interfaces';
@@ -22,6 +23,7 @@ interface InventoryTableActionBarProps {
 export function InventoryTableActionBar({
 	table,
 }: InventoryTableActionBarProps) {
+	const { t } = useTranslation();
 	const rows = table.getFilteredSelectedRowModel().rows;
 	const queryClient = useQueryClient();
 
@@ -30,14 +32,16 @@ export function InventoryTableActionBar({
 		mutationFn: async (partIds: string[]) =>
 			InventoryService.deleteBulk(partIds),
 		onSuccess: () => {
-			toast.success(`${rows.length} part(s) deleted`);
+			toast.success(
+				t('inventory.messages.bulkDeleteSuccess', { count: rows.length }),
+			);
 			table.toggleAllRowsSelected(false);
 			queryClient.invalidateQueries({
 				queryKey: inventoryKeys.lists(),
 			});
 		},
 		onError: () => {
-			toast.error('Failed to delete parts');
+			toast.error(t('inventory.messages.bulkDeleteError'));
 		},
 	});
 
@@ -58,7 +62,7 @@ export function InventoryTableActionBar({
 		<ActionBar open={rows.length > 0} onOpenChange={onOpenChange}>
 			<ActionBarSelection>
 				<span className='font-medium'>{rows.length}</span>
-				<span>selected</span>
+				<span>{t('common.selected')}</span>
 				<ActionBarSeparator />
 				<ActionBarClose>
 					<X />
@@ -68,7 +72,7 @@ export function InventoryTableActionBar({
 			<ActionBarGroup>
 				<ActionBarItem variant='destructive' onClick={onPartDelete}>
 					<Trash2 />
-					Delete
+					{t('common.delete')}
 				</ActionBarItem>
 			</ActionBarGroup>
 		</ActionBar>

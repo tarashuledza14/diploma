@@ -7,6 +7,7 @@ import {
 } from '@/shared';
 import { DataTableRowAction } from '@/types/data-table';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { VehicleWithOwnerInfo } from '../interfaces/get-vehicle.interface';
 import { StatusCounts } from '../interfaces/status-counts.interface';
 import { getVehicleTableColumns } from './columns-data/vehicle-table-columns';
@@ -23,12 +24,13 @@ export function VehicleTable({
 	pageCount,
 	statusCounts,
 }: VehicleTableProps) {
+	const { t } = useTranslation();
 	const [rowAction, setRowAction] =
 		useState<DataTableRowAction<VehicleWithOwnerInfo> | null>(null);
 
 	const columns = useMemo(
-		() => getVehicleTableColumns({ setRowAction, statusCounts }),
-		[setRowAction, statusCounts],
+		() => getVehicleTableColumns({ setRowAction, statusCounts, t }),
+		[setRowAction, statusCounts, t],
 	);
 	const { table, shallow, debounceMs, throttleMs } =
 		useDataTable<VehicleWithOwnerInfo>({

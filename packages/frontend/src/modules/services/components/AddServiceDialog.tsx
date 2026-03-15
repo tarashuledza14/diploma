@@ -23,11 +23,10 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import {
-	ServiceDictionaries,
-} from '../interfaces/services.interface';
 import { ServicesService } from '../api/services.service';
+import { ServiceDictionaries } from '../interfaces/services.interface';
 import { serviceKeys } from '../queries/keys';
 
 interface AddServiceDialogProps {
@@ -51,6 +50,7 @@ export function AddServiceDialog({
 	onOpenChange,
 	dictionaries,
 }: AddServiceDialogProps) {
+	const { t } = useTranslation();
 	const queryClient = useQueryClient();
 
 	const {
@@ -84,13 +84,13 @@ export function AddServiceDialog({
 			}),
 		mutationKey: serviceKeys.mutations.create(),
 		onSuccess: () => {
-			toast.success('Service added successfully');
+			toast.success(t('services.messages.addSuccess'));
 			queryClient.invalidateQueries({ queryKey: serviceKeys.all });
 			onOpenChange(false);
 			reset();
 		},
 		onError: () => {
-			toast.error('Failed to add service');
+			toast.error(t('services.messages.addError'));
 		},
 	});
 
@@ -104,9 +104,11 @@ export function AddServiceDialog({
 		<ResponsiveDialog open={open} onOpenChange={onOpenChange}>
 			<ResponsiveDialogContent className='max-w-2xl'>
 				<ResponsiveDialogHeader>
-					<ResponsiveDialogTitle>Add Service</ResponsiveDialogTitle>
+					<ResponsiveDialogTitle>
+						{t('services.dialogs.addTitle')}
+					</ResponsiveDialogTitle>
 					<ResponsiveDialogDescription>
-						Create a new service. Fill in the details below.
+						{t('services.dialogs.addDescription')}
 					</ResponsiveDialogDescription>
 				</ResponsiveDialogHeader>
 				<form
@@ -116,25 +118,28 @@ export function AddServiceDialog({
 				>
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 						<div className='space-y-2'>
-							<Label htmlFor='add-service-name'>Name</Label>
+							<Label htmlFor='add-service-name'>
+								{t('services.columns.name')}
+							</Label>
 							<Input
 								id='add-service-name'
-								placeholder='Service name'
+								placeholder={t('services.placeholders.name')}
 								{...register('name', { required: true })}
 							/>
 						</div>
 						<div className='space-y-2'>
-							<Label htmlFor='add-service-category'>Category</Label>
+							<Label htmlFor='add-service-category'>
+								{t('services.columns.category')}
+							</Label>
 							<Controller
 								control={control}
 								name='categoryId'
 								render={({ field }) => (
-									<Select
-										value={field.value}
-										onValueChange={field.onChange}
-									>
+									<Select value={field.value} onValueChange={field.onChange}>
 										<SelectTrigger id='add-service-category'>
-											<SelectValue placeholder='Select category' />
+											<SelectValue
+												placeholder={t('services.placeholders.selectCategory')}
+											/>
 										</SelectTrigger>
 										<SelectContent>
 											{dictionaries.serviceCategories.map(category => (
@@ -154,7 +159,9 @@ export function AddServiceDialog({
 
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 						<div className='space-y-2'>
-							<Label htmlFor='add-service-price'>Price</Label>
+							<Label htmlFor='add-service-price'>
+								{t('services.columns.price')}
+							</Label>
 							<Input
 								id='add-service-price'
 								type='number'
@@ -164,7 +171,7 @@ export function AddServiceDialog({
 						</div>
 						<div className='space-y-2'>
 							<Label htmlFor='add-service-time'>
-								Estimated Time (hours)
+								{t('services.fields.estimatedTimeHours')}
 							</Label>
 							<Input
 								id='add-service-time'
@@ -176,17 +183,19 @@ export function AddServiceDialog({
 					</div>
 
 					<div className='space-y-2'>
-						<Label htmlFor='add-service-description'>Description</Label>
+						<Label htmlFor='add-service-description'>
+							{t('services.fields.description')}
+						</Label>
 						<Textarea
 							id='add-service-description'
-							placeholder='Short description of the service'
+							placeholder={t('services.placeholders.description')}
 							rows={4}
 							{...register('description')}
 						/>
 					</div>
 
 					<div className='space-y-2'>
-						<Label>Parts Included</Label>
+						<Label>{t('services.columns.partsIncluded')}</Label>
 						<Controller
 							control={control}
 							name='requiredCategoryIds'
@@ -200,10 +209,9 @@ export function AddServiceDialog({
 											{field.value.length > 0 ? (
 												<span className='flex flex-wrap gap-1'>
 													{field.value.slice(0, 2).map(id => {
-														const cat =
-															dictionaries.partCategories.find(
-																c => c.id === id,
-															);
+														const cat = dictionaries.partCategories.find(
+															c => c.id === id,
+														);
 														return cat ? (
 															<Badge
 																key={id}
@@ -222,7 +230,7 @@ export function AddServiceDialog({
 												</span>
 											) : (
 												<span className='text-muted-foreground'>
-													Select part categories
+													{t('services.placeholders.selectPartCategories')}
 												</span>
 											)}
 										</Button>
@@ -241,15 +249,10 @@ export function AddServiceDialog({
 														checked={field.value.includes(cat.id)}
 														onCheckedChange={checked => {
 															if (checked) {
-																field.onChange([
-																	...field.value,
-																	cat.id,
-																]);
+																field.onChange([...field.value, cat.id]);
 															} else {
 																field.onChange(
-																	field.value.filter(
-																		id => id !== cat.id,
-																	),
+																	field.value.filter(id => id !== cat.id),
 																);
 															}
 														}}
@@ -271,13 +274,13 @@ export function AddServiceDialog({
 							render={({ field }) => (
 								<Checkbox
 									checked={field.value}
-									onCheckedChange={value =>
-										field.onChange(Boolean(value))
-									}
+									onCheckedChange={value => field.onChange(Boolean(value))}
 								/>
 							)}
 						/>
-						<Label className='cursor-pointer'>Active</Label>
+						<Label className='cursor-pointer'>
+							{t('services.status.active')}
+						</Label>
 					</div>
 				</form>
 				<ResponsiveDialogFooter>
@@ -286,7 +289,7 @@ export function AddServiceDialog({
 						onClick={() => onOpenChange(false)}
 						type='button'
 					>
-						Cancel
+						{t('common.cancel')}
 					</Button>
 					<Button
 						form='add-service-form'
@@ -294,7 +297,7 @@ export function AddServiceDialog({
 						disabled={isSubmitting || isPending}
 					>
 						{isPending && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
-						Add Service
+						{t('services.actions.addService')}
 					</Button>
 				</ResponsiveDialogFooter>
 			</ResponsiveDialogContent>
