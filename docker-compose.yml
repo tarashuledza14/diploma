@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: KOSMOdesant567
+      POSTGRES_DB: diplom
+    ports:
+      - '5432:5432'
+
+    volumes:
+      - diplom_db_data:/var/lib/postgresql/data
+
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: packages/backend/.Dockerfile
+  #   depends_on:
+  #     - db
+  #   environment:
+  #     DATABASE_URL: 'postgresql://postgres:KOSMOdesant567@db:5432/diplom?schema=public'
+  #   ports:
+  #     - '3000:4200'
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: crm_qdrant
+    restart: always
+    ports:
+      - '6333:6333' # REST API (сюди будемо стукати з NestJS)
+      - '6334:6334' # gRPC (швидкий протокол)
+    volumes:
+      - diplom_qdrant_data:/qdrant/storage
+
+volumes:
+  diplom_db_data:
+  diplom_qdrant_data:
