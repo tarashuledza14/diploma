@@ -3,6 +3,7 @@ import {
 	Controller,
 	Delete,
 	Get,
+	Param,
 	Patch,
 	Post,
 	Query,
@@ -12,6 +13,7 @@ import { Auth } from 'src/auth/decorators/auth.decorator';
 import { BulkUpdateVehicleDto } from './dto/bulk-update.dto';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { GetVehiclesDto } from './dto/get-vehicle.dto';
+import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { VehiclesService } from './vehicles.service';
 
 @Controller('vehicles')
@@ -33,7 +35,6 @@ export class VehiclesController {
 	@Auth(Role.ADMIN, Role.MANAGER, Role.MECHANIC)
 	@Get()
 	async getAllVehicles(@Query() data: GetVehiclesDto) {
-		console.log('data', data);
 		return this.vehiclesService.getAll(data);
 	}
 
@@ -44,6 +45,12 @@ export class VehiclesController {
 		data: BulkUpdateVehicleDto,
 	) {
 		return this.vehiclesService.updateBulk(data);
+	}
+
+	@Auth(Role.ADMIN, Role.MANAGER)
+	@Patch(':id')
+	async updateVehicle(@Param('id') id: string, @Body() data: UpdateVehicleDto) {
+		return this.vehiclesService.update(id, data);
 	}
 	@Auth(Role.ADMIN, Role.MANAGER)
 	@Delete('bulk')

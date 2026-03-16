@@ -10,6 +10,7 @@ export interface OrderListItem {
 	priority: OrderPriority;
 	status: OrderStatus;
 	totalAmount: string;
+	mechanic?: Pick<Client, 'id' | 'fullName'> | null;
 	client: Pick<Client, 'id' | 'fullName'>;
 	services: Pick<Service, 'id' | 'name'>[];
 	vehicle: Vehicle;

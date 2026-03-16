@@ -11,6 +11,7 @@ export interface Vehicle {
 	ownerId: string;
 	lastService: Date | null;
 	color: string | null;
+	notes: string | null;
 	status: VehicleStatus;
 	totalServices: number;
 	deletedAt: Date | null;

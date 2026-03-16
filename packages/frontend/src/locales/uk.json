@@ -317,7 +317,19 @@
 		},
 		"dialogs": {
 			"addTitle": "Додати нове авто",
-			"addDescription": "Введіть дані автомобіля нижче."
+			"addDescription": "Введіть дані автомобіля нижче.",
+			"editTitle": "Редагувати авто",
+			"editDescription": "Оновіть дані автомобіля нижче."
+		},
+		"details": {
+			"subtitle": "Історія обслуговування та записи сервісу",
+			"totalServices": "Всього сервісів",
+			"totalSpent": "Загалом витрачено",
+			"currentMileage": "Поточний пробіг",
+			"serviceHistory": "Історія сервісів",
+			"mechanic": "Механік",
+			"noDate": "Дату не вказано",
+			"noServiceHistory": "Для цього авто ще немає сервісної історії."
 		},
 		"fields": {
 			"owner": "Власник",
@@ -364,6 +376,8 @@
 		"messages": {
 			"addSuccess": "Авто успішно додано",
 			"addError": "Не вдалося додати авто",
+			"updateSuccess": "Авто успішно оновлено",
+			"updateError": "Не вдалося оновити авто",
 			"formHasErrors": "Перевірте форму на помилки",
 			"bulkDeleteSuccess": "Видалено авто: {{count}}",
 			"bulkDeleteError": "Не вдалося видалити авто",

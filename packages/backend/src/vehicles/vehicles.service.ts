@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { BulkUpdateVehicleDto } from './dto/bulk-update.dto';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { GetVehiclesDto } from './dto/get-vehicle.dto';
+import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 
 @Injectable()
 export class VehiclesService {
@@ -22,6 +23,23 @@ export class VehiclesService {
 			throw new BadRequestException('Client not found');
 		}
 		return this.db.vehicle.create({
+			data,
+		});
+	}
+
+	async update(id: string, data: UpdateVehicleDto) {
+		if (data.ownerId) {
+			const client = await this.db.client.findUnique({
+				where: { id: data.ownerId },
+			});
+
+			if (!client) {
+				throw new BadRequestException('Client not found');
+			}
+		}
+
+		return this.db.vehicle.update({
+			where: { id },
 			data,
 		});
 	}

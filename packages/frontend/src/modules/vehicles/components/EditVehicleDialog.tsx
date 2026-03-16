@@ -1,6 +1,5 @@
 import {
 	Button,
-	DialogTrigger,
 	ResponsiveDialog,
 	ResponsiveDialogContent,
 	ResponsiveDialogDescription,
@@ -10,8 +9,8 @@ import {
 } from '@/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, Plus } from 'lucide-react';
-import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -19,10 +18,11 @@ import { z } from 'zod/v3';
 import { VehicleService } from '../api/vehicles.service';
 import { VehicleStatus } from '../enums/vehicle-status.enum';
 import { AddVehicleData } from '../interfaces/add-vehicle.interface';
+import { VehicleWithOwnerInfo } from '../interfaces/get-vehicle.interface';
 import { vehicleKeys } from '../query/keys';
 import { VehicleForm } from './VehicleForm';
 
-const addVehicleSchema = z.object({
+const editVehicleSchema = z.object({
 	ownerId: z.string().min(1, 'Owner is required'),
 	brand: z.string().min(1, 'Brand is required'),
 	model: z.string().min(1, 'Model is required'),
@@ -38,65 +38,99 @@ const addVehicleSchema = z.object({
 	notes: z.string(),
 });
 
-export function AddVehicleDialog() {
+interface EditVehicleDialogProps {
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+	selectedVehicle?: VehicleWithOwnerInfo;
+}
+
+export function EditVehicleDialog({
+	open,
+	onOpenChange,
+	selectedVehicle,
+}: EditVehicleDialogProps) {
 	const { t } = useTranslation();
-	const [addModalOpen, setAddModalOpen] = useState(false);
 	const queryClient = useQueryClient();
+
 	const form = useForm<AddVehicleData>({
-		resolver: zodResolver(addVehicleSchema),
+		resolver: zodResolver(editVehicleSchema),
 		mode: 'onChange',
+		defaultValues: {
+			ownerId: '',
+			brand: '',
+			model: '',
+			year: new Date().getFullYear(),
+			color: '',
+			plateNumber: '',
+			vin: '',
+			mileage: '',
+			status: VehicleStatus.OUT,
+			notes: '',
+		},
 	});
 
-	const { mutate: addVehicle, isPending } = useMutation({
-		mutationKey: vehicleKeys.mutations.add(),
-		mutationFn: async (data: AddVehicleData) => VehicleService.add(data),
+	useEffect(() => {
+		if (!selectedVehicle || !open) {
+			return;
+		}
+
+		form.reset({
+			ownerId: selectedVehicle.ownerId,
+			brand: selectedVehicle.brand,
+			model: selectedVehicle.model,
+			year: selectedVehicle.year,
+			color: selectedVehicle.color || '',
+			plateNumber: selectedVehicle.plateNumber || '',
+			vin: selectedVehicle.vin,
+			mileage: String(selectedVehicle.mileage ?? ''),
+			status: selectedVehicle.status,
+			notes: selectedVehicle.notes || '',
+		});
+	}, [selectedVehicle, open, form]);
+
+	const { mutate: updateVehicle, isPending } = useMutation({
+		mutationKey: vehicleKeys.mutations.update(selectedVehicle?.id ?? ''),
+		mutationFn: async (data: AddVehicleData) => {
+			if (!selectedVehicle) return null;
+			return VehicleService.updateVehicle(selectedVehicle.id, data);
+		},
 		onSuccess: () => {
-			setAddModalOpen(false);
-			toast.success(t('vehicles.messages.addSuccess'));
-			form.reset();
+			onOpenChange(false);
+			toast.success(t('vehicles.messages.updateSuccess'));
 			queryClient.invalidateQueries({ queryKey: vehicleKeys.all });
 		},
 		onError: () => {
-			toast.error(t('vehicles.messages.addError'));
+			toast.error(t('vehicles.messages.updateError'));
 		},
 	});
 
-	const handleAddVehicle = form.handleSubmit(
+	const handleUpdateVehicle = form.handleSubmit(
 		(data: AddVehicleData) => {
-			console.log('data:', data);
-			addVehicle(data);
+			if (!selectedVehicle) return;
+			updateVehicle(data);
 		},
-		error => {
-			toast.error(
-				'Error: ' +
-					(error.root?.message || t('vehicles.messages.formHasErrors')),
-			);
+		() => {
+			toast.error(t('vehicles.messages.formHasErrors'));
 		},
 	);
 
 	return (
-		<ResponsiveDialog open={addModalOpen} onOpenChange={setAddModalOpen}>
-			<DialogTrigger asChild>
-				<Button>
-					<Plus className='mr-2 h-4 w-4' />
-					{t('vehicles.actions.addVehicle')}
-				</Button>
-			</DialogTrigger>
+		<ResponsiveDialog open={open} onOpenChange={onOpenChange}>
 			<ResponsiveDialogContent className='max-w-lg'>
-				<form onSubmit={handleAddVehicle}>
+				<form onSubmit={handleUpdateVehicle}>
 					<ResponsiveDialogHeader>
 						<ResponsiveDialogTitle>
-							{t('vehicles.dialogs.addTitle')}
+							{t('vehicles.dialogs.editTitle')}
 						</ResponsiveDialogTitle>
 						<ResponsiveDialogDescription>
-							{t('vehicles.dialogs.addDescription')}
+							{t('vehicles.dialogs.editDescription')}
 						</ResponsiveDialogDescription>
 					</ResponsiveDialogHeader>
 					<VehicleForm form={form} />
 					<ResponsiveDialogFooter>
 						<Button
 							variant='outline'
-							onClick={() => setAddModalOpen(false)}
+							onClick={() => onOpenChange(false)}
 							type='button'
 						>
 							{t('common.cancel')}
@@ -113,7 +147,7 @@ export function AddVehicleDialog() {
 							type='submit'
 						>
 							{isPending && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
-							{t('vehicles.actions.addVehicle')}
+							{t('common.saveChanges')}
 						</Button>
 					</ResponsiveDialogFooter>
 				</form>

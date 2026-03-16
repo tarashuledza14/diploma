@@ -317,7 +317,19 @@
 		},
 		"dialogs": {
 			"addTitle": "Add New Vehicle",
-			"addDescription": "Enter the vehicle details below."
+			"addDescription": "Enter the vehicle details below.",
+			"editTitle": "Edit Vehicle",
+			"editDescription": "Update the vehicle details below."
+		},
+		"details": {
+			"subtitle": "Service history and maintenance records",
+			"totalServices": "Total Services",
+			"totalSpent": "Total Spent",
+			"currentMileage": "Current Mileage",
+			"serviceHistory": "Service History",
+			"mechanic": "Mechanic",
+			"noDate": "Date not set",
+			"noServiceHistory": "No service history found for this vehicle."
 		},
 		"fields": {
 			"owner": "Owner",
@@ -364,6 +376,8 @@
 		"messages": {
 			"addSuccess": "Vehicle added successfully",
 			"addError": "Failed to add vehicle",
+			"updateSuccess": "Vehicle updated successfully",
+			"updateError": "Failed to update vehicle",
 			"formHasErrors": "Please check the form for errors",
 			"bulkDeleteSuccess": "{{count}} vehicle(s) deleted",
 			"bulkDeleteError": "Failed to delete vehicles",

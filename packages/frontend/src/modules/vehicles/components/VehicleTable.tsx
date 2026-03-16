@@ -11,7 +11,9 @@ import { useTranslation } from 'react-i18next';
 import { VehicleWithOwnerInfo } from '../interfaces/get-vehicle.interface';
 import { StatusCounts } from '../interfaces/status-counts.interface';
 import { getVehicleTableColumns } from './columns-data/vehicle-table-columns';
+import { EditVehicleDialog } from './EditVehicleDialog';
 import { VehicleTableActionBar } from './VehicleTableActionBar';
+import { ViewVehicleDetailsDialog } from './ViewVehicleDetailsDialog';
 
 interface VehicleTableProps {
 	data: VehicleWithOwnerInfo[];
@@ -52,43 +54,38 @@ export function VehicleTable({
 		});
 
 	return (
-		<DataTable
-			table={table}
-			actionBar={<VehicleTableActionBar table={table} />}
-		>
-			<DataTableAdvancedToolbar table={table}>
-				<DataTableSortList table={table} align='start' />
-				<DataTableFilterList
-					table={table}
-					shallow={shallow}
-					debounceMs={debounceMs}
-					throttleMs={throttleMs}
-					align='start'
-				/>
-			</DataTableAdvancedToolbar>
-			{/* <DeleteConfirmClientModal
-				open={!!rowAction && rowAction.variant === 'delete'}
-				onOpenChange={open => {
-					if (!open) setRowAction(null);
-				}}
-				selectedClient={rowAction?.row ? rowAction.row.original : undefined}
-			/>
-			<EditClientDialog
+		<>
+			<DataTable
+				table={table}
+				actionBar={<VehicleTableActionBar table={table} />}
+			>
+				<DataTableAdvancedToolbar table={table}>
+					<DataTableSortList table={table} align='start' />
+					<DataTableFilterList
+						table={table}
+						shallow={shallow}
+						debounceMs={debounceMs}
+						throttleMs={throttleMs}
+						align='start'
+					/>
+				</DataTableAdvancedToolbar>
+			</DataTable>
+
+			<EditVehicleDialog
 				open={!!rowAction && rowAction.variant === 'update'}
 				onOpenChange={open => {
 					if (!open) setRowAction(null);
 				}}
-				selectedClient={rowAction?.row ? rowAction.row.original : undefined}
+				selectedVehicle={rowAction?.row ? rowAction.row.original : undefined}
 			/>
-			<ViewProfileDetails
+
+			<ViewVehicleDetailsDialog
 				open={!!rowAction && rowAction.variant === 'view'}
-				setProfileModalOpen={open => {
+				onOpenChange={open => {
 					if (!open) setRowAction(null);
 				}}
-				selectedClientId={
-					rowAction?.row ? rowAction.row.original.id : undefined
-				}
-			/> */}
-		</DataTable>
+				selectedVehicle={rowAction?.row ? rowAction.row.original : undefined}
+			/>
+		</>
 	);
 }
