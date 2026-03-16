@@ -31,39 +31,47 @@ interface GetInventoryTableColumnsProps {
 	>;
 	dictionaries?: InventoryDictionaries;
 	t: TFunction;
+	canManageInventory?: boolean;
 }
 
 export function getInventoryTableColumns({
 	setRowAction,
 	dictionaries,
 	t,
+	canManageInventory = true,
 }: GetInventoryTableColumnsProps): ColumnDef<InventoryPart>[] {
 	return [
-		{
-			id: 'select',
-			header: ({ table }) => (
-				<Checkbox
-					aria-label={t('table.selectAll')}
-					className='translate-y-0.5'
-					checked={
-						table.getIsAllPageRowsSelected() ||
-						(table.getIsSomePageRowsSelected() && 'indeterminate')
-					}
-					onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
-				/>
-			),
-			cell: ({ row }) => (
-				<Checkbox
-					aria-label={t('table.selectRow')}
-					className='translate-y-0.5'
-					checked={row.getIsSelected()}
-					onCheckedChange={value => row.toggleSelected(!!value)}
-				/>
-			),
-			enableHiding: false,
-			enableSorting: false,
-			size: 40,
-		},
+		...(canManageInventory
+			? [
+					{
+						id: 'select',
+						header: ({ table }) => (
+							<Checkbox
+								aria-label={t('table.selectAll')}
+								className='translate-y-0.5'
+								checked={
+									table.getIsAllPageRowsSelected() ||
+									(table.getIsSomePageRowsSelected() && 'indeterminate')
+								}
+								onCheckedChange={value =>
+									table.toggleAllPageRowsSelected(!!value)
+								}
+							/>
+						),
+						cell: ({ row }) => (
+							<Checkbox
+								aria-label={t('table.selectRow')}
+								className='translate-y-0.5'
+								checked={row.getIsSelected()}
+								onCheckedChange={value => row.toggleSelected(!!value)}
+							/>
+						),
+						enableHiding: false,
+						enableSorting: false,
+						size: 40,
+					},
+				]
+			: []),
 		{
 			id: 'name',
 			accessorKey: 'name',
@@ -339,24 +347,27 @@ export function getInventoryTableColumns({
 								{t('common.view')}
 							</DropdownMenuItem>
 							<DropdownMenuItem
-								onSelect={() => setRowAction({ row, variant: 'update' })}
-							>
-								<Edit className='h-4 w-4 mr-2' />
-								{t('common.edit')}
-							</DropdownMenuItem>
-
-							<DropdownMenuItem
 								onSelect={() => setRowAction({ row, variant: 'history' })}
 							>
 								<History className='h-4 w-4 mr-2' />
 								{t('inventory.actions.movementHistory')}
 							</DropdownMenuItem>
-							<DropdownMenuItem
-								onSelect={() => setRowAction({ row, variant: 'delete' })}
-							>
-								<Trash2 className='h-4 w-4 mr-2' />
-								{t('common.delete')}
-							</DropdownMenuItem>
+							{canManageInventory && (
+								<>
+									<DropdownMenuItem
+										onSelect={() => setRowAction({ row, variant: 'update' })}
+									>
+										<Edit className='h-4 w-4 mr-2' />
+										{t('common.edit')}
+									</DropdownMenuItem>
+									<DropdownMenuItem
+										onSelect={() => setRowAction({ row, variant: 'delete' })}
+									>
+										<Trash2 className='h-4 w-4 mr-2' />
+										{t('common.delete')}
+									</DropdownMenuItem>
+								</>
+							)}
 						</DropdownMenuContent>
 					</DropdownMenu>
 				);

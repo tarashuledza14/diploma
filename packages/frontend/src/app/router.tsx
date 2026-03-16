@@ -40,12 +40,12 @@ export const router = createBrowserRouter([
 
 	//   // --- ЗАХИЩЕНІ МАРШРУТИ (Всередині DashboardLayout) ---
 	{
-		element: (
-			<ProtectedRoute allowedRoles={['ADMIN', 'MANAGER', 'MECHANIC']} />
-		),
+		element: <MainLayout />,
 		children: [
 			{
-				element: <MainLayout />, // Тут живе Сайдбар і Хедер
+				element: (
+					<ProtectedRoute allowedRoles={['ADMIN', 'MANAGER', 'MECHANIC']} />
+				),
 				children: [
 					{
 						path: '/',
@@ -105,18 +105,25 @@ export const router = createBrowserRouter([
 				),
 				children: [
 					{
-						path: '/inventory',
-						element: (
-							<Suspense fallback={<Loading />}>
-								<InventoryPage />
-							</Suspense>
-						),
-					},
-					{
 						path: '/services',
 						element: (
 							<Suspense fallback={<Loading />}>
 								<ServicesPage />
+							</Suspense>
+						),
+					},
+				],
+			},
+			{
+				element: (
+					<ProtectedRoute allowedRoles={['ADMIN', 'MANAGER', 'MECHANIC']} />
+				),
+				children: [
+					{
+						path: '/inventory',
+						element: (
+							<Suspense fallback={<Loading />}>
+								<InventoryPage />
 							</Suspense>
 						),
 					},

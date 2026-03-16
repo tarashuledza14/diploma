@@ -1,8 +1,8 @@
 import { UseGuards, applyDecorators } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Role } from 'prisma/generated/prisma/client';
-import { Roles } from './roles.decorator';
 import { RolesGuard } from '../roles/roles.guard';
+import { Roles } from './roles.decorator';
 
 export const Auth = (...roles: Role[]) =>
 	applyDecorators(

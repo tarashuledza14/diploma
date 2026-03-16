@@ -32,7 +32,9 @@ export function ServiceTable({
 					<TableHead>Description</TableHead>
 					<TableHead>Qty</TableHead>
 					<TableHead>Labor (hrs)</TableHead>
-					{showFinancials && <TableHead className='text-right'>Price</TableHead>}
+					{showFinancials && (
+						<TableHead className='text-right'>Price</TableHead>
+					)}
 					{canManageServices && <TableHead className='w-12'></TableHead>}
 				</TableRow>
 			</TableHeader>

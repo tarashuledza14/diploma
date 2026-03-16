@@ -21,11 +21,13 @@ interface InventoryTableProps {
 	data: InventoryPart[];
 	pageCount: number;
 	dictionaries: InventoryDictionaries | undefined;
+	canManageInventory?: boolean;
 }
 export function InventoryTable({
 	data,
 	pageCount,
 	dictionaries,
+	canManageInventory = true,
 }: InventoryTableProps) {
 	const { t } = useTranslation();
 	const [rowAction, setRowAction] =
@@ -38,8 +40,14 @@ export function InventoryTable({
 	// });
 
 	const columns = useMemo(
-		() => getInventoryTableColumns({ setRowAction, dictionaries, t }),
-		[setRowAction, dictionaries, t],
+		() =>
+			getInventoryTableColumns({
+				setRowAction,
+				dictionaries,
+				t,
+				canManageInventory,
+			}),
+		[setRowAction, dictionaries, t, canManageInventory],
 	);
 	const { table, shallow, debounceMs, throttleMs } = useDataTable({
 		data,
@@ -61,7 +69,11 @@ export function InventoryTable({
 		<>
 			<DataTable
 				table={table}
-				actionBar={<InventoryTableActionBar table={table} />}
+				actionBar={
+					canManageInventory ? (
+						<InventoryTableActionBar table={table} />
+					) : undefined
+				}
 			>
 				<DataTableAdvancedToolbar table={table}>
 					<DataTableSortList table={table} align='start' />
@@ -89,7 +101,9 @@ export function InventoryTable({
 				}}
 			/>
 			<EditPartModal
-				open={!!rowAction && rowAction.variant === 'update'}
+				open={
+					canManageInventory && !!rowAction && rowAction.variant === 'update'
+				}
 				onOpenChange={open => {
 					if (!open) setRowAction(null);
 				}}

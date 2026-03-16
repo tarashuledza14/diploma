@@ -1,5 +1,5 @@
-import { LogOut, Settings, User } from 'lucide-react';
 import { removeFromStorage, useUserStore } from '@/modules/auth';
+import { LogOut, Settings, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -37,10 +37,7 @@ export function UserMenu() {
 			<DropdownMenuTrigger asChild>
 				<Button variant='ghost' className='flex items-center gap-3'>
 					<Avatar className='h-8 w-8'>
-						<AvatarImage
-							src='/placeholder.svg'
-							alt={displayName}
-						/>
+						<AvatarImage src='/placeholder.svg' alt={displayName} />
 						<AvatarFallback>
 							{displayName
 								.split(' ')
@@ -50,9 +47,7 @@ export function UserMenu() {
 					</Avatar>
 					<div className='hidden flex-col items-start md:flex'>
 						<span className='text-sm font-medium'>{displayName}</span>
-						<span className='text-xs text-muted-foreground'>
-							{displayRole}
-						</span>
+						<span className='text-xs text-muted-foreground'>{displayRole}</span>
 					</div>
 				</Button>
 			</DropdownMenuTrigger>

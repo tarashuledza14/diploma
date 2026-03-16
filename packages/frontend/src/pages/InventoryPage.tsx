@@ -1,3 +1,4 @@
+import { useUserStore } from '@/modules/auth';
 import {
 	InventoryHeader,
 	inventoryKeys,
@@ -11,6 +12,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Suspense } from 'react';
 
 export function InventoryPage() {
+	const role = useUserStore(state => state.user?.role);
+	const canManageInventory = role !== 'MECHANIC';
 	const searchParams = useTableSearchParams();
 
 	const { data } = useQuery({
@@ -24,10 +27,14 @@ export function InventoryPage() {
 	});
 	return (
 		<>
-			<InventoryHeader dictionaries={dictionaries} />
+			<InventoryHeader
+				dictionaries={dictionaries}
+				canManageInventory={canManageInventory}
+			/>
 			<InventoryStats />
 			<Suspense fallback={<InventoryTableSkeleton />}>
 				<InventoryTable
+					canManageInventory={canManageInventory}
 					dictionaries={dictionaries}
 					data={data?.data ?? []}
 					pageCount={data?.pageCount ?? 0}

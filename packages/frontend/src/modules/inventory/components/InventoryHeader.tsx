@@ -15,8 +15,12 @@ import { AddInventoryPart } from './edit-part/form/AddInventoryPart';
 
 interface InventoryHeaderProps {
 	dictionaries: InventoryDictionaries | undefined;
+	canManageInventory?: boolean;
 }
-export function InventoryHeader({ dictionaries }: InventoryHeaderProps) {
+export function InventoryHeader({
+	dictionaries,
+	canManageInventory = true,
+}: InventoryHeaderProps) {
 	const { t } = useTranslation();
 	const [open, setOpen] = useState(false);
 	return (
@@ -30,30 +34,32 @@ export function InventoryHeader({ dictionaries }: InventoryHeaderProps) {
 					<ShoppingCart className='mr-2 h-4 w-4' />
 					Order Parts
 				</Button> */}
-				<ResponsiveDialog open={open} onOpenChange={setOpen}>
-					<ResponsiveDialogTrigger asChild>
-						<Button>
-							<Plus className='mr-2 h-4 w-4' />
-							{t('inventory.actions.addPart')}
-						</Button>
-					</ResponsiveDialogTrigger>
-					<ResponsiveDialogContent>
-						<ResponsiveDialogHeader>
-							<ResponsiveDialogTitle>
-								{t('inventory.dialogs.addTitle')}
-							</ResponsiveDialogTitle>
-							<ResponsiveDialogDescription>
-								{t('inventory.dialogs.addDescription')}
-							</ResponsiveDialogDescription>
-						</ResponsiveDialogHeader>
-						{dictionaries && (
-							<AddInventoryPart
-								dictionaries={dictionaries}
-								onCancel={() => setOpen(false)}
-							/>
-						)}
-					</ResponsiveDialogContent>
-				</ResponsiveDialog>
+				{canManageInventory && (
+					<ResponsiveDialog open={open} onOpenChange={setOpen}>
+						<ResponsiveDialogTrigger asChild>
+							<Button>
+								<Plus className='mr-2 h-4 w-4' />
+								{t('inventory.actions.addPart')}
+							</Button>
+						</ResponsiveDialogTrigger>
+						<ResponsiveDialogContent>
+							<ResponsiveDialogHeader>
+								<ResponsiveDialogTitle>
+									{t('inventory.dialogs.addTitle')}
+								</ResponsiveDialogTitle>
+								<ResponsiveDialogDescription>
+									{t('inventory.dialogs.addDescription')}
+								</ResponsiveDialogDescription>
+							</ResponsiveDialogHeader>
+							{dictionaries && (
+								<AddInventoryPart
+									dictionaries={dictionaries}
+									onCancel={() => setOpen(false)}
+								/>
+							)}
+						</ResponsiveDialogContent>
+					</ResponsiveDialog>
+				)}
 			</div>
 		</div>
 	);

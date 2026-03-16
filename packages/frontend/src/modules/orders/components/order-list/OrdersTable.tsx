@@ -1,3 +1,4 @@
+import { useUserStore } from '@/modules/auth';
 import {
 	DataTable,
 	DataTableAdvancedToolbar,
@@ -5,7 +6,6 @@ import {
 	DataTableSortList,
 	useDataTable,
 } from '@/shared';
-import { useUserStore } from '@/modules/auth';
 import { DataTableRowAction } from '@/types/data-table';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -72,7 +72,9 @@ export function OrdersTable({ data, pageCount }: OrdersTableProps) {
 			</DataTable>
 
 			<EditOrderModal
-				open={role !== 'MECHANIC' && !!rowAction && rowAction.variant === 'update'}
+				open={
+					role !== 'MECHANIC' && !!rowAction && rowAction.variant === 'update'
+				}
 				onOpenChange={open => {
 					if (!open) setRowAction(null);
 				}}
@@ -80,7 +82,9 @@ export function OrdersTable({ data, pageCount }: OrdersTableProps) {
 			/>
 
 			<DeleteConfirmOrderModal
-				open={role !== 'MECHANIC' && !!rowAction && rowAction.variant === 'delete'}
+				open={
+					role !== 'MECHANIC' && !!rowAction && rowAction.variant === 'delete'
+				}
 				onOpenChange={open => {
 					if (!open) setRowAction(null);
 				}}

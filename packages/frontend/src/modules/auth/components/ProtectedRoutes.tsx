@@ -7,7 +7,6 @@ interface ProtectedRouteProps {
 	fallbackPath?: string;
 }
 
-
 export const ProtectedRoute = ({
 	allowedRoles,
 	fallbackPath,

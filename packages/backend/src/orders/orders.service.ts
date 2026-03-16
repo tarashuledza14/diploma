@@ -5,11 +5,7 @@ import {
 	InternalServerErrorException,
 	NotFoundException,
 } from '@nestjs/common';
-import {
-	OrderStatus,
-	Prisma,
-	Role,
-} from 'prisma/generated/prisma/client';
+import { OrderStatus, Prisma, Role } from 'prisma/generated/prisma/client';
 import { AuthUser } from 'src/auth/types/auth-user.type';
 import { FilterService } from 'src/filter/filter.service';
 import { PaginationService } from 'src/pagination/pagination.service';
@@ -424,7 +420,10 @@ export class OrdersService {
 
 	private mechanicScope(user: AuthUser): Prisma.OrderWhereInput {
 		return {
-			OR: [{ mechanicId: user.id }, { services: { some: { mechanicId: user.id } } }],
+			OR: [
+				{ mechanicId: user.id },
+				{ services: { some: { mechanicId: user.id } } },
+			],
 		};
 	}
 

@@ -13,6 +13,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/shared/components/ui';
+import { UserRole } from '@/shared/interfaces/user.interface';
 import { cn } from '@/shared/lib/utils';
 import { DataTableRowAction } from '@/types/data-table';
 import { ColumnDef } from '@tanstack/react-table';
@@ -20,7 +21,6 @@ import { TFunction } from 'i18next';
 import { Edit, EllipsisVertical, Eye, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { formatOrderNumber } from '../../../utils/format-order-number';
-import { UserRole } from '@/shared/interfaces/user.interface';
 
 interface GetOrderTableColumnsProps {
 	setRowAction?: React.Dispatch<
@@ -242,27 +242,27 @@ export function getOrderTableColumns({
 		},
 		...(!isMechanic
 			? [
-				{
-			id: 'totalAmount',
-			accessorKey: 'totalAmount',
-			header: ({ column }) => (
-				<DataTableColumnHeader
-					column={column}
-					label={t('orders.columns.total')}
-					className='text-right'
-				/>
-			),
-			cell: ({ row }) => (
-				<div className='font-medium'>{row.original.totalAmount}</div>
-			),
-			meta: {
-				label: t('orders.columns.total'),
-				variant: 'text',
-			},
-			enableColumnFilter: true,
-			enableSorting: true,
-		},
-			]
+					{
+						id: 'totalAmount',
+						accessorKey: 'totalAmount',
+						header: ({ column }) => (
+							<DataTableColumnHeader
+								column={column}
+								label={t('orders.columns.total')}
+								className='text-right'
+							/>
+						),
+						cell: ({ row }) => (
+							<div className='font-medium'>{row.original.totalAmount}</div>
+						),
+						meta: {
+							label: t('orders.columns.total'),
+							variant: 'text',
+						},
+						enableColumnFilter: true,
+						enableSorting: true,
+					},
+				]
 			: []),
 		{
 			id: 'actions',
@@ -296,9 +296,7 @@ export function getOrderTableColumns({
 									</DropdownMenuItem>
 									<DropdownMenuItem
 										className='text-destructive'
-										onSelect={() =>
-											setRowAction?.({ row, variant: 'delete' })
-										}
+										onSelect={() => setRowAction?.({ row, variant: 'delete' })}
 									>
 										<Trash2 className='mr-2 h-4 w-4' />
 										{t('orders.actions.deleteOrder')}

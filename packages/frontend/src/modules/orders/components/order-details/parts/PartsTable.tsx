@@ -34,7 +34,9 @@ export function PartsTable({
 					<TableHead>SKU</TableHead>
 					<TableHead>Quantity</TableHead>
 					{showFinancials && <TableHead>Unit Price</TableHead>}
-					{showFinancials && <TableHead className='text-right'>Total</TableHead>}
+					{showFinancials && (
+						<TableHead className='text-right'>Total</TableHead>
+					)}
 					{canManageParts && <TableHead className='w-12'></TableHead>}
 				</TableRow>
 			</TableHeader>

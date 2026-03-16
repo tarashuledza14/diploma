@@ -38,7 +38,9 @@ export function OrderDetailsHeader({
 	const { t } = useTranslation();
 	const statusOptions =
 		allowedStatuses && allowedStatuses.length > 0
-			? orderStatusOptions.filter(option => allowedStatuses.includes(option.value))
+			? orderStatusOptions.filter(option =>
+					allowedStatuses.includes(option.value),
+				)
 			: orderStatusOptions;
 
 	return (

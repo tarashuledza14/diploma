@@ -50,6 +50,7 @@ async function clearDatabase() {
 async function main() {
 	await clearDatabase();
 	console.log('🚀 Starting seed...');
+	const testPassword = 'password123';
 
 	// --- 1. СТВОРЕННЯ ДОВІДНИКІВ (Категорії, Бренди, Виробники) ---
 
@@ -125,46 +126,52 @@ async function main() {
 	console.log('✅ Dictionaries created');
 
 	// --- 2. КОРИСТУВАЧІ (Staff) ---
-	const password = await argon2.hash('password123');
-
-	const admin = await prisma.user.create({
-		data: {
+	const password = await argon2.hash(testPassword);
+	const staffSeedUsers = [
+		{
 			email: 'admin@sto.com',
-			password,
-			role: Role.ADMIN,
 			fullName: 'Адмін Головний',
+			role: Role.ADMIN,
 		},
-	});
-
-	const manager1 = await prisma.user.create({
-		data: {
-			email: 'manager1@sto.com',
-			password,
-			role: Role.MANAGER,
+		{
+			email: 'manager@sto.com',
 			fullName: 'Олег Менеджер',
+			role: Role.MANAGER,
 		},
-	});
+		{
+			email: 'mechanic1@sto.com',
+			fullName: 'Іван Гайка',
+			role: Role.MECHANIC,
+		},
+		{
+			email: 'mechanic2@sto.com',
+			fullName: 'Петро Поршень',
+			role: Role.MECHANIC,
+		},
+	] as const;
 
-	const mechanics = [
-		await prisma.user.create({
-			data: {
-				email: 'mechanic1@sto.com',
-				password,
-				role: Role.MECHANIC,
-				fullName: 'Іван Гайка',
-			},
-		}),
-		await prisma.user.create({
-			data: {
-				email: 'mechanic2@sto.com',
-				password,
-				role: Role.MECHANIC,
-				fullName: 'Петро Поршень',
-			},
-		}),
-	];
+	const createdStaffUsers = await Promise.all(
+		staffSeedUsers.map(user =>
+			prisma.user.create({
+				data: {
+					...user,
+					password,
+				},
+			}),
+		),
+	);
+
+	const admin = createdStaffUsers.find(user => user.role === Role.ADMIN)!;
+	const manager1 = createdStaffUsers.find(user => user.role === Role.MANAGER)!;
+	const mechanics = createdStaffUsers.filter(
+		user => user.role === Role.MECHANIC,
+	);
 
 	console.log('✅ Users created');
+	console.log('🔐 Test users credentials:');
+	for (const user of createdStaffUsers) {
+		console.log(`   ${user.role}: ${user.email} / ${testPassword}`);
+	}
 
 	// --- 3. КЛІЄНТИ (Clients) ---
 	const clients = [
@@ -217,7 +224,7 @@ async function main() {
 	console.log('✅ Vehicles created');
 
 	// --- 5. ЗАПЧАСТИНИ (Parts) ---
-	const parts = [];
+	const parts: Array<{ id: string }> = [];
 
 	parts.push(
 		await prisma.part.create({

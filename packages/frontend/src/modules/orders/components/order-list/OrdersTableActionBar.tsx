@@ -17,13 +17,13 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/shared';
+import { UserRole } from '@/shared/interfaces/user.interface';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Table } from '@tanstack/react-table';
 import { CheckCircle2, Flag, Trash2, X } from 'lucide-react';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { UserRole } from '@/shared/interfaces/user.interface';
 
 interface OrdersTableActionBarProps {
 	table: Table<OrderListItem>;

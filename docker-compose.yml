@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres
+    image: postgres:15
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -19,7 +19,7 @@ services:
   #   depends_on:
   #     - db
   #   environment:
-  #     DATABASE_URL: 'postgresql://postgres:KOSMOdesant567@db:5432/diplom?schema=public'
+  #     DATABASE_URL: 'postgresql://postgres:KOSMOdesant567@db:5433/diplom?schema=public'
   #   ports:
   #     - '3000:4200'
   qdrant:

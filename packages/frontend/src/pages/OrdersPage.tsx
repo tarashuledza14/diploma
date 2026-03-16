@@ -1,7 +1,7 @@
+import { useUserStore } from '@/modules/auth';
 import { OrdersTable, PageHeader } from '@/modules/orders';
 import { OrdersService } from '@/modules/orders/api';
 import { ordersKeys } from '@/modules/orders/queries/keys';
-import { useUserStore } from '@/modules/auth';
 import { useTableSearchParams } from '@/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';

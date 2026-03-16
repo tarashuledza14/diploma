@@ -1,10 +1,10 @@
+import { useUserStore } from '@/modules/auth';
 import { Tabs, TabsContent } from '@/shared/components/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import { useUserStore } from '@/modules/auth';
 import { OrdersService, UpdateOrderPayload } from '../modules/orders/api';
 import { GeneralInfoTab } from '../modules/orders/components/order-details/general-info/GeneralInfoTab';
 import { MediaGallery } from '../modules/orders/components/order-details/media/MediaGallery';

@@ -13,6 +13,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 
+import { useUserStore } from '@/modules/auth';
 import {
 	Sidebar,
 	SidebarContent,
@@ -25,7 +26,6 @@ import {
 	SidebarMenuItem,
 	SidebarRail,
 } from '@/shared';
-import { useUserStore } from '@/modules/auth';
 import { UserRole } from '@/shared/interfaces/user.interface';
 
 interface NavItem {
@@ -98,7 +98,7 @@ export function AppSidebar() {
 					title: t('sidebar.items.partsInventory'),
 					url: '/inventory',
 					icon: Package,
-					allowedRoles: ['ADMIN', 'MANAGER'],
+					allowedRoles: ['ADMIN', 'MANAGER', 'MECHANIC'],
 				},
 			],
 		},
@@ -108,7 +108,9 @@ export function AppSidebar() {
 		.map(group => ({
 			...group,
 			items: group.items.filter(
-				item => !item.allowedRoles || (role ? item.allowedRoles.includes(role) : false),
+				item =>
+					!item.allowedRoles ||
+					(role ? item.allowedRoles.includes(role) : false),
 			),
 		}))
 		.filter(group => group.items.length > 0);
