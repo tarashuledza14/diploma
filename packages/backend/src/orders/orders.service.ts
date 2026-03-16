@@ -1,9 +1,16 @@
 import {
 	BadRequestException,
+	ForbiddenException,
 	Injectable,
 	InternalServerErrorException,
 	NotFoundException,
 } from '@nestjs/common';
+import {
+	OrderStatus,
+	Prisma,
+	Role,
+} from 'prisma/generated/prisma/client';
+import { AuthUser } from 'src/auth/types/auth-user.type';
 import { FilterService } from 'src/filter/filter.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -155,7 +162,7 @@ export class OrdersService {
 		}
 	}
 
-	async findAll(input: GetOrdersDto) {
+	async findAll(input: GetOrdersDto, user: AuthUser) {
 		try {
 			const { skip: offset, perPage } = this.paginationService.getPagination({
 				page: input.page,
@@ -165,25 +172,29 @@ export class OrdersService {
 				input.filters,
 				input.joinOperator,
 			);
+			const scopedFilters = this.applyMechanicScope(filters, user);
 
 			const sorts = this.filterService.getSortFilter(input.sort || []);
 			const [orders, total] = await Promise.all([
 				this.db.order.findMany({
 					skip: offset,
-					where: filters,
+					where: scopedFilters,
 					take: input.perPage,
 					orderBy: sorts,
 					select: orderSelect,
 				}),
-				this.db.order.count({ where: filters }),
+				this.db.order.count({ where: scopedFilters }),
 			]);
 			const normalizedOrders = orders.map(order => ({
 				...order,
 				services: order.services.map(s => s.service),
 			}));
+			const visibleOrders = this.isMechanic(user)
+				? normalizedOrders.map(order => ({ ...order, totalAmount: '0' }))
+				: normalizedOrders;
 			const pageCount = this.paginationService.getPageCount(total, perPage);
 			return {
-				data: normalizedOrders,
+				data: visibleOrders,
 				pageCount,
 				total,
 			};
@@ -193,9 +204,9 @@ export class OrdersService {
 		}
 	}
 
-	async findOne(id: string) {
-		const order = await this.db.order.findUnique({
-			where: { id },
+	async findOne(id: string, user: AuthUser) {
+		const order = await this.db.order.findFirst({
+			where: this.applyMechanicScope({ id }, user),
 			select: orderDetailSelect,
 		});
 
@@ -204,13 +215,14 @@ export class OrdersService {
 		}
 
 		const assignedTo = order.mechanic ?? order.manager;
+		const isMechanic = this.isMechanic(user);
 		const services = order.services.map(os => ({
 			id: os.id,
 			serviceId: os.service.id,
 			mechanicId: os.mechanicId,
 			name: os.service.name,
 			description: os.service.description,
-			price: Number(os.price),
+			price: isMechanic ? 0 : Number(os.price),
 			laborHours: os.service.estimatedTime ?? 0,
 			quantity: os.quantity,
 		}));
@@ -220,13 +232,14 @@ export class OrdersService {
 			name: op.part.name,
 			sku: op.part.sku,
 			quantity: op.quantity,
-			unitPrice: Number(op.price),
+			unitPrice: isMechanic ? 0 : Number(op.price),
 		}));
 
 		return {
 			...order,
 			mileage: order.mileage,
-			totalAmount: order.totalAmount ? String(order.totalAmount) : '0',
+			totalAmount:
+				isMechanic || !order.totalAmount ? '0' : String(order.totalAmount),
 			createdAt: order.startDate,
 			dueDate: order.endDate,
 			estimatedCompletion: order.endDate,
@@ -362,16 +375,29 @@ export class OrdersService {
 		});
 	}
 
-	async updateBulk(data: BulkUpdateOrderDto) {
+	async updateBulk(data: BulkUpdateOrderDto, user: AuthUser) {
 		const { ids, status, priority } = data;
+		const isMechanic = this.isMechanic(user);
 
 		const updateData: Record<string, unknown> = {};
 
 		if (status !== undefined) {
+			if (
+				isMechanic &&
+				status !== OrderStatus.IN_PROGRESS &&
+				status !== OrderStatus.COMPLETED
+			) {
+				throw new ForbiddenException(
+					'Mechanics can only set IN_PROGRESS or COMPLETED status',
+				);
+			}
 			updateData.status = status;
 		}
 
 		if (priority !== undefined) {
+			if (isMechanic) {
+				throw new ForbiddenException('Mechanics cannot update priority');
+			}
 			updateData.priority = priority;
 		}
 
@@ -379,12 +405,44 @@ export class OrdersService {
 			throw new BadRequestException('No fields provided for bulk update');
 		}
 
-		return this.db.order.updateMany({
-			where: {
+		const where = this.applyMechanicScope(
+			{
 				id: { in: ids },
 			},
+			user,
+		);
+
+		return this.db.order.updateMany({
+			where,
 			data: updateData,
 		});
+	}
+
+	private isMechanic(user: AuthUser): boolean {
+		return user.role === Role.MECHANIC;
+	}
+
+	private mechanicScope(user: AuthUser): Prisma.OrderWhereInput {
+		return {
+			OR: [{ mechanicId: user.id }, { services: { some: { mechanicId: user.id } } }],
+		};
+	}
+
+	private applyMechanicScope(
+		where: Prisma.OrderWhereInput,
+		user: AuthUser,
+	): Prisma.OrderWhereInput {
+		if (!this.isMechanic(user)) {
+			return where;
+		}
+
+		if (!where || Object.keys(where).length === 0) {
+			return this.mechanicScope(user);
+		}
+
+		return {
+			AND: [where, this.mechanicScope(user)],
+		};
 	}
 
 	async delete(id: string) {

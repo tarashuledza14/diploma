@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useUserStore } from '@/modules/auth';
 import { OrdersService, UpdateOrderPayload } from '../modules/orders/api';
 import { GeneralInfoTab } from '../modules/orders/components/order-details/general-info/GeneralInfoTab';
 import { MediaGallery } from '../modules/orders/components/order-details/media/MediaGallery';
@@ -55,6 +56,8 @@ interface ServicePartGroup {
 
 export function OrderDetailsPage() {
 	const { t } = useTranslation();
+	const role = useUserStore(state => state.user?.role);
+	const isMechanic = role === 'MECHANIC';
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const { data: order, isLoading, error } = useOrderDetailsQuery(id);
@@ -303,6 +306,15 @@ export function OrderDetailsPage() {
 			return;
 		}
 
+		if (
+			isMechanic &&
+			![OrderStatus.IN_PROGRESS, OrderStatus.COMPLETED].includes(
+				status as OrderStatus,
+			)
+		) {
+			return;
+		}
+
 		if (String(order.status) === status) {
 			return;
 		}
@@ -407,6 +419,10 @@ export function OrderDetailsPage() {
 	};
 
 	const handleAddService = async (serviceId: string) => {
+		if (isMechanic) {
+			return;
+		}
+
 		const nextServices = [
 			...mappedServices,
 			{ serviceId, mechanicId: undefined },
@@ -422,6 +438,10 @@ export function OrderDetailsPage() {
 	};
 
 	const handleRemoveService = async (serviceRowId: string) => {
+		if (isMechanic) {
+			return;
+		}
+
 		if (!order) {
 			return;
 		}
@@ -468,6 +488,10 @@ export function OrderDetailsPage() {
 	};
 
 	const handleAddPart = async (partId: string, quantity: number) => {
+		if (isMechanic) {
+			return;
+		}
+
 		const nextParts = [...mappedParts];
 		const partIndex = nextParts.findIndex(part => part.partId === partId);
 
@@ -485,6 +509,10 @@ export function OrderDetailsPage() {
 	};
 
 	const handleRemovePart = async (partId: string) => {
+		if (isMechanic) {
+			return;
+		}
+
 		const nextParts = mappedParts.filter(part => part.partId !== partId);
 
 		await updateOrderItems({ services: mappedServices, parts: nextParts });
@@ -499,6 +527,10 @@ export function OrderDetailsPage() {
 	};
 
 	const handleUpdatePartQuantity = async (partId: string, quantity: number) => {
+		if (isMechanic) {
+			return;
+		}
+
 		const safeQuantity = Math.max(1, quantity);
 		const nextParts = mappedParts.map(part =>
 			part.partId === partId ? { ...part, quantity: safeQuantity } : part,
@@ -549,6 +581,12 @@ export function OrderDetailsPage() {
 				onStatusChange={handleStatusChange}
 				onEditOrder={() => setIsEditOpen(true)}
 				onCompleteOrder={handleCompleteOrder}
+				allowedStatuses={
+					isMechanic
+						? [OrderStatus.IN_PROGRESS, OrderStatus.COMPLETED]
+						: undefined
+				}
+				canManageOrder={!isMechanic}
 				isUpdatingStatus={isUpdatingStatus}
 				isCompletingOrder={isCompletingOrder}
 			/>
@@ -568,6 +606,8 @@ export function OrderDetailsPage() {
 						serviceOptions={servicesMeta}
 						onAddService={handleAddService}
 						onRemoveService={handleRemoveService}
+						canManageServices={!isMechanic}
+						showFinancials={!isMechanic}
 						isUpdating={isUpdating}
 					/>
 				</TabsContent>
@@ -583,6 +623,8 @@ export function OrderDetailsPage() {
 						onAddPart={handleAddPart}
 						onRemovePart={handleRemovePart}
 						onQuantityChange={handleUpdatePartQuantity}
+						canManageParts={!isMechanic}
+						showFinancials={!isMechanic}
 						isUpdating={isUpdating}
 					/>
 				</TabsContent>
@@ -591,7 +633,7 @@ export function OrderDetailsPage() {
 				</TabsContent>
 			</Tabs>
 			<EditOrderModal
-				open={isEditOpen}
+				open={!isMechanic && isEditOpen}
 				onOpenChange={setIsEditOpen}
 				order={toEditOrderSource(order)}
 			/>

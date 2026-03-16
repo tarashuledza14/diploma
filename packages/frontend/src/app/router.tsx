@@ -40,13 +40,12 @@ export const router = createBrowserRouter([
 
 	//   // --- ЗАХИЩЕНІ МАРШРУТИ (Всередині DashboardLayout) ---
 	{
-		element: <MainLayout />, // Тут живе Сайдбар і Хедер
+		element: (
+			<ProtectedRoute allowedRoles={['ADMIN', 'MANAGER', 'MECHANIC']} />
+		),
 		children: [
-			// 1. Доступно всім авторизованим (Admin, Manager, Mechanic)
 			{
-				element: (
-					<ProtectedRoute allowedRoles={['ADMIN', 'MANAGER', 'MECHANIC']} />
-				),
+				element: <MainLayout />, // Тут живе Сайдбар і Хедер
 				children: [
 					{
 						path: '/',
@@ -56,13 +55,23 @@ export const router = createBrowserRouter([
 							</Suspense>
 						),
 					},
+					{
+						path: '/my-tasks',
+						element: (
+							<Suspense fallback={<Loading />}>
+								<OrdersPage />
+							</Suspense>
+						),
+					},
 				],
 			},
 			{
-				element: <ProtectedRoute allowedRoles={['ADMIN', 'MANAGER']} />,
+				element: (
+					<ProtectedRoute allowedRoles={['ADMIN', 'MANAGER', 'MECHANIC']} />
+				),
 				children: [
 					{
-						path: '/orders', // Таблиця
+						path: '/orders',
 						element: (
 							<Suspense fallback={<Loading />}>
 								<OrdersPage />
@@ -70,7 +79,7 @@ export const router = createBrowserRouter([
 						),
 					},
 					{
-						path: '/orders/:id', // Деталі замовлення
+						path: '/orders/:id',
 						element: (
 							<Suspense fallback={<Loading />}>
 								<OrderDetailsPage />
@@ -78,36 +87,53 @@ export const router = createBrowserRouter([
 						),
 					},
 					{
-						path: '/orders/board', // Канбан
+						path: '/orders/board',
 						element: (
 							<Suspense fallback={<Loading />}>
 								<KanbanPage />
 							</Suspense>
 						),
 					},
-					// {
-					// 	path: '/inventory', // Склад
-					// 	element: (
-					// 		<Suspense fallback={<Loading />}>
-					// 			<InventoryPage />
-					// 		</Suspense>
-					// 	),
-					// },
 				],
 			},
 			{
-				path: '/inventory',
-				element: <InventoryPage />,
+				element: (
+					<ProtectedRoute
+						allowedRoles={['ADMIN', 'MANAGER']}
+						fallbackPath='/my-tasks'
+					/>
+				),
+				children: [
+					{
+						path: '/inventory',
+						element: (
+							<Suspense fallback={<Loading />}>
+								<InventoryPage />
+							</Suspense>
+						),
+					},
+					{
+						path: '/services',
+						element: (
+							<Suspense fallback={<Loading />}>
+								<ServicesPage />
+							</Suspense>
+						),
+					},
+				],
 			},
 			{
-				path: '/services',
-				element: <ServicesPage />,
+				element: (
+					<ProtectedRoute allowedRoles={['ADMIN', 'MANAGER', 'MECHANIC']} />
+				),
+				children: [
+					{
+						path: '/vehicles',
+						element: <VehiclePage />,
+					},
+					{ path: '/clients', element: <ClientsPage /> },
+				],
 			},
-			{
-				path: '/vehicles',
-				element: <VehiclePage />,
-			},
-			{ path: '/clients', element: <ClientsPage /> },
 		],
 	},
 	//

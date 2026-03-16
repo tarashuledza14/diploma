@@ -1,19 +1,30 @@
-import { Outlet } from 'react-router-dom';
+import { getAccessToken } from '@/modules/auth/services/token.service';
+import { useUserStore } from '@/modules/auth/store/user.store';
+import { UserRole } from '@/shared/interfaces/user.interface';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 interface ProtectedRouteProps {
-	allowedRoles?: string[];
+	allowedRoles?: UserRole[];
+	fallbackPath?: string;
 }
 
-export const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
-	// const { token, role } = useAuthStore();
-	// const location = useLocation();
-	// 1. Якщо немає токена — на логін
-	// if (!token) {
-	//   return <Navigate to="/login" state={{ from: location }} replace />;
-	// }
-	// 2. Якщо є роль, але вона не підходить (наприклад, Клієнт лізе в Адмінку)
-	// if (allowedRoles && role && !allowedRoles.includes(role)) {
-	//   return <Navigate to="/unauthorized" replace />; // Або на головну
-	// }
-	// 3. Все ок — показуємо контент (Outlet)
+
+export const ProtectedRoute = ({
+	allowedRoles,
+	fallbackPath,
+}: ProtectedRouteProps) => {
+	const location = useLocation();
+	const user = useUserStore(state => state.user);
+	const accessToken = getAccessToken();
+
+	if (!accessToken || !user) {
+		return <Navigate to='/login' state={{ from: location }} replace />;
+	}
+
+	if (allowedRoles && !allowedRoles.includes(user.role)) {
+		const safeDefault =
+			fallbackPath ?? (user.role === 'MECHANIC' ? '/my-tasks' : '/');
+		return <Navigate to={safeDefault} replace />;
+	}
+
 	return <Outlet />;
 };

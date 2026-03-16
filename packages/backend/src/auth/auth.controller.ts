@@ -1,5 +1,6 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UnauthorizedException } from '@nestjs/common'
 import { Request, Response } from 'express'
+import { Role } from 'prisma/generated/prisma/client';
 import { AuthService } from './auth.service'
 import { Auth } from './decorators/auth.decorator'
 import { AuthDto, RegisterDto } from './dto/auth.dto'
@@ -29,6 +30,7 @@ export class AuthController {
 	}
 	
 	@HttpCode(200)
+	@Auth(Role.ADMIN)
 	@Post('register')
 	async register(
 		@Body() dto: RegisterDto,

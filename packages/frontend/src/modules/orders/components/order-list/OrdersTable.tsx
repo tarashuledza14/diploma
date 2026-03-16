@@ -5,6 +5,7 @@ import {
 	DataTableSortList,
 	useDataTable,
 } from '@/shared';
+import { useUserStore } from '@/modules/auth';
 import { DataTableRowAction } from '@/types/data-table';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -22,13 +23,20 @@ interface OrdersTableProps {
 
 export function OrdersTable({ data, pageCount }: OrdersTableProps) {
 	const { t } = useTranslation();
+	const role = useUserStore(state => state.user?.role);
 	const [rowAction, setRowAction] =
 		useState<DataTableRowAction<OrderListItem> | null>(null);
 
 	const columns = useMemo(
 		() =>
-			getOrderTableColumns({ setRowAction, statusColors, priorityColors, t }),
-		[setRowAction, t],
+			getOrderTableColumns({
+				setRowAction,
+				statusColors,
+				priorityColors,
+				t,
+				role,
+			}),
+		[setRowAction, t, role],
 	);
 
 	const { table, shallow, debounceMs, throttleMs } =
@@ -49,7 +57,7 @@ export function OrdersTable({ data, pageCount }: OrdersTableProps) {
 		<>
 			<DataTable
 				table={table}
-				actionBar={<OrdersTableActionBar table={table} />}
+				actionBar={<OrdersTableActionBar table={table} role={role} />}
 			>
 				<DataTableAdvancedToolbar table={table}>
 					<DataTableSortList table={table} align='start' />
@@ -64,7 +72,7 @@ export function OrdersTable({ data, pageCount }: OrdersTableProps) {
 			</DataTable>
 
 			<EditOrderModal
-				open={!!rowAction && rowAction.variant === 'update'}
+				open={role !== 'MECHANIC' && !!rowAction && rowAction.variant === 'update'}
 				onOpenChange={open => {
 					if (!open) setRowAction(null);
 				}}
@@ -72,7 +80,7 @@ export function OrdersTable({ data, pageCount }: OrdersTableProps) {
 			/>
 
 			<DeleteConfirmOrderModal
-				open={!!rowAction && rowAction.variant === 'delete'}
+				open={role !== 'MECHANIC' && !!rowAction && rowAction.variant === 'delete'}
 				onOpenChange={open => {
 					if (!open) setRowAction(null);
 				}}

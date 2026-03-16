@@ -1,11 +1,11 @@
 import { UseGuards, applyDecorators } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Role } from 'prisma/generated/prisma/enums';
+import { Role } from 'prisma/generated/prisma/client';
+import { Roles } from './roles.decorator';
 import { RolesGuard } from '../roles/roles.guard';
 
-export const Auth = (role: Role = Role.MECHANIC) =>
+export const Auth = (...roles: Role[]) =>
 	applyDecorators(
-		role === Role.ADMIN
-			? UseGuards(AuthGuard('jwt'), RolesGuard)
-			: UseGuards(AuthGuard('jwt')),
+		UseGuards(AuthGuard('jwt'), RolesGuard),
+		...(roles.length ? [Roles(...roles)] : []),
 	);

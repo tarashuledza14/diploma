@@ -14,12 +14,16 @@ interface Props {
 	parts: any;
 	onRemovePart: (partId: string) => Promise<void>;
 	onQuantityChange: (partId: string, quantity: number) => Promise<void>;
+	canManageParts?: boolean;
+	showFinancials?: boolean;
 	isPending?: boolean;
 }
 export function PartsTable({
 	parts,
 	onRemovePart,
 	onQuantityChange,
+	canManageParts = true,
+	showFinancials = true,
 	isPending = false,
 }: Props) {
 	return (
@@ -29,9 +33,9 @@ export function PartsTable({
 					<TableHead>Part Name</TableHead>
 					<TableHead>SKU</TableHead>
 					<TableHead>Quantity</TableHead>
-					<TableHead>Unit Price</TableHead>
-					<TableHead className='text-right'>Total</TableHead>
-					<TableHead className='w-12'></TableHead>
+					{showFinancials && <TableHead>Unit Price</TableHead>}
+					{showFinancials && <TableHead className='text-right'>Total</TableHead>}
+					{canManageParts && <TableHead className='w-12'></TableHead>}
 				</TableRow>
 			</TableHeader>
 			<TableBody>
@@ -50,31 +54,37 @@ export function PartsTable({
 									value={part.quantity}
 									min='1'
 									className='w-20'
-									disabled={isPending}
+									disabled={isPending || !canManageParts}
 									onChange={e =>
 										onQuantityChange(partId, parseInt(e.target.value, 10) || 1)
 									}
 								/>
 							</TableCell>
-							<TableCell>${Number(part.unitPrice).toFixed(2)}</TableCell>
-							<TableCell className='text-right font-medium'>
-								$
-								{((part.quantity ?? 0) * Number(part.unitPrice ?? 0)).toFixed(
-									2,
-								)}
-							</TableCell>
-							<TableCell>
-								<Button
-									variant='ghost'
-									size='icon'
-									className='text-destructive hover:text-destructive'
-									disabled={isPending}
-									onClick={() => onRemovePart(partId)}
-								>
-									<Trash2 className='h-4 w-4' />
-									<span className='sr-only'>Remove part</span>
-								</Button>
-							</TableCell>
+							{showFinancials && (
+								<TableCell>${Number(part.unitPrice).toFixed(2)}</TableCell>
+							)}
+							{showFinancials && (
+								<TableCell className='text-right font-medium'>
+									$
+									{((part.quantity ?? 0) * Number(part.unitPrice ?? 0)).toFixed(
+										2,
+									)}
+								</TableCell>
+							)}
+							{canManageParts && (
+								<TableCell>
+									<Button
+										variant='ghost'
+										size='icon'
+										className='text-destructive hover:text-destructive'
+										disabled={isPending}
+										onClick={() => onRemovePart(partId)}
+									>
+										<Trash2 className='h-4 w-4' />
+										<span className='sr-only'>Remove part</span>
+									</Button>
+								</TableCell>
+							)}
 						</TableRow>
 					);
 				})}

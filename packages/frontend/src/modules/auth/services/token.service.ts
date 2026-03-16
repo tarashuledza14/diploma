@@ -7,8 +7,20 @@ export const getAccessToken = () => {
 	return accessToken || null;
 };
 export const getUser = () => {
-	const accessToken = Cookies.get(EnumToken.USER);
-	return accessToken || null;
+	if (typeof window === 'undefined') {
+		return null;
+	}
+
+	const user = localStorage.getItem(EnumToken.USER);
+	if (!user) {
+		return null;
+	}
+
+	try {
+		return JSON.parse(user);
+	} catch {
+		return null;
+	}
 };
 export const getRefreshToken = () => {
 	const refreshToken = Cookies.get(EnumToken.REFRESH_TOKEN);

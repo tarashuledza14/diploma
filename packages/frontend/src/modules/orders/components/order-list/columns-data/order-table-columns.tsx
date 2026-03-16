@@ -20,6 +20,7 @@ import { TFunction } from 'i18next';
 import { Edit, EllipsisVertical, Eye, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { formatOrderNumber } from '../../../utils/format-order-number';
+import { UserRole } from '@/shared/interfaces/user.interface';
 
 interface GetOrderTableColumnsProps {
 	setRowAction?: React.Dispatch<
@@ -28,6 +29,7 @@ interface GetOrderTableColumnsProps {
 	statusColors: Record<string, string>;
 	priorityColors: Record<string, string>;
 	t: TFunction;
+	role?: UserRole;
 }
 
 export function getOrderTableColumns({
@@ -35,7 +37,10 @@ export function getOrderTableColumns({
 	statusColors,
 	priorityColors,
 	t,
+	role,
 }: GetOrderTableColumnsProps): ColumnDef<OrderListItem>[] {
+	const isMechanic = role === 'MECHANIC';
+
 	return [
 		{
 			id: 'select',
@@ -235,7 +240,9 @@ export function getOrderTableColumns({
 			enableColumnFilter: true,
 			enableSorting: true,
 		},
-		{
+		...(!isMechanic
+			? [
+				{
 			id: 'totalAmount',
 			accessorKey: 'totalAmount',
 			header: ({ column }) => (
@@ -255,6 +262,8 @@ export function getOrderTableColumns({
 			enableColumnFilter: true,
 			enableSorting: true,
 		},
+			]
+			: []),
 		{
 			id: 'actions',
 			cell: function Cell({ row }) {
@@ -276,20 +285,26 @@ export function getOrderTableColumns({
 									{t('orders.actions.viewDetails')}
 								</Link>
 							</DropdownMenuItem>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem
-								onSelect={() => setRowAction?.({ row, variant: 'update' })}
-							>
-								<Edit className='mr-2 h-4 w-4' />
-								{t('orders.actions.editOrder')}
-							</DropdownMenuItem>
-							<DropdownMenuItem
-								className='text-destructive'
-								onSelect={() => setRowAction?.({ row, variant: 'delete' })}
-							>
-								<Trash2 className='mr-2 h-4 w-4' />
-								{t('orders.actions.deleteOrder')}
-							</DropdownMenuItem>
+							{!isMechanic && (
+								<>
+									<DropdownMenuSeparator />
+									<DropdownMenuItem
+										onSelect={() => setRowAction?.({ row, variant: 'update' })}
+									>
+										<Edit className='mr-2 h-4 w-4' />
+										{t('orders.actions.editOrder')}
+									</DropdownMenuItem>
+									<DropdownMenuItem
+										className='text-destructive'
+										onSelect={() =>
+											setRowAction?.({ row, variant: 'delete' })
+										}
+									>
+										<Trash2 className='mr-2 h-4 w-4' />
+										{t('orders.actions.deleteOrder')}
+									</DropdownMenuItem>
+								</>
+							)}
 						</DropdownMenuContent>
 					</DropdownMenu>
 				);

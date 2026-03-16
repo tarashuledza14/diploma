@@ -20,6 +20,8 @@ interface Props {
 	onStatusChange: (status: string) => void;
 	onEditOrder: () => void;
 	onCompleteOrder: () => void;
+	allowedStatuses?: string[];
+	canManageOrder?: boolean;
 	isUpdatingStatus?: boolean;
 	isCompletingOrder?: boolean;
 }
@@ -28,10 +30,17 @@ export function OrderDetailsHeader({
 	onStatusChange,
 	onEditOrder,
 	onCompleteOrder,
+	allowedStatuses,
+	canManageOrder = true,
 	isUpdatingStatus = false,
 	isCompletingOrder = false,
 }: Props) {
 	const { t } = useTranslation();
+	const statusOptions =
+		allowedStatuses && allowedStatuses.length > 0
+			? orderStatusOptions.filter(option => allowedStatuses.includes(option.value))
+			: orderStatusOptions;
+
 	return (
 		<div className='mb-6 flex items-start justify-between'>
 			<div className='flex items-center gap-4'>
@@ -80,17 +89,19 @@ export function OrderDetailsHeader({
 						<SelectValue placeholder={t('common.status')} />
 					</SelectTrigger>
 					<SelectContent>
-						{orderStatusOptions.map(option => (
+						{statusOptions.map(option => (
 							<SelectItem key={option.value} value={option.value}>
 								{t(`orderStatus.${option.value}`)}
 							</SelectItem>
 						))}
 					</SelectContent>
 				</Select>
-				<Button variant='outline' onClick={onEditOrder}>
-					<Edit className='mr-2 h-4 w-4' />
-					{t('orders.actions.editOrder')}
-				</Button>
+				{canManageOrder && (
+					<Button variant='outline' onClick={onEditOrder}>
+						<Edit className='mr-2 h-4 w-4' />
+						{t('orders.actions.editOrder')}
+					</Button>
+				)}
 				<Button onClick={onCompleteOrder} disabled={isCompletingOrder}>
 					<CheckCircle2 className='mr-2 h-4 w-4' />
 					{t('orders.actions.completeOrder')}

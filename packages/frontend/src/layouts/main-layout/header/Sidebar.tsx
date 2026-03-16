@@ -25,11 +25,14 @@ import {
 	SidebarMenuItem,
 	SidebarRail,
 } from '@/shared';
+import { useUserStore } from '@/modules/auth';
+import { UserRole } from '@/shared/interfaces/user.interface';
 
 interface NavItem {
 	title: string;
 	url: string;
 	icon: LucideIcon;
+	allowedRoles?: UserRole[];
 }
 
 interface NavGroup {
@@ -40,6 +43,7 @@ interface NavGroup {
 export function AppSidebar() {
 	const { t } = useTranslation();
 	const { pathname } = useLocation();
+	const role = useUserStore(state => state.user?.role);
 	const navGroups: NavGroup[] = [
 		{
 			label: t('sidebar.groups.platform'),
@@ -48,6 +52,12 @@ export function AppSidebar() {
 					title: t('sidebar.items.dashboard'),
 					url: '/',
 					icon: LayoutDashboard,
+				},
+				{
+					title: t('sidebar.items.orders'),
+					url: '/my-tasks',
+					icon: ClipboardList,
+					allowedRoles: ['MECHANIC'],
 				},
 				{
 					title: t('sidebar.items.aiAssistant'),
@@ -63,11 +73,13 @@ export function AppSidebar() {
 					title: t('sidebar.items.orders'),
 					url: '/orders',
 					icon: ClipboardList,
+					allowedRoles: ['ADMIN', 'MANAGER'],
 				},
 				{
 					title: t('sidebar.items.kanbanBoard'),
 					url: '/orders/board',
 					icon: Kanban,
+					allowedRoles: ['ADMIN', 'MANAGER'],
 				},
 				{ title: t('sidebar.items.clients'), url: '/clients', icon: Users },
 			],
@@ -76,15 +88,30 @@ export function AppSidebar() {
 			label: t('sidebar.groups.inventoryService'),
 			items: [
 				{ title: t('sidebar.items.vehicles'), url: '/vehicles', icon: Car },
-				{ title: t('sidebar.items.services'), url: '/services', icon: Wrench },
+				{
+					title: t('sidebar.items.services'),
+					url: '/services',
+					icon: Wrench,
+					allowedRoles: ['ADMIN', 'MANAGER'],
+				},
 				{
 					title: t('sidebar.items.partsInventory'),
 					url: '/inventory',
 					icon: Package,
+					allowedRoles: ['ADMIN', 'MANAGER'],
 				},
 			],
 		},
 	];
+
+	const visibleGroups = navGroups
+		.map(group => ({
+			...group,
+			items: group.items.filter(
+				item => !item.allowedRoles || (role ? item.allowedRoles.includes(role) : false),
+			),
+		}))
+		.filter(group => group.items.length > 0);
 
 	const isActive = (url: string) => pathname === url;
 
@@ -113,7 +140,7 @@ export function AppSidebar() {
 			</SidebarHeader>
 
 			<SidebarContent>
-				{navGroups.map(group => (
+				{visibleGroups.map(group => (
 					<SidebarGroup key={group.label}>
 						<SidebarGroupLabel>{group.label}</SidebarGroupLabel>
 						<SidebarGroupContent>

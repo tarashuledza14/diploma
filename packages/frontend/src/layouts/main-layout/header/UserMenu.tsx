@@ -1,5 +1,7 @@
 import { LogOut, Settings, User } from 'lucide-react';
+import { removeFromStorage, useUserStore } from '@/modules/auth';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import {
 	Avatar,
 	AvatarFallback,
@@ -15,35 +17,42 @@ import {
 	DropdownMenuTrigger,
 } from '../../../shared/components/ui/dropdown-menu';
 
-const user = {
-	name: 'John Doe',
-	email: 'john.doe@autocrm.com',
-	role: 'Admin',
-	avatar: '',
-};
-
 export function UserMenu() {
 	const { t } = useTranslation();
-	const onLogout = () => {};
+	const navigate = useNavigate();
+	const user = useUserStore(state => state.user);
+	const clearUser = useUserStore(state => state.clearUser);
+
+	const displayName = user?.fullName || 'User';
+	const displayRole = user?.role || 'MECHANIC';
+
+	const onLogout = () => {
+		removeFromStorage();
+		clearUser();
+		navigate('/login');
+	};
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button variant='ghost' className='flex items-center gap-3'>
 					<Avatar className='h-8 w-8'>
 						<AvatarImage
-							src={user.avatar || '/placeholder.svg'}
-							alt={user.name}
+							src='/placeholder.svg'
+							alt={displayName}
 						/>
 						<AvatarFallback>
-							{user.name
+							{displayName
 								.split(' ')
 								.map(n => n[0])
 								.join('')}
 						</AvatarFallback>
 					</Avatar>
 					<div className='hidden flex-col items-start md:flex'>
-						<span className='text-sm font-medium'>{user.name}</span>
-						<span className='text-xs text-muted-foreground'>{user.role}</span>
+						<span className='text-sm font-medium'>{displayName}</span>
+						<span className='text-xs text-muted-foreground'>
+							{displayRole}
+						</span>
 					</div>
 				</Button>
 			</DropdownMenuTrigger>

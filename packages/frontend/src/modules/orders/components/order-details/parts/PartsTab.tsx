@@ -41,6 +41,8 @@ interface PartsTabProps {
 	onAddPart: (partId: string, quantity: number) => Promise<void>;
 	onRemovePart: (partId: string) => Promise<void>;
 	onQuantityChange: (partId: string, quantity: number) => Promise<void>;
+	canManageParts?: boolean;
+	showFinancials?: boolean;
 	isUpdating?: boolean;
 }
 
@@ -55,6 +57,8 @@ export function PartsTab({
 	onAddPart,
 	onRemovePart,
 	onQuantityChange,
+	canManageParts = true,
+	showFinancials = true,
 	isUpdating = false,
 }: PartsTabProps) {
 	return (
@@ -64,11 +68,13 @@ export function PartsTab({
 					<Package className='h-5 w-5' />
 					Parts
 				</CardTitle>
-				<AddPart
-					partOptions={partOptions}
-					onAddPart={onAddPart}
-					isPending={isUpdating}
-				/>
+				{canManageParts && (
+					<AddPart
+						partOptions={partOptions}
+						onAddPart={onAddPart}
+						isPending={isUpdating}
+					/>
+				)}
 			</CardHeader>
 			<CardContent>
 				{(servicePartGroups.length > 0 || unassignedParts.length > 0) && (
@@ -137,14 +143,20 @@ export function PartsTab({
 					parts={parts}
 					onRemovePart={onRemovePart}
 					onQuantityChange={onQuantityChange}
+					canManageParts={canManageParts}
+					showFinancials={showFinancials}
 					isPending={isUpdating}
 				/>
-				<Separator className='my-4' />
-				<PartsTotals
-					partsTotal={partsTotal}
-					servicesTotal={servicesTotal}
-					grandTotal={grandTotal}
-				/>
+				{showFinancials && (
+					<>
+						<Separator className='my-4' />
+						<PartsTotals
+							partsTotal={partsTotal}
+							servicesTotal={servicesTotal}
+							grandTotal={grandTotal}
+						/>
+					</>
+				)}
 			</CardContent>
 		</Card>
 	);

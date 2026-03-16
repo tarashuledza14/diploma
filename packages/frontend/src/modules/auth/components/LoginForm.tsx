@@ -1,4 +1,5 @@
 import { AuthAPI } from '@/modules/auth/api/auth.api';
+import { saveToStorage } from '@/modules/auth/services/token.service';
 import { useUserStore } from '@/modules/auth/store/user.store';
 import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
@@ -34,13 +35,16 @@ export function LoginForm() {
 			{ email, password },
 			{
 				onError: (error: any) => {
+					setIsLoading(false);
 					setError(
 						error.response?.data?.message || t('auth.errors.loginFailed'),
 					);
 				},
 				onSuccess: data => {
+					setIsLoading(false);
 					if (email && password) {
 						toast.success(t('auth.messages.loggedInSuccessfully'));
+						saveToStorage(data);
 						setUser(data?.user);
 						navigate('/');
 					} else {
@@ -49,8 +53,6 @@ export function LoginForm() {
 				},
 			},
 		);
-
-		setIsLoading(false);
 	};
 
 	return (

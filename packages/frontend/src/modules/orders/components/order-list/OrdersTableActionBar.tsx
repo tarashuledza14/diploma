@@ -23,13 +23,19 @@ import { CheckCircle2, Flag, Trash2, X } from 'lucide-react';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { UserRole } from '@/shared/interfaces/user.interface';
 
 interface OrdersTableActionBarProps {
 	table: Table<OrderListItem>;
+	role?: UserRole;
 }
 
-export function OrdersTableActionBar({ table }: OrdersTableActionBarProps) {
+export function OrdersTableActionBar({
+	table,
+	role,
+}: OrdersTableActionBarProps) {
 	const { t } = useTranslation();
+	const isMechanic = role === 'MECHANIC';
 	const rows = table.getFilteredSelectedRowModel().rows;
 	const queryClient = useQueryClient();
 
@@ -139,29 +145,33 @@ export function OrdersTableActionBar({ table }: OrdersTableActionBarProps) {
 						))}
 					</DropdownMenuContent>
 				</DropdownMenu>
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<ActionBarItem>
-							<Flag />
-							{t('common.priority')}
-						</ActionBarItem>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent>
-						{orderPriorityOptions.map(option => (
-							<DropdownMenuItem
-								key={option.value}
-								className='capitalize'
-								onClick={() => onPriorityChange(option.value)}
-							>
-								{t(`orderPriority.${option.value}`)}
-							</DropdownMenuItem>
-						))}
-					</DropdownMenuContent>
-				</DropdownMenu>
-				<ActionBarItem variant='destructive' onClick={onDelete}>
-					<Trash2 />
-					{t('common.delete')}
-				</ActionBarItem>
+				{!isMechanic && (
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<ActionBarItem>
+								<Flag />
+								{t('common.priority')}
+							</ActionBarItem>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent>
+							{orderPriorityOptions.map(option => (
+								<DropdownMenuItem
+									key={option.value}
+									className='capitalize'
+									onClick={() => onPriorityChange(option.value)}
+								>
+									{t(`orderPriority.${option.value}`)}
+								</DropdownMenuItem>
+							))}
+						</DropdownMenuContent>
+					</DropdownMenu>
+				)}
+				{!isMechanic && (
+					<ActionBarItem variant='destructive' onClick={onDelete}>
+						<Trash2 />
+						{t('common.delete')}
+					</ActionBarItem>
+				)}
 			</ActionBarGroup>
 		</ActionBar>
 	);

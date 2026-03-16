@@ -1,4 +1,4 @@
-import { User } from '@shared';
+import { User } from '@/shared/interfaces/user.interface';
 
 export interface ITokens {
 	accessToken: string;

@@ -8,9 +8,12 @@ import {
 	Query,
 } from '@nestjs/common';
 import { Part } from 'prisma/generated/prisma/client';
+import { Role } from 'prisma/generated/prisma/client';
+import { Auth } from 'src/auth/decorators/auth.decorator';
 import { GetInventoryDto } from './dto/get-inventory.dto';
 import { InventoryService } from './inventory.service';
 
+@Auth(Role.ADMIN, Role.MANAGER)
 @Controller('inventory')
 export class InventoryController {
 	constructor(private readonly inventoryService: InventoryService) {}

@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: KOSMOdesant567
       POSTGRES_DB: diplom
     ports:
-      - '5432:5432'
+      - '5433:5432'
 
     volumes:
       - diplom_db_data:/var/lib/postgresql/data
