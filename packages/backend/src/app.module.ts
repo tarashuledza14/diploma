@@ -12,6 +12,8 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ServiceModule } from './services/services.module';
 import { UserModule } from './user/user.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
+import { LangchainIntegrationModule } from './langchain-integration/langchain-integration.module';
+import { LangchainIntegrationModule } from './langchain-integration/langchain-integration.module';
 
 @Module({
 	imports: [
@@ -26,6 +28,7 @@ import { VehiclesModule } from './vehicles/vehicles.module';
 		FilterModule,
 		InventoryModule,
 		ServiceModule,
+		LangchainIntegrationModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
