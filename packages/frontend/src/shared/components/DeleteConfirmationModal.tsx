@@ -2,12 +2,12 @@ import { Loader2 } from 'lucide-react';
 import { PropsWithChildren } from 'react';
 import {
 	Button,
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
+	ResponsiveDialog,
+	ResponsiveDialogContent,
+	ResponsiveDialogDescription,
+	ResponsiveDialogFooter,
+	ResponsiveDialogHeader,
+	ResponsiveDialogTitle,
 } from './ui';
 
 interface Props {
@@ -37,12 +37,14 @@ export function DeleteConfirmationModal({
 	children,
 }: PropsWithChildren<Props>) {
 	return (
-		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className='max-w-md'>
-				<DialogHeader>
-					<DialogTitle>{title}</DialogTitle>
-					<DialogDescription>{description}</DialogDescription>
-				</DialogHeader>
+		<ResponsiveDialog open={open} onOpenChange={onOpenChange}>
+			<ResponsiveDialogContent className='max-w-md'>
+				<ResponsiveDialogHeader>
+					<ResponsiveDialogTitle>{title}</ResponsiveDialogTitle>
+					<ResponsiveDialogDescription>
+						{description}
+					</ResponsiveDialogDescription>
+				</ResponsiveDialogHeader>
 
 				{children && (
 					<div className='flex items-center gap-3 p-3 bg-muted rounded-lg'>
@@ -50,7 +52,7 @@ export function DeleteConfirmationModal({
 					</div>
 				)}
 
-				<DialogFooter>
+				<ResponsiveDialogFooter>
 					<Button variant='outline' onClick={() => onOpenChange(false)}>
 						{cancelText}
 					</Button>
@@ -64,8 +66,8 @@ export function DeleteConfirmationModal({
 							confirmText
 						)}
 					</Button>
-				</DialogFooter>
-			</DialogContent>
-		</Dialog>
+				</ResponsiveDialogFooter>
+			</ResponsiveDialogContent>
+		</ResponsiveDialog>
 	);
 }

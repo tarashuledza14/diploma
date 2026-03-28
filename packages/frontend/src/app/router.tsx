@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 // import { DashboardLayout } from '@/components/layouts/DashboardLayout';
 // import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { MainLayout } from '@/layouts';
+import { AIAssistantPage } from '@/modules/ai-assistant/AIAssistantPage';
 import { ProtectedRoute } from '@/modules/auth';
 import {
 	ClientsPage,
@@ -70,6 +71,14 @@ export const router = createBrowserRouter([
 					<ProtectedRoute allowedRoles={['ADMIN', 'MANAGER', 'MECHANIC']} />
 				),
 				children: [
+					{
+						path: '/assistant',
+						element: (
+							<Suspense fallback={<Loading />}>
+								<AIAssistantPage />
+							</Suspense>
+						),
+					},
 					{
 						path: '/orders',
 						element: (

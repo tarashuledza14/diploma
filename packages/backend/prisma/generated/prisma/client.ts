@@ -122,3 +122,13 @@ export type OrderService = Prisma.OrderServiceModel
  * 
  */
 export type Document = Prisma.DocumentModel
+/**
+ * Model ChatSession
+ * 
+ */
+export type ChatSession = Prisma.ChatSessionModel
+/**
+ * Model ChatMessage
+ * 
+ */
+export type ChatMessage = Prisma.ChatMessageModel

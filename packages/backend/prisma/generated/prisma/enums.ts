@@ -77,3 +77,11 @@ export const PartCondition = {
 } as const
 
 export type PartCondition = (typeof PartCondition)[keyof typeof PartCondition]
+
+
+export const ChatMessageRole = {
+  USER: 'USER',
+  ASSISTANT: 'ASSISTANT'
+} as const
+
+export type ChatMessageRole = (typeof ChatMessageRole)[keyof typeof ChatMessageRole]
