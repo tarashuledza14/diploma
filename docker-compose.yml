@@ -8,7 +8,6 @@ services:
       POSTGRES_DB: diplom
     ports:
       - '5433:5432'
-
     volumes:
       - diplom_db_data:/var/lib/postgresql/data
 
@@ -18,10 +17,15 @@ services:
   #     dockerfile: packages/backend/.Dockerfile
   #   depends_on:
   #     - db
+  #     - qdrant
+  #     - unstructured-api
   #   environment:
-  #     DATABASE_URL: 'postgresql://postgres:KOSMOdesant567@db:5433/diplom?schema=public'
+  #     DATABASE_URL: 'postgresql://postgres:KOSMOdesant567@db:5432/diplom?schema=public'
+  #     QDRANT_URL: 'http://qdrant:6333'
+  #     UNSTRUCTURED_API_URL: 'http://unstructured-api:8000'
   #   ports:
   #     - '3000:4200'
+
   qdrant:
     image: qdrant/qdrant:latest
     container_name: crm_qdrant
@@ -31,6 +35,14 @@ services:
       - '6334:6334' # gRPC (швидкий протокол)
     volumes:
       - diplom_qdrant_data:/qdrant/storage
+
+  # 🔥 Наш новий AI-парсер документів
+  unstructured-api:
+    image: downloads.unstructured.io/unstructured-io/unstructured-api:latest
+    container_name: crm_unstructured
+    restart: unless-stopped
+    ports:
+      - '8000:8000'
 
 volumes:
   diplom_db_data:

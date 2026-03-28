@@ -25,7 +25,10 @@
 		"seed": "ts-node prisma/seed.ts"
 	},
 	"dependencies": {
+		"@aws-sdk/client-s3": "^3.1014.0",
+		"@aws-sdk/s3-request-presigner": "^3.1014.0",
 		"@langchain/community": "^1.1.24",
+		"@langchain/core": "^1.1.35",
 		"@langchain/langgraph": "^1.2.5",
 		"@langchain/openai": "^1.2.13",
 		"@langchain/qdrant": "^1.0.1",
@@ -37,13 +40,18 @@
 		"@nestjs/mapped-types": "*",
 		"@nestjs/passport": "^11.0.5",
 		"@nestjs/platform-express": "^10.3.10",
+		"@qdrant/js-client-rest": "^1.17.0",
 		"argon2": "^0.44.0",
 		"class-transformer": "^0.5.1",
 		"class-validator": "^0.14.3",
 		"langchain": "^1.2.32",
 		"passport-jwt": "^4.0.1",
+		"pdf-parse": "^2.4.5",
 		"reflect-metadata": "^0.2.2",
-		"rxjs": "^7.8.1"
+		"rxjs": "^7.8.1",
+		"unstructured-client": "^0.31.0",
+		"uuid": "^13.0.0",
+		"zod": "^4.3.6"
 	},
 	"devDependencies": {
 		"@nestjs/cli": "^10.4.2",
@@ -52,6 +60,7 @@
 		"@prisma/adapter-pg": "^7.3.0",
 		"@prisma/client": "7.1.0",
 		"@types/express": "^4.17.21",
+		"@types/multer": "^2.1.0",
 		"@types/node": "^20.19.30",
 		"@types/supertest": "^6.0.2",
 		"@typescript-eslint/eslint-plugin": "^7.18.0",

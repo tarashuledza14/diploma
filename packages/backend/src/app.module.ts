@@ -4,16 +4,16 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ClientsModule } from './clients/clients.module';
+import { DmsModule } from './dms/dms.module';
 import { FilterModule } from './filter/filter.module';
 import { InventoryModule } from './inventory/inventory.module';
+import { LangchainIntegrationModule } from './langchain-integration/langchain-integration.module';
 import { OrdersModule } from './orders/orders.module';
 import { PaginationModule } from './pagination/pagination.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ServiceModule } from './services/services.module';
 import { UserModule } from './user/user.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
-import { LangchainIntegrationModule } from './langchain-integration/langchain-integration.module';
-import { LangchainIntegrationModule } from './langchain-integration/langchain-integration.module';
 
 @Module({
 	imports: [
@@ -29,6 +29,7 @@ import { LangchainIntegrationModule } from './langchain-integration/langchain-in
 		InventoryModule,
 		ServiceModule,
 		LangchainIntegrationModule,
+		DmsModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
