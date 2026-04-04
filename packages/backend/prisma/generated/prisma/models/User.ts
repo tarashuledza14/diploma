@@ -218,6 +218,7 @@ export type UserWhereInput = {
   mechanicOrders?: Prisma.OrderListRelationFilter
   serviceJobs?: Prisma.OrderServiceListRelationFilter
   stockMovements?: Prisma.StockMovementListRelationFilter
+  chatSessions?: Prisma.ChatSessionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -234,6 +235,7 @@ export type UserOrderByWithRelationInput = {
   mechanicOrders?: Prisma.OrderOrderByRelationAggregateInput
   serviceJobs?: Prisma.OrderServiceOrderByRelationAggregateInput
   stockMovements?: Prisma.StockMovementOrderByRelationAggregateInput
+  chatSessions?: Prisma.ChatSessionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -253,6 +255,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   mechanicOrders?: Prisma.OrderListRelationFilter
   serviceJobs?: Prisma.OrderServiceListRelationFilter
   stockMovements?: Prisma.StockMovementListRelationFilter
+  chatSessions?: Prisma.ChatSessionListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -299,6 +302,7 @@ export type UserCreateInput = {
   mechanicOrders?: Prisma.OrderCreateNestedManyWithoutMechanicInput
   serviceJobs?: Prisma.OrderServiceCreateNestedManyWithoutMechanicInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -315,6 +319,7 @@ export type UserUncheckedCreateInput = {
   mechanicOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutMechanicInput
   serviceJobs?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutMechanicInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -331,6 +336,7 @@ export type UserUpdateInput = {
   mechanicOrders?: Prisma.OrderUpdateManyWithoutMechanicNestedInput
   serviceJobs?: Prisma.OrderServiceUpdateManyWithoutMechanicNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -347,6 +353,7 @@ export type UserUncheckedUpdateInput = {
   mechanicOrders?: Prisma.OrderUncheckedUpdateManyWithoutMechanicNestedInput
   serviceJobs?: Prisma.OrderServiceUncheckedUpdateManyWithoutMechanicNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -510,6 +517,22 @@ export type UserUpdateOneWithoutServiceJobsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutServiceJobsInput, Prisma.UserUpdateWithoutServiceJobsInput>, Prisma.UserUncheckedUpdateWithoutServiceJobsInput>
 }
 
+export type UserCreateNestedOneWithoutChatSessionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChatSessionsInput, Prisma.UserUncheckedCreateWithoutChatSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChatSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutChatSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChatSessionsInput, Prisma.UserUncheckedCreateWithoutChatSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChatSessionsInput
+  upsert?: Prisma.UserUpsertWithoutChatSessionsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutChatSessionsInput, Prisma.UserUpdateWithoutChatSessionsInput>, Prisma.UserUncheckedUpdateWithoutChatSessionsInput>
+}
+
 export type UserCreateWithoutStockMovementsInput = {
   id?: string
   email: string
@@ -523,6 +546,7 @@ export type UserCreateWithoutStockMovementsInput = {
   managerOrders?: Prisma.OrderCreateNestedManyWithoutManagerInput
   mechanicOrders?: Prisma.OrderCreateNestedManyWithoutMechanicInput
   serviceJobs?: Prisma.OrderServiceCreateNestedManyWithoutMechanicInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutStockMovementsInput = {
@@ -538,6 +562,7 @@ export type UserUncheckedCreateWithoutStockMovementsInput = {
   managerOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutManagerInput
   mechanicOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutMechanicInput
   serviceJobs?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutMechanicInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutStockMovementsInput = {
@@ -569,6 +594,7 @@ export type UserUpdateWithoutStockMovementsInput = {
   managerOrders?: Prisma.OrderUpdateManyWithoutManagerNestedInput
   mechanicOrders?: Prisma.OrderUpdateManyWithoutMechanicNestedInput
   serviceJobs?: Prisma.OrderServiceUpdateManyWithoutMechanicNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStockMovementsInput = {
@@ -584,6 +610,7 @@ export type UserUncheckedUpdateWithoutStockMovementsInput = {
   managerOrders?: Prisma.OrderUncheckedUpdateManyWithoutManagerNestedInput
   mechanicOrders?: Prisma.OrderUncheckedUpdateManyWithoutMechanicNestedInput
   serviceJobs?: Prisma.OrderServiceUncheckedUpdateManyWithoutMechanicNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutManagerOrdersInput = {
@@ -599,6 +626,7 @@ export type UserCreateWithoutManagerOrdersInput = {
   mechanicOrders?: Prisma.OrderCreateNestedManyWithoutMechanicInput
   serviceJobs?: Prisma.OrderServiceCreateNestedManyWithoutMechanicInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutManagerOrdersInput = {
@@ -614,6 +642,7 @@ export type UserUncheckedCreateWithoutManagerOrdersInput = {
   mechanicOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutMechanicInput
   serviceJobs?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutMechanicInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutManagerOrdersInput = {
@@ -634,6 +663,7 @@ export type UserCreateWithoutMechanicOrdersInput = {
   managerOrders?: Prisma.OrderCreateNestedManyWithoutManagerInput
   serviceJobs?: Prisma.OrderServiceCreateNestedManyWithoutMechanicInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMechanicOrdersInput = {
@@ -649,6 +679,7 @@ export type UserUncheckedCreateWithoutMechanicOrdersInput = {
   managerOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutManagerInput
   serviceJobs?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutMechanicInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMechanicOrdersInput = {
@@ -680,6 +711,7 @@ export type UserUpdateWithoutManagerOrdersInput = {
   mechanicOrders?: Prisma.OrderUpdateManyWithoutMechanicNestedInput
   serviceJobs?: Prisma.OrderServiceUpdateManyWithoutMechanicNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutManagerOrdersInput = {
@@ -695,6 +727,7 @@ export type UserUncheckedUpdateWithoutManagerOrdersInput = {
   mechanicOrders?: Prisma.OrderUncheckedUpdateManyWithoutMechanicNestedInput
   serviceJobs?: Prisma.OrderServiceUncheckedUpdateManyWithoutMechanicNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutMechanicOrdersInput = {
@@ -721,6 +754,7 @@ export type UserUpdateWithoutMechanicOrdersInput = {
   managerOrders?: Prisma.OrderUpdateManyWithoutManagerNestedInput
   serviceJobs?: Prisma.OrderServiceUpdateManyWithoutMechanicNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMechanicOrdersInput = {
@@ -736,6 +770,7 @@ export type UserUncheckedUpdateWithoutMechanicOrdersInput = {
   managerOrders?: Prisma.OrderUncheckedUpdateManyWithoutManagerNestedInput
   serviceJobs?: Prisma.OrderServiceUncheckedUpdateManyWithoutMechanicNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutServiceJobsInput = {
@@ -751,6 +786,7 @@ export type UserCreateWithoutServiceJobsInput = {
   managerOrders?: Prisma.OrderCreateNestedManyWithoutManagerInput
   mechanicOrders?: Prisma.OrderCreateNestedManyWithoutMechanicInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutServiceJobsInput = {
@@ -766,6 +802,7 @@ export type UserUncheckedCreateWithoutServiceJobsInput = {
   managerOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutManagerInput
   mechanicOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutMechanicInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutServiceJobsInput = {
@@ -797,6 +834,7 @@ export type UserUpdateWithoutServiceJobsInput = {
   managerOrders?: Prisma.OrderUpdateManyWithoutManagerNestedInput
   mechanicOrders?: Prisma.OrderUpdateManyWithoutMechanicNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutServiceJobsInput = {
@@ -812,6 +850,87 @@ export type UserUncheckedUpdateWithoutServiceJobsInput = {
   managerOrders?: Prisma.OrderUncheckedUpdateManyWithoutManagerNestedInput
   mechanicOrders?: Prisma.OrderUncheckedUpdateManyWithoutMechanicNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutChatSessionsInput = {
+  id?: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  fullName: string
+  avatar?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerOrders?: Prisma.OrderCreateNestedManyWithoutManagerInput
+  mechanicOrders?: Prisma.OrderCreateNestedManyWithoutMechanicInput
+  serviceJobs?: Prisma.OrderServiceCreateNestedManyWithoutMechanicInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutChatSessionsInput = {
+  id?: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  fullName: string
+  avatar?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutManagerInput
+  mechanicOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutMechanicInput
+  serviceJobs?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutMechanicInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutChatSessionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutChatSessionsInput, Prisma.UserUncheckedCreateWithoutChatSessionsInput>
+}
+
+export type UserUpsertWithoutChatSessionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutChatSessionsInput, Prisma.UserUncheckedUpdateWithoutChatSessionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutChatSessionsInput, Prisma.UserUncheckedCreateWithoutChatSessionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutChatSessionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutChatSessionsInput, Prisma.UserUncheckedUpdateWithoutChatSessionsInput>
+}
+
+export type UserUpdateWithoutChatSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerOrders?: Prisma.OrderUpdateManyWithoutManagerNestedInput
+  mechanicOrders?: Prisma.OrderUpdateManyWithoutMechanicNestedInput
+  serviceJobs?: Prisma.OrderServiceUpdateManyWithoutMechanicNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutChatSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerOrders?: Prisma.OrderUncheckedUpdateManyWithoutManagerNestedInput
+  mechanicOrders?: Prisma.OrderUncheckedUpdateManyWithoutMechanicNestedInput
+  serviceJobs?: Prisma.OrderServiceUncheckedUpdateManyWithoutMechanicNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -824,6 +943,7 @@ export type UserCountOutputType = {
   mechanicOrders: number
   serviceJobs: number
   stockMovements: number
+  chatSessions: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -831,6 +951,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   mechanicOrders?: boolean | UserCountOutputTypeCountMechanicOrdersArgs
   serviceJobs?: boolean | UserCountOutputTypeCountServiceJobsArgs
   stockMovements?: boolean | UserCountOutputTypeCountStockMovementsArgs
+  chatSessions?: boolean | UserCountOutputTypeCountChatSessionsArgs
 }
 
 /**
@@ -871,6 +992,13 @@ export type UserCountOutputTypeCountStockMovementsArgs<ExtArgs extends runtime.T
   where?: Prisma.StockMovementWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountChatSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChatSessionWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -886,6 +1014,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   mechanicOrders?: boolean | Prisma.User$mechanicOrdersArgs<ExtArgs>
   serviceJobs?: boolean | Prisma.User$serviceJobsArgs<ExtArgs>
   stockMovements?: boolean | Prisma.User$stockMovementsArgs<ExtArgs>
+  chatSessions?: boolean | Prisma.User$chatSessionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -931,6 +1060,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   mechanicOrders?: boolean | Prisma.User$mechanicOrdersArgs<ExtArgs>
   serviceJobs?: boolean | Prisma.User$serviceJobsArgs<ExtArgs>
   stockMovements?: boolean | Prisma.User$stockMovementsArgs<ExtArgs>
+  chatSessions?: boolean | Prisma.User$chatSessionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -943,6 +1073,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     mechanicOrders: Prisma.$OrderPayload<ExtArgs>[]
     serviceJobs: Prisma.$OrderServicePayload<ExtArgs>[]
     stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
+    chatSessions: Prisma.$ChatSessionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1352,6 +1483,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   mechanicOrders<T extends Prisma.User$mechanicOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$mechanicOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   serviceJobs<T extends Prisma.User$serviceJobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$serviceJobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   stockMovements<T extends Prisma.User$stockMovementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  chatSessions<T extends Prisma.User$chatSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$chatSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1871,6 +2003,30 @@ export type User$stockMovementsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.StockMovementScalarFieldEnum | Prisma.StockMovementScalarFieldEnum[]
+}
+
+/**
+ * User.chatSessions
+ */
+export type User$chatSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatSession
+   */
+  select?: Prisma.ChatSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChatSession
+   */
+  omit?: Prisma.ChatSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChatSessionInclude<ExtArgs> | null
+  where?: Prisma.ChatSessionWhereInput
+  orderBy?: Prisma.ChatSessionOrderByWithRelationInput | Prisma.ChatSessionOrderByWithRelationInput[]
+  cursor?: Prisma.ChatSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatSessionScalarFieldEnum | Prisma.ChatSessionScalarFieldEnum[]
 }
 
 /**

@@ -5,6 +5,7 @@ import {
 	Injectable,
 	Logger,
 	NotFoundException,
+	UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HumanMessage } from 'langchain';
@@ -41,7 +42,9 @@ function getChunkText(msg: any): string {
 }
 
 /** Остання відповідь асистента без проміжних викликів інструментів (для збереження в чат). */
-function extractAssistantReplyFromMessages(messages: any[] | undefined): string {
+function extractAssistantReplyFromMessages(
+	messages: any[] | undefined,
+): string {
 	if (!messages?.length) {
 		return '';
 	}
@@ -121,16 +124,17 @@ Assistant: ${firstAiResponse}`;
 		});
 	}
 
-	async createChatSession(title?: string) {
+	async createChatSession(userId: string, title?: string) {
 		const safeTitle = title?.trim() || 'New chat';
 		return this.db.chatSession.create({
-			data: { title: safeTitle },
+			data: { title: safeTitle, userId },
 			select: { id: true, title: true, createdAt: true, updatedAt: true },
 		});
 	}
 
-	async getChatSessions() {
+	async getChatSessions(userId: string) {
 		const sessions = await this.db.chatSession.findMany({
+			where: { userId },
 			orderBy: { updatedAt: 'desc' },
 			include: {
 				messages: {
@@ -150,9 +154,9 @@ Assistant: ${firstAiResponse}`;
 		}));
 	}
 
-	async getChatMessages(chatId: string) {
-		const chat = await this.db.chatSession.findUnique({
-			where: { id: chatId },
+	async getChatMessages(chatId: string, userId: string) {
+		const chat = await this.db.chatSession.findFirst({
+			where: { id: chatId, userId },
 			select: { id: true },
 		});
 
@@ -167,9 +171,9 @@ Assistant: ${firstAiResponse}`;
 		});
 	}
 
-	async deleteChatSession(chatId: string) {
+	async deleteChatSession(chatId: string, userId: string) {
 		const deleted = await this.db.chatSession.deleteMany({
-			where: { id: chatId },
+			where: { id: chatId, userId },
 		});
 
 		if (deleted.count === 0) {
@@ -179,7 +183,7 @@ Assistant: ${firstAiResponse}`;
 		return { success: true };
 	}
 
-	async process(chatId: string, userMessage: string) {
+	async process(chatId: string, userMessage: string, userId: string) {
 		if (!chatId?.trim()) {
 			throw new BadRequestException('chatId is required');
 		}
@@ -190,8 +194,21 @@ Assistant: ${firstAiResponse}`;
 			throw new BadRequestException('message is required');
 		}
 
-		const chat = await this.db.chatSession.findUnique({
-			where: { id: chatId },
+		if (!userId?.trim()) {
+			throw new UnauthorizedException('User context is required');
+		}
+
+		const currentUser = await this.db.user.findUnique({
+			where: { id: userId },
+			select: { role: true },
+		});
+
+		if (!currentUser) {
+			throw new UnauthorizedException('User not found');
+		}
+
+		const chat = await this.db.chatSession.findFirst({
+			where: { id: chatId, userId },
 			select: { id: true },
 		});
 
@@ -234,6 +251,7 @@ Assistant: ${firstAiResponse}`;
 					const initialGraphState = {
 						messages: [new HumanMessage(normalizedUserMessage)],
 						next: 'supervisor',
+						userRole: currentUser.role,
 					};
 
 					/**

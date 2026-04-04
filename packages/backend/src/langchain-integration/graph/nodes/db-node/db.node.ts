@@ -1,6 +1,10 @@
 import { BaseMessage } from '@langchain/core/messages';
 import { ChatOpenAI } from '@langchain/openai';
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import {
+	Injectable,
+	OnModuleInit,
+	UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import { createAgent, toolCallLimitMiddleware } from 'langchain';
@@ -120,6 +124,15 @@ The maximum number of \`execute_sql\` calls per run is limited; use them efficie
 	}
 
 	async process(state: typeof AgentState.State) {
+		const normalizedRole = (state.userRole ?? '').toUpperCase();
+		const hasDbAccess =
+			normalizedRole === 'ADMIN' || normalizedRole === 'MANAGER';
+		if (!hasDbAccess) {
+			throw new UnauthorizedException(
+				'Access to db_node is forbidden for your role',
+			);
+		}
+
 		const executeSqlTool = createExecuteSqlTool(query =>
 			this.prisma.$queryRawUnsafe(query),
 		);

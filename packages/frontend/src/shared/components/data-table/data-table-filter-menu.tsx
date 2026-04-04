@@ -345,166 +345,161 @@ function DataTableFilterItem<TData>({
 	onFilterUpdate,
 	onFilterRemove,
 }: DataTableFilterItemProps<TData>) {
-	{
-		const { t } = useTranslation();
-		const [showFieldSelector, setShowFieldSelector] = React.useState(false);
-		const [showOperatorSelector, setShowOperatorSelector] =
-			React.useState(false);
-		const [showValueSelector, setShowValueSelector] = React.useState(false);
+	const { t } = useTranslation();
+	const [showFieldSelector, setShowFieldSelector] = React.useState(false);
+	const [showOperatorSelector, setShowOperatorSelector] = React.useState(false);
+	const [showValueSelector, setShowValueSelector] = React.useState(false);
 
-		const column = columns.find(column => column.id === filter.id);
+	const column = columns.find(column => column.id === filter.id);
 
-		const operatorListboxId = `${filterItemId}-operator-listbox`;
-		const inputId = `${filterItemId}-input`;
+	const operatorListboxId = `${filterItemId}-operator-listbox`;
+	const inputId = `${filterItemId}-input`;
 
-		const columnMeta = column?.columnDef.meta;
-		const filterOperators = getFilterOperators(filter.variant);
+	const columnMeta = column?.columnDef.meta;
+	const filterOperators = getFilterOperators(filter.variant);
 
-		const onItemKeyDown = React.useCallback(
-			(event: React.KeyboardEvent<HTMLDivElement>) => {
-				if (
-					event.target instanceof HTMLInputElement ||
-					event.target instanceof HTMLTextAreaElement
-				) {
-					return;
-				}
+	const onItemKeyDown = React.useCallback(
+		(event: React.KeyboardEvent<HTMLDivElement>) => {
+			if (
+				event.target instanceof HTMLInputElement ||
+				event.target instanceof HTMLTextAreaElement
+			) {
+				return;
+			}
 
-				if (showFieldSelector || showOperatorSelector || showValueSelector) {
-					return;
-				}
+			if (showFieldSelector || showOperatorSelector || showValueSelector) {
+				return;
+			}
 
-				if (REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase())) {
-					event.preventDefault();
-					onFilterRemove(filter.filterId);
-				}
-			},
-			[
-				filter.filterId,
-				showFieldSelector,
-				showOperatorSelector,
-				showValueSelector,
-				onFilterRemove,
-			],
-		);
+			if (REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase())) {
+				event.preventDefault();
+				onFilterRemove(filter.filterId as string);
+			}
+		},
+		[
+			filter.filterId,
+			showFieldSelector,
+			showOperatorSelector,
+			showValueSelector,
+			onFilterRemove,
+		],
+	);
 
-		if (!column) return null;
+	if (!column) return null;
 
-		return (
-			<div
-				key={filter.filterId}
-				role='listitem'
-				id={filterItemId}
-				className='flex h-8 items-center rounded-md bg-background'
-				onKeyDown={onItemKeyDown}
-			>
-				<Popover open={showFieldSelector} onOpenChange={setShowFieldSelector}>
-					<PopoverTrigger asChild>
-						<Button
-							variant='ghost'
-							size='sm'
-							className='rounded-none rounded-l-md border border-r-0 font-normal dark:bg-input/30'
-						>
-							{columnMeta?.icon && (
-								<columnMeta.icon className='text-muted-foreground' />
-							)}
-							{columnMeta?.label ?? column.id}
-						</Button>
-					</PopoverTrigger>
-					<PopoverContent align='start' className='w-48 p-0'>
-						<Command loop>
-							<CommandInput placeholder={t('table.filter.searchFields')} />
-							<CommandList>
-								<CommandEmpty>{t('table.filter.noFieldsFound')}</CommandEmpty>
-								<CommandGroup>
-									{columns.map(column => (
-										<CommandItem
-											key={column.id}
-											value={column.id}
-											onSelect={() => {
-												onFilterUpdate(filter.filterId, {
-													id: column.id as Extract<keyof TData, string>,
-													variant: column.columnDef.meta?.variant ?? 'text',
-													operator: getDefaultFilterOperator(
-														column.columnDef.meta?.variant ?? 'text',
-													),
-													value: '',
-												});
-
-												setShowFieldSelector(false);
-											}}
-										>
-											{column.columnDef.meta?.icon && (
-												<column.columnDef.meta.icon />
-											)}
-											<span className='truncate'>
-												{column.columnDef.meta?.label ?? column.id}
-											</span>
-											<Check
-												className={cn(
-													'ml-auto',
-													column.id === filter.id ? 'opacity-100' : 'opacity-0',
-												)}
-											/>
-										</CommandItem>
-									))}
-								</CommandGroup>
-							</CommandList>
-						</Command>
-					</PopoverContent>
-				</Popover>
-				<Select
-					open={showOperatorSelector}
-					onOpenChange={setShowOperatorSelector}
-					value={filter.operator}
-					onValueChange={(value: FilterOperator) =>
-						onFilterUpdate(filter.filterId, {
-							operator: value,
-							value:
-								value === 'isEmpty' || value === 'isNotEmpty'
-									? ''
-									: filter.value,
-						})
-					}
-				>
-					<SelectTrigger
-						aria-controls={operatorListboxId}
-						className='h-8 rounded-none border-r-0 px-2.5 lowercase data-size:h-8 [&_svg]:hidden'
+	return (
+		<div
+			key={filter.filterId}
+			role='listitem'
+			id={filterItemId}
+			className='flex h-8 items-center rounded-md bg-background'
+			onKeyDown={onItemKeyDown}
+		>
+			<Popover open={showFieldSelector} onOpenChange={setShowFieldSelector}>
+				<PopoverTrigger asChild>
+					<Button
+						variant='ghost'
+						size='sm'
+						className='rounded-none rounded-l-md border border-r-0 font-normal dark:bg-input/30'
 					>
-						<SelectValue placeholder={filter.operator} />
-					</SelectTrigger>
-					<SelectContent id={operatorListboxId}>
-						{filterOperators.map(operator => (
-							<SelectItem
-								key={operator.value}
-								className='lowercase'
-								value={operator.value}
-							>
-								{t(operator.label)}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-				{onFilterInputRender({
-					filter,
-					column,
-					inputId,
-					onFilterUpdate,
-					showValueSelector,
-					t,
-					setShowValueSelector,
-				})}
-				<Button
-					aria-controls={filterItemId}
-					variant='ghost'
-					size='sm'
-					className='h-full rounded-none rounded-r-md border border-l-0 px-1.5 font-normal dark:bg-input/30'
-					onClick={() => onFilterRemove(filter.filterId)}
-				}
+						{columnMeta?.icon && (
+							<columnMeta.icon className='text-muted-foreground' />
+						)}
+						{columnMeta?.label ?? column.id}
+					</Button>
+				</PopoverTrigger>
+				<PopoverContent align='start' className='w-48 p-0'>
+					<Command loop>
+						<CommandInput placeholder={t('table.filter.searchFields')} />
+						<CommandList>
+							<CommandEmpty>{t('table.filter.noFieldsFound')}</CommandEmpty>
+							<CommandGroup>
+								{columns.map(column => (
+									<CommandItem
+										key={column.id}
+										value={column.id}
+										onSelect={() => {
+											onFilterUpdate(filter.filterId as string, {
+												id: column.id as Extract<keyof TData, string>,
+												variant: column.columnDef.meta?.variant ?? 'text',
+												operator: getDefaultFilterOperator(
+													column.columnDef.meta?.variant ?? 'text',
+												),
+												value: '',
+											});
 
-				</Button>
-			</div>
-		);
-	}
+											setShowFieldSelector(false);
+										}}
+									>
+										{column.columnDef.meta?.icon && (
+											<column.columnDef.meta.icon />
+										)}
+										<span className='truncate'>
+											{column.columnDef.meta?.label ?? column.id}
+										</span>
+										<Check
+											className={cn(
+												'ml-auto',
+												column.id === filter.id ? 'opacity-100' : 'opacity-0',
+											)}
+										/>
+									</CommandItem>
+								))}
+							</CommandGroup>
+						</CommandList>
+					</Command>
+				</PopoverContent>
+			</Popover>
+			<Select
+				open={showOperatorSelector}
+				onOpenChange={setShowOperatorSelector}
+				value={filter.operator}
+				onValueChange={(value: FilterOperator) =>
+					onFilterUpdate(filter.filterId as string, {
+						operator: value,
+						value:
+							value === 'isEmpty' || value === 'isNotEmpty' ? '' : filter.value,
+					})
+				}
+			>
+				<SelectTrigger
+					aria-controls={operatorListboxId}
+					className='h-8 rounded-none border-r-0 px-2.5 lowercase data-size:h-8 [&_svg]:hidden'
+				>
+					<SelectValue placeholder={filter.operator} />
+				</SelectTrigger>
+				<SelectContent id={operatorListboxId}>
+					{filterOperators.map(operator => (
+						<SelectItem
+							key={operator.value}
+							className='lowercase'
+							value={operator.value}
+						>
+							{t(operator.label)}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
+			{onFilterInputRender({
+				filter,
+				column,
+				inputId,
+				onFilterUpdate,
+				showValueSelector,
+				t,
+				setShowValueSelector,
+			})}
+			<Button
+				aria-controls={filterItemId}
+				variant='ghost'
+				size='sm'
+				className='h-full rounded-none rounded-r-md border border-l-0 px-1.5 font-normal dark:bg-input/30'
+				onClick={() => onFilterRemove(filter.filterId as string)}
+			>
+				<X className='size-3.5' />
+			</Button>
+		</div>
+	);
 }
 
 interface FilterValueSelectorProps<TData> {
@@ -624,15 +619,16 @@ function onFilterInputRender<TData>({
 			<div
 				id={inputId}
 				role='status'
-				aria-label={`${column.columnDef.meta?.label} filter is ${
-					filter.operator === 'isEmpty' ? 'empty' : 'not empty'
-				}`}
+				aria-label={`${column.columnDef.meta?.label} ${t(
+					filter.operator === 'isEmpty'
+						? 'table.filter.aria.empty'
+						: 'table.filter.aria.notEmpty',
+				)}`}
 				aria-live='polite'
 				className='h-full w-16 rounded-none border bg-transparent px-1.5 py-0.5 text-muted-foreground dark:bg-input/30'
 			/>
 		);
 	}
-	console.log('filter', filter);
 
 	switch (filter.variant) {
 		case 'text':
@@ -663,9 +659,13 @@ function onFilterInputRender<TData>({
 					inputMode={isNumber ? 'numeric' : undefined}
 					className='h-full w-24 rounded-none px-1.5'
 					defaultValue={typeof filter.value === 'string' ? filter.value : ''}
-					placeholder={column.columnDef.meta?.placeholder ?? t('table.filter.enterValue')}
+					placeholder={
+						column.columnDef.meta?.placeholder ?? t('table.filter.enterValue')
+					}
 					onChange={event =>
-						onFilterUpdate(filter.filterId, { value: event.target.value })
+						onFilterUpdate(filter.filterId as string, {
+							value: event.target.value,
+						})
 					}
 				/>
 			);
@@ -680,7 +680,7 @@ function onFilterInputRender<TData>({
 					onOpenChange={setShowValueSelector}
 					value={typeof filter.value === 'string' ? filter.value : 'true'}
 					onValueChange={(value: 'true' | 'false') =>
-						onFilterUpdate(filter.filterId, { value })
+						onFilterUpdate(filter.filterId as string, { value })
 					}
 				>
 					<SelectTrigger
@@ -689,7 +689,9 @@ function onFilterInputRender<TData>({
 						className='rounded-none bg-transparent px-1.5 py-0.5 [&_svg]:hidden'
 					>
 						<SelectValue
-							placeholder={filter.value ? t('table.filter.true') : t('table.filter.false')}
+							placeholder={
+								filter.value ? t('table.filter.true') : t('table.filter.false')
+							}
 						/>
 					</SelectTrigger>
 					<SelectContent id={inputListboxId}>
@@ -701,12 +703,8 @@ function onFilterInputRender<TData>({
 							))
 						) : (
 							<>
-								<SelectItem value='true'>
-									{t('table.filter.true')}
-								</SelectItem>
-								<SelectItem value='false'>
-									{t('table.filter.false')}
-								</SelectItem>
+								<SelectItem value='true'>{t('table.filter.true')}</SelectItem>
+								<SelectItem value='false'>{t('table.filter.false')}</SelectItem>
 							</>
 						)}
 					</SelectContent>
@@ -761,7 +759,7 @@ function onFilterInputRender<TData>({
 										{selectedOptions.length > 1
 											? t('table.filter.selectedCount', {
 													count: selectedOptions.length,
-											  })
+												})
 											: selectedOptions[0]?.label}
 									</span>
 								</>
@@ -789,7 +787,7 @@ function onFilterInputRender<TData>({
 															? selectedValues.filter(v => v !== option.value)
 															: [...selectedValues, option.value]
 														: option.value;
-												onFilterUpdate(filter.filterId, { value });
+												onFilterUpdate(filter.filterId as string, { value });
 											}}
 										>
 											{option.icon && <option.icon />}
@@ -878,7 +876,7 @@ function onFilterInputRender<TData>({
 											}
 								}
 								onSelect={date => {
-									onFilterUpdate(filter.filterId, {
+									onFilterUpdate(filter.filterId as string, {
 										value: date
 											? [
 													(date.from?.getTime() ?? '').toString(),
@@ -897,7 +895,7 @@ function onFilterInputRender<TData>({
 									dateValue[0] ? new Date(Number(dateValue[0])) : undefined
 								}
 								onSelect={date => {
-									onFilterUpdate(filter.filterId, {
+									onFilterUpdate(filter.filterId as string, {
 										value: (date?.getTime() ?? '').toString(),
 									});
 								}}

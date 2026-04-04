@@ -2104,6 +2104,7 @@ export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typ
 export const ChatSessionScalarFieldEnum = {
   id: 'id',
   title: 'title',
+  userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
