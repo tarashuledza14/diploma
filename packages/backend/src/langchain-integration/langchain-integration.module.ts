@@ -5,7 +5,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { ChatController } from './controllers/chat.controller';
 import { DocumentController } from './controllers/document.controller';
 import { LangchainIntegrationService } from './graph/langchain-integration.service';
-import { DbNodeService } from './graph/nodes/db.node';
+import { DbNodeService } from './graph/nodes/db-node/db.node';
 import { RagNodeService } from './graph/nodes/rag-node/rag.node';
 import { SupervisorNodeService } from './graph/nodes/supervisor.node';
 import { DocumentParserController } from './services/document-parser.controller';

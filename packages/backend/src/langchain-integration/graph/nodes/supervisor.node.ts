@@ -6,9 +6,10 @@ import { AgentState } from '../state';
 import { systemPrompt } from './prompts/supervisor.prompt';
 
 const routeSchema = z.object({
-	next: z.enum(['rag_node', '__end__']).describe(
+	next: z.enum(['rag_node', 'db_node', '__end__']).describe(
 		`Determine the next step in the workflow:
 		 - 'rag_node': Choose if the question concerns technical specifications, diagrams, torque values, or VW Passat B8 repair procedures.
+		 - 'db_node': Choose if the question requires querying the database.
 		 - '__end__': Choose ONLY when the answer is already fully formed by the specialist and requires no additional clarification.`,
 	),
 	reasoning: z

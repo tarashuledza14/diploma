@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { QdrantService } from 'src/langchain-integration/services/qdrant.service';
 import { AgentState } from '../../state';
+import { handleToolCalls } from '../../utils/tool-calls';
 import { systemPrompt } from './prompts/rag-node-system.prompt';
 import { createSearchManualsTool } from './tools/search-manuals.tool';
 
@@ -32,18 +33,9 @@ export class RagNodeService {
 		];
 
 		const response = await llmWithTools.invoke(input);
-		const toolCalls = response.tool_calls || [];
-		let toolMessages: BaseMessageLike[] = [];
-		for (const tool_call of toolCalls) {
-			if (tool_call.name === 'search_manuals') {
-				const toolResponse = await searchTool.invoke(tool_call);
-				toolMessages.push({
-					role: 'tool',
-					content: toolResponse.content,
-					tool_call_id: tool_call.id,
-				});
-			}
-		}
+		const toolMessages = await handleToolCalls(response, {
+			search_manuals: searchTool,
+		});
 		const finalResponse = await this.llm.invoke([
 			...input,
 			response,

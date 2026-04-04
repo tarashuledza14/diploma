@@ -10,6 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import { HumanMessage } from 'langchain';
 import { Observable } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { DbNodeService } from './nodes/db-node/db.node';
 import { RagNodeService } from './nodes/rag-node/rag.node';
 import { SupervisorNodeService } from './nodes/supervisor.node';
 import { AgentState } from './state';
@@ -25,12 +26,54 @@ function getChunkText(msg: any): string {
 		return content
 			.map(part => {
 				if (typeof part === 'string') return part;
-				if (part && typeof part === 'object' && typeof part.text === 'string') {
-					return part.text;
+				if (part && typeof part === 'object') {
+					if (typeof part.text === 'string') return part.text;
+					if (part.type === 'text' && typeof part.text === 'string') {
+						return part.text;
+					}
 				}
 				return '';
 			})
 			.join('');
+	}
+
+	return '';
+}
+
+/** Остання відповідь асистента без проміжних викликів інструментів (для збереження в чат). */
+function extractAssistantReplyFromMessages(messages: any[] | undefined): string {
+	if (!messages?.length) {
+		return '';
+	}
+
+	for (let i = messages.length - 1; i >= 0; i--) {
+		const msg = messages[i];
+		const msgType =
+			typeof msg?._getType === 'function' ? msg._getType() : undefined;
+		if (msgType !== 'ai') {
+			continue;
+		}
+
+		const hasToolCalls =
+			(msg.tool_calls && msg.tool_calls.length > 0) ||
+			(msg.tool_call_chunks && msg.tool_call_chunks.length > 0);
+		if (hasToolCalls) {
+			continue;
+		}
+
+		const text = getChunkText(msg).trim();
+		if (!text) {
+			continue;
+		}
+		if (
+			text.includes('EXECUTING_SQL_QUERY') ||
+			text.includes('Call to tool was made') ||
+			text.includes('{"query":')
+		) {
+			continue;
+		}
+
+		return text;
 	}
 
 	return '';
@@ -46,6 +89,7 @@ export class LangchainIntegrationService {
 		private readonly configService: ConfigService,
 		private readonly supervisorService: SupervisorNodeService,
 		private readonly ragService: RagNodeService,
+		private readonly dbService: DbNodeService,
 	) {
 		this.titleModel = new ChatOpenAI({
 			modelName: this.configService.get('OPENAI_TITLE_MODEL') || 'gpt-4o-mini',
@@ -171,12 +215,15 @@ Assistant: ${firstAiResponse}`;
 		const workflow = new StateGraph(AgentState)
 			.addNode('supervisor', state => this.supervisorService.process(state))
 			.addNode('rag_node', state => this.ragService.process(state))
+			.addNode('db_node', state => this.dbService.process(state))
 			.addEdge(START, 'supervisor')
 			.addConditionalEdges('supervisor', state => state.next, {
 				rag_node: 'rag_node',
+				db_node: 'db_node',
 				__end__: '__end__',
 			})
-			.addEdge('rag_node', END);
+			.addEdge('rag_node', END)
+			.addEdge('db_node', END);
 
 		return new Observable(subscriber => {
 			(async () => {
@@ -184,47 +231,43 @@ Assistant: ${firstAiResponse}`;
 					const app = workflow.compile();
 					let assistantText = '';
 
-					const stream = await app.stream(
-						{
-							messages: [new HumanMessage(normalizedUserMessage)],
-							next: 'supervisor',
-						},
-						{ streamMode: 'messages' },
-					);
+					const initialGraphState = {
+						messages: [new HumanMessage(normalizedUserMessage)],
+						next: 'supervisor',
+					};
+
+					/**
+					 * `streamMode: "messages"` ловить лише токени зовнішнього графа. Узли `db_node` / `rag_node`
+					 * всередині викликають LLM через `invoke` / внутрішній агент — ці токени сюди не потрапляють,
+					 * тому текст відповіді виходив порожнім. `values` повертає повний стан після кожного кроку,
+					 * включно з повідомленнями після завершення db/rag.
+					 */
+					const stream = await app.stream(initialGraphState, {
+						streamMode: 'values',
+					});
 
 					subscriber.next({
 						data: { type: 'status', message: 'Аналізую запит...' },
 					} as MessageEvent);
 
-					for await (const [msg, metadata] of stream as any) {
-						const currentNode = metadata.langgraph_node;
-						const msgType =
-							typeof msg?._getType === 'function' ? msg._getType() : undefined;
-
-						if (
-							(msg.tool_calls && msg.tool_calls.length > 0) ||
-							msg?.name === 'search_manuals'
-						) {
-							subscriber.next({
-								data: {
-									type: 'status',
-									message: 'Шукаю в технічних мануалах...',
-								},
-							} as MessageEvent);
+					for await (const state of stream as AsyncIterable<
+						typeof AgentState.State
+					>) {
+						const reply = extractAssistantReplyFromMessages(state.messages);
+						if (!reply || reply.length <= assistantText.length) {
+							continue;
 						}
+						const delta = reply.slice(assistantText.length);
+						assistantText = reply;
+						subscriber.next({
+							data: { type: 'text_chunk', text: delta },
+						} as MessageEvent);
+					}
 
-						if (msgType === 'ai' && currentNode === 'rag_node') {
-							const textChunk = getChunkText(msg);
-
-							if (!textChunk) {
-								continue;
-							}
-
-							subscriber.next({
-								data: { type: 'text_chunk', text: textChunk },
-							} as MessageEvent);
-							assistantText += textChunk;
-						}
+					if (!assistantText.trim()) {
+						this.logger.warn(
+							`Empty assistant reply after graph run for chat ${chatId}.`,
+						);
 					}
 
 					await this.db.chatMessage.create({
