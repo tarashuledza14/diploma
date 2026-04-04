@@ -10,6 +10,7 @@
 	"common": {
 		"loading": "Завантаження...",
 		"cancel": "Скасувати",
+		"close": "Закрити",
 		"delete": "Видалити",
 		"deleting": "Видалення...",
 		"saving": "Збереження...",
@@ -27,7 +28,10 @@
 		"phone": "Телефон",
 		"password": "Пароль",
 		"notes": "Нотатки",
-		"adding": "Додавання..."
+		"adding": "Додавання...",
+		"to": "до",
+		"select": "Оберіть...",
+		"noResultsFound": "Результатів не знайдено."
 	},
 	"theme": {
 		"toggle": "Перемкнути тему",
@@ -52,7 +56,70 @@
 		"toggleColumns": "Показати/сховати колонки",
 		"view": "Вигляд",
 		"searchColumns": "Пошук колонок...",
-		"noColumnsFound": "Колонки не знайдено."
+		"noColumnsFound": "Колонки не знайдено.",
+		"filter": {
+			"button": "Фільтр",
+			"filters": "Фільтри",
+			"noFiltersApplied": "Фільтри не застосовано",
+			"modifyFilters": "Змініть фільтри, щоб уточнити рядки.",
+			"addFilters": "Додайте фільтри, щоб уточнити рядки.",
+			"addFilter": "Додати фільтр",
+			"reset": "Скинути",
+			"resetFilters": "Скинути фільтри",
+			"resetAllAria": "Скинути всі фільтри",
+			"openMenuAria": "Відкрити меню фільтрів",
+			"searchFields": "Пошук полів...",
+			"noFieldsFound": "Поля не знайдено.",
+			"noOptionsFound": "Опції не знайдено.",
+			"where": "Де",
+			"selectJoinOperatorAria": "Оберіть логічний оператор",
+			"selectField": "Оберіть поле",
+			"typeToAdd": "Введіть значення для фільтра...",
+			"filterBy": "Фільтр за \"{{value}}\"",
+			"enterValue": "Введіть значення...",
+			"true": "Так",
+			"false": "Ні",
+			"selectOption": "Оберіть опцію...",
+			"selectOptions": "Оберіть опції...",
+			"searchOptions": "Пошук опцій...",
+			"pickDate": "Оберіть дату...",
+			"selectedCount": "Обрано: {{count}}",
+			"clearSpecificFilterAria": "Очистити фільтр {{title}}",
+			"aria": {
+				"empty": "фільтр порожній",
+				"notEmpty": "фільтр не порожній"
+			},
+			"operators": {
+				"contains": "Містить",
+				"doesNotContain": "Не містить",
+				"is": "Є",
+				"isNot": "Не є",
+				"isLessThan": "Менше ніж",
+				"isLessThanOrEqualTo": "Менше або дорівнює",
+				"isGreaterThan": "Більше ніж",
+				"isGreaterThanOrEqualTo": "Більше або дорівнює",
+				"isBetween": "Між",
+				"isBefore": "До",
+				"isAfter": "Після",
+				"isOnOrBefore": "На або до",
+				"isOnOrAfter": "На або після",
+				"hasAnyOf": "Має будь-який із",
+				"hasNoneOf": "Не має жодного з"
+			}
+		},
+		"sort": {
+			"button": "Сортування",
+			"sortBy": "Сортувати за",
+			"noSortingApplied": "Сортування не застосовано",
+			"modifySorting": "Змініть сортування для впорядкування рядків.",
+			"addSorting": "Додайте сортування для впорядкування рядків.",
+			"addSort": "Додати сортування",
+			"resetSorting": "Скинути сортування",
+			"orders": {
+				"asc": "За зростанням",
+				"desc": "За спаданням"
+			}
+		}
 	},
 	"sidebar": {
 		"brand": {
@@ -74,6 +141,11 @@
 			"services": "Послуги",
 			"partsInventory": "Склад запчастин",
 			"settings": "Налаштування"
+		},
+		"toggle": "Перемкнути бічну панель",
+		"mobile": {
+			"title": "Бічна панель",
+			"description": "Показує мобільну бічну панель."
 		}
 	},
 	"userMenu": {
@@ -81,6 +153,9 @@
 		"profile": "Профіль",
 		"settings": "Налаштування",
 		"logout": "Вийти"
+	},
+	"header": {
+		"viewNotifications": "Переглянути сповіщення"
 	},
 	"auth": {
 		"welcomeBack": "З поверненням",
@@ -223,6 +298,39 @@
 	"inventory": {
 		"title": "Склад запчастин",
 		"subtitle": "Керуйте запасами та замовленнями запчастин",
+		"stats": {
+			"totalParts": "Усього запчастин",
+			"purchaseValue": "Закупівельна вартість",
+			"retailValue": "Роздріб: ${{value}}",
+			"reserved": "Зарезервовано",
+			"lowStock": "Низький залишок",
+			"outOfStock": "Немає в наявності"
+		},
+		"details": {
+			"baseInformation": "Базова інформація",
+			"code": "Код",
+			"storageLogistics": "Зберігання та логістика",
+			"batch": "Партія",
+			"purchasePrice": "Закупівельна ціна",
+			"received": "Отримано",
+			"name": "Назва",
+			"contact": "Контакт",
+			"duration": "Тривалість",
+			"mileageLimit": "Ліміт пробігу",
+			"monthsValue": "{{value}} міс.",
+			"kmValue": "{{value}} км",
+			"noLimit": "Без обмежень"
+		},
+		"movement": {
+			"empty": "Історія руху поки порожня",
+			"description": "{{partName}} ({{partSku}}) - Всі рухи по складу",
+			"types": {
+				"received": "Надходження",
+				"issued": "Видано",
+				"reserved": "Зарезервовано",
+				"returned": "Повернено"
+			}
+		},
 		"actions": {
 			"addPart": "Додати запчастину",
 			"movementHistory": "Історія руху"
@@ -257,6 +365,81 @@
 			"updateError": "Не вдалося оновити запчастину",
 			"bulkDeleteSuccess": "Видалено запчастин: {{count}}",
 			"bulkDeleteError": "Не вдалося видалити запчастини"
+		},
+		"form": {
+			"tabs": {
+				"baseInfo": "Базова інформація",
+				"stock": "Склад",
+				"finance": "Фінанси",
+				"details": "Деталі"
+			},
+			"base": {
+				"partNameLabel": "Назва запчастини",
+				"skuLabel": "SKU (внутрішній)",
+				"oemLabel": "OEM номер",
+				"categoryLabel": "Категорія",
+				"brandLabel": "Бренд",
+				"barcodeLabel": "Штрихкод",
+				"compatibilityLabel": "Сумісність",
+				"placeholders": {
+					"partName": "Масляний фільтр",
+					"sku": "OF-12345",
+					"oem": "04152-YZZA1",
+					"selectCategory": "Оберіть категорію",
+					"selectBrand": "Оберіть бренд",
+					"barcode": "4047024743892",
+					"addCompatibility": "Додати модель..."
+				}
+			},
+			"stock": {
+				"storageLocationLabel": "Місце зберігання",
+				"unitLabel": "Одиниця виміру",
+				"availableLabel": "Доступно",
+				"minStockLabel": "Мін. залишок (сповіщення)",
+				"weightLabel": "Вага",
+				"dimensionsLabel": "Розміри",
+				"alertMessage": "Сповіщення спрацює, коли доступна кількість стане меншою за {{value}} {{unit}}",
+				"placeholders": {
+					"storageLocation": "A-3-2 (Секція-Полиця-Комірка)",
+					"weight": "0.3 кг",
+					"dimensions": "95 x 95 x 75 мм"
+				}
+			},
+			"finance": {
+				"purchasePriceLabel": "Закупівельна ціна",
+				"retailPriceLabel": "Роздрібна ціна",
+				"calculatedMarkupLabel": "Розрахована націнка",
+				"priceCategoryLabel": "Цінова категорія",
+				"supplierLabel": "Постачальник",
+				"priceCategory": {
+					"retail": "РОЗДРІБ",
+					"wholesale": "ГУРТ",
+					"special": "СПЕЦІАЛЬНА"
+				},
+				"placeholders": {
+					"purchasePrice": "12.50",
+					"retailPrice": "24.99",
+					"selectSupplier": "Оберіть постачальника"
+				}
+			},
+			"details": {
+				"conditionLabel": "Стан",
+				"photoLabel": "Фото",
+				"uploadPhoto": "Завантажити фото",
+				"warrantyTitle": "Гарантія",
+				"warrantyMonthsLabel": "Гарантія (місяці)",
+				"warrantyKmLabel": "Гарантія (км)",
+				"notesLabel": "Нотатки",
+				"condition": {
+					"new": "Нова",
+					"used": "Вживана",
+					"refurbished": "Відновлена"
+				},
+				"placeholders": {
+					"warrantyKm": "0 = без обмеження по км",
+					"notes": "Додаткова інформація про цю запчастину..."
+				}
+			}
 		}
 	},
 	"services": {
@@ -343,7 +526,16 @@
 		},
 		"placeholders": {
 			"selectClient": "Оберіть клієнта...",
-			"notes": "Додаткові нотатки про авто..."
+			"notes": "Додаткові нотатки про авто...",
+			"examples": {
+				"brand": "BMW",
+				"model": "X5",
+				"year": "2023",
+				"color": "Чорний",
+				"licensePlate": "ABC-1234",
+				"vin": "WBAPH5C55BA123456",
+				"mileage": "35000"
+			}
 		},
 		"empty": {
 			"noClients": "Клієнтів не знайдено."
@@ -395,7 +587,20 @@
 			"viewDetails": "Деталі",
 			"editOrder": "Редагувати замовлення",
 			"completeOrder": "Завершити замовлення",
-			"deleteOrder": "Видалити замовлення"
+			"deleteOrder": "Видалити замовлення",
+			"changeStatus": "Змінити статус",
+			"removeService": "Видалити послугу"
+		},
+		"timeline": {
+			"title": "Хронологія",
+			"created": "Створено",
+			"dueDate": "Термін",
+			"estimatedCompletion": "Орієнтовне завершення"
+		},
+		"totals": {
+			"partsTotal": "Разом за запчастини",
+			"servicesTotal": "Разом за послуги",
+			"grandTotal": "Загальна сума"
 		},
 		"detailsTabs": {
 			"general": "Загальні",
@@ -430,6 +635,7 @@
 			"fields": {
 				"client": "Клієнт",
 				"vehicle": "Авто",
+				"services": "Послуги",
 				"currentMileage": "Поточний пробіг",
 				"endDate": "Дата завершення",
 				"parts": "Запчастини",
@@ -442,6 +648,8 @@
 			"placeholders": {
 				"selectClient": "Оберіть клієнта",
 				"selectVehicle": "Оберіть авто",
+				"selectDate": "Оберіть дату",
+				"selectPriority": "Оберіть пріоритет",
 				"currentMileage": "Введіть поточний пробіг",
 				"additionalNotes": "Додаткові нотатки або особливі інструкції...",
 				"selectService": "Оберіть послугу",
@@ -451,10 +659,14 @@
 			"labels": {
 				"serviceN": "Послуга {{index}}",
 				"partN": "Запчастина {{index}}",
+				"plate": "Номер",
+				"servicesSelected": "Обрано послуг: {{count}}",
+				"estimatedHours": "Орієнтовно {{duration}} год",
 				"requiredPartCategories": "Потрібні категорії запчастин:",
 				"noMechanicAssigned": "Механіка не призначено",
 				"noDueDate": "Немає дати",
-				"unassigned": "Не призначено"
+				"unassigned": "Не призначено",
+				"minMileage": "(мін: {{min}} км)"
 			},
 			"actions": {
 				"newWorkOrder": "Нове замовлення",
@@ -477,9 +689,12 @@
 			},
 			"empty": {
 				"noServices": "Ще не додано жодної послуги",
+				"noServiceFound": "Послугу не знайдено.",
 				"clickAddService": "Натисніть \"Додати послугу\", щоб почати",
 				"noParts": "Ще не додано жодної запчастини",
-				"clickAddPart": "Натисніть \"Додати запчастину\", щоб почати"
+				"clickAddPart": "Натисніть \"Додати запчастину\", щоб почати",
+				"noClientFound": "Клієнта не знайдено.",
+				"noVehicleFound": "Авто не знайдено."
 			},
 			"summary": {
 				"servicesTotal": "Разом за послуги:",
@@ -496,6 +711,7 @@
 				"updateError": "Не вдалося оновити замовлення",
 				"minMileageError": "Пробіг має бути не менше {{min}} км (останнє зафіксоване)",
 				"mileageGreaterThanZero": "Пробіг має бути більше 0",
+				"selectClientFirst": "Спочатку оберіть клієнта",
 				"selectServiceFirst": "Спочатку оберіть послугу",
 				"selectPartFirst": "Спочатку оберіть запчастину"
 			}
@@ -511,6 +727,29 @@
 			"services": "Послуги",
 			"endDate": "Дата завершення",
 			"total": "Сума"
+		},
+		"detailsParts": {
+			"assignmentMap": "Мапа призначення запчастин",
+			"partsInOrder": "Запчастин у замовленні: {{count}}",
+			"unassignedParts": "Непризначені запчастини",
+			"columns": {
+				"partName": "Назва запчастини",
+				"sku": "SKU",
+				"unitPrice": "Ціна за одиницю"
+			},
+			"actions": {
+				"removePart": "Видалити запчастину"
+			}
+		},
+		"detailsServices": {
+			"estimatedDuration": "Орієнтовна тривалість",
+			"hoursValue": "{{value}} год",
+			"columns": {
+				"description": "Опис",
+				"quantity": "К-сть",
+				"laborHours": "Робота (год)",
+				"price": "Ціна"
+			}
 		},
 		"filters": {
 			"searchOrderNumber": "Пошук номера замовлення...",
@@ -563,6 +802,80 @@
 		"IN_SERVICE": "В сервісі",
 		"TEST_DRIVE": "Тест-драйв",
 		"READY": "Готово"
+	},
+	"aiAssistant": {
+		"title": "AI асистент",
+		"subtitle": "Ваш розумний помічник для керування автосервісом",
+		"chats": "Чати",
+		"chatsAndActions": "Чати та дії",
+		"newChat": "Новий чат",
+		"noChats": "Чатів поки немає",
+		"deleteChatAria": "Видалити чат",
+		"tabs": {
+			"actions": "Дії",
+			"history": "Історія"
+		},
+		"toast": {
+			"chatDeleted": "Чат видалено",
+			"chatDeleteFailed": "Не вдалося видалити чат"
+		},
+		"deleteDialog": {
+			"title": "Видалити чат?",
+			"description": "Ця дія назавжди видалить чат і всі його повідомлення.",
+			"confirm": "Видалити",
+			"cancel": "Скасувати",
+			"loading": "Видалення..."
+		},
+		"chatHeader": {
+			"title": "AutoCRM Асистент",
+			"online": "Онлайн",
+			"aiPowered": "Працює на AI"
+		},
+		"composer": {
+			"placeholder": "Запитайте будь-що про ваш автосервіс...",
+			"send": "Надіслати",
+			"disclaimer": "Відповіді AI формуються на основі ваших CRM-даних. Завжди перевіряйте важливу інформацію."
+		},
+		"messages": {
+			"thinking": "Думаю...",
+			"noResponse": "Асистент не надав відповідь.",
+			"noData": "Немає даних для відображення.",
+			"tableRenderError": "Помилка відображення таблиці даних."
+		},
+		"image": {
+			"manualDiagram": "Схема з мануалу",
+			"technicalDiagramAlt": "Технічна схема з мануалу"
+		},
+		"suggestedQueries": {
+			"vehicleHistory": {
+				"label": "Історія авто",
+				"query": "Покажи історію обслуговування авто з номером ABC-1234"
+			},
+			"overdueOrders": {
+				"label": "Прострочені замовлення",
+				"query": "Які замовлення зараз прострочені?"
+			},
+			"lowStock": {
+				"label": "Низький залишок",
+				"query": "Які запчастини потрібно замовити повторно?"
+			},
+			"topClients": {
+				"label": "Топ клієнти",
+				"query": "Хто наші топ-5 клієнтів за виторгом цього місяця?"
+			},
+			"mechanicLoad": {
+				"label": "Завантаженість механіків",
+				"query": "Скільки замовлень призначено кожному механіку?"
+			},
+			"recommendations": {
+				"label": "Рекомендації",
+				"query": "Які послуги варто рекомендувати для BMW X5 2022 року з пробігом 50 000 км?"
+			}
+		}
+	},
+	"router": {
+		"loading": "Завантаження...",
+		"notFound": "Сторінку не знайдено"
 	},
 	"kanban": {
 		"title": "Канбан-дошка",

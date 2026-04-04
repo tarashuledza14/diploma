@@ -15,8 +15,10 @@ import {
 	Package,
 	TrendingDown,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export function InventoryStats() {
+	const { t } = useTranslation();
 	const { data } = useQuery({
 		queryKey: inventoryKeys.stats(),
 		queryFn: () => InventoryService.getStats(),
@@ -35,7 +37,7 @@ export function InventoryStats() {
 		// lg:grid-cols-3 для планшетів, xl:grid-cols-5 для десктопу
 		<div className='grid grid-cols-1 gap-4 py-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5'>
 			<Stat>
-				<StatLabel>Total Parts</StatLabel>
+				<StatLabel>{t('inventory.stats.totalParts')}</StatLabel>
 				<StatIndicator variant='icon' color='default'>
 					<Package />
 				</StatIndicator>
@@ -43,18 +45,20 @@ export function InventoryStats() {
 			</Stat>
 
 			<Stat>
-				<StatLabel>Purchase Value</StatLabel>
+				<StatLabel>{t('inventory.stats.purchaseValue')}</StatLabel>
 				<StatIndicator variant='icon' color='success'>
 					<DollarSign />
 				</StatIndicator>
 				<StatValue>${purchaseValue.toLocaleString()}</StatValue>
 				<StatDescription>
-					Retail: ${retailValue.toLocaleString()}
+					{t('inventory.stats.retailValue', {
+						value: retailValue.toLocaleString(),
+					})}
 				</StatDescription>
 			</Stat>
 
 			<Stat>
-				<StatLabel>Reserved</StatLabel>
+				<StatLabel>{t('inventory.stats.reserved')}</StatLabel>
 				<StatIndicator variant='icon' color='info'>
 					<Layers />
 				</StatIndicator>
@@ -62,7 +66,7 @@ export function InventoryStats() {
 			</Stat>
 
 			<Stat>
-				<StatLabel>Low Stock</StatLabel>
+				<StatLabel>{t('inventory.stats.lowStock')}</StatLabel>
 				<StatIndicator variant='icon' color='warning'>
 					<TrendingDown />
 				</StatIndicator>
@@ -70,7 +74,7 @@ export function InventoryStats() {
 			</Stat>
 
 			<Stat>
-				<StatLabel>Out of Stock</StatLabel>
+				<StatLabel>{t('inventory.stats.outOfStock')}</StatLabel>
 				<StatIndicator variant='icon' color='error'>
 					<AlertTriangle />
 				</StatIndicator>

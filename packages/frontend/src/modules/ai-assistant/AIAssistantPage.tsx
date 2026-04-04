@@ -10,6 +10,7 @@ import {
 	ResponsiveDialogTitle,
 } from '@/shared';
 import { Bot, PanelLeftOpen } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { ChatService } from './api/chat.service';
@@ -25,6 +26,7 @@ import type {
 } from './types';
 
 export function AIAssistantPage() {
+	const { t } = useTranslation();
 	const [messages, setMessages] = useState<AssistantMessage[]>([]);
 	const [chatSessions, setChatSessions] = useState<ChatSessionSummary[]>([]);
 	const [activeChatId, setActiveChatId] = useState<string | null>(null);
@@ -82,10 +84,35 @@ export function AIAssistantPage() {
 	};
 
 	const handleCreateChat = async () => {
-		const created = await ChatService.createSession('New chat');
+		const reusableEmptySession = [...chatSessions]
+			.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+			.find(
+				session =>
+					!session.lastMessage ||
+					!session.lastMessage.content ||
+					session.lastMessage.content.trim().length === 0,
+			);
+
+		if (reusableEmptySession) {
+			streamCleanupRef.current?.();
+			streamCleanupRef.current = null;
+			setIsLoading(false);
+			setActiveChatId(reusableEmptySession.id);
+			setActiveTab('history');
+			setIsSidebarOpenMobile(false);
+
+			const chatMessages = await ChatService.getMessages(
+				reusableEmptySession.id,
+			);
+			setMessages(chatMessages);
+			return;
+		}
+
+		const created = await ChatService.createSession(t('aiAssistant.newChat'));
 		setActiveChatId(created.id);
 		setMessages([]);
 		setActiveTab('history');
+		setIsSidebarOpenMobile(false);
 		await refreshSessions(created.id);
 	};
 
@@ -137,9 +164,9 @@ export function AIAssistantPage() {
 			}
 
 			setChatIdToDelete(null);
-			toast.success('Chat deleted');
+			toast.success(t('aiAssistant.toast.chatDeleted'));
 		} catch {
-			toast.error('Failed to delete chat');
+			toast.error(t('aiAssistant.toast.chatDeleteFailed'));
 		} finally {
 			setIsDeletingChat(false);
 		}
@@ -157,7 +184,7 @@ export function AIAssistantPage() {
 
 		let chatId = activeChatId;
 		if (!chatId) {
-			const created = await ChatService.createSession('New chat');
+			const created = await ChatService.createSession(t('aiAssistant.newChat'));
 			chatId = created.id;
 			setActiveChatId(chatId);
 			await refreshSessions(chatId);
@@ -214,7 +241,7 @@ export function AIAssistantPage() {
 						message.id === assistantMessageId && !message.content.trim()
 							? {
 									...message,
-									content: 'No response from assistant.',
+									content: t('aiAssistant.messages.noResponse'),
 									statusText: undefined,
 								}
 							: message.id === assistantMessageId
@@ -256,15 +283,15 @@ export function AIAssistantPage() {
 	};
 
 	return (
-		<div className='flex h-full min-h-0 w-full min-w-0 flex-col gap-4 overflow-x-hidden sm:gap-6'>
+		<div className='flex h-full min-h-0 w-full min-w-0 flex-col gap-4 overflow-x-hidden overflow-y-auto sm:gap-6'>
 			<div className='flex items-start justify-between gap-3'>
 				<div>
 					<h1 className='flex items-center gap-2 text-xl font-bold sm:text-2xl'>
 						<Bot className='h-7 w-7' />
-						AI Assistant
+						{t('aiAssistant.title')}
 					</h1>
 					<p className='hidden text-sm text-muted-foreground sm:block sm:text-base'>
-						Your intelligent helper for managing the auto service business
+						{t('aiAssistant.subtitle')}
 					</p>
 				</div>
 				<Button
@@ -274,12 +301,12 @@ export function AIAssistantPage() {
 					onClick={() => setIsSidebarOpenMobile(true)}
 				>
 					<PanelLeftOpen className='h-4 w-4' />
-					<span className='ml-2'>Chats</span>
+					<span className='ml-2'>{t('aiAssistant.chats')}</span>
 				</Button>
 			</div>
 
-			<div className='grid min-h-0 w-full min-w-0 flex-1 gap-4 lg:grid-cols-4 lg:gap-6'>
-				<div className='hidden lg:block'>
+			<div className='grid min-h-0 w-full min-w-0 flex-1 gap-4 overflow-hidden lg:grid-cols-4 lg:grid-rows-[minmax(0,1fr)] lg:gap-6'>
+				<div className='hidden min-h-0 lg:block'>
 					<AssistantSidebar
 						activeTab={activeTab}
 						onTabChange={setActiveTab}
@@ -311,7 +338,9 @@ export function AIAssistantPage() {
 			>
 				<ResponsiveDialogContent className='w-full max-w-none p-0 sm:max-w-lg'>
 					<ResponsiveDialogHeader className='border-b px-4 py-3 text-left'>
-						<ResponsiveDialogTitle>Chats & Actions</ResponsiveDialogTitle>
+						<ResponsiveDialogTitle>
+							{t('aiAssistant.chatsAndActions')}
+						</ResponsiveDialogTitle>
 					</ResponsiveDialogHeader>
 					<div className='p-3'>
 						<AssistantSidebar
@@ -337,11 +366,11 @@ export function AIAssistantPage() {
 						setChatIdToDelete(null);
 					}
 				}}
-				title='Delete chat?'
-				description='This action will permanently remove the chat and all its messages.'
-				confirmText='Delete'
-				cancelText='Cancel'
-				loadingText='Deleting...'
+				title={t('aiAssistant.deleteDialog.title')}
+				description={t('aiAssistant.deleteDialog.description')}
+				confirmText={t('aiAssistant.deleteDialog.confirm')}
+				cancelText={t('aiAssistant.deleteDialog.cancel')}
+				loadingText={t('aiAssistant.deleteDialog.loading')}
 				isLoading={isDeletingChat}
 				onConfirm={confirmDeleteChat}
 			>

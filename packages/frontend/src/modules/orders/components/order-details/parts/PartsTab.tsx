@@ -7,6 +7,7 @@ import {
 	Separator,
 } from '@/shared/components/ui';
 import { Package, Wrench } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { AddPart } from './AddPart';
 import { PartsTable } from './PartsTable';
 import { PartsTotals } from './PartsTotals';
@@ -61,12 +62,14 @@ export function PartsTab({
 	showFinancials = true,
 	isUpdating = false,
 }: PartsTabProps) {
+	const { t } = useTranslation();
+
 	return (
 		<Card>
 			<CardHeader className='flex flex-row items-center justify-between'>
 				<CardTitle className='flex items-center gap-2'>
 					<Package className='h-5 w-5' />
-					Parts
+					{t('orders.detailsTabs.parts', { count: parts.length })}
 				</CardTitle>
 				{canManageParts && (
 					<AddPart
@@ -81,9 +84,11 @@ export function PartsTab({
 					<div className='mb-6 space-y-4'>
 						<div className='flex items-center justify-between'>
 							<h3 className='text-sm font-semibold text-muted-foreground uppercase tracking-wide'>
-								Part Assignment Map
+								{t('orders.detailsParts.assignmentMap')}
 							</h3>
-							<Badge variant='secondary'>{parts.length} parts in order</Badge>
+							<Badge variant='secondary'>
+								{t('orders.detailsParts.partsInOrder', { count: parts.length })}
+							</Badge>
 						</div>
 
 						<div className='grid gap-3 md:grid-cols-2'>
@@ -117,7 +122,9 @@ export function PartsTab({
 								<div className='rounded-lg border border-dashed p-3'>
 									<div className='mb-2 flex items-center gap-2'>
 										<Package className='h-4 w-4 text-amber-500' />
-										<p className='text-sm font-medium'>Unassigned Parts</p>
+										<p className='text-sm font-medium'>
+											{t('orders.detailsParts.unassignedParts')}
+										</p>
 										<Badge variant='outline'>{unassignedParts.length}</Badge>
 									</div>
 									<div className='space-y-1'>

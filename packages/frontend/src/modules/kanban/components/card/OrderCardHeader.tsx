@@ -8,6 +8,7 @@ import {
 } from '@/shared/components/ui';
 import { cn } from '@/shared/lib/utils';
 import { MoreVertical } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Order } from './OrderCard';
 
 const priorityColors = {
@@ -17,6 +18,8 @@ const priorityColors = {
 };
 
 export function OrderCardHeader({ order }: { order: Order }) {
+	const { t } = useTranslation();
+
 	return (
 		<div className='mb-3 flex items-start justify-between'>
 			<div className='flex items-center gap-2'>
@@ -34,13 +37,19 @@ export function OrderCardHeader({ order }: { order: Order }) {
 				<DropdownMenuTrigger asChild onClick={e => e.preventDefault()}>
 					<Button variant='ghost' size='icon' className='h-8 w-8'>
 						<MoreVertical className='h-4 w-4' />
-						<span className='sr-only'>Order actions</span>
+						<span className='sr-only'>
+							{t('orders.newOrder.actions.orderActions')}
+						</span>
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align='end'>
-					<DropdownMenuItem>View Details</DropdownMenuItem>
-					<DropdownMenuItem>Assign Mechanic</DropdownMenuItem>
-					<DropdownMenuItem>Change Status</DropdownMenuItem>
+					<DropdownMenuItem>{t('orders.actions.viewDetails')}</DropdownMenuItem>
+					<DropdownMenuItem>
+						{t('orders.newOrder.fields.assignMechanic')}
+					</DropdownMenuItem>
+					<DropdownMenuItem>
+						{t('orders.actions.changeStatus')}
+					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
 		</div>

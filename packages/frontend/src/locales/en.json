@@ -10,6 +10,7 @@
 	"common": {
 		"loading": "Loading...",
 		"cancel": "Cancel",
+		"close": "Close",
 		"delete": "Delete",
 		"deleting": "Deleting...",
 		"saving": "Saving...",
@@ -27,7 +28,10 @@
 		"phone": "Phone",
 		"password": "Password",
 		"notes": "Notes",
-		"adding": "Adding..."
+		"adding": "Adding...",
+		"to": "to",
+		"select": "Select...",
+		"noResultsFound": "No results found."
 	},
 	"theme": {
 		"toggle": "Toggle theme",
@@ -52,7 +56,70 @@
 		"toggleColumns": "Toggle columns",
 		"view": "View",
 		"searchColumns": "Search columns...",
-		"noColumnsFound": "No columns found."
+		"noColumnsFound": "No columns found.",
+		"filter": {
+			"button": "Filter",
+			"filters": "Filters",
+			"noFiltersApplied": "No filters applied",
+			"modifyFilters": "Modify filters to refine your rows.",
+			"addFilters": "Add filters to refine your rows.",
+			"addFilter": "Add filter",
+			"reset": "Reset",
+			"resetFilters": "Reset filters",
+			"resetAllAria": "Reset all filters",
+			"openMenuAria": "Open filter command menu",
+			"searchFields": "Search fields...",
+			"noFieldsFound": "No fields found.",
+			"noOptionsFound": "No options found.",
+			"where": "Where",
+			"selectJoinOperatorAria": "Select join operator",
+			"selectField": "Select field",
+			"typeToAdd": "Type to add filter...",
+			"filterBy": "Filter by \"{{value}}\"",
+			"enterValue": "Enter value...",
+			"true": "True",
+			"false": "False",
+			"selectOption": "Select option...",
+			"selectOptions": "Select options...",
+			"searchOptions": "Search options...",
+			"pickDate": "Pick date...",
+			"selectedCount": "{{count}} selected",
+			"clearSpecificFilterAria": "Clear {{title}} filter",
+			"aria": {
+				"empty": "filter is empty",
+				"notEmpty": "filter is not empty"
+			},
+			"operators": {
+				"contains": "Contains",
+				"doesNotContain": "Does not contain",
+				"is": "Is",
+				"isNot": "Is not",
+				"isLessThan": "Is less than",
+				"isLessThanOrEqualTo": "Is less than or equal to",
+				"isGreaterThan": "Is greater than",
+				"isGreaterThanOrEqualTo": "Is greater than or equal to",
+				"isBetween": "Is between",
+				"isBefore": "Is before",
+				"isAfter": "Is after",
+				"isOnOrBefore": "Is on or before",
+				"isOnOrAfter": "Is on or after",
+				"hasAnyOf": "Has any of",
+				"hasNoneOf": "Has none of"
+			}
+		},
+		"sort": {
+			"button": "Sort",
+			"sortBy": "Sort by",
+			"noSortingApplied": "No sorting applied",
+			"modifySorting": "Modify sorting to organize your rows.",
+			"addSorting": "Add sorting to organize your rows.",
+			"addSort": "Add sort",
+			"resetSorting": "Reset sorting",
+			"orders": {
+				"asc": "Asc",
+				"desc": "Desc"
+			}
+		}
 	},
 	"sidebar": {
 		"brand": {
@@ -74,6 +141,11 @@
 			"services": "Services",
 			"partsInventory": "Parts Inventory",
 			"settings": "Settings"
+		},
+		"toggle": "Toggle sidebar",
+		"mobile": {
+			"title": "Sidebar",
+			"description": "Displays the mobile sidebar."
 		}
 	},
 	"userMenu": {
@@ -81,6 +153,9 @@
 		"profile": "Profile",
 		"settings": "Settings",
 		"logout": "Log out"
+	},
+	"header": {
+		"viewNotifications": "View notifications"
 	},
 	"auth": {
 		"welcomeBack": "Welcome back",
@@ -223,6 +298,39 @@
 	"inventory": {
 		"title": "Parts Inventory",
 		"subtitle": "Manage your parts stock and orders",
+		"stats": {
+			"totalParts": "Total Parts",
+			"purchaseValue": "Purchase Value",
+			"retailValue": "Retail: ${{value}}",
+			"reserved": "Reserved",
+			"lowStock": "Low Stock",
+			"outOfStock": "Out of Stock"
+		},
+		"details": {
+			"baseInformation": "Base Information",
+			"code": "Code",
+			"storageLogistics": "Storage & Logistics",
+			"batch": "Batch",
+			"purchasePrice": "Purchase Price",
+			"received": "Received",
+			"name": "Name",
+			"contact": "Contact",
+			"duration": "Duration",
+			"mileageLimit": "Mileage Limit",
+			"monthsValue": "{{value}} months",
+			"kmValue": "{{value}} km",
+			"noLimit": "No limit"
+		},
+		"movement": {
+			"empty": "No movement history yet",
+			"description": "{{partName}} ({{partSku}}) - All stock movements",
+			"types": {
+				"received": "Received",
+				"issued": "Issued",
+				"reserved": "Reserved",
+				"returned": "Returned"
+			}
+		},
 		"actions": {
 			"addPart": "Add Part",
 			"movementHistory": "Movement history"
@@ -257,6 +365,81 @@
 			"updateError": "Failed to update part",
 			"bulkDeleteSuccess": "{{count}} part(s) deleted",
 			"bulkDeleteError": "Failed to delete parts"
+		},
+		"form": {
+			"tabs": {
+				"baseInfo": "Base Info",
+				"stock": "Stock",
+				"finance": "Finance",
+				"details": "Details"
+			},
+			"base": {
+				"partNameLabel": "Part Name",
+				"skuLabel": "SKU (Internal)",
+				"oemLabel": "OEM Number",
+				"categoryLabel": "Category",
+				"brandLabel": "Brand",
+				"barcodeLabel": "Barcode",
+				"compatibilityLabel": "Compatibility",
+				"placeholders": {
+					"partName": "Oil Filter",
+					"sku": "OF-12345",
+					"oem": "04152-YZZA1",
+					"selectCategory": "Select category",
+					"selectBrand": "Select brand",
+					"barcode": "4047024743892",
+					"addCompatibility": "Add model..."
+				}
+			},
+			"stock": {
+				"storageLocationLabel": "Storage Location",
+				"unitLabel": "Unit of Measure",
+				"availableLabel": "Available",
+				"minStockLabel": "Min Stock (Alert)",
+				"weightLabel": "Weight",
+				"dimensionsLabel": "Dimensions",
+				"alertMessage": "Alert will trigger when available quantity drops below {{value}} {{unit}}",
+				"placeholders": {
+					"storageLocation": "A-3-2 (Section-Shelf-Slot)",
+					"weight": "0.3 kg",
+					"dimensions": "95 x 95 x 75 mm"
+				}
+			},
+			"finance": {
+				"purchasePriceLabel": "Purchase Price",
+				"retailPriceLabel": "Retail Price",
+				"calculatedMarkupLabel": "Calculated Markup",
+				"priceCategoryLabel": "Price Category",
+				"supplierLabel": "Supplier",
+				"priceCategory": {
+					"retail": "RETAIL",
+					"wholesale": "WHOLESALE",
+					"special": "SPECIAL"
+				},
+				"placeholders": {
+					"purchasePrice": "12.50",
+					"retailPrice": "24.99",
+					"selectSupplier": "Select supplier"
+				}
+			},
+			"details": {
+				"conditionLabel": "Condition",
+				"photoLabel": "Photo",
+				"uploadPhoto": "Upload Photo",
+				"warrantyTitle": "Warranty",
+				"warrantyMonthsLabel": "Warranty (months)",
+				"warrantyKmLabel": "Warranty (km)",
+				"notesLabel": "Notes",
+				"condition": {
+					"new": "New",
+					"used": "Used",
+					"refurbished": "Refurbished"
+				},
+				"placeholders": {
+					"warrantyKm": "0 = no km limit",
+					"notes": "Any additional info about this part..."
+				}
+			}
 		}
 	},
 	"services": {
@@ -343,7 +526,16 @@
 		},
 		"placeholders": {
 			"selectClient": "Select client...",
-			"notes": "Additional notes about the vehicle..."
+			"notes": "Additional notes about the vehicle...",
+			"examples": {
+				"brand": "BMW",
+				"model": "X5",
+				"year": "2023",
+				"color": "Black",
+				"licensePlate": "ABC-1234",
+				"vin": "WBAPH5C55BA123456",
+				"mileage": "35000"
+			}
 		},
 		"empty": {
 			"noClients": "No clients found."
@@ -395,7 +587,20 @@
 			"viewDetails": "View details",
 			"editOrder": "Edit order",
 			"completeOrder": "Complete order",
-			"deleteOrder": "Delete order"
+			"deleteOrder": "Delete order",
+			"changeStatus": "Change status",
+			"removeService": "Remove service"
+		},
+		"timeline": {
+			"title": "Timeline",
+			"created": "Created",
+			"dueDate": "Due Date",
+			"estimatedCompletion": "Est. Completion"
+		},
+		"totals": {
+			"partsTotal": "Parts Total",
+			"servicesTotal": "Services Total",
+			"grandTotal": "Grand Total"
 		},
 		"detailsTabs": {
 			"general": "General",
@@ -430,6 +635,7 @@
 			"fields": {
 				"client": "Client",
 				"vehicle": "Vehicle",
+				"services": "Services",
 				"currentMileage": "Current Mileage",
 				"endDate": "End Date",
 				"parts": "Parts",
@@ -442,6 +648,8 @@
 			"placeholders": {
 				"selectClient": "Select client",
 				"selectVehicle": "Select vehicle",
+				"selectDate": "Select a date",
+				"selectPriority": "Select priority",
 				"currentMileage": "Enter current mileage",
 				"additionalNotes": "Additional notes or special instructions...",
 				"selectService": "Select service",
@@ -451,10 +659,14 @@
 			"labels": {
 				"serviceN": "Service {{index}}",
 				"partN": "Part {{index}}",
+				"plate": "Plate",
+				"servicesSelected": "{{count}} service(s) selected",
+				"estimatedHours": "{{duration}}h estimated",
 				"requiredPartCategories": "Required part categories:",
 				"noMechanicAssigned": "No mechanic assigned",
 				"noDueDate": "No due date",
-				"unassigned": "Unassigned"
+				"unassigned": "Unassigned",
+				"minMileage": "(min: {{min}} km)"
 			},
 			"actions": {
 				"newWorkOrder": "New Work Order",
@@ -477,9 +689,12 @@
 			},
 			"empty": {
 				"noServices": "No services added yet",
+				"noServiceFound": "No service found.",
 				"clickAddService": "Click \"Add Service\" to get started",
 				"noParts": "No parts added yet",
-				"clickAddPart": "Click \"Add Part\" to get started"
+				"clickAddPart": "Click \"Add Part\" to get started",
+				"noClientFound": "No client found.",
+				"noVehicleFound": "No vehicle found."
 			},
 			"summary": {
 				"servicesTotal": "Services Total:",
@@ -496,6 +711,7 @@
 				"updateError": "Failed to update order",
 				"minMileageError": "Mileage must be at least {{min}} km (last recorded)",
 				"mileageGreaterThanZero": "Mileage must be greater than 0",
+				"selectClientFirst": "Select a client first",
 				"selectServiceFirst": "Select a service first",
 				"selectPartFirst": "Select a part first"
 			}
@@ -511,6 +727,29 @@
 			"services": "Services",
 			"endDate": "End date",
 			"total": "Total"
+		},
+		"detailsParts": {
+			"assignmentMap": "Part Assignment Map",
+			"partsInOrder": "{{count}} parts in order",
+			"unassignedParts": "Unassigned Parts",
+			"columns": {
+				"partName": "Part Name",
+				"sku": "SKU",
+				"unitPrice": "Unit Price"
+			},
+			"actions": {
+				"removePart": "Remove part"
+			}
+		},
+		"detailsServices": {
+			"estimatedDuration": "Estimated Duration",
+			"hoursValue": "{{value}} hours",
+			"columns": {
+				"description": "Description",
+				"quantity": "Qty",
+				"laborHours": "Labor (hrs)",
+				"price": "Price"
+			}
 		},
 		"filters": {
 			"searchOrderNumber": "Search order number...",
@@ -563,6 +802,80 @@
 		"IN_SERVICE": "In Service",
 		"TEST_DRIVE": "Test Drive",
 		"READY": "Ready"
+	},
+	"aiAssistant": {
+		"title": "AI Assistant",
+		"subtitle": "Your intelligent helper for managing the auto service business",
+		"chats": "Chats",
+		"chatsAndActions": "Chats & Actions",
+		"newChat": "New chat",
+		"noChats": "No chats yet",
+		"deleteChatAria": "Delete chat",
+		"tabs": {
+			"actions": "Actions",
+			"history": "History"
+		},
+		"toast": {
+			"chatDeleted": "Chat deleted",
+			"chatDeleteFailed": "Failed to delete chat"
+		},
+		"deleteDialog": {
+			"title": "Delete chat?",
+			"description": "This action will permanently remove the chat and all its messages.",
+			"confirm": "Delete",
+			"cancel": "Cancel",
+			"loading": "Deleting..."
+		},
+		"chatHeader": {
+			"title": "AutoCRM Assistant",
+			"online": "Online",
+			"aiPowered": "AI Powered"
+		},
+		"composer": {
+			"placeholder": "Ask me anything about your auto service business...",
+			"send": "Send",
+			"disclaimer": "AI responses are generated based on your CRM data. Always verify important information."
+		},
+		"messages": {
+			"thinking": "Thinking...",
+			"noResponse": "No response from assistant.",
+			"noData": "No data to display.",
+			"tableRenderError": "Failed to render data table."
+		},
+		"image": {
+			"manualDiagram": "Manual Diagram",
+			"technicalDiagramAlt": "Technical diagram from manual"
+		},
+		"suggestedQueries": {
+			"vehicleHistory": {
+				"label": "Vehicle History",
+				"query": "Show me the service history for vehicle plate ABC-1234"
+			},
+			"overdueOrders": {
+				"label": "Overdue Orders",
+				"query": "What orders are currently overdue?"
+			},
+			"lowStock": {
+				"label": "Low Stock",
+				"query": "Which parts need to be reordered?"
+			},
+			"topClients": {
+				"label": "Top Clients",
+				"query": "Who are our top 5 clients by revenue this month?"
+			},
+			"mechanicLoad": {
+				"label": "Mechanic Load",
+				"query": "How many orders does each mechanic have assigned?"
+			},
+			"recommendations": {
+				"label": "Recommendations",
+				"query": "What services should we recommend for a 2022 BMW X5 at 50,000 km?"
+			}
+		}
+	},
+	"router": {
+		"loading": "Loading...",
+		"notFound": "Page not found"
 	},
 	"kanban": {
 		"title": "Kanban Board",

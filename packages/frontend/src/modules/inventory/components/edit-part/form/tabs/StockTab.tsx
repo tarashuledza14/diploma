@@ -10,17 +10,19 @@ import {
 } from '@/shared';
 import { AlertTriangle, MapPin } from 'lucide-react';
 import { Control, Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 interface StockTabProps {
 	control: Control<PartFormData, any, PartFormData>;
 }
 
 export function StockTab({ control }: StockTabProps) {
+	const { t } = useTranslation();
 	return (
 		<div className='space-y-4 pt-4'>
 			<div className='grid grid-cols-2 gap-4'>
 				<div className='grid gap-2'>
-					<Label>Storage Location *</Label>
+					<Label>{t('inventory.form.stock.storageLocationLabel')} *</Label>
 					<div className='relative'>
 						<MapPin className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
 						<Controller
@@ -30,7 +32,9 @@ export function StockTab({ control }: StockTabProps) {
 								<Input
 									{...field}
 									value={field.value ?? ''}
-									placeholder='A-3-2 (Section-Shelf-Slot)'
+									placeholder={t(
+										'inventory.form.stock.placeholders.storageLocation',
+									)}
 									className='pl-10'
 								/>
 							)}
@@ -38,7 +42,7 @@ export function StockTab({ control }: StockTabProps) {
 					</div>
 				</div>
 				<div className='grid gap-2'>
-					<Label>Unit of Measure</Label>
+					<Label>{t('inventory.form.stock.unitLabel')}</Label>
 					<Controller
 						name='unit'
 						control={control}
@@ -59,7 +63,7 @@ export function StockTab({ control }: StockTabProps) {
 			</div>
 			<div className='grid grid-cols-3 gap-4'>
 				<div className='grid gap-2'>
-					<Label>Available</Label>
+					<Label>{t('inventory.form.stock.availableLabel')}</Label>
 					<Controller
 						name='quantityAvailable'
 						control={control}
@@ -89,7 +93,7 @@ export function StockTab({ control }: StockTabProps) {
 					/>
 				</div> */}
 				<div className='grid gap-2'>
-					<Label>Min Stock (Alert)</Label>
+					<Label>{t('inventory.form.stock.minStockLabel')}</Label>
 					<Controller
 						name='minStock'
 						control={control}
@@ -108,17 +112,16 @@ export function StockTab({ control }: StockTabProps) {
 				<div className='flex items-center gap-2 text-sm'>
 					<AlertTriangle className='h-4 w-4 text-amber-500' />
 					<span className='text-muted-foreground'>
-						Alert will trigger when available quantity drops below{' '}
-						<span className='font-medium text-foreground'>
-							{control._formValues?.minStock ?? ''}
-						</span>{' '}
-						{control._formValues?.unit ?? ''}
+						{t('inventory.form.stock.alertMessage', {
+							value: control._formValues?.minStock ?? '',
+							unit: control._formValues?.unit ?? '',
+						})}
 					</span>
 				</div>
 			</div>
 			<div className='grid grid-cols-2 gap-4'>
 				<div className='grid gap-2'>
-					<Label>Weight</Label>
+					<Label>{t('inventory.form.stock.weightLabel')}</Label>
 					<Controller
 						name='weight'
 						control={control}
@@ -126,13 +129,13 @@ export function StockTab({ control }: StockTabProps) {
 							<Input
 								{...field}
 								value={field.value ?? ''}
-								placeholder='0.3 kg'
+								placeholder={t('inventory.form.stock.placeholders.weight')}
 							/>
 						)}
 					/>
 				</div>
 				<div className='grid gap-2'>
-					<Label>Dimensions</Label>
+					<Label>{t('inventory.form.stock.dimensionsLabel')}</Label>
 					<Controller
 						name='dimensions'
 						control={control}
@@ -140,7 +143,7 @@ export function StockTab({ control }: StockTabProps) {
 							<Input
 								{...field}
 								value={field.value ?? ''}
-								placeholder='95 x 95 x 75 mm'
+								placeholder={t('inventory.form.stock.placeholders.dimensions')}
 							/>
 						)}
 					/>

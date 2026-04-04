@@ -1,5 +1,6 @@
 import { Label, Textarea } from '@/shared/components/ui';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface NotesInputProps {
 	notes: string;
@@ -7,11 +8,12 @@ export interface NotesInputProps {
 }
 
 export const NotesInput: React.FC<NotesInputProps> = ({ notes, setNotes }) => {
+	const { t } = useTranslation();
 	return (
 		<div className='space-y-2'>
-			<Label>Notes</Label>
+			<Label>{t('common.notes')}</Label>
 			<Textarea
-				placeholder='Add any additional notes or instructions...'
+				placeholder={t('orders.newOrder.placeholders.additionalNotes')}
 				value={notes}
 				onChange={e => setNotes(e.target.value)}
 				rows={3}

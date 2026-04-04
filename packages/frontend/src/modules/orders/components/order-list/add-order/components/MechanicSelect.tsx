@@ -7,6 +7,7 @@ import {
 	SelectValue,
 } from '@/shared/components/ui';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface MechanicSelectProps {
 	mechanics: any[];
@@ -19,12 +20,17 @@ export const MechanicSelect: React.FC<MechanicSelectProps> = ({
 	assignedMechanic,
 	setAssignedMechanic,
 }) => {
+	const { t } = useTranslation();
 	return (
 		<div className='space-y-2'>
-			<Label>Assign Mechanic</Label>
+			<Label>{t('orders.newOrder.fields.assignMechanic')}</Label>
 			<Select value={assignedMechanic} onValueChange={setAssignedMechanic}>
 				<SelectTrigger>
-					<SelectValue placeholder='Select mechanic' />
+					<SelectValue
+						placeholder={t(
+							'orders.newOrder.placeholders.selectMechanicOptional',
+						)}
+					/>
 				</SelectTrigger>
 				<SelectContent>
 					{mechanics.map(mechanic => (

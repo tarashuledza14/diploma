@@ -26,12 +26,13 @@ export const DueDateInput: React.FC<DueDateInputProps> = ({
 	dueDateOpen,
 	setDueDateOpen,
 }) => {
-	const language = useTranslation().i18n.language;
+	const { t, i18n } = useTranslation();
+	const language = i18n.language;
 
 	const lang = language === 'en' ? enUS : uk;
 	return (
 		<div className='space-y-2'>
-			<Label>Due Date *</Label>
+			<Label>{t('orders.newOrder.fields.endDate')} *</Label>
 			<Popover open={dueDateOpen} onOpenChange={setDueDateOpen}>
 				<PopoverTrigger asChild>
 					<Button
@@ -42,7 +43,9 @@ export const DueDateInput: React.FC<DueDateInputProps> = ({
 						)}
 					>
 						<CalendarIcon className='mr-2 h-4 w-4' />
-						{dueDate ? dayjs(dueDate).format('MMMM D, YYYY') : 'Select a date'}
+						{dueDate
+							? dayjs(dueDate).format('MMMM D, YYYY')
+							: t('orders.newOrder.placeholders.selectDate')}
 					</Button>
 				</PopoverTrigger>
 				<PopoverContent className='p-0' align='start'>

@@ -68,6 +68,7 @@ import {
 	FilterOperator,
 	JoinOperator,
 } from '@/types/data-table';
+import { useTranslation } from 'react-i18next';
 
 const DEBOUNCE_MS = 300;
 const THROTTLE_MS = 50;
@@ -92,6 +93,7 @@ export function DataTableFilterList<TData>({
 	disabled,
 	...props
 }: DataTableFilterListProps<TData>) {
+	const { t } = useTranslation();
 	const id = React.useId();
 	const labelId = React.useId();
 	const descriptionId = React.useId();
@@ -231,7 +233,7 @@ export function DataTableFilterList<TData>({
 						disabled={disabled}
 					>
 						<ListFilter className='text-muted-foreground' />
-						Filter
+						{t('table.filter.button')}
 						{filters.length > 0 && (
 							<Badge
 								variant='secondary'
@@ -250,7 +252,9 @@ export function DataTableFilterList<TData>({
 				>
 					<div className='flex flex-col gap-1'>
 						<h4 id={labelId} className='font-medium leading-none'>
-							{filters.length > 0 ? 'Filters' : 'No filters applied'}
+							{filters.length > 0
+								? t('table.filter.filters')
+								: t('table.filter.noFiltersApplied')}
 						</h4>
 						<p
 							id={descriptionId}
@@ -260,8 +264,8 @@ export function DataTableFilterList<TData>({
 							)}
 						>
 							{filters.length > 0
-								? 'Modify filters to refine your rows.'
-								: 'Add filters to refine your rows.'}
+								? t('table.filter.modifyFilters')
+								: t('table.filter.addFilters')}
 						</p>
 					</div>
 					{filters.length > 0 ? (
@@ -293,7 +297,7 @@ export function DataTableFilterList<TData>({
 							ref={addButtonRef}
 							onClick={onFilterAdd}
 						>
-							Add filter
+							{t('table.filter.addFilter')}
 						</Button>
 						{filters.length > 0 ? (
 							<Button
@@ -302,7 +306,7 @@ export function DataTableFilterList<TData>({
 								className='rounded'
 								onClick={onFiltersReset}
 							>
-								Reset filters
+								{t('table.filter.resetFilters')}
 							</Button>
 						) : null}
 					</div>
@@ -346,6 +350,7 @@ function DataTableFilterItem<TData>({
 	onFilterUpdate,
 	onFilterRemove,
 }: DataTableFilterItemProps<TData>) {
+	const { t } = useTranslation();
 	const [showFieldSelector, setShowFieldSelector] = React.useState(false);
 	const [showOperatorSelector, setShowOperatorSelector] = React.useState(false);
 	const [showValueSelector, setShowValueSelector] = React.useState(false);
@@ -400,14 +405,16 @@ function DataTableFilterItem<TData>({
 			>
 				<div className='min-w-[72px] text-center'>
 					{index === 0 ? (
-						<span className='text-muted-foreground text-sm'>Where</span>
+						<span className='text-muted-foreground text-sm'>
+							{t('table.filter.where')}
+						</span>
 					) : index === 1 ? (
 						<Select
 							value={joinOperator}
 							onValueChange={(value: JoinOperator) => setJoinOperator(value)}
 						>
 							<SelectTrigger
-								aria-label='Select join operator'
+								aria-label={t('table.filter.selectJoinOperatorAria')}
 								aria-controls={joinOperatorListboxId}
 								className='rounded lowercase'
 							>
@@ -441,7 +448,7 @@ function DataTableFilterItem<TData>({
 						>
 							<span className='truncate'>
 								{columns.find(column => column.id === filter.id)?.columnDef.meta
-									?.label ?? 'Select field'}
+									?.label ?? t('table.filter.selectField')}
 							</span>
 							<ChevronsUpDown className='opacity-50' />
 						</Button>
@@ -452,9 +459,9 @@ function DataTableFilterItem<TData>({
 						className='w-40 p-0'
 					>
 						<Command>
-							<CommandInput placeholder='Search fields...' />
+							<CommandInput placeholder={t('table.filter.searchFields')} />
 							<CommandList>
-								<CommandEmpty>No fields found.</CommandEmpty>
+								<CommandEmpty>{t('table.filter.noFieldsFound')}</CommandEmpty>
 								<CommandGroup>
 									{columns.map(column => (
 										<CommandItem
@@ -518,7 +525,7 @@ function DataTableFilterItem<TData>({
 								value={operator.value}
 								className='lowercase'
 							>
-								{operator.label}
+								{t(operator.label)}
 							</SelectItem>
 						))}
 					</SelectContent>
@@ -529,6 +536,7 @@ function DataTableFilterItem<TData>({
 						inputId,
 						column,
 						columnMeta,
+						t,
 						onFilterUpdate,
 						showValueSelector,
 						setShowValueSelector,
@@ -558,6 +566,7 @@ function onFilterInputRender<TData>({
 	inputId,
 	column,
 	columnMeta,
+	t,
 	onFilterUpdate,
 	showValueSelector,
 	setShowValueSelector,
@@ -566,6 +575,7 @@ function onFilterInputRender<TData>({
 	inputId: string;
 	column: Column<TData>;
 	columnMeta?: ColumnMeta<TData, unknown>;
+	t: (key: string, options?: Record<string, unknown>) => string;
 	onFilterUpdate: (
 		filterId: string,
 		updates: Partial<Omit<ExtendedColumnFilter<TData>, 'filterId'>>,
@@ -578,9 +588,11 @@ function onFilterInputRender<TData>({
 			<div
 				id={inputId}
 				role='status'
-				aria-label={`${columnMeta?.label} filter is ${
-					filter.operator === 'isEmpty' ? 'empty' : 'not empty'
-				}`}
+				aria-label={`${columnMeta?.label} ${t(
+					filter.operator === 'isEmpty'
+						? 'table.filter.aria.empty'
+						: 'table.filter.aria.notEmpty',
+				)}`}
 				aria-live='polite'
 				className='h-8 w-full rounded border bg-transparent dark:bg-input/30'
 			/>
@@ -615,7 +627,7 @@ function onFilterInputRender<TData>({
 					aria-label={`${columnMeta?.label} filter value`}
 					aria-describedby={`${inputId}-description`}
 					inputMode={isNumber ? 'numeric' : undefined}
-					placeholder={columnMeta?.placeholder ?? 'Enter a value...'}
+					placeholder={columnMeta?.placeholder ?? t('table.filter.enterValue')}
 					className='h-8 w-full rounded'
 					defaultValue={
 						typeof filter.value === 'string' ? filter.value : undefined
@@ -633,7 +645,6 @@ function onFilterInputRender<TData>({
 			if (Array.isArray(filter.value)) return null;
 			const options = columnMeta?.options;
 			const inputListboxId = `${inputId}-listbox`;
-			console.log('options', options);
 			return (
 				<Select
 					open={showValueSelector}
@@ -651,7 +662,11 @@ function onFilterInputRender<TData>({
 						aria-label={`${columnMeta?.label} boolean filter`}
 						className='w-full rounded'
 					>
-						<SelectValue placeholder={filter.value ? 'True' : 'False'} />
+						<SelectValue
+							placeholder={
+								filter.value ? t('table.filter.true') : t('table.filter.false')
+							}
+						/>
 					</SelectTrigger>
 					<SelectContent id={inputListboxId}>
 						{options ? (
@@ -662,8 +677,8 @@ function onFilterInputRender<TData>({
 							))
 						) : (
 							<>
-								<SelectItem value='true'>True</SelectItem>
-								<SelectItem value='false'>False</SelectItem>
+								<SelectItem value='true'>{t('table.filter.true')}</SelectItem>
+								<SelectItem value='false'>{t('table.filter.false')}</SelectItem>
 							</>
 						)}
 					</SelectContent>
@@ -709,7 +724,9 @@ function onFilterInputRender<TData>({
 								options={columnMeta?.options}
 								placeholder={
 									columnMeta?.placeholder ??
-									`Select option${multiple ? 's' : ''}...`
+									(multiple
+										? t('table.filter.selectOptions')
+										: t('table.filter.selectOption'))
 								}
 							/>
 						</Button>
@@ -717,10 +734,12 @@ function onFilterInputRender<TData>({
 					<FacetedContent id={inputListboxId} className='w-[200px]'>
 						<FacetedInput
 							aria-label={`Search ${columnMeta?.label} options`}
-							placeholder={columnMeta?.placeholder ?? 'Search options...'}
+							placeholder={
+								columnMeta?.placeholder ?? t('table.filter.searchOptions')
+							}
 						/>
 						<FacetedList>
-							<FacetedEmpty>No options found.</FacetedEmpty>
+							<FacetedEmpty>{t('table.filter.noOptionsFound')}</FacetedEmpty>
 							<FacetedGroup>
 								{columnMeta?.options?.map(option => (
 									<FacetedItem key={option.value} value={option.value}>
@@ -763,7 +782,7 @@ function onFilterInputRender<TData>({
 					? `${formatDate(startDate, { month: 'short' })} - ${formatDate(endDate, { month: 'short' })}`
 					: startDate
 						? formatDate(startDate, { month: 'short' })
-						: 'Pick a date';
+						: t('table.filter.pickDate');
 
 			return (
 				<Popover open={showValueSelector} onOpenChange={setShowValueSelector}>

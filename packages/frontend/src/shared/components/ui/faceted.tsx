@@ -17,6 +17,7 @@ import {
 	PopoverTrigger,
 } from '@/shared/components/ui/popover';
 import { cn } from '@/shared/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 type FacetedValue<Multiple extends boolean> = Multiple extends true
 	? string[]
@@ -134,10 +135,12 @@ interface FacetedBadgeListProps extends React.ComponentProps<'div'> {
 }
 
 function FacetedBadgeList(props: FacetedBadgeListProps) {
+	const { t } = useTranslation();
+
 	const {
 		options = [],
 		max = 2,
-		placeholder = 'Select options...',
+		placeholder = t('table.filter.selectOptions'),
 		className,
 		badgeClassName,
 		...badgeListProps
@@ -178,7 +181,7 @@ function FacetedBadgeList(props: FacetedBadgeListProps) {
 					variant='secondary'
 					className={cn('rounded-sm px-1 font-normal', badgeClassName)}
 				>
-					{values.length} selected
+					{t('table.filter.selectedCount', { count: values.length })}
 				</Badge>
 			) : (
 				values.map(value => (

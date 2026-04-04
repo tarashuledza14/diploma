@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Input } from '@/shared/components/ui/input';
 import { cn } from '@/shared/lib/utils';
 import { ExtendedColumnFilter } from '@/types/data-table';
+import { useTranslation } from 'react-i18next';
 
 interface DataTableRangeFilterProps<TData> extends React.ComponentProps<'div'> {
 	filter: ExtendedColumnFilter<TData>;
@@ -23,6 +24,7 @@ export function DataTableRangeFilter<TData>({
 	className,
 	...props
 }: DataTableRangeFilterProps<TData>) {
+	const { t } = useTranslation();
 	const meta = column.columnDef.meta;
 
 	const [min, max] = React.useMemo(() => {
@@ -102,7 +104,9 @@ export function DataTableRangeFilter<TData>({
 				defaultValue={value[0]}
 				onChange={event => onRangeValueChange(event.target.value, true)}
 			/>
-			<span className='sr-only shrink-0 text-muted-foreground'>to</span>
+			<span className='sr-only shrink-0 text-muted-foreground'>
+				{t('common.to')}
+			</span>
 			<Input
 				id={`${inputId}-max`}
 				type='number'

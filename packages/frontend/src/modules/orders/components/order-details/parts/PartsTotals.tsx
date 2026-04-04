@@ -1,4 +1,5 @@
 import { Separator } from '@/shared/components/ui';
+import { useTranslation } from 'react-i18next';
 
 interface PartsTotalsProps {
 	partsTotal: number;
@@ -11,20 +12,26 @@ export function PartsTotals({
 	servicesTotal,
 	grandTotal,
 }: PartsTotalsProps) {
+	const { t } = useTranslation();
+
 	return (
 		<div className='flex justify-end'>
 			<div className='w-64 space-y-2'>
 				<div className='flex justify-between text-sm'>
-					<span className='text-muted-foreground'>Parts Total</span>
+					<span className='text-muted-foreground'>
+						{t('orders.totals.partsTotal')}
+					</span>
 					<span className='font-medium'>${partsTotal.toFixed(2)}</span>
 				</div>
 				<div className='flex justify-between text-sm'>
-					<span className='text-muted-foreground'>Services Total</span>
+					<span className='text-muted-foreground'>
+						{t('orders.totals.servicesTotal')}
+					</span>
 					<span className='font-medium'>${servicesTotal.toFixed(2)}</span>
 				</div>
 				<Separator />
 				<div className='flex justify-between text-lg font-bold'>
-					<span>Grand Total</span>
+					<span>{t('orders.totals.grandTotal')}</span>
 					<span>${grandTotal.toFixed(2)}</span>
 				</div>
 			</div>

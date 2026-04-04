@@ -12,33 +12,33 @@ import type { AssistantMessage, SuggestedQuery } from './types';
 export const suggestedQueries: SuggestedQuery[] = [
 	{
 		icon: Car,
-		label: 'Vehicle History',
-		query: 'Show me the service history for vehicle plate ABC-1234',
+		label: 'aiAssistant.suggestedQueries.vehicleHistory.label',
+		query: 'aiAssistant.suggestedQueries.vehicleHistory.query',
 	},
 	{
 		icon: ClipboardList,
-		label: 'Overdue Orders',
-		query: 'What orders are currently overdue?',
+		label: 'aiAssistant.suggestedQueries.overdueOrders.label',
+		query: 'aiAssistant.suggestedQueries.overdueOrders.query',
 	},
 	{
 		icon: Package,
-		label: 'Low Stock',
-		query: 'Which parts need to be reordered?',
+		label: 'aiAssistant.suggestedQueries.lowStock.label',
+		query: 'aiAssistant.suggestedQueries.lowStock.query',
 	},
 	{
 		icon: Users,
-		label: 'Top Clients',
-		query: 'Who are our top 5 clients by revenue this month?',
+		label: 'aiAssistant.suggestedQueries.topClients.label',
+		query: 'aiAssistant.suggestedQueries.topClients.query',
 	},
 	{
 		icon: Wrench,
-		label: 'Mechanic Load',
-		query: 'How many orders does each mechanic have assigned?',
+		label: 'aiAssistant.suggestedQueries.mechanicLoad.label',
+		query: 'aiAssistant.suggestedQueries.mechanicLoad.query',
 	},
 	{
 		icon: Lightbulb,
-		label: 'Recommendations',
-		query: 'What services should we recommend for a 2022 BMW X5 at 50,000 km?',
+		label: 'aiAssistant.suggestedQueries.recommendations.label',
+		query: 'aiAssistant.suggestedQueries.recommendations.query',
 	},
 ];
 

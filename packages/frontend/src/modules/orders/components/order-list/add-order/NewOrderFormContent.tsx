@@ -87,13 +87,18 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 	totalAmount,
 	isPending,
 	onCancel,
-	submitLabel = 'Create Work Order',
-	pendingSubmitLabel = 'Creating Work Order...',
+	submitLabel,
+	pendingSubmitLabel,
 	showStatusField = false,
 	showEndDateField = false,
 	minMileage = 0,
 }) => {
 	const { t } = useTranslation();
+	const resolvedSubmitLabel =
+		submitLabel ?? t('orders.newOrder.actions.createWorkOrder');
+	const resolvedPendingSubmitLabel =
+		pendingSubmitLabel ?? t('orders.newOrder.actions.creatingWorkOrder');
+
 	return (
 		<div>
 			<form onSubmit={handleSubmit}>
@@ -175,7 +180,9 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 											{t('orders.newOrder.fields.currentMileage')} *
 											{minMileage > 0 && (
 												<span className='ml-1 text-xs text-muted-foreground'>
-													(min: {minMileage.toLocaleString()} km)
+													{t('orders.newOrder.labels.minMileage', {
+														min: minMileage.toLocaleString(),
+													})}
 												</span>
 											)}
 										</Label>
@@ -455,12 +462,12 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 						{isPending ? (
 							<>
 								<Loader2 className='mr-2 h-4 w-4 animate-spin' />
-								{pendingSubmitLabel}
+								{resolvedPendingSubmitLabel}
 							</>
 						) : (
 							<>
 								<Plus className='mr-2 h-4 w-4' />
-								{submitLabel}
+								{resolvedSubmitLabel}
 							</>
 						)}
 					</Button>

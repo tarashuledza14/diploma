@@ -6,6 +6,7 @@ import {
 	ResponsiveDialogTitle,
 } from '@/shared';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { InventoryService } from '../../api/inventory.service';
 import { inventoryKeys } from '../../query/keys';
 import { MovementHistoryList } from './MovementHistoryList';
@@ -26,12 +27,14 @@ export function MovementHistoryModal({
 	historyModalOpen,
 	setHistoryModalOpen,
 }: MovementHistoryModalProps) {
+	const { t } = useTranslation();
+
 	const { data: movementHistory } = useQuery({
 		queryKey: inventoryKeys.movements(partId || ''),
 		queryFn: () => InventoryService.getMovementHistory(partId || ''),
 	});
 	if (!movementHistory) return null;
-	console.log('movementHistory', movementHistory);
+
 	const { history, stats } = movementHistory;
 	return (
 		<ResponsiveDialog
@@ -42,34 +45,44 @@ export function MovementHistoryModal({
 				{movementHistory && (
 					<>
 						<ResponsiveDialogHeader>
-							<ResponsiveDialogTitle>Movement History</ResponsiveDialogTitle>
+							<ResponsiveDialogTitle>
+								{t('inventory.actions.movementHistory')}
+							</ResponsiveDialogTitle>
 							<ResponsiveDialogDescription>
-								{partName} ({partSku}) - All stock movements
+								{t('inventory.movement.description', { partName, partSku })}
 							</ResponsiveDialogDescription>
 						</ResponsiveDialogHeader>
 
 						{/* Summary */}
 						<div className='grid grid-cols-4 gap-3'>
 							<div className='rounded-lg border p-2.5 text-center'>
-								<p className='text-[11px] text-muted-foreground'>Received</p>
+								<p className='text-[11px] text-muted-foreground'>
+									{t('inventory.movement.types.received')}
+								</p>
 								<p className='text-lg font-bold text-green-600'>
 									{stats.received}
 								</p>
 							</div>
 							<div className='rounded-lg border p-2.5 text-center'>
-								<p className='text-[11px] text-muted-foreground'>Issued</p>
+								<p className='text-[11px] text-muted-foreground'>
+									{t('inventory.movement.types.issued')}
+								</p>
 								<p className='text-lg font-bold text-blue-600'>
 									{stats.issued}
 								</p>
 							</div>
 							<div className='rounded-lg border p-2.5 text-center'>
-								<p className='text-[11px] text-muted-foreground'>Reserved</p>
+								<p className='text-[11px] text-muted-foreground'>
+									{t('inventory.movement.types.reserved')}
+								</p>
 								<p className='text-lg font-bold text-amber-600'>
-									{stats.received}
+									{stats.reserved}
 								</p>
 							</div>
 							<div className='rounded-lg border p-2.5 text-center'>
-								<p className='text-[11px] text-muted-foreground'>Returned</p>
+								<p className='text-[11px] text-muted-foreground'>
+									{t('inventory.movement.types.returned')}
+								</p>
 								<p className='text-lg font-bold text-purple-600'>
 									{stats.returned}
 								</p>

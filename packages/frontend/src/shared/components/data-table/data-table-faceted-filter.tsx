@@ -21,6 +21,7 @@ import {
 } from '@/shared/components/ui/popover';
 import { Separator } from '@/shared/components/ui/separator';
 import { cn } from '@/shared/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface DataTableFacetedFilterProps<TData, TValue> {
 	column?: Column<TData, TValue>;
@@ -35,6 +36,7 @@ export function DataTableFacetedFilter<TData, TValue>({
 	options,
 	multiple,
 }: DataTableFacetedFilterProps<TData, TValue>) {
+	const { t } = useTranslation();
 	const [open, setOpen] = React.useState(false);
 
 	const columnFilterValue = column?.getFilterValue();
@@ -82,7 +84,9 @@ export function DataTableFacetedFilter<TData, TValue>({
 					{selectedValues?.size > 0 ? (
 						<div
 							role='button'
-							aria-label={`Clear ${title} filter`}
+							aria-label={t('table.filter.clearSpecificFilterAria', {
+								title,
+							})}
 							tabIndex={0}
 							className='rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'
 							onClick={onReset}
@@ -111,7 +115,9 @@ export function DataTableFacetedFilter<TData, TValue>({
 										variant='secondary'
 										className='rounded-sm px-1 font-normal'
 									>
-										{selectedValues.size} selected
+										{t('table.filter.selectedCount', {
+											count: selectedValues.size,
+										})}
 									</Badge>
 								) : (
 									options
@@ -135,7 +141,7 @@ export function DataTableFacetedFilter<TData, TValue>({
 				<Command>
 					<CommandInput placeholder={title} />
 					<CommandList className='max-h-full'>
-						<CommandEmpty>No results found.</CommandEmpty>
+						<CommandEmpty>{t('common.noResultsFound')}</CommandEmpty>
 						<CommandGroup className='max-h-[300px] scroll-py-1 overflow-y-auto overflow-x-hidden'>
 							{options.map(option => {
 								const isSelected = selectedValues.has(option.value);
@@ -174,7 +180,7 @@ export function DataTableFacetedFilter<TData, TValue>({
 										onSelect={() => onReset()}
 										className='justify-center text-center'
 									>
-										Clear filters
+										{t('table.filter.resetFilters')}
 									</CommandItem>
 								</CommandGroup>
 							</>

@@ -12,6 +12,7 @@ import {
 } from '@/shared';
 import { DollarSign, Truck } from 'lucide-react';
 import { Control, Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 interface FinanceTabProps {
 	control: Control<PartFormData, any, PartFormData>;
@@ -19,11 +20,12 @@ interface FinanceTabProps {
 }
 
 export function FinanceTab({ control, dictionaries }: FinanceTabProps) {
+	const { t } = useTranslation();
 	return (
 		<div className='space-y-4 pt-4'>
 			<div className='grid grid-cols-2 gap-4'>
 				<div className='grid gap-2'>
-					<Label>Purchase Price *</Label>
+					<Label>{t('inventory.form.finance.purchasePriceLabel')} *</Label>
 					<div className='relative'>
 						<DollarSign className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
 						<Controller
@@ -36,7 +38,9 @@ export function FinanceTab({ control, dictionaries }: FinanceTabProps) {
 									{...field}
 									value={field.value ?? ''}
 									onChange={e => field.onChange(Number(e.target.value))}
-									placeholder='12.50'
+									placeholder={t(
+										'inventory.form.finance.placeholders.purchasePrice',
+									)}
 									className='pl-10'
 								/>
 							)}
@@ -44,7 +48,7 @@ export function FinanceTab({ control, dictionaries }: FinanceTabProps) {
 					</div>
 				</div>
 				<div className='grid gap-2'>
-					<Label>Retail Price *</Label>
+					<Label>{t('inventory.form.finance.retailPriceLabel')} *</Label>
 					<div className='relative'>
 						<DollarSign className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
 						<Controller
@@ -57,7 +61,9 @@ export function FinanceTab({ control, dictionaries }: FinanceTabProps) {
 									{...field}
 									value={field.value ?? ''}
 									onChange={e => field.onChange(Number(e.target.value))}
-									placeholder='24.99'
+									placeholder={t(
+										'inventory.form.finance.placeholders.retailPrice',
+									)}
 									className='pl-10'
 								/>
 							)}
@@ -67,13 +73,15 @@ export function FinanceTab({ control, dictionaries }: FinanceTabProps) {
 			</div>
 			<div className='rounded-lg border bg-muted/50 p-3'>
 				<div className='flex items-center justify-between text-sm'>
-					<span className='text-muted-foreground'>Calculated Markup</span>
+					<span className='text-muted-foreground'>
+						{t('inventory.form.finance.calculatedMarkupLabel')}
+					</span>
 					<span className='font-bold text-lg text-muted-foreground'>—</span>
 				</div>
 			</div>
 			<div className='grid grid-cols-2 gap-4'>
 				<div className='grid gap-2'>
-					<Label>Price Category</Label>
+					<Label>{t('inventory.form.finance.priceCategoryLabel')}</Label>
 					<Controller
 						name='priceCategory'
 						control={control}
@@ -86,9 +94,15 @@ export function FinanceTab({ control, dictionaries }: FinanceTabProps) {
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value='RETAIL'>RETAIL</SelectItem>
-									<SelectItem value='WHOLESALE'>WHOLESALE</SelectItem>
-									<SelectItem value='SPECIAL'>SPECIAL</SelectItem>
+									<SelectItem value='RETAIL'>
+										{t('inventory.form.finance.priceCategory.retail')}
+									</SelectItem>
+									<SelectItem value='WHOLESALE'>
+										{t('inventory.form.finance.priceCategory.wholesale')}
+									</SelectItem>
+									<SelectItem value='SPECIAL'>
+										{t('inventory.form.finance.priceCategory.special')}
+									</SelectItem>
 								</SelectContent>
 							</Select>
 						)}
@@ -98,7 +112,7 @@ export function FinanceTab({ control, dictionaries }: FinanceTabProps) {
 			<Separator />
 			<div className='grid grid-cols-2 gap-4'>
 				<div className='grid gap-2'>
-					<Label>Supplier *</Label>
+					<Label>{t('inventory.form.finance.supplierLabel')} *</Label>
 					<Controller
 						name='supplier'
 						control={control}
@@ -115,7 +129,11 @@ export function FinanceTab({ control, dictionaries }: FinanceTabProps) {
 							>
 								<SelectTrigger>
 									<Truck className='mr-2 h-4 w-4' />
-									<SelectValue placeholder='Select supplier' />
+									<SelectValue
+										placeholder={t(
+											'inventory.form.finance.placeholders.selectSupplier',
+										)}
+									/>
 								</SelectTrigger>
 								<SelectContent>
 									{dictionaries.suppliers.map(supplier => (

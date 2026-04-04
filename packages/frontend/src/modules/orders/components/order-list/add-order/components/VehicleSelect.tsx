@@ -14,6 +14,7 @@ import {
 import { cn } from '@/shared/lib/utils';
 import { Car, Check, ChevronsUpDown } from 'lucide-react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface VehicleSelectProps {
 	vehicles: any[];
@@ -34,10 +35,11 @@ export const VehicleSelect: React.FC<VehicleSelectProps> = ({
 	disabled,
 	selectedClient,
 }) => {
+	const { t } = useTranslation();
 	const selectedVehicleData = vehicles.find(v => v.id === selectedVehicle);
 	return (
 		<div className='space-y-2'>
-			<Label>Vehicle *</Label>
+			<Label>{t('orders.newOrder.fields.vehicle')} *</Label>
 			<Popover open={open} onOpenChange={setOpen}>
 				<PopoverTrigger asChild>
 					<Button
@@ -61,8 +63,8 @@ export const VehicleSelect: React.FC<VehicleSelectProps> = ({
 						) : (
 							<span className='text-muted-foreground'>
 								{selectedClient
-									? 'Select a vehicle...'
-									: 'Select a client first...'}
+									? t('orders.newOrder.placeholders.selectVehicle')
+									: t('orders.newOrder.messages.selectClientFirst')}
 							</span>
 						)}
 						<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
@@ -70,9 +72,11 @@ export const VehicleSelect: React.FC<VehicleSelectProps> = ({
 				</PopoverTrigger>
 				<PopoverContent className='w-125 p-0' align='start'>
 					<Command>
-						<CommandInput placeholder='Search vehicles...' />
+						<CommandInput placeholder={t('orders.filters.searchVehicle')} />
 						<CommandList>
-							<CommandEmpty>No vehicle found.</CommandEmpty>
+							<CommandEmpty>
+								{t('orders.newOrder.empty.noVehicleFound')}
+							</CommandEmpty>
 							<CommandGroup>
 								{vehicles.map(vehicle => (
 									<CommandItem
@@ -96,7 +100,7 @@ export const VehicleSelect: React.FC<VehicleSelectProps> = ({
 												{vehicle.year} {vehicle.make} {vehicle.model}
 											</span>
 											<span className='text-xs text-muted-foreground'>
-												Plate: {vehicle.plate}
+												{t('orders.newOrder.labels.plate')}: {vehicle.plate}
 											</span>
 										</div>
 									</CommandItem>

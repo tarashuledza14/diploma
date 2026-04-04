@@ -9,6 +9,7 @@ import {
 	TableRow,
 } from '@/shared/components/ui';
 import { Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
 	parts: any;
@@ -26,16 +27,21 @@ export function PartsTable({
 	showFinancials = true,
 	isPending = false,
 }: Props) {
+	const { t } = useTranslation();
 	return (
 		<Table>
 			<TableHeader>
 				<TableRow>
-					<TableHead>Part Name</TableHead>
-					<TableHead>SKU</TableHead>
-					<TableHead>Quantity</TableHead>
-					{showFinancials && <TableHead>Unit Price</TableHead>}
+					<TableHead>{t('orders.detailsParts.columns.partName')}</TableHead>
+					<TableHead>{t('orders.detailsParts.columns.sku')}</TableHead>
+					<TableHead>{t('orders.newOrder.fields.quantity')}</TableHead>
 					{showFinancials && (
-						<TableHead className='text-right'>Total</TableHead>
+						<TableHead>{t('orders.detailsParts.columns.unitPrice')}</TableHead>
+					)}
+					{showFinancials && (
+						<TableHead className='text-right'>
+							{t('orders.columns.total')}
+						</TableHead>
 					)}
 					{canManageParts && <TableHead className='w-12'></TableHead>}
 				</TableRow>
@@ -83,7 +89,9 @@ export function PartsTable({
 										onClick={() => onRemovePart(partId)}
 									>
 										<Trash2 className='h-4 w-4' />
-										<span className='sr-only'>Remove part</span>
+										<span className='sr-only'>
+											{t('orders.detailsParts.actions.removePart')}
+										</span>
 									</Button>
 								</TableCell>
 							)}

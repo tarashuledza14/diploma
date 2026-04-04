@@ -1,5 +1,6 @@
 import { Button, Card, CardContent, cn } from '@/shared';
 import { Clock, Loader2, Plus, Sparkles, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { suggestedQueries } from '../constants';
 import type { AssistantTab, ChatSessionSummary } from '../types';
@@ -29,6 +30,7 @@ export function AssistantSidebar({
 	onDeleteChat,
 	deletingChatId,
 }: AssistantSidebarProps) {
+	const { t } = useTranslation();
 	const sortedSessions = [...chatSessions].sort(
 		(a, b) => b.updatedAt.getTime() - a.updatedAt.getTime(),
 	);
@@ -36,7 +38,7 @@ export function AssistantSidebar({
 	return (
 		<div
 			className={cn(
-				'w-full min-w-0',
+				'h-full min-h-0 w-full min-w-0 overflow-hidden',
 				!inModal && 'order-2 lg:order-1 lg:col-span-1',
 			)}
 		>
@@ -60,7 +62,7 @@ export function AssistantSidebar({
 							)}
 						>
 							<Sparkles className='h-4 w-4' />
-							Actions
+							{t('aiAssistant.tabs.actions')}
 						</button>
 						<button
 							onClick={() => onTabChange('history')}
@@ -72,32 +74,37 @@ export function AssistantSidebar({
 							)}
 						>
 							<Clock className='h-4 w-4' />
-							History
+							{t('aiAssistant.tabs.history')}
 						</button>
 					</div>
 				</div>
 
-				<CardContent className='flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4'>
+				<CardContent className='min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4'>
 					{activeTab === 'actions' && (
 						<div className='space-y-2'>
-							{suggestedQueries.map(item => (
-								<Button
-									key={item.label}
-									variant='outline'
-									className='h-auto w-full min-w-0 items-start justify-start gap-2 bg-transparent p-2.5 text-left whitespace-normal sm:p-3'
-									onClick={() => onSuggestedQuery(item.query)}
-								>
-									<item.icon className='h-4 w-4 shrink-0 text-muted-foreground' />
-									<div className='min-w-0 flex-1'>
-										<span className='block truncate text-sm font-medium'>
-											{item.label}
-										</span>
-										<span className='line-clamp-2 block whitespace-normal text-xs text-muted-foreground'>
-											{item.query}
-										</span>
-									</div>
-								</Button>
-							))}
+							{suggestedQueries.map(item => {
+								const label = t(item.label);
+								const query = t(item.query);
+
+								return (
+									<Button
+										key={item.label}
+										variant='outline'
+										className='h-auto w-full min-w-0 items-start justify-start gap-2 bg-transparent p-2.5 text-left whitespace-normal sm:p-3'
+										onClick={() => onSuggestedQuery(query)}
+									>
+										<item.icon className='h-4 w-4 shrink-0 text-muted-foreground' />
+										<div className='min-w-0 flex-1'>
+											<span className='block truncate text-sm font-medium'>
+												{label}
+											</span>
+											<span className='line-clamp-2 block whitespace-normal text-xs text-muted-foreground'>
+												{query}
+											</span>
+										</div>
+									</Button>
+								);
+							})}
 						</div>
 					)}
 
@@ -109,16 +116,17 @@ export function AssistantSidebar({
 								onClick={onCreateChat}
 							>
 								<Plus className='h-4 w-4' />
-								New chat
+								{t('aiAssistant.newChat')}
 							</Button>
 
 							{sortedSessions.length === 0 && (
 								<div className='flex h-full min-h-24 items-center justify-center'>
 									<p className='text-center text-sm text-muted-foreground'>
-										No chats yet
+										{t('aiAssistant.noChats')}
 									</p>
 								</div>
 							)}
+
 							{sortedSessions.map(session => {
 								const isDeleting = deletingChatId === session.id;
 								return (
@@ -152,7 +160,7 @@ export function AssistantSidebar({
 											onClick={() => onDeleteChat(session.id)}
 											disabled={isDeleting}
 											className='h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive'
-											aria-label='Delete chat'
+											aria-label={t('aiAssistant.deleteChatAria')}
 										>
 											{isDeleting ? (
 												<Loader2 className='h-4 w-4 animate-spin' />

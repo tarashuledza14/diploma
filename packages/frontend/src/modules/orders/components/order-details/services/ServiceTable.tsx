@@ -8,6 +8,7 @@ import {
 	TableRow,
 } from '@/shared/components/ui';
 import { Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
 	services: any;
@@ -24,16 +25,24 @@ export function ServiceTable({
 	showFinancials = true,
 	isPending = false,
 }: Props) {
+	const { t } = useTranslation();
+
 	return (
 		<Table>
 			<TableHeader>
 				<TableRow>
-					<TableHead>Service</TableHead>
-					<TableHead>Description</TableHead>
-					<TableHead>Qty</TableHead>
-					<TableHead>Labor (hrs)</TableHead>
+					<TableHead>{t('orders.newOrder.fields.service')}</TableHead>
+					<TableHead>
+						{t('orders.detailsServices.columns.description')}
+					</TableHead>
+					<TableHead>{t('orders.detailsServices.columns.quantity')}</TableHead>
+					<TableHead>
+						{t('orders.detailsServices.columns.laborHours')}
+					</TableHead>
 					{showFinancials && (
-						<TableHead className='text-right'>Price</TableHead>
+						<TableHead className='text-right'>
+							{t('orders.detailsServices.columns.price')}
+						</TableHead>
 					)}
 					{canManageServices && <TableHead className='w-12'></TableHead>}
 				</TableRow>
@@ -43,7 +52,7 @@ export function ServiceTable({
 					<TableRow key={service.id}>
 						<TableCell className='font-medium'>{service.name}</TableCell>
 						<TableCell className='text-muted-foreground'>
-							{service.description ?? '—'}
+							{service.description ?? t('common.notAvailable')}
 						</TableCell>
 						<TableCell>{service.quantity ?? 1}</TableCell>
 						<TableCell>{service.laborHours ?? 0}h</TableCell>
@@ -62,7 +71,9 @@ export function ServiceTable({
 									onClick={() => onRemoveService(service.id)}
 								>
 									<Trash2 className='h-4 w-4' />
-									<span className='sr-only'>Remove service</span>
+									<span className='sr-only'>
+										{t('orders.actions.removeService')}
+									</span>
 								</Button>
 							</TableCell>
 						)}

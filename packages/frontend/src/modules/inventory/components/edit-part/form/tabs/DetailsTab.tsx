@@ -13,17 +13,19 @@ import {
 } from '@/shared';
 import { ImageIcon } from 'lucide-react';
 import { Control, Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 interface DetailsTabProps {
 	control: Control<PartFormData, any, PartFormData>;
 }
 
 export function DetailsTab({ control }: DetailsTabProps) {
+	const { t } = useTranslation();
 	return (
 		<div className='space-y-4 pt-4'>
 			<div className='grid grid-cols-2 gap-4'>
 				<div className='grid gap-2'>
-					<Label>Condition *</Label>
+					<Label>{t('inventory.form.details.conditionLabel')} *</Label>
 					<Controller
 						name='condition'
 						control={control}
@@ -36,28 +38,36 @@ export function DetailsTab({ control }: DetailsTabProps) {
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value='NEW'>New</SelectItem>
-									<SelectItem value='USED'>Used</SelectItem>
-									<SelectItem value='REFURBISHED'>Refurbished</SelectItem>
+									<SelectItem value='NEW'>
+										{t('inventory.form.details.condition.new')}
+									</SelectItem>
+									<SelectItem value='USED'>
+										{t('inventory.form.details.condition.used')}
+									</SelectItem>
+									<SelectItem value='REFURBISHED'>
+										{t('inventory.form.details.condition.refurbished')}
+									</SelectItem>
 								</SelectContent>
 							</Select>
 						)}
 					/>
 				</div>
 				<div className='grid gap-2'>
-					<Label>Photo</Label>
+					<Label>{t('inventory.form.details.photoLabel')}</Label>
 					<Button variant='outline' className='w-full bg-transparent'>
 						<ImageIcon className='mr-2 h-4 w-4' />
-						Upload Photo
+						{t('inventory.form.details.uploadPhoto')}
 						{/* TODO: file upload */}
 					</Button>
 				</div>
 			</div>
 			<Separator />
-			<p className='text-sm font-medium'>Warranty</p>
+			<p className='text-sm font-medium'>
+				{t('inventory.form.details.warrantyTitle')}
+			</p>
 			<div className='grid grid-cols-2 gap-4'>
 				<div className='grid gap-2'>
-					<Label>Warranty (months)</Label>
+					<Label>{t('inventory.form.details.warrantyMonthsLabel')}</Label>
 					<Controller
 						name='warrantyMonths'
 						control={control}
@@ -72,7 +82,7 @@ export function DetailsTab({ control }: DetailsTabProps) {
 					/>
 				</div>
 				<div className='grid gap-2'>
-					<Label>Warranty (km)</Label>
+					<Label>{t('inventory.form.details.warrantyKmLabel')}</Label>
 					<Controller
 						name='warrantyKm'
 						control={control}
@@ -82,7 +92,9 @@ export function DetailsTab({ control }: DetailsTabProps) {
 								{...field}
 								value={field.value ?? ''}
 								onChange={e => field.onChange(Number(e.target.value))}
-								placeholder='0 = no km limit'
+								placeholder={t(
+									'inventory.form.details.placeholders.warrantyKm',
+								)}
 							/>
 						)}
 					/>
@@ -90,7 +102,7 @@ export function DetailsTab({ control }: DetailsTabProps) {
 			</div>
 			<Separator />
 			<div className='grid gap-2'>
-				<Label>Notes</Label>
+				<Label>{t('inventory.form.details.notesLabel')}</Label>
 				<Controller
 					name='notes'
 					control={control}
@@ -98,7 +110,7 @@ export function DetailsTab({ control }: DetailsTabProps) {
 						<Textarea
 							{...field}
 							value={field.value ?? ''}
-							placeholder='Any additional info about this part...'
+							placeholder={t('inventory.form.details.placeholders.notes')}
 							rows={3}
 						/>
 					)}

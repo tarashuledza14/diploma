@@ -542,7 +542,7 @@ export function OrderDetailsPage() {
 	if (isLoading) {
 		return (
 			<div className='flex h-full items-center justify-center'>
-				<p className='text-muted-foreground'>Завантаження...</p>
+				<p className='text-muted-foreground'>{t('common.loading')}</p>
 			</div>
 		);
 	}

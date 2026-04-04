@@ -16,6 +16,7 @@ import {
 import { InventoryPage } from '@/pages/InventoryPage';
 import { ServicesPage } from '@/pages/ServicesPage';
 import { Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 
 // Ліниве завантаження сторінок (Code Splitting)
 // const LoginPage = lazy(() => import('@/pages/LoginPage'));
@@ -26,7 +27,15 @@ import { Suspense } from 'react';
 // const InventoryPage = lazy(() => import('@/pages/inventory/InventoryPage'));
 
 // Компонент завантаження, поки вантажиться сторінка
-const Loading = () => <div className='p-10 text-center'>Завантаження...</div>;
+function Loading() {
+	const { t } = useTranslation();
+	return <div className='p-10 text-center'>{t('router.loading')}</div>;
+}
+
+function NotFoundPage() {
+	const { t } = useTranslation();
+	return <div>{t('router.notFound')}</div>;
+}
 
 export const router = createBrowserRouter([
 	// --- ПУБЛІЧНІ МАРШРУТИ ---
@@ -162,6 +171,6 @@ export const router = createBrowserRouter([
 	// --- 404 Page ---
 	{
 		path: '*',
-		element: <div>Сторінку не знайдено</div>,
+		element: <NotFoundPage />,
 	},
 ]);

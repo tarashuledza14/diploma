@@ -10,6 +10,7 @@ import {
 import { debounce } from 'lodash';
 import { Check, ChevronsUpDown, Loader2 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface Option {
 	id: string;
@@ -36,10 +37,13 @@ export function AutoComplete<T extends Option>({
 	onSearch,
 	options,
 	isLoading = false,
-	placeholder = 'Select...',
-	emptyMessage = 'No results found.',
+	placeholder,
+	emptyMessage,
 	className,
 }: AsyncComboboxProps<T>) {
+	const { t } = useTranslation();
+	const resolvedPlaceholder = placeholder ?? t('common.select');
+	const resolvedEmptyMessage = emptyMessage ?? t('common.noResultsFound');
 	const [open, setOpen] = useState(false);
 	const [inputValue, setInputValue] = useState('');
 
@@ -73,7 +77,7 @@ export function AutoComplete<T extends Option>({
 							<span className='font-medium'>{selectedOption.label}</span>
 						</div>
 					) : (
-						<span className='text-muted-foreground'>{placeholder}</span>
+						<span className='text-muted-foreground'>{resolvedPlaceholder}</span>
 					)}
 					<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
 				</Button>
@@ -86,7 +90,7 @@ export function AutoComplete<T extends Option>({
 				{/* shouldFilter={false} ОБОВ'ЯЗКОВО, бо фільтруємо на бекенді */}
 				<Command shouldFilter={false}>
 					<CommandInput
-						placeholder={placeholder}
+						placeholder={resolvedPlaceholder}
 						value={inputValue}
 						onValueChange={val => {
 							setInputValue(val);
@@ -101,7 +105,7 @@ export function AutoComplete<T extends Option>({
 						) : (
 							<>
 								{options.length === 0 && (
-									<CommandEmpty>{emptyMessage}</CommandEmpty>
+									<CommandEmpty>{resolvedEmptyMessage}</CommandEmpty>
 								)}
 								<CommandGroup>
 									{options.map(option => (

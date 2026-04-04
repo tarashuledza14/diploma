@@ -5,6 +5,7 @@ import {
 	CardTitle,
 	Separator,
 } from '@/shared/components/ui';
+import { useTranslation } from 'react-i18next';
 import { AddService } from './AddService';
 import { ServiceTable } from './ServiceTable';
 import { ServicesTotals } from './ServicesTotals';
@@ -30,10 +31,14 @@ export function ServicesTab({
 	showFinancials = true,
 	isUpdating = false,
 }: ServicesTabProps) {
+	const { t } = useTranslation();
+
 	return (
 		<Card>
 			<CardHeader className='flex flex-row items-center justify-between'>
-				<CardTitle>Services</CardTitle>
+				<CardTitle>
+					{t('orders.detailsTabs.services', { count: services.length })}
+				</CardTitle>
 				{canManageServices && (
 					<AddService
 						serviceOptions={serviceOptions}

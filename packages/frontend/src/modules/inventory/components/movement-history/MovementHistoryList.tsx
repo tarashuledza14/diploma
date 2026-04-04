@@ -1,27 +1,31 @@
 import { StockMovement } from '@/modules/inventory/interfaces/get-inventory.interfaces';
 import { Badge, formatDate, ScrollArea } from '@/shared';
 import { ArrowUpDown, Clock, History, Package, Plus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
-function getMovementBadge(type: StockMovement['type']) {
+function getMovementBadge(
+	type: StockMovement['type'],
+	t: (key: string) => string,
+) {
 	switch (type) {
 		case 'RECEIVED':
 			return {
-				label: 'Received',
+				label: t('inventory.movement.types.received'),
 				className: 'bg-green-100 text-green-700 border-green-200',
 			};
 		case 'ISSUED':
 			return {
-				label: 'Issued',
+				label: t('inventory.movement.types.issued'),
 				className: 'bg-blue-100 text-blue-700 border-blue-200',
 			};
 		case 'RESERVED':
 			return {
-				label: 'Reserved',
+				label: t('inventory.movement.types.reserved'),
 				className: 'bg-amber-100 text-amber-700 border-amber-200',
 			};
 		case 'RETURNED':
 			return {
-				label: 'Returned',
+				label: t('inventory.movement.types.returned'),
 				className: 'bg-purple-100 text-purple-700 border-purple-200',
 			};
 		default:
@@ -40,17 +44,18 @@ export function MovementHistoryList({
 	history,
 	partUnit,
 }: MovementHistoryListProps) {
+	const { t } = useTranslation();
 	return (
 		<ScrollArea className='flex-1 h-[50vh]'>
 			<div className='space-y-3 pr-4'>
 				{history.length === 0 ? (
 					<div className='flex flex-col items-center justify-center py-12 text-muted-foreground'>
 						<History className='mb-3 h-10 w-10 opacity-40' />
-						<p>No movement history yet</p>
+						<p>{t('inventory.movement.empty')}</p>
 					</div>
 				) : (
 					history.map(mov => {
-						const badge = getMovementBadge(mov.type);
+						const badge = getMovementBadge(mov.type, t);
 						return (
 							<div
 								key={mov.id}

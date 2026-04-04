@@ -14,6 +14,7 @@ import {
 import { cn } from '@/shared/lib/utils';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface ServicesSelectProps {
 	services: any[];
@@ -30,9 +31,10 @@ export const ServicesSelect: React.FC<ServicesSelectProps> = ({
 	open,
 	setOpen,
 }) => {
+	const { t } = useTranslation();
 	return (
 		<div className='space-y-2'>
-			<Label>Services *</Label>
+			<Label>{t('orders.newOrder.fields.services')} *</Label>
 			<Popover open={open} onOpenChange={setOpen}>
 				<PopoverTrigger asChild>
 					<Button
@@ -43,17 +45,21 @@ export const ServicesSelect: React.FC<ServicesSelectProps> = ({
 					>
 						<span className='text-muted-foreground'>
 							{selectedServices.length > 0
-								? `${selectedServices.length} service(s) selected`
-								: 'Select services...'}
+								? t('orders.newOrder.labels.servicesSelected', {
+										count: selectedServices.length,
+									})
+								: t('orders.newOrder.placeholders.selectService')}
 						</span>
 						<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
 					</Button>
 				</PopoverTrigger>
 				<PopoverContent className='w-125 p-0' align='start'>
 					<Command>
-						<CommandInput placeholder='Search services...' />
+						<CommandInput placeholder={t('orders.filters.searchServices')} />
 						<CommandList>
-							<CommandEmpty>No service found.</CommandEmpty>
+							<CommandEmpty>
+								{t('orders.newOrder.empty.noServiceFound')}
+							</CommandEmpty>
 							<CommandGroup>
 								{services.map(service => (
 									<CommandItem
@@ -73,7 +79,9 @@ export const ServicesSelect: React.FC<ServicesSelectProps> = ({
 											<div className='flex flex-col'>
 												<span>{service.name}</span>
 												<span className='text-xs text-muted-foreground'>
-													{service.duration}h estimated
+													{t('orders.newOrder.labels.estimatedHours', {
+														duration: service.duration,
+													})}
 												</span>
 											</div>
 											<span className='font-medium'>

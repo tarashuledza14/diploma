@@ -14,6 +14,7 @@ import {
 import { cn } from '@/shared/lib/utils';
 import { Check, ChevronsUpDown, User } from 'lucide-react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface ClientSelectProps {
 	clients: any[];
@@ -32,10 +33,11 @@ export const ClientSelect: React.FC<ClientSelectProps> = ({
 	open,
 	setOpen,
 }) => {
+	const { t } = useTranslation();
 	const selectedClientData = clients.find(c => c.id === selectedClient);
 	return (
 		<div className='space-y-2'>
-			<Label>Client *</Label>
+			<Label>{t('orders.newOrder.fields.client')} *</Label>
 			<Popover open={open} onOpenChange={setOpen}>
 				<PopoverTrigger asChild>
 					<Button
@@ -53,16 +55,20 @@ export const ClientSelect: React.FC<ClientSelectProps> = ({
 								</span>
 							</div>
 						) : (
-							<span className='text-muted-foreground'>Select a client...</span>
+							<span className='text-muted-foreground'>
+								{t('orders.newOrder.placeholders.selectClient')}
+							</span>
 						)}
 						<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
 					</Button>
 				</PopoverTrigger>
 				<PopoverContent className='w-[500px] p-0' align='start'>
 					<Command>
-						<CommandInput placeholder='Search clients...' />
+						<CommandInput placeholder={t('orders.filters.searchClient')} />
 						<CommandList>
-							<CommandEmpty>No client found.</CommandEmpty>
+							<CommandEmpty>
+								{t('orders.newOrder.empty.noClientFound')}
+							</CommandEmpty>
 							<CommandGroup>
 								{clients.map(client => (
 									<CommandItem

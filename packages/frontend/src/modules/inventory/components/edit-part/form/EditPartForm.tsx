@@ -5,6 +5,7 @@ import {
 } from '@/modules/inventory/interfaces/inventory.interfaces';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { BaseInfoTab } from './tabs/BaseInfoTab';
 import { DetailsTab } from './tabs/DetailsTab';
 import { FinanceTab } from './tabs/FinanceTab';
@@ -23,6 +24,7 @@ export function EditPartForm({
 	isSubmitting,
 	dictionaries,
 }: EditPartFormProps) {
+	const { t } = useTranslation();
 	// Якщо це редагування, розпаковуємо масиви назад у плоскі поля
 	const defaultValues: Partial<PartFormData> | undefined = inventoryPart
 		? {
@@ -99,10 +101,18 @@ export function EditPartForm({
 		<form id='edit-part-form' onSubmit={handleSubmit(handleFormSubmit)}>
 			<Tabs defaultValue='base' className='w-full'>
 				<TabsList className='grid w-full grid-cols-4'>
-					<TabsTrigger value='base'>Base Info</TabsTrigger>
-					<TabsTrigger value='stock'>Stock</TabsTrigger>
-					<TabsTrigger value='finance'>Finance</TabsTrigger>
-					<TabsTrigger value='details'>Details</TabsTrigger>
+					<TabsTrigger value='base'>
+						{t('inventory.form.tabs.baseInfo')}
+					</TabsTrigger>
+					<TabsTrigger value='stock'>
+						{t('inventory.form.tabs.stock')}
+					</TabsTrigger>
+					<TabsTrigger value='finance'>
+						{t('inventory.form.tabs.finance')}
+					</TabsTrigger>
+					<TabsTrigger value='details'>
+						{t('inventory.form.tabs.details')}
+					</TabsTrigger>
 				</TabsList>
 				<TabsContent value='base'>
 					<BaseInfoTab control={control} dictionaries={dictionaries} />

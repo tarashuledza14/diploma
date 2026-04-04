@@ -6,31 +6,35 @@ import {
 	ResponsiveDialogTitle,
 } from '@/shared';
 import { Edit, History } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import {
 	InventoryPart,
 	PartCondition,
 } from '../../interfaces/inventory.interfaces';
 
-function getConditionBadge(condition: InventoryPart['condition']) {
+function getConditionBadge(
+	condition: InventoryPart['condition'],
+	t: (key: string) => string,
+) {
 	switch (condition) {
 		case PartCondition.NEW:
 			return {
-				label: 'New',
+				label: t('inventory.form.details.condition.new'),
 				className: 'bg-green-100 text-green-700 border-green-200',
 			};
 		case PartCondition.USED:
 			return {
-				label: 'Used',
+				label: t('inventory.form.details.condition.used'),
 				className: 'bg-amber-100 text-amber-700 border-amber-200',
 			};
 		case PartCondition.REFURBISHED:
 			return {
-				label: 'Refurbished',
+				label: t('inventory.form.details.condition.refurbished'),
 				className: 'bg-blue-100 text-blue-700 border-blue-200',
 			};
 		default:
 			return {
-				label: 'Unknown',
+				label: t('inventory.unknown'),
 				className: 'bg-gray-100 text-gray-700 border-gray-200',
 			};
 	}
@@ -49,6 +53,9 @@ export function ViewPartModalHeader({
 	handleEdit,
 	handleHistory,
 }: ViewPartModalHeaderProps) {
+	const { t } = useTranslation();
+	const conditionBadge = getConditionBadge(selectedPart.condition, t);
+
 	return (
 		<ResponsiveDialogHeader className='pb-4'>
 			<div className='flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between'>
@@ -57,16 +64,17 @@ export function ViewPartModalHeader({
 						{selectedPart.name}
 					</ResponsiveDialogTitle>
 					<ResponsiveDialogDescription className='flex flex-wrap items-center gap-2 mt-1 text-xs sm:text-sm'>
-						<span className='font-mono'>{selectedPart.sku ?? 'N/A'}</span>
-						<span className='font-mono'>{selectedPart.code ?? 'N/A'}</span>
+						<span className='font-mono'>
+							{selectedPart.sku ?? t('common.notAvailable')}
+						</span>
+						<span className='font-mono'>
+							{selectedPart.code ?? t('common.notAvailable')}
+						</span>
 						<span className='hidden sm:inline'>|</span>
-						<span>{selectedPart.brand?.name || 'N/A'}</span>
+						<span>{selectedPart.brand?.name || t('common.notAvailable')}</span>
 						<span className='hidden sm:inline'>|</span>
-						<Badge
-							variant='outline'
-							className={getConditionBadge(selectedPart.condition).className}
-						>
-							{getConditionBadge(selectedPart.condition).label}
+						<Badge variant='outline' className={conditionBadge.className}>
+							{conditionBadge.label}
 						</Badge>
 					</ResponsiveDialogDescription>
 				</div>
@@ -81,7 +89,7 @@ export function ViewPartModalHeader({
 						}}
 					>
 						<Edit className='mr-1.5 h-3.5 w-3.5' />
-						Edit
+						{t('common.edit')}
 					</Button>
 					<Button
 						variant='outline'
@@ -93,7 +101,7 @@ export function ViewPartModalHeader({
 						}}
 					>
 						<History className='mr-1.5 h-3.5 w-3.5' />
-						History
+						{t('inventory.actions.movementHistory')}
 					</Button>
 				</div>
 			</div>

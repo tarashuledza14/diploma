@@ -108,7 +108,7 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 						<Label htmlFor='brand'>{t('vehicles.fields.brand')} *</Label>
 						<Input
 							id='brand'
-							placeholder='BMW'
+							placeholder={t('vehicles.placeholders.examples.brand')}
 							{...form.register('brand', { required: true })}
 						/>
 						{form.formState.errors.brand && (
@@ -122,7 +122,7 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 						<Label htmlFor='model'>{t('vehicles.fields.model')} *</Label>
 						<Input
 							id='model'
-							placeholder='X5'
+							placeholder={t('vehicles.placeholders.examples.model')}
 							{...form.register('model', { required: true })}
 						/>
 						{form.formState.errors.model && (
@@ -138,7 +138,7 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 						<Label htmlFor='year'>{t('vehicles.fields.year')} *</Label>
 						<Input
 							id='year'
-							placeholder='2023'
+							placeholder={t('vehicles.placeholders.examples.year')}
 							type='number'
 							{...form.register('year', {
 								required: true,
@@ -154,14 +154,18 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 					</div>
 					<div className='grid gap-2'>
 						<Label htmlFor='color'>{t('vehicles.fields.color')}</Label>
-						<Input id='color' placeholder='Black' {...form.register('color')} />
+						<Input
+							id='color'
+							placeholder={t('vehicles.placeholders.examples.color')}
+							{...form.register('color')}
+						/>
 					</div>
 				</div>
 				<div className='grid gap-2'>
 					<Label htmlFor='plate'>{t('vehicles.fields.licensePlate')} *</Label>
 					<Input
 						id='plate'
-						placeholder='ABC-1234'
+						placeholder={t('vehicles.placeholders.examples.licensePlate')}
 						style={{ textTransform: 'uppercase' }}
 						{...form.register('plateNumber', {
 							required: true,
@@ -182,7 +186,7 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 					<Label htmlFor='vin'>{t('vehicles.fields.vin')}</Label>
 					<Input
 						id='vin'
-						placeholder='WBAPH5C55BA123456'
+						placeholder={t('vehicles.placeholders.examples.vin')}
 						{...form.register('vin')}
 					/>
 				</div>
@@ -191,7 +195,7 @@ export function VehicleForm({ form }: { form: UseFormReturn<AddVehicleData> }) {
 						<Label htmlFor='mileage'>{t('vehicles.fields.mileageKm')}</Label>
 						<Input
 							id='mileage'
-							placeholder='35000'
+							placeholder={t('vehicles.placeholders.examples.mileage')}
 							type='number'
 							{...form.register('mileage')}
 						/>

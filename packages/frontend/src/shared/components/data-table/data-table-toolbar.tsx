@@ -9,6 +9,7 @@ import { DataTableViewOptions } from '@/shared/components/data-table/data-table-
 import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import { cn } from '@/shared/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface DataTableToolbarProps<TData> extends React.ComponentProps<'div'> {
 	table: Table<TData>;
@@ -20,6 +21,7 @@ export function DataTableToolbar<TData>({
 	className,
 	...props
 }: DataTableToolbarProps<TData>) {
+	const { t } = useTranslation();
 	const isFiltered = table.getState().columnFilters.length > 0;
 
 	const columns = React.useMemo(
@@ -47,14 +49,14 @@ export function DataTableToolbar<TData>({
 				))}
 				{isFiltered && (
 					<Button
-						aria-label='Reset filters'
+						aria-label={t('table.filter.resetFilters')}
 						variant='outline'
 						size='sm'
 						className='border-dashed'
 						onClick={onReset}
 					>
 						<X />
-						Reset
+						{t('table.filter.reset')}
 					</Button>
 				)}
 			</div>

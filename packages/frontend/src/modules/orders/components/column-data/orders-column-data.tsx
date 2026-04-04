@@ -1,3 +1,4 @@
+import i18n from '@/i18n/config';
 import {
 	Avatar,
 	AvatarFallback,
@@ -31,7 +32,7 @@ export function getOrdersTableColumns({
 			id: 'select',
 			header: ({ table }) => (
 				<Checkbox
-					aria-label='Select all'
+					aria-label={i18n.t('table.selectAll')}
 					className='translate-y-0.5'
 					checked={
 						table.getIsAllPageRowsSelected() ||
@@ -42,7 +43,7 @@ export function getOrdersTableColumns({
 			),
 			cell: ({ row }) => (
 				<Checkbox
-					aria-label='Select row'
+					aria-label={i18n.t('table.selectRow')}
 					className='translate-y-0.5'
 					checked={row.getIsSelected()}
 					onCheckedChange={value => row.toggleSelected(!!value)}
@@ -56,7 +57,10 @@ export function getOrdersTableColumns({
 			id: 'client',
 			accessorFn: row => row.client.fullName,
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Client' />
+				<DataTableColumnHeader
+					column={column}
+					label={i18n.t('orders.columns.client')}
+				/>
 			),
 			cell: ({ row }) => {
 				const fullName = row.original.client.fullName;
@@ -74,8 +78,8 @@ export function getOrdersTableColumns({
 			enableColumnFilter: true,
 			enableHiding: false,
 			meta: {
-				label: 'Client',
-				placeholder: 'Search client...',
+				label: i18n.t('orders.columns.client'),
+				placeholder: i18n.t('orders.filters.searchClient'),
 				variant: 'text',
 			},
 		},
@@ -84,7 +88,10 @@ export function getOrdersTableColumns({
 			accessorFn: row =>
 				`${row.vehicle.year} ${row.vehicle.brand} ${row.vehicle.model}`,
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Vehicle' />
+				<DataTableColumnHeader
+					column={column}
+					label={i18n.t('orders.columns.vehicle')}
+				/>
 			),
 			cell: ({ row }) => {
 				const v = row.original.vehicle;
@@ -103,8 +110,8 @@ export function getOrdersTableColumns({
 			enableColumnFilter: true,
 			enableHiding: false,
 			meta: {
-				label: 'Vehicle',
-				placeholder: 'Search vehicle...',
+				label: i18n.t('orders.columns.vehicle'),
+				placeholder: i18n.t('orders.filters.searchVehicle'),
 				variant: 'text',
 			},
 		},
@@ -112,7 +119,10 @@ export function getOrdersTableColumns({
 			id: 'services',
 			accessorFn: row => row.services.map(s => s.name).join(', '),
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Services' />
+				<DataTableColumnHeader
+					column={column}
+					label={i18n.t('orders.columns.services')}
+				/>
 			),
 			cell: ({ row }) => (
 				<div className='flex flex-wrap gap-1'>
@@ -129,8 +139,8 @@ export function getOrdersTableColumns({
 				</div>
 			),
 			meta: {
-				label: 'Services',
-				placeholder: 'Search services...',
+				label: i18n.t('orders.columns.services'),
+				placeholder: i18n.t('orders.filters.searchServices'),
 				variant: 'text',
 			},
 			enableColumnFilter: true,
@@ -318,16 +328,19 @@ export function getOrdersTableColumns({
 			id: 'status',
 			accessorKey: 'status',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Status' />
+				<DataTableColumnHeader
+					column={column}
+					label={i18n.t('common.status')}
+				/>
 			),
 			cell: ({ row }) => (
 				<Badge variant='secondary'>
-					{String(row.original.status).replace(/_/g, ' ')}
+					{i18n.t(`orderStatus.${row.original.status}`)}
 				</Badge>
 			),
 			meta: {
-				label: 'Status',
-				placeholder: 'Filter by status...',
+				label: i18n.t('common.status'),
+				placeholder: i18n.t('orders.filters.filterByStatus'),
 				variant: 'text',
 			},
 			enableColumnFilter: true,
@@ -337,16 +350,19 @@ export function getOrdersTableColumns({
 			id: 'priority',
 			accessorKey: 'priority',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Priority' />
+				<DataTableColumnHeader
+					column={column}
+					label={i18n.t('common.priority')}
+				/>
 			),
 			cell: ({ row }) => (
 				<Badge variant='outline'>
-					{String(row.original.priority)}
+					{i18n.t(`orderPriority.${row.original.priority}`)}
 				</Badge>
 			),
 			meta: {
-				label: 'Priority',
-				placeholder: 'Filter by priority...',
+				label: i18n.t('common.priority'),
+				placeholder: i18n.t('orders.filters.filterByPriority'),
 				variant: 'text',
 			},
 			enableColumnFilter: true,
@@ -356,14 +372,17 @@ export function getOrdersTableColumns({
 			id: 'endDate',
 			accessorKey: 'endDate',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='End Date' />
+				<DataTableColumnHeader
+					column={column}
+					label={i18n.t('orders.columns.endDate')}
+				/>
 			),
 			cell: ({ row }) => {
 				const d = row.original.endDate;
 				return d ? new Date(d).toLocaleDateString() : '—';
 			},
 			meta: {
-				label: 'End Date',
+				label: i18n.t('orders.columns.endDate'),
 				variant: 'date',
 			},
 			enableColumnFilter: true,
@@ -373,15 +392,17 @@ export function getOrdersTableColumns({
 			id: 'totalAmount',
 			accessorKey: 'totalAmount',
 			header: ({ column }) => (
-				<DataTableColumnHeader column={column} label='Total' className='text-right' />
+				<DataTableColumnHeader
+					column={column}
+					label={i18n.t('orders.columns.total')}
+					className='text-right'
+				/>
 			),
 			cell: ({ row }) => (
-				<div className='text-right font-medium'>
-					{row.original.totalAmount}
-				</div>
+				<div className='text-right font-medium'>{row.original.totalAmount}</div>
 			),
 			meta: {
-				label: 'Total',
+				label: i18n.t('orders.columns.total'),
 				variant: 'text',
 			},
 			enableColumnFilter: true,
@@ -394,7 +415,7 @@ export function getOrdersTableColumns({
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button
-								aria-label='Open menu'
+								aria-label={i18n.t('table.openMenu')}
 								variant='ghost'
 								className='flex size-8 p-0 data-[state=open]:bg-muted'
 							>
@@ -406,14 +427,14 @@ export function getOrdersTableColumns({
 								onSelect={() => setRowAction({ row, variant: 'view' })}
 							>
 								<Eye className='h-4 w-4 mr-2' />
-								View
+								{i18n.t('common.view')}
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem
 								onSelect={() => setRowAction({ row, variant: 'update' })}
 							>
 								<Edit className='h-4 w-4 mr-2' />
-								Edit
+								{i18n.t('common.edit')}
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem
@@ -421,7 +442,7 @@ export function getOrdersTableColumns({
 								onSelect={() => setRowAction({ row, variant: 'delete' })}
 							>
 								<Trash2 className='h-4 w-4 mr-2' />
-								Delete
+								{i18n.t('common.delete')}
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
