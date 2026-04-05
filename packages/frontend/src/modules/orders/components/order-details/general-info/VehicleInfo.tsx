@@ -11,8 +11,10 @@ import { useTranslation } from 'react-i18next';
 
 interface Props {
 	order: any;
+	onEditClick?: () => void;
+	canEdit?: boolean;
 }
-export function VehicleInfo({ order }: Props) {
+export function VehicleInfo({ order, onEditClick, canEdit = true }: Props) {
 	const { t } = useTranslation();
 	const vehicle = order.vehicle;
 	if (!vehicle) return null;
@@ -26,11 +28,12 @@ export function VehicleInfo({ order }: Props) {
 					<Car className='h-5 w-5' />
 					{t('orders.generalInfo.vehicleInformation')}
 				</CardTitle>
-				<Button variant='ghost' size='sm'>
-					<Edit className='mr-2 h-4 w-4' />
-					{t('common.edit')}
-					{/* TODO: Open EditVehicleModal */}
-				</Button>
+				{canEdit && (
+					<Button variant='ghost' size='sm' onClick={onEditClick}>
+						<Edit className='mr-2 h-4 w-4' />
+						{t('common.edit')}
+					</Button>
+				)}
 			</CardHeader>
 			<CardContent className='grid gap-4'>
 				<div className='grid grid-cols-2 gap-4'>

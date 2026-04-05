@@ -4,14 +4,9 @@ import { useTranslation } from 'react-i18next';
 interface TabsNavProps {
 	servicesCount: number;
 	partsCount: number;
-	mediaCount: number;
 }
 
-export function TabsNav({
-	servicesCount,
-	partsCount,
-	mediaCount,
-}: TabsNavProps) {
+export function TabsNav({ servicesCount, partsCount }: TabsNavProps) {
 	const { t } = useTranslation();
 	return (
 		<TabsList className='mb-4'>
@@ -23,9 +18,6 @@ export function TabsNav({
 			</TabsTrigger>
 			<TabsTrigger value='parts'>
 				{t('orders.detailsTabs.parts', { count: partsCount })}
-			</TabsTrigger>
-			<TabsTrigger value='media'>
-				{t('orders.detailsTabs.media', { count: mediaCount })}
 			</TabsTrigger>
 		</TabsList>
 	);

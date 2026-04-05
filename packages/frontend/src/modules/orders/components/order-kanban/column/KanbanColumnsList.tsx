@@ -79,7 +79,6 @@ function mapPriority(priority: OrderPriority): KanbanOrder['priority'] {
 }
 
 function mapOrderToKanbanOrder(order: OrderListItem): KanbanOrder {
-	const mechanic = (order as any).mechanic;
 	return {
 		id: order.id,
 		orderNumber: order.orderNumber,
@@ -97,11 +96,6 @@ function mapOrderToKanbanOrder(order: OrderListItem): KanbanOrder {
 		services: order.services.map(service => service.name),
 		priority: mapPriority(order.priority),
 		dueDate: order.endDate,
-		assignedTo: {
-			id: mechanic?.id ?? null,
-			name: mechanic?.fullName ?? 'Unassigned',
-			avatar: null,
-		},
 	};
 }
 
@@ -139,16 +133,6 @@ export function KanbanColumnsList() {
 		queryKey: ordersKeys.list({ filters: [], page: 1, perPage: 500 }),
 		queryFn: () => OrdersService.getAll({ filters: [], page: 1, perPage: 500 }),
 	});
-
-	const { data: meta } = useQuery({
-		queryKey: ordersKeys.meta(),
-		queryFn: () => OrdersService.getNewOrderMeta(),
-	});
-
-	const mechanics = (meta?.mechanics ?? []).map((m: any) => ({
-		id: m.id,
-		name: m.name,
-	}));
 
 	useEffect(() => {
 		const orders = (data?.data ?? []).map(mapOrderToKanbanOrder);
@@ -302,7 +286,7 @@ export function KanbanColumnsList() {
 											asHandle
 											className='rounded-lg'
 										>
-											<OrderCard order={order} mechanics={mechanics} />
+											<OrderCard order={order} />
 										</KanbanItem>
 									))}
 								</div>
@@ -330,11 +314,7 @@ export function KanbanColumnsList() {
 									</div>
 									<div className='flex flex-col gap-2 px-3 pb-3'>
 										{items.map(order => (
-											<OrderCard
-												key={order.id}
-												order={order}
-												mechanics={mechanics}
-											/>
+											<OrderCard key={order.id} order={order} />
 										))}
 									</div>
 								</div>
@@ -344,7 +324,7 @@ export function KanbanColumnsList() {
 						const order = findOrder(value);
 						if (!order) return null;
 
-						return <OrderCard order={order} mechanics={mechanics} />;
+						return <OrderCard order={order} />;
 					}}
 				</KanbanOverlay>
 			</Kanban>

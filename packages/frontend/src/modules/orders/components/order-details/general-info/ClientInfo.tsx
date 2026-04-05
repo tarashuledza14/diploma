@@ -14,8 +14,10 @@ import { useTranslation } from 'react-i18next';
 
 interface Props {
 	order: any;
+	onEditClick?: () => void;
+	canEdit?: boolean;
 }
-export function ClientInfo({ order }: Props) {
+export function ClientInfo({ order, onEditClick, canEdit = true }: Props) {
 	const { t } = useTranslation();
 	const client = order.client;
 	if (!client) return null;
@@ -28,11 +30,12 @@ export function ClientInfo({ order }: Props) {
 					<User className='h-5 w-5' />
 					{t('orders.generalInfo.clientInformation')}
 				</CardTitle>
-				<Button variant='ghost' size='sm'>
-					<Edit className='mr-2 h-4 w-4' />
-					{t('common.edit')}
-					{/* TODO: Open EditClientModal or navigate to /clients/:id */}
-				</Button>
+				{canEdit && (
+					<Button variant='ghost' size='sm' onClick={onEditClick}>
+						<Edit className='mr-2 h-4 w-4' />
+						{t('common.edit')}
+					</Button>
+				)}
 			</CardHeader>
 			<CardContent className='space-y-4'>
 				<div className='flex items-center gap-4'>
@@ -41,7 +44,7 @@ export function ClientInfo({ order }: Props) {
 						<AvatarFallback>
 							{(order.client?.name ?? order.client?.fullName ?? '')
 								.split(' ')
-								.map(n => n[0])
+								.map((n: string) => n[0])
 								.join('')}
 						</AvatarFallback>
 					</Avatar>

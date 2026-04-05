@@ -1,4 +1,6 @@
 import { useUserStore } from '@/modules/auth';
+import { EditClientDialog } from '@/modules/clients/components/EditClientDialog';
+import { Client } from '@/modules/clients/interfaces/client.interface';
 import { Tabs, TabsContent } from '@/shared/components/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
@@ -7,7 +9,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { OrdersService, UpdateOrderPayload } from '../modules/orders/api';
 import { GeneralInfoTab } from '../modules/orders/components/order-details/general-info/GeneralInfoTab';
-import { MediaGallery } from '../modules/orders/components/order-details/media/MediaGallery';
 import { OrderDetailsHeader } from '../modules/orders/components/order-details/OrderDetailsHeader';
 import { PartsTab } from '../modules/orders/components/order-details/parts/PartsTab';
 import { ServicesTab } from '../modules/orders/components/order-details/services/ServicesTab';
@@ -29,6 +30,9 @@ import {
 } from '../modules/orders/interfaces/order.enums';
 import { ordersKeys } from '../modules/orders/queries/keys';
 import { useOrderDetailsQuery } from '../modules/orders/query/useOrderDetailsQuery';
+import { EditVehicleDialog } from '../modules/vehicles/components/EditVehicleDialog';
+import { VehicleStatus } from '../modules/vehicles/enums/vehicle-status.enum';
+import { VehicleWithOwnerInfo } from '../modules/vehicles/interfaces/get-vehicle.interface';
 
 const normalizePriority = (value?: string) =>
 	String(value ?? OrderPriority.MEDIUM).toUpperCase() as OrderPriority;
@@ -54,6 +58,16 @@ interface ServicePartGroup {
 	parts: OrderDetailsPart[];
 }
 
+interface ServiceRow {
+	serviceId: string;
+	serviceName: string;
+}
+
+interface ServiceRecommendations {
+	serviceId: string;
+	partIds: Set<string>;
+}
+
 export function OrderDetailsPage() {
 	const { t } = useTranslation();
 	const role = useUserStore(state => state.user?.role);
@@ -63,6 +77,8 @@ export function OrderDetailsPage() {
 	const { data: order, isLoading, error } = useOrderDetailsQuery(id);
 	const queryClient = useQueryClient();
 	const [isEditOpen, setIsEditOpen] = useState(false);
+	const [isClientEditOpen, setIsClientEditOpen] = useState(false);
+	const [isVehicleEditOpen, setIsVehicleEditOpen] = useState(false);
 	const [autoFilledPartIds, setAutoFilledPartIds] = useState<Set<string>>(
 		new Set(),
 	);
@@ -74,6 +90,7 @@ export function OrderDetailsPage() {
 	});
 
 	const servicesMeta = meta?.services ?? [];
+	const mechanicsMeta = meta?.mechanics ?? [];
 	const partsMeta = meta?.parts ?? [];
 
 	const serviceIdByName = useMemo(
@@ -111,7 +128,7 @@ export function OrderDetailsPage() {
 			.filter((part: OrderPartItem) => Boolean(part.partId));
 	}, [order, partIdByName]);
 
-	const serviceRows = useMemo(
+	const serviceRows = useMemo<ServiceRow[]>(
 		() =>
 			(order?.services ?? [])
 				.map((service: OrderDetailsService) => ({
@@ -119,7 +136,7 @@ export function OrderDetailsPage() {
 						service.serviceId ?? serviceIdByName.get(service.name) ?? '',
 					serviceName: service.name,
 				}))
-				.filter(item => Boolean(item.serviceId)),
+				.filter((item: ServiceRow) => Boolean(item.serviceId)),
 		[order, serviceIdByName],
 	);
 
@@ -128,19 +145,19 @@ export function OrderDetailsPage() {
 			...ordersKeys.all,
 			'recommended-parts-map',
 			order?.vehicle?.id,
-			serviceRows.map(row => row.serviceId).join(','),
+			serviceRows.map((row: ServiceRow) => row.serviceId).join(','),
 		],
 		queryFn: async () => {
 			if (!order?.vehicle?.id || serviceRows.length === 0) {
 				return {} as Record<string, Set<string>>;
 			}
 
-			const uniqueServiceIds = Array.from(
-				new Set(serviceRows.map(row => row.serviceId)),
+			const uniqueServiceIds: string[] = Array.from(
+				new Set(serviceRows.map((row: ServiceRow) => row.serviceId)),
 			);
 
-			const recommendations = await Promise.all(
-				uniqueServiceIds.map(async serviceId => {
+			const recommendations: ServiceRecommendations[] = await Promise.all(
+				uniqueServiceIds.map(async (serviceId: string) => {
 					try {
 						const rec =
 							(await OrdersService.getRecommendedParts(
@@ -162,7 +179,7 @@ export function OrderDetailsPage() {
 			);
 
 			return recommendations.reduce(
-				(acc, item) => {
+				(acc: Record<string, Set<string>>, item: ServiceRecommendations) => {
 					acc[item.serviceId] = item.partIds;
 					return acc;
 				},
@@ -176,7 +193,7 @@ export function OrderDetailsPage() {
 		const currentParts = order?.parts ?? [];
 		const uniqueServiceMap = new Map<string, string>();
 
-		serviceRows.forEach(row => {
+		serviceRows.forEach((row: ServiceRow) => {
 			if (!uniqueServiceMap.has(row.serviceId)) {
 				uniqueServiceMap.set(row.serviceId, row.serviceName);
 			}
@@ -217,6 +234,62 @@ export function OrderDetailsPage() {
 			return !partId || !assignedPartIds.has(partId);
 		});
 	}, [order, servicePartGroups, partIdByName]);
+
+	const selectedClientForEdit = useMemo<Client | undefined>(() => {
+		if (!order?.client) {
+			return undefined;
+		}
+
+		return {
+			id: order.client.id,
+			fullName: order.client.fullName ?? order.client.name ?? '',
+			email: order.client.email ?? '',
+			phone: order.client.phone ?? '',
+			avatar: order.client.avatar ?? '',
+			vehicleCount: 0,
+			totalOrders: 0,
+			totalSpent: 0,
+			status: 'ACTIVE',
+			latestVisit: '',
+			notes: order.client.notes ?? undefined,
+		};
+	}, [order]);
+
+	const selectedVehicleForEdit = useMemo<
+		VehicleWithOwnerInfo | undefined
+	>(() => {
+		if (!order?.vehicle || !order.client?.id) {
+			return undefined;
+		}
+
+		const rawStatus = (order.vehicle as { status?: VehicleStatus }).status;
+		const status =
+			rawStatus && Object.values(VehicleStatus).includes(rawStatus)
+				? rawStatus
+				: VehicleStatus.OUT;
+
+		return {
+			id: order.vehicle.id,
+			vin: order.vehicle.vin,
+			brand: order.vehicle.brand ?? order.vehicle.make,
+			model: order.vehicle.model,
+			year: order.vehicle.year,
+			plateNumber: order.vehicle.plateNumber ?? order.vehicle.plate ?? null,
+			mileage: order.vehicle.mileage ?? 0,
+			ownerId: order.client.id,
+			lastService: null,
+			color: order.vehicle.color ?? null,
+			notes: order.vehicle.notes ?? null,
+			status,
+			totalServices: order.services?.length ?? 0,
+			deletedAt: null,
+			createdAt: order.createdAt ? new Date(order.createdAt) : new Date(),
+			owner: {
+				id: order.client.id,
+				fullName: order.client.fullName ?? order.client.name ?? '',
+			},
+		};
+	}, [order]);
 
 	const buildPayload = (
 		services: OrderServiceItem[],
@@ -462,7 +535,7 @@ export function OrderDetailsPage() {
 			.filter((service: OrderServiceItem) => Boolean(service.serviceId));
 
 		const remainingRecommendedPartIds = new Set<string>();
-		nextServices.forEach(service => {
+		nextServices.forEach((service: OrderServiceItem) => {
 			(
 				recommendedPartsByService[service.serviceId] ?? new Set<string>()
 			).forEach(partId => {
@@ -561,7 +634,6 @@ export function OrderDetailsPage() {
 
 	const services = order.services ?? [];
 	const parts = order.parts ?? [];
-	const media = order.media ?? [];
 	const servicesTotal = services.reduce(
 		(sum: number, s: OrderDetailsService) =>
 			sum + (s.price ?? 0) * (s.quantity ?? 1),
@@ -591,13 +663,15 @@ export function OrderDetailsPage() {
 				isCompletingOrder={isCompletingOrder}
 			/>
 			<Tabs defaultValue='general' className='flex-1'>
-				<TabsNav
-					servicesCount={services.length}
-					partsCount={parts.length}
-					mediaCount={media.length}
-				/>
+				<TabsNav servicesCount={services.length} partsCount={parts.length} />
 				<TabsContent value='general' className='flex-1'>
-					<GeneralInfoTab order={order} />
+					<GeneralInfoTab
+						order={order}
+						onEditClient={() => setIsClientEditOpen(true)}
+						onEditVehicle={() => setIsVehicleEditOpen(true)}
+						canEdit={!isMechanic}
+						mechanics={mechanicsMeta}
+					/>
 				</TabsContent>
 				<TabsContent value='services' className='flex-1'>
 					<ServicesTab
@@ -628,14 +702,21 @@ export function OrderDetailsPage() {
 						isUpdating={isUpdating}
 					/>
 				</TabsContent>
-				<TabsContent value='media' className='flex-1'>
-					<MediaGallery media={media} />
-				</TabsContent>
 			</Tabs>
 			<EditOrderModal
 				open={!isMechanic && isEditOpen}
 				onOpenChange={setIsEditOpen}
 				order={toEditOrderSource(order)}
+			/>
+			<EditClientDialog
+				open={!isMechanic && isClientEditOpen}
+				onOpenChange={setIsClientEditOpen}
+				selectedClient={selectedClientForEdit}
+			/>
+			<EditVehicleDialog
+				open={!isMechanic && isVehicleEditOpen}
+				onOpenChange={setIsVehicleEditOpen}
+				selectedVehicle={selectedVehicleForEdit}
 			/>
 		</div>
 	);

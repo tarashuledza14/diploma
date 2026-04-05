@@ -1,8 +1,4 @@
 import {
-	Avatar,
-	AvatarFallback,
-	AvatarImage,
-	Button,
 	Card,
 	CardContent,
 	CardHeader,
@@ -14,27 +10,57 @@ import { useTranslation } from 'react-i18next';
 
 interface Props {
 	order: any;
+	mechanics?: Array<{
+		id: string;
+		name: string;
+		specialty?: string;
+	}>;
 }
-export function AssignedMechanic({ order }: Props) {
+
+interface ServiceAssignmentView {
+	key: string;
+	serviceName: string;
+	mechanicName?: string;
+	mechanicSpecialty?: string;
+}
+
+export function AssignedMechanic({ order, mechanics = [] }: Props) {
 	const { t } = useTranslation();
-	const assignedTo = order.assignedTo;
-	if (!assignedTo) {
-		return (
-			<Card>
-				<CardHeader>
-					<CardTitle className='flex items-center gap-2'>
-						<Wrench className='h-5 w-5' />
-						{t('orders.generalInfo.assignedMechanic')}
-					</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<p className='text-sm text-muted-foreground'>
-						{t('orders.generalInfo.noMechanicAssigned')}
-					</p>
-				</CardContent>
-			</Card>
-		);
-	}
+
+	const mechanicsById = new Map(
+		mechanics.map(mechanic => [mechanic.id, mechanic]),
+	);
+
+	const serviceAssignments: ServiceAssignmentView[] = (
+		order?.services ?? []
+	).map((service: any, index: number) => {
+		const mappedMechanic = service?.mechanicId
+			? mechanicsById.get(service.mechanicId)
+			: undefined;
+
+		const serviceName =
+			service?.name ??
+			t('orders.newOrder.labels.serviceN', { index: index + 1 });
+
+		const mechanicName =
+			service?.mechanic?.name ??
+			service?.assignedTo?.name ??
+			service?.mechanicName ??
+			mappedMechanic?.name;
+
+		const mechanicSpecialty =
+			service?.mechanic?.specialty ??
+			service?.assignedTo?.specialty ??
+			service?.mechanicSpecialty ??
+			mappedMechanic?.specialty;
+
+		return {
+			key: String(service?.id ?? `${serviceName}-${index}`),
+			serviceName,
+			mechanicName,
+			mechanicSpecialty,
+		};
+	});
 
 	return (
 		<Card>
@@ -45,28 +71,28 @@ export function AssignedMechanic({ order }: Props) {
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<div className='flex items-center justify-between'>
-					<div className='flex items-center gap-4'>
-						<Avatar className='h-10 w-10'>
-							<AvatarImage src={assignedTo.avatar || '/placeholder.svg'} />
-							<AvatarFallback>
-								{assignedTo.name
-									.split(' ')
-									.map(n => n[0])
-									.join('')}
-							</AvatarFallback>
-						</Avatar>
-						<div>
-							<p className='font-medium'>{assignedTo.name}</p>
-							<p className='text-sm text-muted-foreground'>
-								{assignedTo.specialty ?? '—'}
-							</p>
-						</div>
+				{serviceAssignments.length === 0 ? (
+					<p className='text-sm text-muted-foreground'>
+						{t('orders.newOrder.empty.noServices')}
+					</p>
+				) : (
+					<div className='space-y-2'>
+						{serviceAssignments.map(assignment => (
+							<div key={assignment.key} className='rounded-md border p-3'>
+								<p className='text-sm font-medium'>{assignment.serviceName}</p>
+								<p className='mt-1 text-sm text-muted-foreground'>
+									{assignment.mechanicName ??
+										t('orders.newOrder.labels.noMechanicAssigned')}
+								</p>
+								{assignment.mechanicName && assignment.mechanicSpecialty && (
+									<p className='text-xs text-muted-foreground'>
+										{assignment.mechanicSpecialty}
+									</p>
+								)}
+							</div>
+						))}
 					</div>
-					<Button variant='outline' size='sm'>
-						{t('orders.generalInfo.reassign')}
-					</Button>
-				</div>
+				)}
 				{(order.notes ?? order.description) && (
 					<>
 						<Separator className='my-4' />

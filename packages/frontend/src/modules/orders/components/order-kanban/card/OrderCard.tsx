@@ -21,24 +21,13 @@ export interface KanbanOrder {
 	services: string[];
 	priority: 'high' | 'medium' | 'low';
 	dueDate: string | null;
-	assignedTo: {
-		id: string | null;
-		name: string;
-		avatar?: string | null;
-	};
-}
-
-interface Mechanic {
-	id: string;
-	name: string;
 }
 
 interface OrderCardProps {
 	order: KanbanOrder;
-	mechanics: Mechanic[];
 }
 
-export function OrderCard({ order, mechanics }: OrderCardProps) {
+export function OrderCard({ order }: OrderCardProps) {
 	return (
 		<Card className='transition-all hover:shadow-md hover:border-primary/50'>
 			<CardContent className='p-3'>
@@ -48,7 +37,7 @@ export function OrderCard({ order, mechanics }: OrderCardProps) {
 					Plate: {order.vehicle.plate || '—'}
 				</p>
 				<OrderCardServices order={order} />
-				<OrderCardFooter order={order} mechanics={mechanics} />
+				<OrderCardFooter order={order} />
 			</CardContent>
 		</Card>
 	);
