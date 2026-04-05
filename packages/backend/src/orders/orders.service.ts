@@ -186,12 +186,13 @@ export class OrdersService {
 			const scopedFilters = this.applyMechanicScope(filters, user);
 
 			const sorts = this.filterService.getSortFilter(input.sort || []);
+			const orderBy = sorts.length ? sorts : [{ orderNumber: 'desc' as const }];
 			const [orders, total] = await Promise.all([
 				this.db.order.findMany({
 					skip: offset,
 					where: scopedFilters,
 					take: input.perPage,
-					orderBy: sorts,
+					orderBy,
 					select: orderSelect,
 				}),
 				this.db.order.count({ where: scopedFilters }),

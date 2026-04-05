@@ -37,7 +37,7 @@ export function ClientTable({ data, pageCount, isLoading }: ClientTableProps) {
 		pageCount,
 		enableAdvancedFilter: true,
 		initialState: {
-			sorting: [{ id: 'fullName', desc: true }],
+			sorting: [{ id: 'fullName', desc: false }],
 			columnPinning: { right: ['actions'] },
 			columnVisibility: {
 				email: false,

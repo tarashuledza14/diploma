@@ -28,10 +28,12 @@ export function MovementHistoryModal({
 	setHistoryModalOpen,
 }: MovementHistoryModalProps) {
 	const { t } = useTranslation();
+	const shouldLoadHistory = historyModalOpen && Boolean(partId);
 
 	const { data: movementHistory } = useQuery({
-		queryKey: inventoryKeys.movements(partId || ''),
-		queryFn: () => InventoryService.getMovementHistory(partId || ''),
+		queryKey: inventoryKeys.movements(partId),
+		queryFn: () => InventoryService.getMovementHistory(partId),
+		enabled: shouldLoadHistory,
 	});
 	if (!movementHistory) return null;
 

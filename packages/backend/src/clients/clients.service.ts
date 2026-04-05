@@ -76,12 +76,13 @@ export class ClientsService {
 			);
 			console.log('filters', JSON.stringify(filters));
 			const sorts = this.filterService.getSortFilter(input.sort || []);
+			const orderBy = sorts.length ? sorts : [{ fullName: 'asc' as const }];
 			const [clients, total] = await Promise.all([
 				this.db.client.findMany({
 					skip: offset,
 					where: filters,
 					take: input.perPage,
-					orderBy: sorts,
+					orderBy,
 				}),
 				this.db.client.count({ where: filters }),
 			]);
