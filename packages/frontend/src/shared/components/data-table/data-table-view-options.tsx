@@ -30,7 +30,7 @@ export function DataTableViewOptions<TData>({
 	disabled,
 	...props
 }: DataTableViewOptionsProps<TData>) {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const columns = React.useMemo(
 		() =>
 			table
@@ -41,7 +41,7 @@ export function DataTableViewOptions<TData>({
 						column.getCanHide() &&
 						column.getIsVisible(),
 				),
-		[table],
+		[table, i18n.resolvedLanguage],
 	);
 	return (
 		<Popover>

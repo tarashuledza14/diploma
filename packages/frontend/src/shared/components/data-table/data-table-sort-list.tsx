@@ -55,7 +55,7 @@ export function DataTableSortList<TData>({
 	disabled,
 	...props
 }: DataTableSortListProps<TData>) {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const id = React.useId();
 	const labelId = React.useId();
 	const descriptionId = React.useId();
@@ -85,7 +85,7 @@ export function DataTableSortList<TData>({
 			columnLabels: labels,
 			columns: availableColumns,
 		};
-	}, [sorting, table]);
+	}, [sorting, table, i18n.resolvedLanguage]);
 
 	const onSortAdd = React.useCallback(() => {
 		const firstColumn = columns[0];

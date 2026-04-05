@@ -22,7 +22,7 @@ interface ServiceTableProps {
 	pageCount: number;
 }
 export function ServiceTable({ data, pageCount }: ServiceTableProps) {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const { data: dictionaries } = useSuspenseQuery({
 		queryKey: serviceKeys.categories(),
 		queryFn: () => ServicesService.getDictionaries(),
@@ -33,7 +33,7 @@ export function ServiceTable({ data, pageCount }: ServiceTableProps) {
 
 	const columns = useMemo(
 		() => getServicesTableColumns({ setRowAction, dictionaries, t }),
-		[setRowAction, dictionaries, t],
+		[setRowAction, dictionaries, t, i18n.resolvedLanguage],
 	);
 
 	const { table, shallow, debounceMs, throttleMs } = useDataTable({

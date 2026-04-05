@@ -26,13 +26,13 @@ export function VehicleTable({
 	pageCount,
 	statusCounts,
 }: VehicleTableProps) {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const [rowAction, setRowAction] =
 		useState<DataTableRowAction<VehicleWithOwnerInfo> | null>(null);
 
 	const columns = useMemo(
 		() => getVehicleTableColumns({ setRowAction, statusCounts, t }),
-		[setRowAction, statusCounts, t],
+		[setRowAction, statusCounts, t, i18n.resolvedLanguage],
 	);
 	const { table, shallow, debounceMs, throttleMs } =
 		useDataTable<VehicleWithOwnerInfo>({

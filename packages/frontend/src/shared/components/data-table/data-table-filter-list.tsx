@@ -93,7 +93,7 @@ export function DataTableFilterList<TData>({
 	disabled,
 	...props
 }: DataTableFilterListProps<TData>) {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const id = React.useId();
 	const labelId = React.useId();
 	const descriptionId = React.useId();
@@ -104,7 +104,7 @@ export function DataTableFilterList<TData>({
 		return table
 			.getAllColumns()
 			.filter(column => column.columnDef.enableColumnFilter);
-	}, [table]);
+	}, [table, i18n.resolvedLanguage]);
 	const [filters, setFilters] = useQueryState(
 		table.options.meta?.queryKeys?.filters ?? 'filters',
 		getFiltersStateParser<TData>(columns.map(field => field.id))

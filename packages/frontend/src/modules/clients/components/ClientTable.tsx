@@ -22,14 +22,14 @@ interface ClientTableProps {
 }
 
 export function ClientTable({ data, pageCount, isLoading }: ClientTableProps) {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const [rowAction, setRowAction] = useState<DataTableRowAction<Client> | null>(
 		null,
 	);
 
 	const columns = useMemo(
 		() => getClientTableColumns({ setRowAction, t }),
-		[setRowAction, t],
+		[setRowAction, t, i18n.resolvedLanguage],
 	);
 	const { table, shallow, debounceMs, throttleMs } = useDataTable<Client>({
 		data,

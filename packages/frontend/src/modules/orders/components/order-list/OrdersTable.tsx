@@ -22,7 +22,7 @@ interface OrdersTableProps {
 }
 
 export function OrdersTable({ data, pageCount }: OrdersTableProps) {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const role = useUserStore(state => state.user?.role);
 	const [rowAction, setRowAction] =
 		useState<DataTableRowAction<OrderListItem> | null>(null);
@@ -36,7 +36,7 @@ export function OrdersTable({ data, pageCount }: OrdersTableProps) {
 				t,
 				role,
 			}),
-		[setRowAction, t, role],
+		[setRowAction, t, role, i18n.resolvedLanguage],
 	);
 
 	const { table, shallow, debounceMs, throttleMs } =

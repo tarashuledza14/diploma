@@ -29,7 +29,7 @@ export function InventoryTable({
 	dictionaries,
 	canManageInventory = true,
 }: InventoryTableProps) {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const [rowAction, setRowAction] =
 		useState<DataTableRowAction<InventoryPart> | null>(null);
 
@@ -47,7 +47,7 @@ export function InventoryTable({
 				t,
 				canManageInventory,
 			}),
-		[setRowAction, dictionaries, t, canManageInventory],
+		[setRowAction, dictionaries, t, canManageInventory, i18n.resolvedLanguage],
 	);
 	const { table, shallow, debounceMs, throttleMs } = useDataTable({
 		data,
