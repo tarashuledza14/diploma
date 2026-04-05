@@ -1,4 +1,5 @@
 import { router } from '@/app/router';
+import { NotificationsProvider } from '@/modules/notifications';
 import { Toaster } from '@/shared/components/ui/sonner';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { NuqsAdapter } from 'nuqs/adapters/react';
@@ -12,7 +13,9 @@ export function Providers({ children }: { children?: React.ReactNode }) {
 		<NuqsAdapter>
 			<ThemeProvider defaultTheme='system'>
 				<QueryClientProvider client={queryClient}>
-					<RouterProvider router={router} />
+					<NotificationsProvider>
+						<RouterProvider router={router} />
+					</NotificationsProvider>
 					<Toaster richColors />
 					{children}
 				</QueryClientProvider>

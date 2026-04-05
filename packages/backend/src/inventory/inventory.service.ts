@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from 'prisma/generated/prisma/client';
+import { OrderStatus, Prisma, Role } from 'prisma/generated/prisma/client';
 import { FilterService } from 'src/filter/filter.service';
+import { NotificationsService } from 'src/notifications/notifications.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { GetInventoryDto } from './dto/get-inventory.dto';
@@ -11,6 +12,7 @@ export class InventoryService {
 		private readonly db: PrismaService,
 		private readonly paginationService: PaginationService,
 		private readonly filterService: FilterService,
+		private readonly notificationsService: NotificationsService,
 	) {}
 
 	async createPart(
@@ -178,6 +180,14 @@ export class InventoryService {
 					reason: 'Manual stock adjustment via edit form',
 				},
 			});
+
+			if (qtyDifference > 0) {
+				await this.notifyMechanicsAboutPartDelivery(
+					id,
+					updatedPart.name,
+					qtyDifference,
+				);
+			}
 		}
 
 		return updatedPart;
@@ -359,5 +369,96 @@ export class InventoryService {
 				where: { id: { in: ids } },
 			});
 		});
+	}
+
+	private async notifyMechanicsAboutPartDelivery(
+		partId: string,
+		partName: string,
+		deliveredQty: number,
+	) {
+		const relatedOrders = await this.db.order.findMany({
+			where: {
+				deletedAt: null,
+				status: OrderStatus.WAITING_PARTS,
+				parts: {
+					some: {
+						partId,
+					},
+				},
+				OR: [
+					{ mechanicId: { not: null } },
+					{ services: { some: { mechanicId: { not: null } } } },
+				],
+			},
+			select: {
+				orderNumber: true,
+				mechanicId: true,
+				services: {
+					select: {
+						mechanicId: true,
+					},
+				},
+			},
+		});
+
+		if (!relatedOrders.length) {
+			return;
+		}
+
+		const mechanicIds = new Set<string>();
+		for (const order of relatedOrders) {
+			if (order.mechanicId) {
+				mechanicIds.add(order.mechanicId);
+			}
+			for (const service of order.services) {
+				if (service.mechanicId) {
+					mechanicIds.add(service.mechanicId);
+				}
+			}
+		}
+
+		if (!mechanicIds.size) {
+			return;
+		}
+
+		const mechanics = await this.db.user.findMany({
+			where: {
+				id: { in: [...mechanicIds] },
+				role: Role.MECHANIC,
+				deletedAt: null,
+			},
+			select: {
+				id: true,
+				role: true,
+			},
+		});
+
+		const orderNumbers = [
+			...new Set(relatedOrders.map(order => order.orderNumber)),
+		];
+		const preview = orderNumbers
+			.slice(0, 3)
+			.map(num => `№${num}`)
+			.join(', ');
+		const moreSuffix =
+			orderNumbers.length > 3 ? ` та ще ${orderNumbers.length - 3}` : '';
+		const ordersSuffix = preview ? ` Замовлення: ${preview}${moreSuffix}.` : '';
+
+		await Promise.all(
+			mechanics.map(mechanic =>
+				this.notificationsService.notify({
+					userId: mechanic.id,
+					role: mechanic.role,
+					type: 'PART_DELIVERED',
+					message: `Деталь \"${partName}\" надійшла на склад (+${deliveredQty}).${ordersSuffix}`,
+					metadata: {
+						partId,
+						partName,
+						deliveredQty,
+						orderNumbers,
+					},
+				}),
+			),
+		);
 	}
 }

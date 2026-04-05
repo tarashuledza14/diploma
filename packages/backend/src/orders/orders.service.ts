@@ -5,9 +5,15 @@ import {
 	InternalServerErrorException,
 	NotFoundException,
 } from '@nestjs/common';
-import { OrderStatus, Prisma, Role } from 'prisma/generated/prisma/client';
+import {
+	NotificationType,
+	OrderStatus,
+	Prisma,
+	Role,
+} from 'prisma/generated/prisma/client';
 import { AuthUser } from 'src/auth/types/auth-user.type';
 import { FilterService } from 'src/filter/filter.service';
+import { NotificationsService } from 'src/notifications/notifications.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { BulkUpdateOrderDto } from './dto/bulk-update.dto';
@@ -24,6 +30,7 @@ export class OrdersService {
 		private readonly db: PrismaService,
 		private readonly paginationService: PaginationService,
 		private readonly filterService: FilterService,
+		private readonly notificationsService: NotificationsService,
 	) {}
 
 	async getRecommendedParts(vehicleId: string, serviceId: string) {
@@ -105,7 +112,7 @@ export class OrdersService {
 		return parts;
 	}
 
-	async create(createOrderDto: CreateOrderDto) {
+	async create(createOrderDto: CreateOrderDto, actor: AuthUser) {
 		try {
 			const pricing = await this.buildOrderPricing(
 				createOrderDto.services,
@@ -149,6 +156,14 @@ export class OrdersService {
 				}
 
 				return order;
+			});
+
+			await this.notifyOrderChange({
+				orderId: result.id,
+				orderNumber: result.orderNumber,
+				type: 'ORDER_CREATED',
+				baseMessage: `Нове замовлення №${result.orderNumber} створено.`,
+				excludedUserId: actor.id,
 			});
 
 			return result;
@@ -269,7 +284,7 @@ export class OrdersService {
 		};
 	}
 
-	async update(id: string, updateOrderDto: UpdateOrderDto) {
+	async update(id: string, updateOrderDto: UpdateOrderDto, actor: AuthUser) {
 		const existingOrder = await this.db.order.findUnique({
 			where: { id },
 			include: {
@@ -298,7 +313,7 @@ export class OrdersService {
 
 		const pricing = await this.buildOrderPricing(nextServices, nextParts);
 
-		return this.db.$transaction(async tx => {
+		const updatedOrder = await this.db.$transaction(async tx => {
 			const updatedOrder = await tx.order.update({
 				where: { id },
 				data: {
@@ -347,13 +362,23 @@ export class OrdersService {
 
 			return updatedOrder;
 		});
+
+		await this.notifyOrderChange({
+			orderId: updatedOrder.id,
+			orderNumber: updatedOrder.orderNumber,
+			type: 'ORDER_UPDATED',
+			baseMessage: `Замовлення №${updatedOrder.orderNumber} оновлено.`,
+			excludedUserId: actor.id,
+		});
+
+		return updatedOrder;
 	}
 
-	async quickUpdate(id: string, dto: QuickUpdateOrderDto) {
+	async quickUpdate(id: string, dto: QuickUpdateOrderDto, actor: AuthUser) {
 		const existing = await this.db.order.findUnique({ where: { id } });
 		if (!existing) throw new NotFoundException('Order not found');
 
-		return this.db.order.update({
+		const updatedOrder = await this.db.order.update({
 			where: { id },
 			data: {
 				...(dto.mechanicId !== undefined
@@ -367,8 +392,18 @@ export class OrdersService {
 					? { endDate: dto.endDate ? new Date(dto.endDate) : null }
 					: {}),
 			},
-			select: { id: true, mechanicId: true, endDate: true },
+			select: { id: true, orderNumber: true, mechanicId: true, endDate: true },
 		});
+
+		await this.notifyOrderChange({
+			orderId: updatedOrder.id,
+			orderNumber: updatedOrder.orderNumber,
+			type: 'ORDER_UPDATED',
+			baseMessage: `Замовлення №${updatedOrder.orderNumber} оновлено.`,
+			excludedUserId: actor.id,
+		});
+
+		return updatedOrder;
 	}
 
 	async updateBulk(data: BulkUpdateOrderDto, user: AuthUser) {
@@ -408,10 +443,165 @@ export class OrdersService {
 			user,
 		);
 
-		return this.db.order.updateMany({
+		const targetOrders = await this.db.order.findMany({
+			where,
+			select: { id: true, orderNumber: true },
+		});
+
+		if (!targetOrders.length) {
+			return { count: 0 };
+		}
+
+		const result = await this.db.order.updateMany({
 			where,
 			data: updateData,
 		});
+
+		if (status === OrderStatus.COMPLETED && isMechanic) {
+			await Promise.all(
+				targetOrders.map(order =>
+					this.notifyManagersOnly({
+						type: 'ORDER_COMPLETED',
+						message: `✅ Роботу виконано: Механік ${user.fullName} завершив ремонт №${order.orderNumber}`,
+						metadata: { orderId: order.id, orderNumber: order.orderNumber },
+						excludedUserId: user.id,
+					}),
+				),
+			);
+		} else {
+			await Promise.all(
+				targetOrders.map(order =>
+					this.notifyOrderChange({
+						orderId: order.id,
+						orderNumber: order.orderNumber,
+						type: 'ORDER_UPDATED',
+						baseMessage: `Замовлення №${order.orderNumber} оновлено.`,
+						excludedUserId: user.id,
+					}),
+				),
+			);
+		}
+
+		return result;
+	}
+
+	private async notifyOrderChange(input: {
+		orderId: string;
+		orderNumber: number;
+		type: NotificationType;
+		baseMessage: string;
+		excludedUserId?: string;
+	}) {
+		const recipients = await this.getOrderRecipients(
+			input.orderId,
+			input.excludedUserId,
+		);
+
+		if (!recipients.length) {
+			return;
+		}
+
+		await Promise.all(
+			recipients.map(recipient =>
+				this.notificationsService.notify({
+					userId: recipient.id,
+					role: recipient.role,
+					type: input.type,
+					message: input.baseMessage,
+					metadata: {
+						orderId: input.orderId,
+						orderNumber: input.orderNumber,
+					},
+				}),
+			),
+		);
+	}
+
+	private async notifyManagersOnly(input: {
+		type: NotificationType;
+		message: string;
+		metadata?: Prisma.InputJsonValue;
+		excludedUserId?: string;
+	}) {
+		const managers = await this.db.user.findMany({
+			where: {
+				role: Role.MANAGER,
+				deletedAt: null,
+				...(input.excludedUserId ? { id: { not: input.excludedUserId } } : {}),
+			},
+			select: { id: true, role: true },
+		});
+
+		await Promise.all(
+			managers.map(manager =>
+				this.notificationsService.notify({
+					userId: manager.id,
+					role: manager.role,
+					type: input.type,
+					message: input.message,
+					metadata: input.metadata,
+				}),
+			),
+		);
+	}
+
+	private async getOrderRecipients(orderId: string, excludedUserId?: string) {
+		const [order, managers] = await Promise.all([
+			this.db.order.findUnique({
+				where: { id: orderId },
+				select: {
+					mechanicId: true,
+					services: {
+						select: {
+							mechanicId: true,
+						},
+					},
+				},
+			}),
+			this.db.user.findMany({
+				where: {
+					role: Role.MANAGER,
+					deletedAt: null,
+					...(excludedUserId ? { id: { not: excludedUserId } } : {}),
+				},
+				select: { id: true, role: true },
+			}),
+		]);
+
+		if (!order) {
+			return [];
+		}
+
+		const mechanicIds = new Set<string>();
+		if (order.mechanicId) {
+			mechanicIds.add(order.mechanicId);
+		}
+
+		for (const service of order.services) {
+			if (service.mechanicId) {
+				mechanicIds.add(service.mechanicId);
+			}
+		}
+
+		const mechanics = mechanicIds.size
+			? await this.db.user.findMany({
+					where: {
+						id: { in: [...mechanicIds] },
+						role: Role.MECHANIC,
+						deletedAt: null,
+						...(excludedUserId ? { id: { not: excludedUserId } } : {}),
+					},
+					select: { id: true, role: true },
+				})
+			: [];
+
+		const users = [...managers, ...mechanics];
+		const deduped = new Map<string, { id: string; role: Role }>();
+		for (const user of users) {
+			deduped.set(user.id, user);
+		}
+
+		return [...deduped.values()];
 	}
 
 	private isMechanic(user: AuthUser): boolean {

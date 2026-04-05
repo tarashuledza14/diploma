@@ -9,6 +9,7 @@ import {
 	DashboardPage,
 	KanbanPage,
 	LoginPage,
+	NotificationsPage,
 	OrderDetailsPage,
 	OrdersPage,
 	VehiclePage,
@@ -85,6 +86,14 @@ export const router = createBrowserRouter([
 						element: (
 							<Suspense fallback={<Loading />}>
 								<AIAssistantPage />
+							</Suspense>
+						),
+					},
+					{
+						path: '/notifications',
+						element: (
+							<Suspense fallback={<Loading />}>
+								<NotificationsPage />
 							</Suspense>
 						),
 					},

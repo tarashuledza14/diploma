@@ -8,6 +8,7 @@ import { DmsModule } from './dms/dms.module';
 import { FilterModule } from './filter/filter.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { LangchainIntegrationModule } from './langchain-integration/langchain-integration.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { OrdersModule } from './orders/orders.module';
 import { PaginationModule } from './pagination/pagination.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -29,6 +30,7 @@ import { VehiclesModule } from './vehicles/vehicles.module';
 		InventoryModule,
 		ServiceModule,
 		LangchainIntegrationModule,
+		NotificationsModule,
 		DmsModule,
 	],
 	controllers: [AppController],

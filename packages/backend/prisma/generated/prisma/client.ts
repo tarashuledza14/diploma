@@ -132,3 +132,8 @@ export type ChatSession = Prisma.ChatSessionModel
  * 
  */
 export type ChatMessage = Prisma.ChatMessageModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel

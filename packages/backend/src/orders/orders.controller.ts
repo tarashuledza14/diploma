@@ -25,8 +25,11 @@ export class OrdersController {
 
 	@Auth(Role.ADMIN, Role.MANAGER)
 	@Post()
-	create(@Body() createOrderDto: CreateOrderDto) {
-		return this.ordersService.create(createOrderDto);
+	create(
+		@Body() createOrderDto: CreateOrderDto,
+		@CurrentUser() user: AuthUser,
+	) {
+		return this.ordersService.create(createOrderDto, user);
 	}
 
 	@Auth(Role.ADMIN, Role.MANAGER, Role.MECHANIC)
@@ -64,14 +67,22 @@ export class OrdersController {
 
 	@Auth(Role.ADMIN, Role.MANAGER)
 	@Patch(':id/quick')
-	quickUpdate(@Param('id') id: string, @Body() dto: QuickUpdateOrderDto) {
-		return this.ordersService.quickUpdate(id, dto);
+	quickUpdate(
+		@Param('id') id: string,
+		@Body() dto: QuickUpdateOrderDto,
+		@CurrentUser() user: AuthUser,
+	) {
+		return this.ordersService.quickUpdate(id, dto, user);
 	}
 
 	@Auth(Role.ADMIN, Role.MANAGER)
 	@Patch(':id')
-	update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-		return this.ordersService.update(id, updateOrderDto);
+	update(
+		@Param('id') id: string,
+		@Body() updateOrderDto: UpdateOrderDto,
+		@CurrentUser() user: AuthUser,
+	) {
+		return this.ordersService.update(id, updateOrderDto, user);
 	}
 
 	@Auth(Role.ADMIN, Role.MANAGER)

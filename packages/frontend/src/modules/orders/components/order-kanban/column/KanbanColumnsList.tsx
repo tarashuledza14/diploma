@@ -12,7 +12,11 @@ import {
 	KanbanItem,
 	KanbanOverlay,
 } from '@/shared/components/ui';
-import type { UniqueIdentifier } from '@dnd-kit/core';
+import type {
+	DragEndEvent,
+	DragStartEvent,
+	UniqueIdentifier,
+} from '@dnd-kit/core';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
 	Ban,
@@ -22,7 +26,7 @@ import {
 	Package,
 	Wrench,
 } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { KanbanOrder, OrderCard } from '../card/OrderCard';
@@ -123,6 +127,10 @@ function getColumnConfig(columnId: string) {
 export function KanbanColumnsList() {
 	const { t } = useTranslation();
 	const queryClient = useQueryClient();
+	const dragStartRef = useRef<{
+		orderId: string;
+		fromStatus: OrderStatus;
+	} | null>(null);
 	const [columns, setColumns] = useState<
 		Record<UniqueIdentifier, KanbanOrder[]>
 	>(() => groupOrdersByStatus([]));
@@ -163,39 +171,81 @@ export function KanbanColumnsList() {
 		},
 	});
 
+	const findOrderStatus = useCallback(
+		(
+			orderId: string,
+			sourceColumns: Record<UniqueIdentifier, KanbanOrder[]>,
+		): OrderStatus | null => {
+			for (const [status, items] of Object.entries(sourceColumns)) {
+				if (items.some(item => item.id === orderId)) {
+					return status as OrderStatus;
+				}
+			}
+
+			return null;
+		},
+		[],
+	);
+
+	const resolveDropStatus = useCallback(
+		(
+			overId: UniqueIdentifier,
+			sourceColumns: Record<UniqueIdentifier, KanbanOrder[]>,
+		): OrderStatus | null => {
+			if (COLUMNS_CONFIG.some(column => column.id === overId)) {
+				return overId as OrderStatus;
+			}
+
+			return findOrderStatus(String(overId), sourceColumns);
+		},
+		[findOrderStatus],
+	);
+
 	const handleBoardChange = useCallback(
 		(nextColumns: Record<UniqueIdentifier, KanbanOrder[]>) => {
-			setColumns(prevColumns => {
-				const previousStatusById = new Map<string, string>();
-				Object.entries(prevColumns).forEach(([status, items]) => {
-					items.forEach(item => {
-						previousStatusById.set(item.id, status);
-					});
-				});
-
-				const changedByStatus: Record<string, string[]> = {};
-				Object.entries(nextColumns).forEach(([status, items]) => {
-					items.forEach(item => {
-						const previousStatus = previousStatusById.get(item.id);
-						if (previousStatus && previousStatus !== status) {
-							if (!changedByStatus[status]) {
-								changedByStatus[status] = [];
-							}
-							changedByStatus[status].push(item.id);
-						}
-					});
-				});
-
-				Object.entries(changedByStatus).forEach(([status, ids]) => {
-					if (ids.length > 0) {
-						updateOrders({ ids, status: status as OrderStatus });
-					}
-				});
-
-				return nextColumns;
-			});
+			setColumns(nextColumns);
 		},
-		[updateOrders],
+		[],
+	);
+
+	const handleDragStart = useCallback(
+		(event: DragStartEvent) => {
+			const orderId = String(event.active.id);
+			const fromStatus = findOrderStatus(orderId, columns);
+
+			if (!fromStatus) {
+				dragStartRef.current = null;
+				return;
+			}
+
+			dragStartRef.current = {
+				orderId,
+				fromStatus,
+			};
+		},
+		[columns, findOrderStatus],
+	);
+
+	const handleDragEnd = useCallback(
+		(event: DragEndEvent) => {
+			const pending = dragStartRef.current;
+			dragStartRef.current = null;
+
+			if (!pending || !event.over) {
+				return;
+			}
+
+			const toStatus =
+				resolveDropStatus(event.over.id, columns) ??
+				findOrderStatus(pending.orderId, columns);
+
+			if (!toStatus || toStatus === pending.fromStatus) {
+				return;
+			}
+
+			updateOrders({ ids: [pending.orderId], status: toStatus });
+		},
+		[columns, findOrderStatus, resolveDropStatus, updateOrders],
 	);
 
 	const findOrder = useCallback(
@@ -216,6 +266,8 @@ export function KanbanColumnsList() {
 			<Kanban
 				value={columns}
 				onValueChange={handleBoardChange}
+				onDragStart={handleDragStart}
+				onDragEnd={handleDragEnd}
 				getItemValue={item => item.id}
 			>
 				<KanbanBoard className='flex h-full min-h-0 flex-1 gap-3 overflow-x-auto overflow-y-hidden pb-2'>
@@ -228,7 +280,7 @@ export function KanbanColumnsList() {
 							<KanbanColumn
 								key={columnId}
 								value={columnId}
-								className='flex min-h-0 min-w-[290px] flex-col rounded-lg border-none bg-muted/50'
+								className='flex min-h-0 min-w-72.5 flex-col rounded-lg border-none bg-muted/50'
 							>
 								<div className='flex items-center justify-between px-3 pb-2 pt-3'>
 									<KanbanColumnHeader

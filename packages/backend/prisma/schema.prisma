@@ -83,6 +83,7 @@ model User {
   serviceJobs    OrderService[]  @relation("ServiceMechanic") // Зв'язок з конкретними виконаними роботами
   stockMovements StockMovement[]
   chatSessions   ChatSession[]
+  notifications  Notification[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -391,6 +392,14 @@ enum ChatMessageRole {
   ASSISTANT
 }
 
+enum NotificationType {
+  ORDER_CREATED
+  ORDER_UPDATED
+  ORDER_COMPLETED
+  PART_DELIVERED
+  SYSTEM
+}
+
 model ChatSession {
   id        String        @id @default(cuid())
   title     String
@@ -414,4 +423,20 @@ model ChatMessage {
 
   @@index([chatId, createdAt])
   @@map("chat_messages")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String           @map("user_id")
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType @default(SYSTEM)
+  title     String?
+  message   String
+  metadata  Json?
+  isRead    Boolean          @default(false) @map("is_read")
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  @@index([userId, isRead])
+  @@index([userId, createdAt])
+  @@map("notifications")
 }

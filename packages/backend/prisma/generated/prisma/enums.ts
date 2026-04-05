@@ -85,3 +85,14 @@ export const ChatMessageRole = {
 } as const
 
 export type ChatMessageRole = (typeof ChatMessageRole)[keyof typeof ChatMessageRole]
+
+
+export const NotificationType = {
+  ORDER_CREATED: 'ORDER_CREATED',
+  ORDER_UPDATED: 'ORDER_UPDATED',
+  ORDER_COMPLETED: 'ORDER_COMPLETED',
+  PART_DELIVERED: 'PART_DELIVERED',
+  SYSTEM: 'SYSTEM'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]

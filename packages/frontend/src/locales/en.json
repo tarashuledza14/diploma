@@ -157,6 +157,17 @@
 	"header": {
 		"viewNotifications": "View notifications"
 	},
+	"notifications": {
+		"dropdownTitle": "Notifications",
+		"loading": "Loading notifications...",
+		"noNew": "No new notifications",
+		"viewAll": "View all notifications",
+		"allTitle": "All notifications",
+		"allSubtitle": "History of your notifications",
+		"markAllRead": "Mark all as read",
+		"empty": "No notifications yet.",
+		"loadError": "Failed to load notifications."
+	},
 	"auth": {
 		"welcomeBack": "Welcome back",
 		"signInSubtitle": "Sign in to your account to continue",

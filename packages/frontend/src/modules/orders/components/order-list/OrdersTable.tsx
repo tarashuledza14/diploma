@@ -26,7 +26,7 @@ export function OrdersTable({ data, pageCount }: OrdersTableProps) {
 	const role = useUserStore(state => state.user?.role);
 	const [rowAction, setRowAction] =
 		useState<DataTableRowAction<OrderListItem> | null>(null);
-
+	console.log('data', data);
 	const columns = useMemo(
 		() =>
 			getOrderTableColumns({
@@ -46,6 +46,7 @@ export function OrdersTable({ data, pageCount }: OrdersTableProps) {
 			pageCount,
 			enableAdvancedFilter: true,
 			initialState: {
+				sorting: [{ id: 'orderNumber', desc: true }],
 				columnPinning: { right: ['actions'] },
 			},
 			getRowId: row => row.id,
