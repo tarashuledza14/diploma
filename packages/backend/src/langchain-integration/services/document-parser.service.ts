@@ -275,7 +275,8 @@ export class DocumentParserService {
 			if (parsed && typeof parsed === 'object') {
 				return {
 					s3Key: typeof parsed.s3Key === 'string' ? parsed.s3Key : null,
-					carModel: typeof parsed.carModel === 'string' ? parsed.carModel : null,
+					carModel:
+						typeof parsed.carModel === 'string' ? parsed.carModel : null,
 				};
 			}
 		} catch {

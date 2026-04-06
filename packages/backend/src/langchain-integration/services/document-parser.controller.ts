@@ -41,7 +41,10 @@ export class DocumentParserController {
 
 		try {
 			// Віддаємо файл нашому AI-парсеру
-			const result = await this.parserService.processAndStoreManual(file, carModel);
+			const result = await this.parserService.processAndStoreManual(
+				file,
+				carModel,
+			);
 
 			await this.notificationsService.notify({
 				userId: user.id,

@@ -1,5 +1,5 @@
-import { ManualsService, type ManualItem } from '@/modules/manuals';
 import { useUserStore } from '@/modules/auth';
+import { ManualsService, type ManualItem } from '@/modules/manuals';
 import {
 	Button,
 	Card,
@@ -166,7 +166,9 @@ export function ManualsPage() {
 				</CardHeader>
 				<CardContent>
 					{isLoading ? (
-						<p className='text-sm text-muted-foreground'>{t('manuals.loading')}</p>
+						<p className='text-sm text-muted-foreground'>
+							{t('manuals.loading')}
+						</p>
 					) : isError ? (
 						<p className='text-sm text-destructive'>{t('manuals.loadError')}</p>
 					) : !manuals || manuals.length === 0 ? (
@@ -189,7 +191,9 @@ export function ManualsPage() {
 							<TableBody>
 								{manuals.map(manual => (
 									<TableRow key={manual.id}>
-										<TableCell className='font-medium'>{manual.filename}</TableCell>
+										<TableCell className='font-medium'>
+											{manual.filename}
+										</TableCell>
 										<TableCell>
 											{manual.carModel || t('manuals.unknownModel')}
 										</TableCell>
