@@ -134,6 +134,7 @@
 		"items": {
 			"dashboard": "Dashboard",
 			"aiAssistant": "AI Assistant",
+			"manuals": "Manuals",
 			"orders": "Orders",
 			"kanbanBoard": "Kanban Board",
 			"clients": "Clients",
@@ -882,6 +883,41 @@
 				"label": "Recommendations",
 				"query": "What services should we recommend for a 2022 BMW X5 at 50,000 km?"
 			}
+		}
+	},
+	"manuals": {
+		"title": "Manuals",
+		"subtitle": "Open original PDF manuals manually for diagnostics and repairs.",
+		"listTitle": "Manual Library",
+		"upload": {
+			"title": "Upload New Manual",
+			"subtitle": "Available for managers and admins.",
+			"carModelPlaceholder": "Car model (e.g. BMW X5 G05)",
+			"noFileSelected": "No PDF file selected",
+			"action": "Upload PDF",
+			"uploading": "Uploading...",
+			"success": "Manual uploaded successfully.",
+			"errors": {
+				"noFile": "Select a PDF file to upload.",
+				"noCarModel": "Specify the car model.",
+				"onlyPdf": "Only PDF files are supported.",
+				"failed": "Failed to upload the manual."
+			}
+		},
+		"searchPlaceholder": "Search by file name or car model",
+		"refresh": "Refresh",
+		"loading": "Loading manuals...",
+		"loadError": "Failed to load manuals.",
+		"empty": "No manuals found.",
+		"open": "Open PDF",
+		"opening": "Opening...",
+		"openFailed": "Failed to open the manual PDF.",
+		"unknownModel": "Unknown model",
+		"table": {
+			"filename": "File",
+			"carModel": "Car model",
+			"uploadedAt": "Uploaded",
+			"actions": "Actions"
 		}
 	},
 	"router": {

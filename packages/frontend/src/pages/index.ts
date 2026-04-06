@@ -3,6 +3,7 @@ export { DashboardPage } from './DashboardPage';
 export { InventoryPage } from './InventoryPage';
 export { KanbanPage } from './KanbanPage';
 export { LoginPage } from './LoginPage';
+export { ManualsPage } from './ManualsPage';
 export { NotificationsPage } from './NotificationsPage';
 export { OrderDetailsPage } from './OrderDetailsPage';
 export { OrdersPage } from './OrdersPage';

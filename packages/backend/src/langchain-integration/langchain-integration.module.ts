@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { DmsModule } from 'src/dms/dms.module';
+import { NotificationsModule } from 'src/notifications/notifications.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { ChatController } from './controllers/chat.controller';
 import { DocumentController } from './controllers/document.controller';
@@ -14,7 +15,7 @@ import { EmbeddingsService } from './services/embeddings.service';
 import { QdrantService } from './services/qdrant.service';
 
 @Module({
-	imports: [ConfigModule, PrismaModule, DmsModule],
+	imports: [ConfigModule, PrismaModule, DmsModule, NotificationsModule],
 	controllers: [DocumentController, ChatController, DocumentParserController],
 	providers: [
 		LangchainIntegrationService,

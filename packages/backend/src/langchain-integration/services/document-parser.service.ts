@@ -3,13 +3,20 @@ import {
 	Injectable,
 	InternalServerErrorException,
 	Logger,
+	NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DmsService } from 'src/dms/dms.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { UnstructuredClient } from 'unstructured-client';
 // import { Strategy } from 'unstructured-client/dist/commonjs/sdk/models/shared';
 import { v4 as uuidv4 } from 'uuid';
 import { QdrantService } from './qdrant.service';
+
+interface ManualExternalMetadata {
+	s3Key: string | null;
+	carModel: string | null;
+}
 
 @Injectable()
 export class DocumentParserService {
@@ -20,6 +27,7 @@ export class DocumentParserService {
 		private readonly dmsService: DmsService,
 		private readonly qdrantService: QdrantService,
 		private readonly configService: ConfigService,
+		private readonly prismaService: PrismaService,
 	) {
 		// Підключаємося до нашого локального Docker-контейнера (або хмарного API)
 		const serverURL =
@@ -134,15 +142,149 @@ export class DocumentParserService {
 			);
 			await this.qdrantService.vectorStore.addDocuments(langchainDocs);
 
+			const manualUpload = await this.dmsService.uploadSingleFile({
+				file,
+				isPublic: false,
+			});
+
+			const extractedPreview = langchainDocs
+				.map(doc => doc.pageContent)
+				.join('\n\n')
+				.slice(0, 20000);
+
+			const manualRecord = await this.prismaService.document.create({
+				data: {
+					filename: file.originalname,
+					content: extractedPreview || `Manual for ${carModel}`,
+					externalId: this.encodeManualExternalMetadata({
+						s3Key: manualUpload.key,
+						carModel,
+					}),
+				},
+			});
+
 			this.logger.log(
 				`Мануал ${carModel} успішно оброблено, картинки в S3, вектори в Qdrant!`,
 			);
-			return { success: true, chunksProcessed: langchainDocs.length };
+			return {
+				success: true,
+				chunksProcessed: langchainDocs.length,
+				manual: {
+					id: manualRecord.id,
+					filename: manualRecord.filename,
+					carModel,
+					createdAt: manualRecord.createdAt,
+				},
+			};
 		} catch (error) {
 			this.logger.error('Помилка під час AI-парсингу PDF:', error);
 			throw new InternalServerErrorException(
 				'Не вдалося розпарсити мануал через Unstructured',
 			);
 		}
+	}
+
+	async getManuals(search?: string) {
+		const normalizedSearch = search?.trim().toLowerCase();
+
+		const documents = await this.prismaService.document.findMany({
+			where: {
+				externalId: {
+					not: null,
+				},
+			},
+			orderBy: {
+				createdAt: 'desc',
+			},
+			take: 200,
+		});
+
+		return documents
+			.map(doc => {
+				const metadata = this.parseManualExternalMetadata(doc.externalId);
+				return {
+					id: doc.id,
+					filename: doc.filename,
+					carModel: metadata.carModel,
+					createdAt: doc.createdAt,
+					s3Key: metadata.s3Key,
+				};
+			})
+			.filter(item => Boolean(item.s3Key))
+			.filter(item => {
+				if (!normalizedSearch) {
+					return true;
+				}
+
+				const filename = item.filename.toLowerCase();
+				const carModel = item.carModel?.toLowerCase() || '';
+
+				return (
+					filename.includes(normalizedSearch) ||
+					carModel.includes(normalizedSearch)
+				);
+			})
+			.map(({ s3Key, ...item }) => item);
+	}
+
+	async getManualOpenLink(id: string) {
+		const manual = await this.prismaService.document.findUnique({
+			where: {
+				id,
+			},
+		});
+
+		if (!manual) {
+			throw new NotFoundException('Мануал не знайдено');
+		}
+
+		const metadata = this.parseManualExternalMetadata(manual.externalId);
+
+		if (!metadata.s3Key) {
+			throw new NotFoundException('Для цього мануалу не знайдено PDF-файл');
+		}
+
+		const { url } = await this.dmsService.getPresignedSignedUrl(metadata.s3Key);
+
+		return {
+			url,
+			filename: manual.filename,
+			carModel: metadata.carModel,
+		};
+	}
+
+	private encodeManualExternalMetadata(metadata: {
+		s3Key: string;
+		carModel: string;
+	}) {
+		return JSON.stringify(metadata);
+	}
+
+	private parseManualExternalMetadata(
+		externalId: string | null,
+	): ManualExternalMetadata {
+		if (!externalId) {
+			return {
+				s3Key: null,
+				carModel: null,
+			};
+		}
+
+		try {
+			const parsed = JSON.parse(externalId);
+			if (parsed && typeof parsed === 'object') {
+				return {
+					s3Key: typeof parsed.s3Key === 'string' ? parsed.s3Key : null,
+					carModel: typeof parsed.carModel === 'string' ? parsed.carModel : null,
+				};
+			}
+		} catch {
+			// Backward compatibility: in legacy records externalId may contain only an S3 key.
+		}
+
+		return {
+			s3Key: externalId.toLowerCase().includes('.pdf') ? externalId : null,
+			carModel: null,
+		};
 	}
 }
