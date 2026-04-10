@@ -13,6 +13,7 @@ import { DocumentParserController } from './services/document-parser.controller'
 import { DocumentParserService } from './services/document-parser.service';
 import { EmbeddingsService } from './services/embeddings.service';
 import { QdrantService } from './services/qdrant.service';
+import { SmartPdfService } from './services/smart-pdf.service';
 
 @Module({
 	imports: [ConfigModule, PrismaModule, DmsModule, NotificationsModule],
@@ -23,6 +24,7 @@ import { QdrantService } from './services/qdrant.service';
 		RagNodeService,
 		SupervisorNodeService,
 		DocumentParserService,
+		SmartPdfService,
 		EmbeddingsService,
 		QdrantService,
 	],

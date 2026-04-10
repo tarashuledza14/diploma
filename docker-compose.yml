@@ -41,6 +41,7 @@ services:
     image: downloads.unstructured.io/unstructured-io/unstructured-api:latest
     container_name: crm_unstructured
     restart: unless-stopped
+    mem_limit: 8g
     ports:
       - '8000:8000'
 

@@ -57,7 +57,6 @@ export async function handleToolCalls(
 		}
 
 		const toolResponse = await tool.invoke(toolCall);
-		console.log('toolResponse', toolResponse);
 		toolMessages.push({
 			role: 'tool',
 			content: normalizeToolContent(toolResponse),

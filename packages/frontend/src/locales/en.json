@@ -912,6 +912,16 @@
 		"open": "Open PDF",
 		"opening": "Opening...",
 		"openFailed": "Failed to open the manual PDF.",
+		"delete": {
+			"action": "Delete",
+			"title": "Delete manual",
+			"description": "This action will permanently delete the manual file and its indexed content.",
+			"confirm": "Delete",
+			"deleting": "Deleting...",
+			"success": "Manual deleted successfully.",
+			"storageCleanupPending": "Manual removed from the system, but the S3 file could not be deleted due to missing permissions.",
+			"error": "Failed to delete the manual."
+		},
 		"unknownModel": "Unknown model",
 		"table": {
 			"filename": "File",

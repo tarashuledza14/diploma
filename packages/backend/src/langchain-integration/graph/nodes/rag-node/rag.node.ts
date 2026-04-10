@@ -1,4 +1,4 @@
-import { BaseMessageLike } from '@langchain/core/messages';
+import { SystemMessage } from '@langchain/core/messages';
 import { ChatOpenAI } from '@langchain/openai';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -27,10 +27,7 @@ export class RagNodeService {
 		const searchTool = createSearchManualsTool(this.qdrantService);
 		const llmWithTools = this.llm.bindTools([searchTool]);
 
-		const input: BaseMessageLike[] = [
-			{ role: 'system', content: systemPrompt },
-			...state.messages,
-		];
+		const input = [new SystemMessage(systemPrompt), ...state.messages];
 
 		const response = await llmWithTools.invoke(input);
 		const toolMessages = await handleToolCalls(response, {

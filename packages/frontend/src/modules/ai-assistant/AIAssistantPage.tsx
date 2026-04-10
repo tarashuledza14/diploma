@@ -9,7 +9,7 @@ import {
 	ResponsiveDialogHeader,
 	ResponsiveDialogTitle,
 } from '@/shared';
-import { Bot, PanelLeftOpen } from 'lucide-react';
+import { PanelLeftOpen } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
@@ -285,7 +285,7 @@ export function AIAssistantPage() {
 	return (
 		<div className='flex h-full min-h-0 w-full min-w-0 flex-col gap-4 overflow-x-hidden overflow-y-auto sm:gap-6'>
 			<div className='flex items-start justify-between gap-3'>
-				<div>
+				{/* <div>
 					<h1 className='flex items-center gap-2 text-xl font-bold sm:text-2xl'>
 						<Bot className='h-7 w-7' />
 						{t('aiAssistant.title')}
@@ -293,7 +293,7 @@ export function AIAssistantPage() {
 					<p className='hidden text-sm text-muted-foreground sm:block sm:text-base'>
 						{t('aiAssistant.subtitle')}
 					</p>
-				</div>
+				</div> */}
 				<Button
 					type='button'
 					variant='outline'

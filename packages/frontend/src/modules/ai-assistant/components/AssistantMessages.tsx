@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, ScrollArea, cn } from '@/shared';
 import { Bot, Loader2 } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
 
@@ -49,11 +49,19 @@ function getCodeText(children: ReactNode): string {
 	return '';
 }
 
+function normalizeMarkdownSpacing(content: string): string {
+	// Collapse accidental 3+ blank lines from model/tool output into standard paragraph breaks.
+	return content.replace(/\n{3,}/g, '\n\n');
+}
+
 function createMarkdownComponents(
 	isStreamingMessage: boolean,
 	t: (key: string) => string,
 ) {
 	return {
+		p: ({ children }: { children?: ReactNode }) => (
+			<p className='mb-3 last:mb-0'>{children}</p>
+		),
 		img: ({ src, alt }: { src?: string; alt?: string }) => {
 			if (!src) return null;
 			return <AssistantImageCard imageUrl={src} alt={alt} />;
@@ -118,6 +126,15 @@ export function AssistantMessages({
 	isLoading,
 }: AssistantMessagesProps) {
 	const { t } = useTranslation();
+	const bottomAnchorRef = useRef<HTMLDivElement | null>(null);
+
+	useEffect(() => {
+		bottomAnchorRef.current?.scrollIntoView({
+			behavior: 'smooth',
+			block: 'end',
+		});
+	}, [messages, isLoading]);
+
 	return (
 		<ScrollArea className='flex-1 min-h-0 min-w-0 overflow-x-hidden p-3 sm:p-4'>
 			<div className='space-y-4'>
@@ -174,9 +191,9 @@ export function AssistantMessages({
 										</div>
 									)}
 								{!!message.content && (
-									<div className='min-w-0 max-w-full whitespace-pre-wrap wrap-break-word text-[13px] sm:text-sm'>
+									<div className='min-w-0 max-w-full wrap-break-word text-[13px] sm:text-sm'>
 										<ReactMarkdown components={markdownComponents}>
-											{message.content}
+											{normalizeMarkdownSpacing(message.content)}
 										</ReactMarkdown>
 									</div>
 								)}
@@ -190,6 +207,7 @@ export function AssistantMessages({
 						</div>
 					);
 				})}
+				<div ref={bottomAnchorRef} />
 			</div>
 		</ScrollArea>
 	);

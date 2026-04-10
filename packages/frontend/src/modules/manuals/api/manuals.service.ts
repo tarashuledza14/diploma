@@ -1,5 +1,6 @@
 import { instance } from '@/api';
 import type {
+	ManualDeleteResponse,
 	ManualItem,
 	ManualOpenLinkResponse,
 } from '../interfaces/manual.interface';
@@ -33,6 +34,13 @@ export class ManualsService {
 	static async getOpenLink(id: string) {
 		const response = await instance.get<ManualOpenLinkResponse>(
 			`/manuals/${id}/open`,
+		);
+		return response.data;
+	}
+
+	static async deleteManual(id: string) {
+		const response = await instance.delete<ManualDeleteResponse>(
+			`/manuals/${id}`,
 		);
 		return response.data;
 	}

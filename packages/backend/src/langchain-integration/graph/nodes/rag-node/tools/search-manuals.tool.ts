@@ -5,29 +5,67 @@ import { z } from 'zod';
 export const createSearchManualsTool = (qdrantService: QdrantService) => {
 	return tool(
 		async ({ query, carModel }) => {
-			const filter = {
-				should: [
-					{
-						key: 'metadata.carModel',
-						match: { text: carModel }, // Використовуємо текстовий пошук
-					},
-				],
-			};
+			const normalizedCarModel = carModel?.trim() ?? '';
+			const normalizedCarModelLower = normalizedCarModel.toLowerCase();
 
-			const searchResults = await qdrantService.vectorStore.similaritySearch(
+			const filter = normalizedCarModel
+				? {
+						should: [
+							{
+								key: 'metadata.carModel',
+								match: { value: normalizedCarModel },
+							},
+						],
+					}
+				: undefined;
+
+			let searchResults = await qdrantService.vectorStore.similaritySearch(
 				query,
-				5,
+				6,
 				filter,
 			);
-			if (searchResults.length === 0) {
-				return 'No manuals found for this car model.';
+
+			// If strict model filter misses data (e.g., "Cayenne" vs "Porsche Cayenne"),
+			// retry without filter and then prefer documents whose metadata matches model text.
+			if (searchResults.length === 0 && normalizedCarModel) {
+				searchResults = await qdrantService.vectorStore.similaritySearch(
+					`${query} ${normalizedCarModel}`,
+					10,
+				);
+
+				const matchingModelDocs = searchResults.filter(doc => {
+					const model = String(doc.metadata?.carModel ?? '').toLowerCase();
+					return model.includes(normalizedCarModelLower);
+				});
+
+				if (matchingModelDocs.length > 0) {
+					searchResults = matchingModelDocs;
+				}
 			}
+
+			searchResults = searchResults.slice(0, 6);
+
+			if (searchResults.length === 0) {
+				return normalizedCarModel
+					? 'No manuals found for this car model.'
+					: 'No manuals found for this query.';
+			}
+
+			const seenImageUrls = new Set<string>();
+
 			return searchResults
 				.map(doc => {
-					const imgNote = doc.metadata.imageUrl
-						? `\n[DIAGRAM FOUND]: ${doc.metadata.imageUrl}`
-						: '';
-					return `--- Page ${doc.metadata.pageNumber} ---\n${doc.pageContent}${imgNote}`;
+					const { pageNumber, fullPageImageUrl, imageUrl } = doc.metadata;
+					const pageLabel = pageNumber ?? 'unknown';
+					const url = fullPageImageUrl || imageUrl;
+					let imgNote = '';
+
+					if (url && !seenImageUrls.has(url)) {
+						seenImageUrls.add(url);
+						imgNote = `\n![Технічна схема сторінки ${pageLabel}](${url})`;
+					}
+
+					return `--- Page ${pageLabel} ---\n${doc.pageContent}${imgNote}`;
 				})
 				.join('\n\n');
 		},
@@ -47,6 +85,8 @@ const searchManualsSchema = z.object({
 		),
 	carModel: z
 		.string()
+		.optional()
+		.default('')
 		.describe(
 			'The specific car make, model, and year to filter the search, e.g., "Toyota Camry 2018" or "VW Passat B8". Leave empty if the user did not specify a car.',
 		),

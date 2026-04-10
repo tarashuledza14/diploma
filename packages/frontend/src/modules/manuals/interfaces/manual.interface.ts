@@ -10,3 +10,8 @@ export interface ManualOpenLinkResponse {
 	filename: string;
 	carModel: string | null;
 }
+
+export interface ManualDeleteResponse {
+	success: boolean;
+	storageCleanupPending?: boolean;
+}

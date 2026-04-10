@@ -1,11 +1,13 @@
 import {
 	DeleteObjectCommand,
 	GetObjectCommand,
+	HeadObjectCommand,
 	PutObjectCommand,
 	S3Client,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import {
+	ForbiddenException,
 	Injectable,
 	InternalServerErrorException,
 	Logger,
@@ -84,6 +86,15 @@ export class DmsService {
 
 	async getPresignedSignedUrl(key: string) {
 		try {
+			// Validate object access with current IAM credentials first.
+			// This prevents returning a URL that opens as XML AccessDenied in browser.
+			await this.client.send(
+				new HeadObjectCommand({
+					Bucket: this.bucketName,
+					Key: key,
+				}),
+			);
+
 			const command = new GetObjectCommand({
 				Bucket: this.bucketName,
 				Key: key,
@@ -95,6 +106,13 @@ export class DmsService {
 
 			return { url };
 		} catch (error) {
+			if (this.isGetAccessDenied(error)) {
+				this.logger.warn(
+					`S3 get access denied for key ${key}: ${this.formatErrorForLog(error)}`,
+				);
+				throw new ForbiddenException('S3 GetObject access denied');
+			}
+
 			this.logger.error('S3 presigned URL error:', error);
 			throw new InternalServerErrorException('Failed to generate file link');
 		}
@@ -112,8 +130,65 @@ export class DmsService {
 
 			return { message: 'File deleted successfully' };
 		} catch (error) {
+			if (this.isDeleteAccessDenied(error)) {
+				this.logger.warn(
+					`S3 delete access denied for key ${key}: ${this.formatErrorForLog(error)}`,
+				);
+				throw new ForbiddenException('S3 DeleteObject access denied');
+			}
+
 			this.logger.error('S3 delete error:', error);
 			throw new InternalServerErrorException('Failed to delete file');
 		}
+	}
+
+	private isDeleteAccessDenied(error: unknown) {
+		if (!error || typeof error !== 'object') {
+			return false;
+		}
+
+		const e = error as {
+			name?: string;
+			message?: string;
+		};
+
+		const message = (e.message || '').toLowerCase();
+
+		return (
+			e.name === 'AccessDenied' ||
+			(message.includes('accessdenied') && message.includes('deleteobject')) ||
+			(message.includes('not authorized') && message.includes('deleteobject'))
+		);
+	}
+
+	private isGetAccessDenied(error: unknown) {
+		if (!error || typeof error !== 'object') {
+			return false;
+		}
+
+		const e = error as {
+			name?: string;
+			message?: string;
+		};
+
+		const message = (e.message || '').toLowerCase();
+
+		return (
+			e.name === 'AccessDenied' ||
+			(message.includes('accessdenied') && message.includes('getobject')) ||
+			(message.includes('not authorized') && message.includes('getobject'))
+		);
+	}
+
+	private formatErrorForLog(error: unknown) {
+		if (!error) {
+			return 'Unknown error';
+		}
+
+		if (error instanceof Error) {
+			return error.message;
+		}
+
+		return String(error);
 	}
 }

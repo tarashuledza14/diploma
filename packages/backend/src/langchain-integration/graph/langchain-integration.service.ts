@@ -70,9 +70,34 @@ function extractAssistantReplyFromMessages(
 		}
 		if (
 			text.includes('EXECUTING_SQL_QUERY') ||
-			text.includes('Call to tool was made') ||
-			text.includes('{"query":')
+			text.includes('Call to tool was made')
 		) {
+			continue;
+		}
+
+		return text;
+	}
+
+	return '';
+}
+
+function extractLatestToolContentFromMessages(
+	messages: any[] | undefined,
+): string {
+	if (!messages?.length) {
+		return '';
+	}
+
+	for (let i = messages.length - 1; i >= 0; i--) {
+		const msg = messages[i];
+		const msgType =
+			typeof msg?._getType === 'function' ? msg._getType() : undefined;
+		if (msgType !== 'tool' && msg?.role !== 'tool') {
+			continue;
+		}
+
+		const text = getChunkText(msg).trim();
+		if (!text) {
 			continue;
 		}
 
@@ -247,6 +272,7 @@ Assistant: ${firstAiResponse}`;
 				try {
 					const app = workflow.compile();
 					let assistantText = '';
+					let lastGraphState: typeof AgentState.State | null = null;
 
 					const initialGraphState = {
 						messages: [new HumanMessage(normalizedUserMessage)],
@@ -271,6 +297,7 @@ Assistant: ${firstAiResponse}`;
 					for await (const state of stream as AsyncIterable<
 						typeof AgentState.State
 					>) {
+						lastGraphState = state;
 						const reply = extractAssistantReplyFromMessages(state.messages);
 						if (!reply || reply.length <= assistantText.length) {
 							continue;
@@ -286,6 +313,19 @@ Assistant: ${firstAiResponse}`;
 						this.logger.warn(
 							`Empty assistant reply after graph run for chat ${chatId}.`,
 						);
+
+						const fallbackToolText = extractLatestToolContentFromMessages(
+							lastGraphState?.messages,
+						);
+						if (fallbackToolText) {
+							assistantText = fallbackToolText;
+							subscriber.next({
+								data: { type: 'text_chunk', text: assistantText },
+							} as MessageEvent);
+							this.logger.warn(
+								`Used tool-content fallback for empty assistant reply in chat ${chatId}.`,
+							);
+						}
 					}
 
 					await this.db.chatMessage.create({

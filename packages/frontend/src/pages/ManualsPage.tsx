@@ -1,5 +1,9 @@
 import { useUserStore } from '@/modules/auth';
-import { ManualsService, type ManualItem } from '@/modules/manuals';
+import {
+	DeleteManualModal,
+	ManualsService,
+	type ManualItem,
+} from '@/modules/manuals';
 import {
 	Button,
 	Card,
@@ -15,7 +19,7 @@ import {
 	TableRow,
 } from '@/shared';
 import { useQuery } from '@tanstack/react-query';
-import { ExternalLink, FileText, RefreshCw } from 'lucide-react';
+import { ExternalLink, FileText, RefreshCw, Trash2 } from 'lucide-react';
 import { useDeferredValue, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -23,12 +27,14 @@ import { toast } from 'sonner';
 export function ManualsPage() {
 	const { t } = useTranslation();
 	const role = useUserStore(state => state.user?.role);
-	const canUploadManuals = role === 'ADMIN' || role === 'MANAGER';
+	const canManageManuals = role === 'ADMIN' || role === 'MANAGER';
 	const [carModel, setCarModel] = useState('');
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [isUploading, setIsUploading] = useState(false);
 	const [search, setSearch] = useState('');
 	const [openingManualId, setOpeningManualId] = useState<string | null>(null);
+	const [manualToDelete, setManualToDelete] = useState<ManualItem | null>(null);
+	const [deletingManualId, setDeletingManualId] = useState<string | null>(null);
 	const deferredSearch = useDeferredValue(search.trim());
 
 	const {
@@ -93,6 +99,28 @@ export function ManualsPage() {
 		}
 	};
 
+	const handleDeleteManual = async () => {
+		if (!manualToDelete) {
+			return;
+		}
+
+		setDeletingManualId(manualToDelete.id);
+		try {
+			const response = await ManualsService.deleteManual(manualToDelete.id);
+			if (response.storageCleanupPending) {
+				toast.warning(t('manuals.delete.storageCleanupPending'));
+			} else {
+				toast.success(t('manuals.delete.success'));
+			}
+			setManualToDelete(null);
+			await refetch();
+		} catch {
+			toast.error(t('manuals.delete.error'));
+		} finally {
+			setDeletingManualId(null);
+		}
+	};
+
 	return (
 		<div className='space-y-4'>
 			<div>
@@ -100,7 +128,7 @@ export function ManualsPage() {
 				<p className='text-sm text-muted-foreground'>{t('manuals.subtitle')}</p>
 			</div>
 
-			{canUploadManuals && (
+			{canManageManuals && (
 				<Card>
 					<CardHeader className='space-y-1'>
 						<CardTitle>{t('manuals.upload.title')}</CardTitle>
@@ -201,17 +229,38 @@ export function ManualsPage() {
 											{new Date(manual.createdAt).toLocaleString()}
 										</TableCell>
 										<TableCell className='text-right'>
-											<Button
-												type='button'
-												variant='outline'
-												onClick={() => void handleOpenManual(manual)}
-												disabled={openingManualId === manual.id}
-											>
-												<ExternalLink className='mr-2 h-4 w-4' />
-												{openingManualId === manual.id
-													? t('manuals.opening')
-													: t('manuals.open')}
-											</Button>
+											<div className='flex justify-end gap-2'>
+												<Button
+													type='button'
+													variant='outline'
+													onClick={() => void handleOpenManual(manual)}
+													disabled={
+														openingManualId === manual.id ||
+														deletingManualId === manual.id
+													}
+												>
+													<ExternalLink className='mr-2 h-4 w-4' />
+													{openingManualId === manual.id
+														? t('manuals.opening')
+														: t('manuals.open')}
+												</Button>
+												{canManageManuals && (
+													<Button
+														type='button'
+														variant='destructive'
+														onClick={() => setManualToDelete(manual)}
+														disabled={
+															deletingManualId === manual.id ||
+															openingManualId === manual.id
+														}
+													>
+														<Trash2 className='mr-2 h-4 w-4' />
+														{deletingManualId === manual.id
+															? t('manuals.delete.deleting')
+															: t('manuals.delete.action')}
+													</Button>
+												)}
+											</div>
 										</TableCell>
 									</TableRow>
 								))}
@@ -220,6 +269,18 @@ export function ManualsPage() {
 					)}
 				</CardContent>
 			</Card>
+
+			<DeleteManualModal
+				open={Boolean(manualToDelete)}
+				onOpenChange={open => {
+					if (!open && !deletingManualId) {
+						setManualToDelete(null);
+					}
+				}}
+				selectedManual={manualToDelete}
+				isDeleting={Boolean(deletingManualId)}
+				onConfirm={() => void handleDeleteManual()}
+			/>
 		</div>
 	);
 }

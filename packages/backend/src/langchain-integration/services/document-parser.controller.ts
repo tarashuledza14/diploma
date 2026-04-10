@@ -2,6 +2,7 @@ import {
 	BadRequestException,
 	Body,
 	Controller,
+	Delete,
 	Get,
 	Param,
 	Post,
@@ -39,23 +40,34 @@ export class DocumentParserController {
 			throw new BadRequestException('Вкажіть марку авто (carModel)!');
 		}
 
+		const normalizedFileName = this.normalizeUploadedFileName(
+			file.originalname,
+		);
+		file.originalname = normalizedFileName;
+
 		try {
 			// Віддаємо файл нашому AI-парсеру
 			const result = await this.parserService.processAndStoreManual(
 				file,
 				carModel,
 			);
+			const smartFilter = result?.smartFilter || null;
+			const isDebugMode = Boolean(result?.debugMode);
 
 			await this.notificationsService.notify({
 				userId: user.id,
 				role: user.role,
-				title: 'Обробка мануалу завершена',
-				message: `Мануал "${file.originalname}" (${carModel}) успішно оброблено.`,
+				title: isDebugMode
+					? 'Smart filter перевірка завершена'
+					: 'Обробка мануалу завершена',
+				message: isDebugMode
+					? `Файл "${file.originalname}" (${carModel}) проаналізовано в debug-режимі smart filter.`
+					: `Мануал "${file.originalname}" (${carModel}) успішно оброблено.`,
 				metadata: {
-					manualId: result.manual.id,
-					chunksProcessed: result.chunksProcessed,
-					filename: result.manual.filename,
+					filename: file.originalname,
 					carModel,
+					debugMode: isDebugMode,
+					smartFilter,
 				},
 			});
 
@@ -77,6 +89,19 @@ export class DocumentParserController {
 		}
 	}
 
+	private normalizeUploadedFileName(fileName: string) {
+		const containsMojibake = /[ÐÑ]/.test(fileName);
+		if (!containsMojibake) {
+			return fileName;
+		}
+
+		try {
+			return Buffer.from(fileName, 'latin1').toString('utf8');
+		} catch {
+			return fileName;
+		}
+	}
+
 	@Auth(Role.ADMIN, Role.MANAGER, Role.MECHANIC)
 	@Get()
 	getManuals(@Query('search') search?: string) {
@@ -87,5 +112,51 @@ export class DocumentParserController {
 	@Get(':id/open')
 	openManual(@Param('id') id: string) {
 		return this.parserService.getManualOpenLink(id);
+	}
+
+	@Auth(Role.ADMIN, Role.MANAGER)
+	@Delete(':id')
+	async deleteManual(@Param('id') id: string, @CurrentUser() user: AuthUser) {
+		try {
+			const deletedManual = await this.parserService.deleteManual(id);
+			const storageCleanupPending = Boolean(
+				deletedManual.storageCleanupPending,
+			);
+
+			await this.notificationsService.notify({
+				userId: user.id,
+				role: user.role,
+				title: storageCleanupPending
+					? 'Мануал видалено (S3 cleanup pending)'
+					: 'Мануал видалено',
+				message: storageCleanupPending
+					? `Мануал "${deletedManual.filename}" видалено з системи, але файл в S3 поки не видалено через відсутній доступ DeleteObject.`
+					: `Мануал "${deletedManual.filename}" успішно видалено.`,
+				metadata: {
+					manualId: deletedManual.id,
+					filename: deletedManual.filename,
+					carModel: deletedManual.carModel,
+					storageCleanupPending,
+				},
+			});
+
+			return {
+				success: true,
+				storageCleanupPending,
+			};
+		} catch (error) {
+			await this.notificationsService.notify({
+				userId: user.id,
+				role: user.role,
+				title: 'Помилка видалення мануалу',
+				message: `Не вдалося видалити мануал (id: ${id}).`,
+				metadata: {
+					manualId: id,
+					status: 'failed',
+				},
+			});
+
+			throw error;
+		}
 	}
 }
