@@ -43,6 +43,11 @@ export { Prisma }
  */
 export type User = Prisma.UserModel
 /**
+ * Model Organization
+ * 
+ */
+export type Organization = Prisma.OrganizationModel
+/**
  * Model Client
  * 
  */
@@ -137,3 +142,8 @@ export type ChatMessage = Prisma.ChatMessageModel
  * 
  */
 export type Notification = Prisma.NotificationModel
+/**
+ * Model AppSettings
+ * 
+ */
+export type AppSettings = Prisma.AppSettingsModel

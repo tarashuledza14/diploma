@@ -14,6 +14,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 
+import { useAppBrandingQuery } from '@/modules/app-settings';
 import { useUserStore } from '@/modules/auth';
 import {
 	Sidebar,
@@ -45,6 +46,9 @@ export function AppSidebar() {
 	const { t } = useTranslation();
 	const { pathname } = useLocation();
 	const role = useUserStore(state => state.user?.role);
+	const { data: branding } = useAppBrandingQuery();
+	const brandName = branding?.appName?.trim() || t('sidebar.brand.name');
+	const brandLogoUrl = branding?.logoUrl?.trim() || null;
 	const navGroups: NavGroup[] = [
 		{
 			label: t('sidebar.groups.platform'),
@@ -130,13 +134,19 @@ export function AppSidebar() {
 					<SidebarMenuItem>
 						<SidebarMenuButton size='lg' asChild>
 							<Link to='/'>
-								<div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground'>
-									<Car className='size-4' />
+								<div className='flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg bg-primary text-primary-foreground'>
+									{brandLogoUrl ? (
+										<img
+											src={brandLogoUrl}
+											alt={brandName}
+											className='size-full object-cover'
+										/>
+									) : (
+										<Car className='size-4' />
+									)}
 								</div>
 								<div className='grid flex-1 text-left text-sm leading-tight'>
-									<span className='truncate font-semibold'>
-										{t('sidebar.brand.name')}
-									</span>
+									<span className='truncate font-semibold'>{brandName}</span>
 									<span className='truncate text-xs'>
 										{t('sidebar.brand.plan')}
 									</span>
@@ -172,24 +182,26 @@ export function AppSidebar() {
 					</SidebarGroup>
 				))}
 
-				<SidebarGroup className='mt-auto'>
-					<SidebarGroupContent>
-						<SidebarMenu>
-							<SidebarMenuItem>
-								<SidebarMenuButton
-									asChild
-									isActive={isActive('/settings')}
-									tooltip={t('sidebar.items.settings')}
-								>
-									<Link to='/settings'>
-										<Settings />
-										<span>{t('sidebar.items.settings')}</span>
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-						</SidebarMenu>
-					</SidebarGroupContent>
-				</SidebarGroup>
+				{role === 'ADMIN' && (
+					<SidebarGroup className='mt-auto'>
+						<SidebarGroupContent>
+							<SidebarMenu>
+								<SidebarMenuItem>
+									<SidebarMenuButton
+										asChild
+										isActive={isActive('/settings')}
+										tooltip={t('sidebar.items.settings')}
+									>
+										<Link to='/settings'>
+											<Settings />
+											<span>{t('sidebar.items.settings')}</span>
+										</Link>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+							</SidebarMenu>
+						</SidebarGroupContent>
+					</SidebarGroup>
+				)}
 			</SidebarContent>
 
 			<SidebarRail />

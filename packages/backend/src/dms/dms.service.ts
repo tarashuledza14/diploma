@@ -7,6 +7,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import {
+	BadRequestException,
 	ForbiddenException,
 	Injectable,
 	InternalServerErrorException,
@@ -37,8 +38,82 @@ export class DmsService {
 				accessKeyId: this.configService.get<string>('S3_ACCESS_KEY'),
 				secretAccessKey: this.configService.get<string>('S3_SECRET_ACCESS_KEY'),
 			},
+			// Keep bucket private and serve access via presigned URLs.
 			// forcePathStyle: true, // Uncomment for local MinIO, keep commented for AWS S3
 		});
+	}
+
+	async uploadTenantFile(
+		file: Express.Multer.File,
+		tenantId: string,
+		folder = 'branding',
+	) {
+		if (!tenantId?.trim()) {
+			throw new BadRequestException('tenantId is required');
+		}
+
+		if (!file) {
+			throw new BadRequestException('file is required');
+		}
+
+		const key = this.buildTenantKey(tenantId, folder, file.originalname);
+
+		try {
+			await this.client.send(
+				new PutObjectCommand({
+					Bucket: this.bucketName,
+					Key: key,
+					Body: file.buffer,
+					ContentType: file.mimetype,
+					Metadata: {
+						originalName: encodeURIComponent(file.originalname),
+						tenantId,
+					},
+				}),
+			);
+
+			this.logger.log(`Tenant file uploaded: ${key}`);
+			return { key };
+		} catch (error) {
+			this.logger.error('S3 tenant upload error:', error);
+			throw new InternalServerErrorException('File upload to storage failed');
+		}
+	}
+
+	async getPresignedUrl(key: string, expiresInSeconds = 3600) {
+		if (!key?.trim()) {
+			throw new BadRequestException('key is required');
+		}
+
+		try {
+			await this.client.send(
+				new HeadObjectCommand({
+					Bucket: this.bucketName,
+					Key: key,
+				}),
+			);
+
+			const command = new GetObjectCommand({
+				Bucket: this.bucketName,
+				Key: key,
+			});
+
+			const url = await getSignedUrl(this.client, command, {
+				expiresIn: expiresInSeconds,
+			});
+
+			return { url };
+		} catch (error) {
+			if (this.isGetAccessDenied(error)) {
+				this.logger.warn(
+					`S3 get access denied for key ${key}: ${this.formatErrorForLog(error)}`,
+				);
+				throw new ForbiddenException('S3 GetObject access denied');
+			}
+
+			this.logger.error('S3 presigned URL error:', error);
+			throw new InternalServerErrorException('Failed to generate file link');
+		}
 	}
 
 	async uploadSingleFile({
@@ -85,37 +160,25 @@ export class DmsService {
 	}
 
 	async getPresignedSignedUrl(key: string) {
-		try {
-			// Validate object access with current IAM credentials first.
-			// This prevents returning a URL that opens as XML AccessDenied in browser.
-			await this.client.send(
-				new HeadObjectCommand({
-					Bucket: this.bucketName,
-					Key: key,
-				}),
-			);
+		return this.getPresignedUrl(key, 60 * 60 * 24);
+	}
 
-			const command = new GetObjectCommand({
-				Bucket: this.bucketName,
-				Key: key,
-			});
+	private buildTenantKey(
+		tenantId: string,
+		folder: string,
+		originalName: string,
+	) {
+		const safeTenant = tenantId.replace(/[^a-zA-Z0-9_-]/g, '');
+		const safeFolder = (folder || 'branding').replace(/[^a-zA-Z0-9/_-]/g, '');
+		const fileName =
+			originalName
+				.replace(/\\/g, '/')
+				.split('/')
+				.pop()
+				?.replace(/\s+/g, '_')
+				.replace(/[^a-zA-Z0-9._-]/g, '') || 'file';
 
-			const url = await getSignedUrl(this.client, command, {
-				expiresIn: 60 * 60 * 24,
-			});
-
-			return { url };
-		} catch (error) {
-			if (this.isGetAccessDenied(error)) {
-				this.logger.warn(
-					`S3 get access denied for key ${key}: ${this.formatErrorForLog(error)}`,
-				);
-				throw new ForbiddenException('S3 GetObject access denied');
-			}
-
-			this.logger.error('S3 presigned URL error:', error);
-			throw new InternalServerErrorException('Failed to generate file link');
-		}
+		return `tenants/${safeTenant}/${safeFolder}/${uuidv4()}-${fileName}`;
 	}
 
 	async deleteFile(key: string) {

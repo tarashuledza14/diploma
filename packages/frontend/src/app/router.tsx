@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 // import { DashboardLayout } from '@/components/layouts/DashboardLayout';
 // import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
+import { PageTitle } from '@/app/components/PageTitle';
 import { MainLayout } from '@/layouts';
 import { AIAssistantPage } from '@/modules/ai-assistant/AIAssistantPage';
 import { ProtectedRoute } from '@/modules/auth';
@@ -13,6 +14,7 @@ import {
 	NotificationsPage,
 	OrderDetailsPage,
 	OrdersPage,
+	SettingsPage,
 	VehiclePage,
 } from '@/pages';
 import { InventoryPage } from '@/pages/InventoryPage';
@@ -45,7 +47,9 @@ export const router = createBrowserRouter([
 		path: '/login',
 		element: (
 			<Suspense fallback={<Loading />}>
-				<LoginPage />
+				<PageTitle title='Вхід'>
+					<LoginPage />
+				</PageTitle>
 			</Suspense>
 		),
 	},
@@ -63,7 +67,9 @@ export const router = createBrowserRouter([
 						path: '/',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<DashboardPage />
+								<PageTitle title='Головна'>
+									<DashboardPage />
+								</PageTitle>
 							</Suspense>
 						),
 					},
@@ -71,7 +77,9 @@ export const router = createBrowserRouter([
 						path: '/my-tasks',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<OrdersPage />
+								<PageTitle title='Мої задачі'>
+									<OrdersPage />
+								</PageTitle>
 							</Suspense>
 						),
 					},
@@ -86,7 +94,9 @@ export const router = createBrowserRouter([
 						path: '/assistant',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<AIAssistantPage />
+								<PageTitle title='AI Асистент'>
+									<AIAssistantPage />
+								</PageTitle>
 							</Suspense>
 						),
 					},
@@ -94,7 +104,9 @@ export const router = createBrowserRouter([
 						path: '/manuals',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<ManualsPage />
+								<PageTitle title='Мануали'>
+									<ManualsPage />
+								</PageTitle>
 							</Suspense>
 						),
 					},
@@ -102,7 +114,9 @@ export const router = createBrowserRouter([
 						path: '/notifications',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<NotificationsPage />
+								<PageTitle title='Сповіщення'>
+									<NotificationsPage />
+								</PageTitle>
 							</Suspense>
 						),
 					},
@@ -110,7 +124,9 @@ export const router = createBrowserRouter([
 						path: '/orders',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<OrdersPage />
+								<PageTitle title='Замовлення'>
+									<OrdersPage />
+								</PageTitle>
 							</Suspense>
 						),
 					},
@@ -118,7 +134,9 @@ export const router = createBrowserRouter([
 						path: '/orders/:id',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<OrderDetailsPage />
+								<PageTitle title='Деталі замовлення'>
+									<OrderDetailsPage />
+								</PageTitle>
 							</Suspense>
 						),
 					},
@@ -126,7 +144,9 @@ export const router = createBrowserRouter([
 						path: '/orders/board',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<KanbanPage />
+								<PageTitle title='Канбан'>
+									<KanbanPage />
+								</PageTitle>
 							</Suspense>
 						),
 					},
@@ -144,7 +164,24 @@ export const router = createBrowserRouter([
 						path: '/services',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<ServicesPage />
+								<PageTitle title='Послуги'>
+									<ServicesPage />
+								</PageTitle>
+							</Suspense>
+						),
+					},
+				],
+			},
+			{
+				element: <ProtectedRoute allowedRoles={['ADMIN']} fallbackPath='/' />,
+				children: [
+					{
+						path: '/settings',
+						element: (
+							<Suspense fallback={<Loading />}>
+								<PageTitle title='Налаштування'>
+									<SettingsPage />
+								</PageTitle>
 							</Suspense>
 						),
 					},
@@ -159,7 +196,9 @@ export const router = createBrowserRouter([
 						path: '/inventory',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<InventoryPage />
+								<PageTitle title='Склад'>
+									<InventoryPage />
+								</PageTitle>
 							</Suspense>
 						),
 					},
@@ -172,9 +211,20 @@ export const router = createBrowserRouter([
 				children: [
 					{
 						path: '/vehicles',
-						element: <VehiclePage />,
+						element: (
+							<PageTitle title='Автомобілі'>
+								<VehiclePage />
+							</PageTitle>
+						),
 					},
-					{ path: '/clients', element: <ClientsPage /> },
+					{
+						path: '/clients',
+						element: (
+							<PageTitle title='Клієнти'>
+								<ClientsPage />
+							</PageTitle>
+						),
+					},
 				],
 			},
 		],
@@ -189,6 +239,10 @@ export const router = createBrowserRouter([
 	// --- 404 Page ---
 	{
 		path: '*',
-		element: <NotFoundPage />,
+		element: (
+			<PageTitle title='Сторінку не знайдено'>
+				<NotFoundPage />
+			</PageTitle>
+		),
 	},
 ]);

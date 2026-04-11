@@ -112,6 +112,7 @@ export class AuthService {
 			email: user.email,
 			role: user.role,
 			roles: user.role,
+			organizationId: user.organizationId,
 		};
 	}
 }

@@ -37,8 +37,10 @@ async function clearDatabase() {
 	await prisma.partsSupplier.deleteMany({});
 	await prisma.partsManufacturer.deleteMany({});
 	await prisma.document.deleteMany({});
+	await prisma.appSettings.deleteMany({});
 	await prisma.client.deleteMany({});
 	await prisma.user.deleteMany({});
+	await prisma.organization.deleteMany({});
 
 	// Після deleteMany sequence не скидаються автоматично.
 	// Скидаємо order_number, щоб seed був детермінованим.
@@ -125,6 +127,12 @@ async function main() {
 
 	console.log('✅ Dictionaries created');
 
+	const organization = await prisma.organization.create({
+		data: {
+			name: 'Default Organization',
+		},
+	});
+
 	// --- 2. КОРИСТУВАЧІ (Staff) ---
 	const password = await argon2.hash(testPassword);
 	const staffSeedUsers = [
@@ -156,6 +164,7 @@ async function main() {
 				data: {
 					...user,
 					password,
+					organizationId: organization.id,
 				},
 			}),
 		),

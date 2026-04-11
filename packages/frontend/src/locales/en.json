@@ -169,6 +169,40 @@
 		"empty": "No notifications yet.",
 		"loadError": "Failed to load notifications."
 	},
+	"brandingSettings": {
+		"title": "Branding Settings",
+		"subtitle": "Single app name and logo for sidebar and browser tab.",
+		"previewTitle": "Preview",
+		"actions": {
+			"retry": "Try again"
+		},
+		"form": {
+			"title": "Configuration",
+			"appNameLabel": "Application name",
+			"logoLabel": "Logo (file)",
+			"logoPlaceholder": "https://...",
+			"logoHint": "Upload a logo image (PNG/JPG/WebP). A 1:1 cropper will open after selection.",
+			"logoSelected": "Ready to upload: {{name}}"
+		},
+		"cropper": {
+			"title": "Crop logo",
+			"description": "Adjust the logo in a 1:1 square before uploading.",
+			"alt": "Image to crop",
+			"zoom": "Zoom",
+			"apply": "Apply",
+			"applying": "Applying..."
+		},
+		"messages": {
+			"saved": "Branding updated"
+		},
+		"errors": {
+			"loadFailed": "Failed to load branding settings.",
+			"saveFailed": "Failed to save changes.",
+			"appNameRequired": "Application name is required.",
+			"logoTypeInvalid": "Please choose an image file.",
+			"cropFailed": "Failed to crop the image. Please try again."
+		}
+	},
 	"auth": {
 		"welcomeBack": "Welcome back",
 		"signInSubtitle": "Sign in to your account to continue",

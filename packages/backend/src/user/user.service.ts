@@ -24,6 +24,7 @@ export class UserService {
 		fullName: string;
 		phone?: string;
 		role?: Role;
+		organizationId?: string | null;
 	}): Promise<User> {
 		return this.prisma.user.create({
 			data: {

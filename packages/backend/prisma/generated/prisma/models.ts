@@ -9,6 +9,7 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User'
+export type * from './models/Organization'
 export type * from './models/Client'
 export type * from './models/Vehicle'
 export type * from './models/PartCategory'
@@ -28,4 +29,5 @@ export type * from './models/Document'
 export type * from './models/ChatSession'
 export type * from './models/ChatMessage'
 export type * from './models/Notification'
+export type * from './models/AppSettings'
 export type * from './commonInputTypes'

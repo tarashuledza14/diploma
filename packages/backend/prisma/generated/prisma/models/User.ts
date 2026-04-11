@@ -32,6 +32,7 @@ export type UserMinAggregateOutputType = {
   fullName: string | null
   avatar: string | null
   deletedAt: Date | null
+  organizationId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -44,6 +45,7 @@ export type UserMaxAggregateOutputType = {
   fullName: string | null
   avatar: string | null
   deletedAt: Date | null
+  organizationId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -56,6 +58,7 @@ export type UserCountAggregateOutputType = {
   fullName: number
   avatar: number
   deletedAt: number
+  organizationId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -70,6 +73,7 @@ export type UserMinAggregateInputType = {
   fullName?: true
   avatar?: true
   deletedAt?: true
+  organizationId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -82,6 +86,7 @@ export type UserMaxAggregateInputType = {
   fullName?: true
   avatar?: true
   deletedAt?: true
+  organizationId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -94,6 +99,7 @@ export type UserCountAggregateInputType = {
   fullName?: true
   avatar?: true
   deletedAt?: true
+  organizationId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -179,6 +185,7 @@ export type UserGroupByOutputType = {
   fullName: string
   avatar: string | null
   deletedAt: Date | null
+  organizationId: string | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -212,8 +219,10 @@ export type UserWhereInput = {
   fullName?: Prisma.StringFilter<"User"> | string
   avatar?: Prisma.StringNullableFilter<"User"> | string | null
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  organizationId?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
   managerOrders?: Prisma.OrderListRelationFilter
   mechanicOrders?: Prisma.OrderListRelationFilter
   serviceJobs?: Prisma.OrderServiceListRelationFilter
@@ -230,8 +239,10 @@ export type UserOrderByWithRelationInput = {
   fullName?: Prisma.SortOrder
   avatar?: Prisma.SortOrderInput | Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  organizationId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  organization?: Prisma.OrganizationOrderByWithRelationInput
   managerOrders?: Prisma.OrderOrderByRelationAggregateInput
   mechanicOrders?: Prisma.OrderOrderByRelationAggregateInput
   serviceJobs?: Prisma.OrderServiceOrderByRelationAggregateInput
@@ -251,8 +262,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   fullName?: Prisma.StringFilter<"User"> | string
   avatar?: Prisma.StringNullableFilter<"User"> | string | null
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  organizationId?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
   managerOrders?: Prisma.OrderListRelationFilter
   mechanicOrders?: Prisma.OrderListRelationFilter
   serviceJobs?: Prisma.OrderServiceListRelationFilter
@@ -269,6 +282,7 @@ export type UserOrderByWithAggregationInput = {
   fullName?: Prisma.SortOrder
   avatar?: Prisma.SortOrderInput | Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  organizationId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -287,6 +301,7 @@ export type UserScalarWhereWithAggregatesInput = {
   fullName?: Prisma.StringWithAggregatesFilter<"User"> | string
   avatar?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  organizationId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -301,6 +316,7 @@ export type UserCreateInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutUsersInput
   managerOrders?: Prisma.OrderCreateNestedManyWithoutManagerInput
   mechanicOrders?: Prisma.OrderCreateNestedManyWithoutMechanicInput
   serviceJobs?: Prisma.OrderServiceCreateNestedManyWithoutMechanicInput
@@ -317,6 +333,7 @@ export type UserUncheckedCreateInput = {
   fullName: string
   avatar?: string | null
   deletedAt?: Date | string | null
+  organizationId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   managerOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutManagerInput
@@ -337,6 +354,7 @@ export type UserUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutUsersNestedInput
   managerOrders?: Prisma.OrderUpdateManyWithoutManagerNestedInput
   mechanicOrders?: Prisma.OrderUpdateManyWithoutMechanicNestedInput
   serviceJobs?: Prisma.OrderServiceUpdateManyWithoutMechanicNestedInput
@@ -353,6 +371,7 @@ export type UserUncheckedUpdateInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerOrders?: Prisma.OrderUncheckedUpdateManyWithoutManagerNestedInput
@@ -371,6 +390,7 @@ export type UserCreateManyInput = {
   fullName: string
   avatar?: string | null
   deletedAt?: Date | string | null
+  organizationId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -395,6 +415,7 @@ export type UserUncheckedUpdateManyInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -407,6 +428,7 @@ export type UserCountOrderByAggregateInput = {
   fullName?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -419,6 +441,7 @@ export type UserMaxOrderByAggregateInput = {
   fullName?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -431,8 +454,19 @@ export type UserMinOrderByAggregateInput = {
   fullName?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type UserListRelationFilter = {
+  every?: Prisma.UserWhereInput
+  some?: Prisma.UserWhereInput
+  none?: Prisma.UserWhereInput
+}
+
+export type UserOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type UserNullableScalarRelationFilter = {
@@ -463,6 +497,48 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type UserCreateNestedManyWithoutOrganizationInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOrganizationInput, Prisma.UserUncheckedCreateWithoutOrganizationInput> | Prisma.UserCreateWithoutOrganizationInput[] | Prisma.UserUncheckedCreateWithoutOrganizationInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOrganizationInput | Prisma.UserCreateOrConnectWithoutOrganizationInput[]
+  createMany?: Prisma.UserCreateManyOrganizationInputEnvelope
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
+export type UserUncheckedCreateNestedManyWithoutOrganizationInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOrganizationInput, Prisma.UserUncheckedCreateWithoutOrganizationInput> | Prisma.UserCreateWithoutOrganizationInput[] | Prisma.UserUncheckedCreateWithoutOrganizationInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOrganizationInput | Prisma.UserCreateOrConnectWithoutOrganizationInput[]
+  createMany?: Prisma.UserCreateManyOrganizationInputEnvelope
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
+export type UserUpdateManyWithoutOrganizationNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOrganizationInput, Prisma.UserUncheckedCreateWithoutOrganizationInput> | Prisma.UserCreateWithoutOrganizationInput[] | Prisma.UserUncheckedCreateWithoutOrganizationInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOrganizationInput | Prisma.UserCreateOrConnectWithoutOrganizationInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutOrganizationInput | Prisma.UserUpsertWithWhereUniqueWithoutOrganizationInput[]
+  createMany?: Prisma.UserCreateManyOrganizationInputEnvelope
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutOrganizationInput | Prisma.UserUpdateWithWhereUniqueWithoutOrganizationInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutOrganizationInput | Prisma.UserUpdateManyWithWhereWithoutOrganizationInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserUncheckedUpdateManyWithoutOrganizationNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOrganizationInput, Prisma.UserUncheckedCreateWithoutOrganizationInput> | Prisma.UserCreateWithoutOrganizationInput[] | Prisma.UserUncheckedCreateWithoutOrganizationInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOrganizationInput | Prisma.UserCreateOrConnectWithoutOrganizationInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutOrganizationInput | Prisma.UserUpsertWithWhereUniqueWithoutOrganizationInput[]
+  createMany?: Prisma.UserCreateManyOrganizationInputEnvelope
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutOrganizationInput | Prisma.UserUpdateWithWhereUniqueWithoutOrganizationInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutOrganizationInput | Prisma.UserUpdateManyWithWhereWithoutOrganizationInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
 }
 
 export type UserCreateNestedOneWithoutStockMovementsInput = {
@@ -559,6 +635,84 @@ export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationsInput, Prisma.UserUpdateWithoutNotificationsInput>, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
 }
 
+export type UserCreateWithoutOrganizationInput = {
+  id?: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  fullName: string
+  avatar?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerOrders?: Prisma.OrderCreateNestedManyWithoutManagerInput
+  mechanicOrders?: Prisma.OrderCreateNestedManyWithoutMechanicInput
+  serviceJobs?: Prisma.OrderServiceCreateNestedManyWithoutMechanicInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutOrganizationInput = {
+  id?: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  fullName: string
+  avatar?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutManagerInput
+  mechanicOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutMechanicInput
+  serviceJobs?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutMechanicInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutOrganizationInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutOrganizationInput, Prisma.UserUncheckedCreateWithoutOrganizationInput>
+}
+
+export type UserCreateManyOrganizationInputEnvelope = {
+  data: Prisma.UserCreateManyOrganizationInput | Prisma.UserCreateManyOrganizationInput[]
+  skipDuplicates?: boolean
+}
+
+export type UserUpsertWithWhereUniqueWithoutOrganizationInput = {
+  where: Prisma.UserWhereUniqueInput
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOrganizationInput, Prisma.UserUncheckedUpdateWithoutOrganizationInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOrganizationInput, Prisma.UserUncheckedCreateWithoutOrganizationInput>
+}
+
+export type UserUpdateWithWhereUniqueWithoutOrganizationInput = {
+  where: Prisma.UserWhereUniqueInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOrganizationInput, Prisma.UserUncheckedUpdateWithoutOrganizationInput>
+}
+
+export type UserUpdateManyWithWhereWithoutOrganizationInput = {
+  where: Prisma.UserScalarWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyWithoutOrganizationInput>
+}
+
+export type UserScalarWhereInput = {
+  AND?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+  OR?: Prisma.UserScalarWhereInput[]
+  NOT?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+  id?: Prisma.StringFilter<"User"> | string
+  email?: Prisma.StringFilter<"User"> | string
+  password?: Prisma.StringFilter<"User"> | string
+  role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
+  fullName?: Prisma.StringFilter<"User"> | string
+  avatar?: Prisma.StringNullableFilter<"User"> | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  organizationId?: Prisma.StringNullableFilter<"User"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+}
+
 export type UserCreateWithoutStockMovementsInput = {
   id?: string
   email: string
@@ -569,6 +723,7 @@ export type UserCreateWithoutStockMovementsInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutUsersInput
   managerOrders?: Prisma.OrderCreateNestedManyWithoutManagerInput
   mechanicOrders?: Prisma.OrderCreateNestedManyWithoutMechanicInput
   serviceJobs?: Prisma.OrderServiceCreateNestedManyWithoutMechanicInput
@@ -584,6 +739,7 @@ export type UserUncheckedCreateWithoutStockMovementsInput = {
   fullName: string
   avatar?: string | null
   deletedAt?: Date | string | null
+  organizationId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   managerOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutManagerInput
@@ -619,6 +775,7 @@ export type UserUpdateWithoutStockMovementsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutUsersNestedInput
   managerOrders?: Prisma.OrderUpdateManyWithoutManagerNestedInput
   mechanicOrders?: Prisma.OrderUpdateManyWithoutMechanicNestedInput
   serviceJobs?: Prisma.OrderServiceUpdateManyWithoutMechanicNestedInput
@@ -634,6 +791,7 @@ export type UserUncheckedUpdateWithoutStockMovementsInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerOrders?: Prisma.OrderUncheckedUpdateManyWithoutManagerNestedInput
@@ -653,6 +811,7 @@ export type UserCreateWithoutManagerOrdersInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutUsersInput
   mechanicOrders?: Prisma.OrderCreateNestedManyWithoutMechanicInput
   serviceJobs?: Prisma.OrderServiceCreateNestedManyWithoutMechanicInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
@@ -668,6 +827,7 @@ export type UserUncheckedCreateWithoutManagerOrdersInput = {
   fullName: string
   avatar?: string | null
   deletedAt?: Date | string | null
+  organizationId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   mechanicOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutMechanicInput
@@ -692,6 +852,7 @@ export type UserCreateWithoutMechanicOrdersInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutUsersInput
   managerOrders?: Prisma.OrderCreateNestedManyWithoutManagerInput
   serviceJobs?: Prisma.OrderServiceCreateNestedManyWithoutMechanicInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
@@ -707,6 +868,7 @@ export type UserUncheckedCreateWithoutMechanicOrdersInput = {
   fullName: string
   avatar?: string | null
   deletedAt?: Date | string | null
+  organizationId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   managerOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutManagerInput
@@ -742,6 +904,7 @@ export type UserUpdateWithoutManagerOrdersInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutUsersNestedInput
   mechanicOrders?: Prisma.OrderUpdateManyWithoutMechanicNestedInput
   serviceJobs?: Prisma.OrderServiceUpdateManyWithoutMechanicNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
@@ -757,6 +920,7 @@ export type UserUncheckedUpdateWithoutManagerOrdersInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   mechanicOrders?: Prisma.OrderUncheckedUpdateManyWithoutMechanicNestedInput
@@ -787,6 +951,7 @@ export type UserUpdateWithoutMechanicOrdersInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutUsersNestedInput
   managerOrders?: Prisma.OrderUpdateManyWithoutManagerNestedInput
   serviceJobs?: Prisma.OrderServiceUpdateManyWithoutMechanicNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
@@ -802,6 +967,7 @@ export type UserUncheckedUpdateWithoutMechanicOrdersInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerOrders?: Prisma.OrderUncheckedUpdateManyWithoutManagerNestedInput
@@ -821,6 +987,7 @@ export type UserCreateWithoutServiceJobsInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutUsersInput
   managerOrders?: Prisma.OrderCreateNestedManyWithoutManagerInput
   mechanicOrders?: Prisma.OrderCreateNestedManyWithoutMechanicInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
@@ -836,6 +1003,7 @@ export type UserUncheckedCreateWithoutServiceJobsInput = {
   fullName: string
   avatar?: string | null
   deletedAt?: Date | string | null
+  organizationId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   managerOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutManagerInput
@@ -871,6 +1039,7 @@ export type UserUpdateWithoutServiceJobsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutUsersNestedInput
   managerOrders?: Prisma.OrderUpdateManyWithoutManagerNestedInput
   mechanicOrders?: Prisma.OrderUpdateManyWithoutMechanicNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
@@ -886,6 +1055,7 @@ export type UserUncheckedUpdateWithoutServiceJobsInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerOrders?: Prisma.OrderUncheckedUpdateManyWithoutManagerNestedInput
@@ -905,6 +1075,7 @@ export type UserCreateWithoutChatSessionsInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutUsersInput
   managerOrders?: Prisma.OrderCreateNestedManyWithoutManagerInput
   mechanicOrders?: Prisma.OrderCreateNestedManyWithoutMechanicInput
   serviceJobs?: Prisma.OrderServiceCreateNestedManyWithoutMechanicInput
@@ -920,6 +1091,7 @@ export type UserUncheckedCreateWithoutChatSessionsInput = {
   fullName: string
   avatar?: string | null
   deletedAt?: Date | string | null
+  organizationId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   managerOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutManagerInput
@@ -955,6 +1127,7 @@ export type UserUpdateWithoutChatSessionsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutUsersNestedInput
   managerOrders?: Prisma.OrderUpdateManyWithoutManagerNestedInput
   mechanicOrders?: Prisma.OrderUpdateManyWithoutMechanicNestedInput
   serviceJobs?: Prisma.OrderServiceUpdateManyWithoutMechanicNestedInput
@@ -970,6 +1143,7 @@ export type UserUncheckedUpdateWithoutChatSessionsInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerOrders?: Prisma.OrderUncheckedUpdateManyWithoutManagerNestedInput
@@ -989,6 +1163,7 @@ export type UserCreateWithoutNotificationsInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutUsersInput
   managerOrders?: Prisma.OrderCreateNestedManyWithoutManagerInput
   mechanicOrders?: Prisma.OrderCreateNestedManyWithoutMechanicInput
   serviceJobs?: Prisma.OrderServiceCreateNestedManyWithoutMechanicInput
@@ -1004,6 +1179,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   fullName: string
   avatar?: string | null
   deletedAt?: Date | string | null
+  organizationId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   managerOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutManagerInput
@@ -1039,6 +1215,7 @@ export type UserUpdateWithoutNotificationsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutUsersNestedInput
   managerOrders?: Prisma.OrderUpdateManyWithoutManagerNestedInput
   mechanicOrders?: Prisma.OrderUpdateManyWithoutMechanicNestedInput
   serviceJobs?: Prisma.OrderServiceUpdateManyWithoutMechanicNestedInput
@@ -1054,6 +1231,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerOrders?: Prisma.OrderUncheckedUpdateManyWithoutManagerNestedInput
@@ -1061,6 +1239,66 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   serviceJobs?: Prisma.OrderServiceUncheckedUpdateManyWithoutMechanicNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
   chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateManyOrganizationInput = {
+  id?: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  fullName: string
+  avatar?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type UserUpdateWithoutOrganizationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerOrders?: Prisma.OrderUpdateManyWithoutManagerNestedInput
+  mechanicOrders?: Prisma.OrderUpdateManyWithoutMechanicNestedInput
+  serviceJobs?: Prisma.OrderServiceUpdateManyWithoutMechanicNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOrganizationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerOrders?: Prisma.OrderUncheckedUpdateManyWithoutManagerNestedInput
+  mechanicOrders?: Prisma.OrderUncheckedUpdateManyWithoutMechanicNestedInput
+  serviceJobs?: Prisma.OrderServiceUncheckedUpdateManyWithoutMechanicNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateManyWithoutOrganizationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -1147,8 +1385,10 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   fullName?: boolean
   avatar?: boolean
   deletedAt?: boolean
+  organizationId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  organization?: boolean | Prisma.User$organizationArgs<ExtArgs>
   managerOrders?: boolean | Prisma.User$managerOrdersArgs<ExtArgs>
   mechanicOrders?: boolean | Prisma.User$mechanicOrdersArgs<ExtArgs>
   serviceJobs?: boolean | Prisma.User$serviceJobsArgs<ExtArgs>
@@ -1166,8 +1406,10 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   fullName?: boolean
   avatar?: boolean
   deletedAt?: boolean
+  organizationId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  organization?: boolean | Prisma.User$organizationArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1178,8 +1420,10 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   fullName?: boolean
   avatar?: boolean
   deletedAt?: boolean
+  organizationId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  organization?: boolean | Prisma.User$organizationArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -1190,12 +1434,14 @@ export type UserSelectScalar = {
   fullName?: boolean
   avatar?: boolean
   deletedAt?: boolean
+  organizationId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "role" | "fullName" | "avatar" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "role" | "fullName" | "avatar" | "deletedAt" | "organizationId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  organization?: boolean | Prisma.User$organizationArgs<ExtArgs>
   managerOrders?: boolean | Prisma.User$managerOrdersArgs<ExtArgs>
   mechanicOrders?: boolean | Prisma.User$mechanicOrdersArgs<ExtArgs>
   serviceJobs?: boolean | Prisma.User$serviceJobsArgs<ExtArgs>
@@ -1204,12 +1450,17 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  organization?: boolean | Prisma.User$organizationArgs<ExtArgs>
+}
+export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  organization?: boolean | Prisma.User$organizationArgs<ExtArgs>
+}
 
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    organization: Prisma.$OrganizationPayload<ExtArgs> | null
     managerOrders: Prisma.$OrderPayload<ExtArgs>[]
     mechanicOrders: Prisma.$OrderPayload<ExtArgs>[]
     serviceJobs: Prisma.$OrderServicePayload<ExtArgs>[]
@@ -1225,6 +1476,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     fullName: string
     avatar: string | null
     deletedAt: Date | null
+    organizationId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1621,6 +1873,7 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  organization<T extends Prisma.User$organizationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$organizationArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   managerOrders<T extends Prisma.User$managerOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$managerOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   mechanicOrders<T extends Prisma.User$mechanicOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$mechanicOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   serviceJobs<T extends Prisma.User$serviceJobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$serviceJobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1663,6 +1916,7 @@ export interface UserFieldRefs {
   readonly fullName: Prisma.FieldRef<"User", 'String'>
   readonly avatar: Prisma.FieldRef<"User", 'String'>
   readonly deletedAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly organizationId: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -1914,6 +2168,10 @@ export type UserCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    */
   data: Prisma.UserCreateManyInput | Prisma.UserCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1984,6 +2242,10 @@ export type UserUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many Users to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -2050,6 +2312,25 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Users to delete.
    */
   limit?: number
+}
+
+/**
+ * User.organization
+ */
+export type User$organizationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Organization
+   */
+  select?: Prisma.OrganizationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Organization
+   */
+  omit?: Prisma.OrganizationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrganizationInclude<ExtArgs> | null
+  where?: Prisma.OrganizationWhereInput
 }
 
 /**

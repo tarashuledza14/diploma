@@ -8,4 +8,5 @@ export { NotificationsPage } from './NotificationsPage';
 export { OrderDetailsPage } from './OrderDetailsPage';
 export { OrdersPage } from './OrdersPage';
 export { ServicesPage } from './ServicesPage.tsx';
+export { SettingsPage } from './SettingsPage';
 export { VehiclePage } from './VehiclePage';

@@ -77,6 +77,9 @@ model User {
   avatar    String?
   deletedAt DateTime?
 
+  organizationId String?       @map("organization_id")
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
   // Зв'язки співробітника
   managerOrders  Order[]         @relation("ManagerOrders")
   mechanicOrders Order[]         @relation("MechanicOrders")
@@ -88,7 +91,19 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([organizationId])
   @@map("users")
+}
+
+model Organization {
+  id         String       @id @default(cuid())
+  name       String
+  users      User[]
+  appSetting AppSettings?
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+
+  @@map("organizations")
 }
 
 // 2. Таблиця ТІЛЬКИ для клієнтів (без паролів)
@@ -439,4 +454,16 @@ model Notification {
   @@index([userId, isRead])
   @@index([userId, createdAt])
   @@map("notifications")
+}
+
+model AppSettings {
+  id             String       @id @default(cuid())
+  organizationId String       @unique @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  appName        String       @default("AutoCRM") @map("app_name")
+  logoKey        String?      @map("logo_key") @db.Text
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  @@map("app_settings")
 }
