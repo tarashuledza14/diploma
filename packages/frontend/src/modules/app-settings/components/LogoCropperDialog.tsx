@@ -184,7 +184,11 @@ export function LogoCropperDialog({
 				) : null}
 
 				<DialogFooter>
-					<Button type='button' variant='outline' onClick={() => onOpenChange(false)}>
+					<Button
+						type='button'
+						variant='outline'
+						onClick={() => onOpenChange(false)}
+					>
 						{t('common.cancel')}
 					</Button>
 					<Button
