@@ -966,7 +966,24 @@
 	},
 	"router": {
 		"loading": "Завантаження...",
-		"notFound": "Сторінку не знайдено"
+		"notFound": "Сторінку не знайдено",
+		"titles": {
+			"login": "Вхід",
+			"dashboard": "Головна",
+			"myTasks": "Мої задачі",
+			"assistant": "AI Асистент",
+			"manuals": "Мануали",
+			"notifications": "Сповіщення",
+			"orders": "Замовлення",
+			"orderDetails": "Деталі замовлення",
+			"kanban": "Канбан",
+			"services": "Послуги",
+			"settings": "Налаштування",
+			"inventory": "Склад",
+			"vehicles": "Автомобілі",
+			"clients": "Клієнти",
+			"notFound": "Сторінку не знайдено"
+		}
 	},
 	"kanban": {
 		"title": "Канбан-дошка",

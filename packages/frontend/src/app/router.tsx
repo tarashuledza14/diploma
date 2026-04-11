@@ -47,7 +47,7 @@ export const router = createBrowserRouter([
 		path: '/login',
 		element: (
 			<Suspense fallback={<Loading />}>
-				<PageTitle title='Вхід'>
+				<PageTitle titleKey='router.titles.login'>
 					<LoginPage />
 				</PageTitle>
 			</Suspense>
@@ -67,7 +67,7 @@ export const router = createBrowserRouter([
 						path: '/',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<PageTitle title='Головна'>
+								<PageTitle titleKey='router.titles.dashboard'>
 									<DashboardPage />
 								</PageTitle>
 							</Suspense>
@@ -77,7 +77,7 @@ export const router = createBrowserRouter([
 						path: '/my-tasks',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<PageTitle title='Мої задачі'>
+								<PageTitle titleKey='router.titles.myTasks'>
 									<OrdersPage />
 								</PageTitle>
 							</Suspense>
@@ -94,7 +94,7 @@ export const router = createBrowserRouter([
 						path: '/assistant',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<PageTitle title='AI Асистент'>
+								<PageTitle titleKey='router.titles.assistant'>
 									<AIAssistantPage />
 								</PageTitle>
 							</Suspense>
@@ -104,7 +104,7 @@ export const router = createBrowserRouter([
 						path: '/manuals',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<PageTitle title='Мануали'>
+								<PageTitle titleKey='router.titles.manuals'>
 									<ManualsPage />
 								</PageTitle>
 							</Suspense>
@@ -114,7 +114,7 @@ export const router = createBrowserRouter([
 						path: '/notifications',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<PageTitle title='Сповіщення'>
+								<PageTitle titleKey='router.titles.notifications'>
 									<NotificationsPage />
 								</PageTitle>
 							</Suspense>
@@ -124,7 +124,7 @@ export const router = createBrowserRouter([
 						path: '/orders',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<PageTitle title='Замовлення'>
+								<PageTitle titleKey='router.titles.orders'>
 									<OrdersPage />
 								</PageTitle>
 							</Suspense>
@@ -134,7 +134,7 @@ export const router = createBrowserRouter([
 						path: '/orders/:id',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<PageTitle title='Деталі замовлення'>
+								<PageTitle titleKey='router.titles.orderDetails'>
 									<OrderDetailsPage />
 								</PageTitle>
 							</Suspense>
@@ -144,7 +144,7 @@ export const router = createBrowserRouter([
 						path: '/orders/board',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<PageTitle title='Канбан'>
+								<PageTitle titleKey='router.titles.kanban'>
 									<KanbanPage />
 								</PageTitle>
 							</Suspense>
@@ -164,7 +164,7 @@ export const router = createBrowserRouter([
 						path: '/services',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<PageTitle title='Послуги'>
+								<PageTitle titleKey='router.titles.services'>
 									<ServicesPage />
 								</PageTitle>
 							</Suspense>
@@ -179,7 +179,7 @@ export const router = createBrowserRouter([
 						path: '/settings',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<PageTitle title='Налаштування'>
+								<PageTitle titleKey='router.titles.settings'>
 									<SettingsPage />
 								</PageTitle>
 							</Suspense>
@@ -196,7 +196,7 @@ export const router = createBrowserRouter([
 						path: '/inventory',
 						element: (
 							<Suspense fallback={<Loading />}>
-								<PageTitle title='Склад'>
+								<PageTitle titleKey='router.titles.inventory'>
 									<InventoryPage />
 								</PageTitle>
 							</Suspense>
@@ -212,7 +212,7 @@ export const router = createBrowserRouter([
 					{
 						path: '/vehicles',
 						element: (
-							<PageTitle title='Автомобілі'>
+							<PageTitle titleKey='router.titles.vehicles'>
 								<VehiclePage />
 							</PageTitle>
 						),
@@ -220,7 +220,7 @@ export const router = createBrowserRouter([
 					{
 						path: '/clients',
 						element: (
-							<PageTitle title='Клієнти'>
+							<PageTitle titleKey='router.titles.clients'>
 								<ClientsPage />
 							</PageTitle>
 						),
@@ -240,7 +240,7 @@ export const router = createBrowserRouter([
 	{
 		path: '*',
 		element: (
-			<PageTitle title='Сторінку не знайдено'>
+			<PageTitle titleKey='router.titles.notFound'>
 				<NotFoundPage />
 			</PageTitle>
 		),

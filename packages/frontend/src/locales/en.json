@@ -966,7 +966,24 @@
 	},
 	"router": {
 		"loading": "Loading...",
-		"notFound": "Page not found"
+		"notFound": "Page not found",
+		"titles": {
+			"login": "Login",
+			"dashboard": "Dashboard",
+			"myTasks": "My tasks",
+			"assistant": "AI Assistant",
+			"manuals": "Manuals",
+			"notifications": "Notifications",
+			"orders": "Orders",
+			"orderDetails": "Order details",
+			"kanban": "Kanban",
+			"services": "Services",
+			"settings": "Settings",
+			"inventory": "Inventory",
+			"vehicles": "Vehicles",
+			"clients": "Clients",
+			"notFound": "Page not found"
+		}
 	},
 	"kanban": {
 		"title": "Kanban Board",
