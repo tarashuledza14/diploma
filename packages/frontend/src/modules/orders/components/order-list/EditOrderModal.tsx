@@ -1,3 +1,4 @@
+import { useUserStore } from '@/modules/auth';
 import { OrdersService, UpdateOrderPayload } from '@/modules/orders/api';
 import { NewOrderMeta } from '@/modules/orders/interfaces/new-order-meta.interface';
 import {
@@ -10,6 +11,7 @@ import {
 	OrderStatus,
 } from '@/modules/orders/interfaces/order.enums';
 import type { OrderListItem } from '@/modules/orders/interfaces/order.interface';
+import { mergeMechanicsWithWorkload } from '@/modules/orders/lib/merge-mechanics-with-workload';
 import { ordersKeys } from '@/modules/orders/queries/keys';
 import {
 	ResponsiveDialog,
@@ -69,15 +71,24 @@ export function EditOrderModal({
 	order,
 }: EditOrderModalProps) {
 	const { t } = useTranslation();
+	const role = useUserStore(state => state.user?.role);
 	const queryClient = useQueryClient();
 	const [autoFilledParts, setAutoFilledParts] = useState<Set<string>>(
 		new Set(),
 	);
+	const canSeeWorkload = role === 'ADMIN' || role === 'MANAGER';
 
 	const { data: fetchedMeta } = useQuery<NewOrderMeta>({
 		queryKey: ordersKeys.meta(),
 		queryFn: () => OrdersService.getNewOrderMeta(),
 		enabled: open,
+	});
+
+	const { data: mechanicsWorkload } = useQuery({
+		queryKey: ordersKeys.workload(),
+		queryFn: () => OrdersService.getMechanicsWorkload(),
+		enabled: open && canSeeWorkload,
+		staleTime: 30_000,
 	});
 	const { data: orderDetails, isLoading } = useOrderDetailsQuery(
 		open ? order?.id : undefined,
@@ -122,7 +133,10 @@ export function EditOrderModal({
 	const clients = fetchedMeta?.clients ?? [];
 	const vehicles = fetchedMeta?.vehicles ?? [];
 	const servicesMeta = fetchedMeta?.services ?? [];
-	const mechanics = fetchedMeta?.mechanics ?? [];
+	const mechanics = mergeMechanicsWithWorkload(
+		fetchedMeta?.mechanics ?? [],
+		mechanicsWorkload ?? [],
+	);
 	const parts = fetchedMeta?.parts ?? [];
 
 	const details = orderDetails as OrderDetails | undefined;

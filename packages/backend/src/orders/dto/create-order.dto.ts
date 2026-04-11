@@ -7,6 +7,7 @@ import {
 	IsOptional,
 	IsPositive,
 	IsString,
+	Min,
 	ValidateNested,
 } from 'class-validator';
 import { OrderPriority, OrderStatus } from 'prisma/generated/prisma/enums';
@@ -19,6 +20,20 @@ class CreateOrderServiceDto {
 	@IsString()
 	@IsOptional()
 	mechanicId?: string;
+
+	@IsOptional()
+	@IsNumber()
+	@IsPositive()
+	estimatedHours?: number;
+
+	@IsOptional()
+	@IsNumber()
+	@Min(0)
+	additionalHours?: number;
+
+	@IsOptional()
+	@IsString()
+	deadline?: string;
 }
 
 class CreateOrderPartDto {

@@ -39,6 +39,16 @@ export const OrderPriority = {
 export type OrderPriority = (typeof OrderPriority)[keyof typeof OrderPriority]
 
 
+export const JobStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  WAITING_FOR_PARTS: 'WAITING_FOR_PARTS',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type JobStatus = (typeof JobStatus)[keyof typeof JobStatus]
+
+
 export const VehicleStatus = {
   OUT: 'OUT',
   PENDING: 'PENDING',

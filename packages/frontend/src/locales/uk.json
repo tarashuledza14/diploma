@@ -10,6 +10,7 @@
 	"common": {
 		"loading": "Завантаження...",
 		"cancel": "Скасувати",
+		"clear": "Очистити",
 		"close": "Закрити",
 		"delete": "Видалити",
 		"deleting": "Видалення...",
@@ -30,6 +31,7 @@
 		"notes": "Нотатки",
 		"adding": "Додавання...",
 		"to": "до",
+		"today": "Сьогодні",
 		"select": "Оберіть...",
 		"noResultsFound": "Результатів не знайдено."
 	},
@@ -136,8 +138,10 @@
 			"aiAssistant": "AI асистент",
 			"manuals": "Мануали",
 			"orders": "Замовлення",
+			"dispatch": "Диспетчерська",
 			"kanbanBoard": "Канбан-дошка",
 			"clients": "Клієнти",
+			"team": "Команда",
 			"vehicles": "Авто",
 			"services": "Послуги",
 			"partsInventory": "Склад запчастин",
@@ -710,6 +714,10 @@
 				"estimatedHours": "Орієнтовно {{duration}} год",
 				"requiredPartCategories": "Потрібні категорії запчастин:",
 				"noMechanicAssigned": "Механіка не призначено",
+				"openTasksCount": "{{count}} задач в роботі",
+				"assignedHours": "{{hours}} год призначено",
+				"capacityPercent": "{{percent}}% завантаження",
+				"overloaded": "перевантажений",
 				"noDueDate": "Немає дати",
 				"unassigned": "Не призначено",
 				"minMileage": "(мін: {{min}} км)"
@@ -769,6 +777,7 @@
 		"columns": {
 			"order": "Замовлення",
 			"client": "Клієнт",
+			"mechanic": "Механік",
 			"vehicle": "Авто",
 			"services": "Послуги",
 			"endDate": "Дата завершення",
@@ -800,6 +809,7 @@
 		"filters": {
 			"searchOrderNumber": "Пошук номера замовлення...",
 			"searchClient": "Пошук клієнта...",
+			"searchMechanic": "Пошук механіка...",
 			"searchVehicle": "Пошук авто...",
 			"searchServices": "Пошук послуг...",
 			"filterByStatus": "Фільтр за статусом...",
@@ -964,6 +974,63 @@
 			"actions": "Дії"
 		}
 	},
+	"team": {
+		"title": "Команда",
+		"subtitle": "Керуйте персоналом вашої організації",
+		"fields": {
+			"fullName": "ПІБ",
+			"role": "Роль",
+			"temporaryPassword": "Тимчасовий пароль"
+		},
+		"columns": {
+			"fullName": "ПІБ",
+			"role": "Роль",
+			"createdAt": "Дата реєстрації",
+			"openOrders": "Відкриті замовлення",
+			"actions": "Дії"
+		},
+		"status": {
+			"ACTIVE": "Активний",
+			"PENDING_CONFIRMATION": "Очікує на підтвердження",
+			"BLOCKED": "Заблокований"
+		},
+		"actions": {
+			"invite": "Запросити співробітника",
+			"inviting": "Запрошуємо...",
+			"block": "Заблокувати"
+		},
+		"table": {
+			"title": "Список співробітників",
+			"empty": "Співробітників не знайдено"
+		},
+		"dialogs": {
+			"inviteTitle": "Запросити співробітника",
+			"inviteDescription": "Створіть обліковий запис і призначте роль співробітнику.",
+			"editTitle": "Редагувати співробітника",
+			"editDescription": "Можна змінити ПІБ або роль. Email змінювати не можна.",
+			"blockTitle": "Заблокувати співробітника",
+			"blockDescription": "Користувач буде деактивований (soft delete), історія замовлень збережеться."
+		},
+		"form": {
+			"emailImmutable": "Email не можна змінити після реєстрації.",
+			"placeholders": {
+				"role": "Оберіть роль"
+			},
+			"errors": {
+				"invalidEmail": "Некоректний email",
+				"fullNameRequired": "ПІБ має містити щонайменше 2 символи"
+			}
+		},
+		"messages": {
+			"inviteSuccess": "Співробітника успішно створено",
+			"inviteError": "Не вдалося запросити співробітника",
+			"updateSuccess": "Дані співробітника оновлено",
+			"updateError": "Не вдалося оновити співробітника",
+			"blockSuccess": "Співробітника заблоковано",
+			"blockError": "Не вдалося заблокувати співробітника",
+			"temporaryPasswordNotice": "Збережіть тимчасовий пароль та передайте співробітнику безпечним каналом."
+		}
+	},
 	"router": {
 		"loading": "Завантаження...",
 		"notFound": "Сторінку не знайдено",
@@ -975,9 +1042,11 @@
 			"manuals": "Мануали",
 			"notifications": "Сповіщення",
 			"orders": "Замовлення",
+			"dispatch": "Диспетчерська",
 			"orderDetails": "Деталі замовлення",
 			"kanban": "Канбан",
 			"services": "Послуги",
+			"team": "Команда",
 			"settings": "Налаштування",
 			"inventory": "Склад",
 			"vehicles": "Автомобілі",
@@ -988,5 +1057,54 @@
 	"kanban": {
 		"title": "Канбан-дошка",
 		"subtitle": "Перетягуйте замовлення, щоб оновити їх статус"
+	},
+	"dispatch": {
+		"title": "Диспетчерська",
+		"subtitle": "Плануйте навантаження і керуйте активними замовленнями (NEW, IN_PROGRESS, WAITING_PARTS)",
+		"boardMode": "Режим планування на канбан-дошці",
+		"mechanicsTitle": "Навантаження механіків",
+		"mechanicsSubtitle": "Контроль доступності бригади перед розподілом нових заявок",
+		"emptyMechanics": "Механіки не знайдені",
+		"overloaded": "перевантажений",
+		"available": "доступний",
+		"assignedHours": "{{hours}} год призначено",
+		"assignedOverShift": "{{assigned}} / {{shift}} год",
+		"hours": "{{hours}} год",
+		"tasksInWork": "Задач в роботі",
+		"date": "Дата",
+		"estimatedHours": "Планові години",
+		"todayHours": "Годин на сьогодні",
+		"totalHours": "Всього годин",
+		"deadline": "Дедлайн",
+		"pool": "Пул задач",
+		"unassignedHint": "Неасайнені задачі",
+		"tasksCount": "{{count}} задач в роботі",
+		"shiftHoursLabel": "Зміна (год)",
+		"resetBoard": "Скинути дошку",
+		"assignError": "Не вдалося перепризначити задачу",
+		"editPlanning": "Редагувати планування",
+		"planningUpdateSuccess": "Планування задачі оновлено",
+		"planningUpdateError": "Не вдалося оновити планування задачі",
+		"fields": {
+			"additionalHours": "Додаткові години",
+			"deadline": "Дедлайн"
+		},
+		"dialogs": {
+			"planningTitle": "Планування задачі",
+			"planningDescription": "Оновіть додатковий час та дедлайн для задачі"
+		},
+		"deadlineBadge": {
+			"overdue": "Прострочено",
+			"today": "На сьогодні",
+			"tomorrow": "На завтра",
+			"inDays": "Через {{count}} дн."
+		},
+		"mechanicTasks": "{{count}} задач в роботі",
+		"summary": {
+			"mechanics": "Механіків: {{count}}",
+			"avgCapacity": "Сер. завантаження: {{percent}}%",
+			"avgTodayHours": "Сер. год/день: {{hours}}",
+			"overloaded": "Перевантажено: {{count}}"
+		}
 	}
 }

@@ -33,6 +33,47 @@ export const ServiceRow: React.FC<ServiceRowProps> = ({
 	const selectedService = services.find(s => s.id === service.serviceId);
 	const hasRequiredCategories = selectedService?.requiredCategories?.length > 0;
 
+	const getMechanicLabel = (mechanic: any) => {
+		const details: string[] = [];
+
+		if (typeof mechanic.openTasksCount === 'number') {
+			details.push(
+				t('orders.newOrder.labels.openTasksCount', {
+					count: mechanic.openTasksCount,
+				}),
+			);
+		}
+
+		if (typeof mechanic.todayAssignedHours === 'number') {
+			details.push(
+				t('orders.newOrder.labels.assignedHours', {
+					hours: mechanic.todayAssignedHours.toFixed(1),
+				}),
+			);
+		} else if (typeof mechanic.totalAssignedHours === 'number') {
+			details.push(
+				t('orders.newOrder.labels.assignedHours', {
+					hours: mechanic.totalAssignedHours.toFixed(1),
+				}),
+			);
+		}
+
+		if (typeof mechanic.capacityPercent === 'number') {
+			details.push(
+				t('orders.newOrder.labels.capacityPercent', {
+					percent: mechanic.capacityPercent,
+				}),
+			);
+		}
+
+		const detailsText = details.length > 0 ? ` (${details.join(' | ')})` : '';
+		const overloadedText = mechanic.isOverloaded
+			? ` [${t('orders.newOrder.labels.overloaded')}]`
+			: '';
+
+		return `${mechanic.name}${detailsText}${overloadedText}`;
+	};
+
 	return (
 		<div className='border rounded-lg p-4 space-y-3'>
 			<div className='flex items-center justify-between'>
@@ -100,7 +141,7 @@ export const ServiceRow: React.FC<ServiceRowProps> = ({
 							</SelectItem>
 							{mechanics.map(mechanic => (
 								<SelectItem key={mechanic.id} value={mechanic.id}>
-									{mechanic.name}
+									{getMechanicLabel(mechanic)}
 								</SelectItem>
 							))}
 						</SelectContent>

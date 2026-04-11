@@ -86,8 +86,8 @@ export function AppSidebar() {
 					allowedRoles: ['ADMIN', 'MANAGER'],
 				},
 				{
-					title: t('sidebar.items.kanbanBoard'),
-					url: '/orders/board',
+					title: t('sidebar.items.dispatch'),
+					url: '/dispatch',
 					icon: Kanban,
 					allowedRoles: ['ADMIN', 'MANAGER'],
 				},
@@ -186,6 +186,18 @@ export function AppSidebar() {
 					<SidebarGroup className='mt-auto'>
 						<SidebarGroupContent>
 							<SidebarMenu>
+								<SidebarMenuItem>
+									<SidebarMenuButton
+										asChild
+										isActive={isActive('/team')}
+										tooltip={t('sidebar.items.team')}
+									>
+										<Link to='/team'>
+											<Users />
+											<span>{t('sidebar.items.team')}</span>
+										</Link>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
 								<SidebarMenuItem>
 									<SidebarMenuButton
 										asChild

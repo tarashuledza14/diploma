@@ -30,6 +30,11 @@ export interface NewOrderMechanic {
 	id: string;
 	name: string;
 	specialty: string;
+	openTasksCount?: number;
+	todayAssignedHours?: number;
+	totalAssignedHours?: number;
+	capacityPercent?: number;
+	isOverloaded?: boolean;
 }
 
 export interface NewOrderPart {

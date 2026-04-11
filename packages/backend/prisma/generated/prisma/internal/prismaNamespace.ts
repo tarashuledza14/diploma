@@ -2319,6 +2319,10 @@ export const OrderServiceScalarFieldEnum = {
   orderId: 'orderId',
   serviceId: 'serviceId',
   mechanicId: 'mechanicId',
+  estimatedHours: 'estimatedHours',
+  additionalHours: 'additionalHours',
+  deadline: 'deadline',
+  status: 'status',
   quantity: 'quantity',
   price: 'price'
 } as const
@@ -2604,6 +2608,20 @@ export type EnumOrderPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'OrderPriority[]'
  */
 export type ListEnumOrderPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderPriority[]'>
+    
+
+
+/**
+ * Reference to a field of type 'JobStatus'
+ */
+export type EnumJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'JobStatus[]'
+ */
+export type ListEnumJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobStatus[]'>
     
 
 

@@ -3,6 +3,7 @@ import {
 	GetOrdersParams,
 	GetOrdersResponse,
 } from '../interfaces/get-orders.interface';
+import { MechanicWorkloadItem } from '../interfaces/mechanic-workload.interface';
 import { NewOrderMeta } from '../interfaces/new-order-meta.interface';
 import { NewOrder } from '../interfaces/new-order.interface';
 
@@ -69,6 +70,13 @@ export class OrdersService {
 		const response = await instance.get('/orders/recommended-parts', {
 			params: { vehicleId, serviceId },
 		});
+		return response.data;
+	}
+
+	static async getMechanicsWorkload() {
+		const response = await instance.get<MechanicWorkloadItem[]>(
+			'/dispatching/mechanics-workload',
+		);
 		return response.data;
 	}
 }

@@ -35,6 +35,13 @@ enum OrderPriority {
   HIGH
 }
 
+enum JobStatus {
+  PENDING
+  IN_PROGRESS
+  WAITING_FOR_PARTS
+  COMPLETED
+}
+
 enum VehicleStatus {
   OUT // У клієнта (не на території СТО) - це дефолтний статус
   PENDING // Приїхала, стоїть на парковці/прийманні (очікує майстра)
@@ -382,9 +389,15 @@ model OrderService {
   mechanicId String? @map("mechanic_id")
   mechanic   User?   @relation("ServiceMechanic", fields: [mechanicId], references: [id]) // Конкретний виконавець роботи
 
+  estimatedHours  Float     @default(1.0) @map("estimated_hours")
+  additionalHours Float     @default(0) @map("additional_hours")
+  deadline        DateTime?
+  status          JobStatus @default(PENDING)
+
   quantity Float   @default(1)
   price    Decimal @db.Decimal(10, 2) // Фіксація ціни на момент продажу
 
+  @@index([mechanicId, status])
   @@map("order_services")
 }
 

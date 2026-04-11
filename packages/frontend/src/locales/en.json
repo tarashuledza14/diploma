@@ -10,6 +10,7 @@
 	"common": {
 		"loading": "Loading...",
 		"cancel": "Cancel",
+		"clear": "Clear",
 		"close": "Close",
 		"delete": "Delete",
 		"deleting": "Deleting...",
@@ -30,6 +31,7 @@
 		"notes": "Notes",
 		"adding": "Adding...",
 		"to": "to",
+		"today": "Today",
 		"select": "Select...",
 		"noResultsFound": "No results found."
 	},
@@ -136,8 +138,10 @@
 			"aiAssistant": "AI Assistant",
 			"manuals": "Manuals",
 			"orders": "Orders",
+			"dispatch": "Dispatch",
 			"kanbanBoard": "Kanban Board",
 			"clients": "Clients",
+			"team": "Team",
 			"vehicles": "Vehicles",
 			"services": "Services",
 			"partsInventory": "Parts Inventory",
@@ -710,6 +714,10 @@
 				"estimatedHours": "{{duration}}h estimated",
 				"requiredPartCategories": "Required part categories:",
 				"noMechanicAssigned": "No mechanic assigned",
+				"openTasksCount": "{{count}} tasks in progress",
+				"assignedHours": "{{hours}}h assigned",
+				"capacityPercent": "{{percent}}% capacity",
+				"overloaded": "overloaded",
 				"noDueDate": "No due date",
 				"unassigned": "Unassigned",
 				"minMileage": "(min: {{min}} km)"
@@ -769,6 +777,7 @@
 		"columns": {
 			"order": "Order",
 			"client": "Client",
+			"mechanic": "Mechanic",
 			"vehicle": "Vehicle",
 			"services": "Services",
 			"endDate": "End date",
@@ -800,6 +809,7 @@
 		"filters": {
 			"searchOrderNumber": "Search order number...",
 			"searchClient": "Search client...",
+			"searchMechanic": "Search mechanic...",
 			"searchVehicle": "Search vehicle...",
 			"searchServices": "Search services...",
 			"filterByStatus": "Filter by status...",
@@ -964,6 +974,63 @@
 			"actions": "Actions"
 		}
 	},
+	"team": {
+		"title": "Team",
+		"subtitle": "Manage your organization staff",
+		"fields": {
+			"fullName": "Full name",
+			"role": "Role",
+			"temporaryPassword": "Temporary password"
+		},
+		"columns": {
+			"fullName": "Full name",
+			"role": "Role",
+			"createdAt": "Registration date",
+			"openOrders": "Open orders",
+			"actions": "Actions"
+		},
+		"status": {
+			"ACTIVE": "Active",
+			"PENDING_CONFIRMATION": "Pending confirmation",
+			"BLOCKED": "Blocked"
+		},
+		"actions": {
+			"invite": "Invite employee",
+			"inviting": "Inviting...",
+			"block": "Block"
+		},
+		"table": {
+			"title": "Team members",
+			"empty": "No team members found"
+		},
+		"dialogs": {
+			"inviteTitle": "Invite employee",
+			"inviteDescription": "Create an account and assign a role for the employee.",
+			"editTitle": "Edit team member",
+			"editDescription": "You can update full name or role. Email cannot be changed.",
+			"blockTitle": "Block team member",
+			"blockDescription": "This will deactivate the account (soft delete) and keep order history intact."
+		},
+		"form": {
+			"emailImmutable": "Email cannot be changed after registration.",
+			"placeholders": {
+				"role": "Select role"
+			},
+			"errors": {
+				"invalidEmail": "Invalid email",
+				"fullNameRequired": "Full name must be at least 2 characters"
+			}
+		},
+		"messages": {
+			"inviteSuccess": "Team member created successfully",
+			"inviteError": "Failed to invite team member",
+			"updateSuccess": "Team member updated successfully",
+			"updateError": "Failed to update team member",
+			"blockSuccess": "Team member blocked",
+			"blockError": "Failed to block team member",
+			"temporaryPasswordNotice": "Save this temporary password and share it with the employee using a secure channel."
+		}
+	},
 	"router": {
 		"loading": "Loading...",
 		"notFound": "Page not found",
@@ -975,9 +1042,11 @@
 			"manuals": "Manuals",
 			"notifications": "Notifications",
 			"orders": "Orders",
+			"dispatch": "Dispatch",
 			"orderDetails": "Order details",
 			"kanban": "Kanban",
 			"services": "Services",
+			"team": "Team",
 			"settings": "Settings",
 			"inventory": "Inventory",
 			"vehicles": "Vehicles",
@@ -988,5 +1057,54 @@
 	"kanban": {
 		"title": "Kanban Board",
 		"subtitle": "Drag and drop orders to update their status"
+	},
+	"dispatch": {
+		"title": "Dispatch",
+		"subtitle": "Plan team capacity for active orders only (NEW, IN_PROGRESS, WAITING_PARTS)",
+		"boardMode": "Planning mode on kanban board",
+		"mechanicsTitle": "Mechanics workload",
+		"mechanicsSubtitle": "Check crew availability before assigning new requests",
+		"emptyMechanics": "No mechanics found",
+		"overloaded": "overloaded",
+		"available": "available",
+		"assignedHours": "{{hours}}h assigned",
+		"assignedOverShift": "{{assigned}} / {{shift}}h",
+		"hours": "{{hours}}h",
+		"tasksInWork": "Tasks in progress",
+		"date": "Date",
+		"estimatedHours": "Estimated hours",
+		"todayHours": "Hours for today",
+		"totalHours": "Total hours",
+		"deadline": "Deadline",
+		"pool": "Task pool",
+		"unassignedHint": "Unassigned tasks",
+		"tasksCount": "{{count}} active tasks",
+		"shiftHoursLabel": "Shift (hours)",
+		"resetBoard": "Reset board",
+		"assignError": "Failed to reassign task",
+		"editPlanning": "Edit planning",
+		"planningUpdateSuccess": "Task planning updated",
+		"planningUpdateError": "Failed to update task planning",
+		"fields": {
+			"additionalHours": "Additional hours",
+			"deadline": "Deadline"
+		},
+		"dialogs": {
+			"planningTitle": "Task planning",
+			"planningDescription": "Update additional hours and deadline for this task"
+		},
+		"deadlineBadge": {
+			"overdue": "Overdue",
+			"today": "Due today",
+			"tomorrow": "Due tomorrow",
+			"inDays": "Due in {{count}} days"
+		},
+		"mechanicTasks": "{{count}} active tasks",
+		"summary": {
+			"mechanics": "Mechanics: {{count}}",
+			"avgCapacity": "Avg capacity: {{percent}}%",
+			"avgTodayHours": "Avg h/day: {{hours}}",
+			"overloaded": "Overloaded: {{count}}"
+		}
 	}
 }

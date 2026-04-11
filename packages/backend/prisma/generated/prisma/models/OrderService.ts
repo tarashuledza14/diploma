@@ -27,11 +27,15 @@ export type AggregateOrderService = {
 }
 
 export type OrderServiceAvgAggregateOutputType = {
+  estimatedHours: number | null
+  additionalHours: number | null
   quantity: number | null
   price: runtime.Decimal | null
 }
 
 export type OrderServiceSumAggregateOutputType = {
+  estimatedHours: number | null
+  additionalHours: number | null
   quantity: number | null
   price: runtime.Decimal | null
 }
@@ -41,6 +45,10 @@ export type OrderServiceMinAggregateOutputType = {
   orderId: string | null
   serviceId: string | null
   mechanicId: string | null
+  estimatedHours: number | null
+  additionalHours: number | null
+  deadline: Date | null
+  status: $Enums.JobStatus | null
   quantity: number | null
   price: runtime.Decimal | null
 }
@@ -50,6 +58,10 @@ export type OrderServiceMaxAggregateOutputType = {
   orderId: string | null
   serviceId: string | null
   mechanicId: string | null
+  estimatedHours: number | null
+  additionalHours: number | null
+  deadline: Date | null
+  status: $Enums.JobStatus | null
   quantity: number | null
   price: runtime.Decimal | null
 }
@@ -59,6 +71,10 @@ export type OrderServiceCountAggregateOutputType = {
   orderId: number
   serviceId: number
   mechanicId: number
+  estimatedHours: number
+  additionalHours: number
+  deadline: number
+  status: number
   quantity: number
   price: number
   _all: number
@@ -66,11 +82,15 @@ export type OrderServiceCountAggregateOutputType = {
 
 
 export type OrderServiceAvgAggregateInputType = {
+  estimatedHours?: true
+  additionalHours?: true
   quantity?: true
   price?: true
 }
 
 export type OrderServiceSumAggregateInputType = {
+  estimatedHours?: true
+  additionalHours?: true
   quantity?: true
   price?: true
 }
@@ -80,6 +100,10 @@ export type OrderServiceMinAggregateInputType = {
   orderId?: true
   serviceId?: true
   mechanicId?: true
+  estimatedHours?: true
+  additionalHours?: true
+  deadline?: true
+  status?: true
   quantity?: true
   price?: true
 }
@@ -89,6 +113,10 @@ export type OrderServiceMaxAggregateInputType = {
   orderId?: true
   serviceId?: true
   mechanicId?: true
+  estimatedHours?: true
+  additionalHours?: true
+  deadline?: true
+  status?: true
   quantity?: true
   price?: true
 }
@@ -98,6 +126,10 @@ export type OrderServiceCountAggregateInputType = {
   orderId?: true
   serviceId?: true
   mechanicId?: true
+  estimatedHours?: true
+  additionalHours?: true
+  deadline?: true
+  status?: true
   quantity?: true
   price?: true
   _all?: true
@@ -194,6 +226,10 @@ export type OrderServiceGroupByOutputType = {
   orderId: string
   serviceId: string
   mechanicId: string | null
+  estimatedHours: number
+  additionalHours: number
+  deadline: Date | null
+  status: $Enums.JobStatus
   quantity: number
   price: runtime.Decimal
   _count: OrderServiceCountAggregateOutputType | null
@@ -226,6 +262,10 @@ export type OrderServiceWhereInput = {
   orderId?: Prisma.StringFilter<"OrderService"> | string
   serviceId?: Prisma.StringFilter<"OrderService"> | string
   mechanicId?: Prisma.StringNullableFilter<"OrderService"> | string | null
+  estimatedHours?: Prisma.FloatFilter<"OrderService"> | number
+  additionalHours?: Prisma.FloatFilter<"OrderService"> | number
+  deadline?: Prisma.DateTimeNullableFilter<"OrderService"> | Date | string | null
+  status?: Prisma.EnumJobStatusFilter<"OrderService"> | $Enums.JobStatus
   quantity?: Prisma.FloatFilter<"OrderService"> | number
   price?: Prisma.DecimalFilter<"OrderService"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>
@@ -238,6 +278,10 @@ export type OrderServiceOrderByWithRelationInput = {
   orderId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   mechanicId?: Prisma.SortOrderInput | Prisma.SortOrder
+  estimatedHours?: Prisma.SortOrder
+  additionalHours?: Prisma.SortOrder
+  deadline?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   price?: Prisma.SortOrder
   order?: Prisma.OrderOrderByWithRelationInput
@@ -253,6 +297,10 @@ export type OrderServiceWhereUniqueInput = Prisma.AtLeast<{
   orderId?: Prisma.StringFilter<"OrderService"> | string
   serviceId?: Prisma.StringFilter<"OrderService"> | string
   mechanicId?: Prisma.StringNullableFilter<"OrderService"> | string | null
+  estimatedHours?: Prisma.FloatFilter<"OrderService"> | number
+  additionalHours?: Prisma.FloatFilter<"OrderService"> | number
+  deadline?: Prisma.DateTimeNullableFilter<"OrderService"> | Date | string | null
+  status?: Prisma.EnumJobStatusFilter<"OrderService"> | $Enums.JobStatus
   quantity?: Prisma.FloatFilter<"OrderService"> | number
   price?: Prisma.DecimalFilter<"OrderService"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>
@@ -265,6 +313,10 @@ export type OrderServiceOrderByWithAggregationInput = {
   orderId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   mechanicId?: Prisma.SortOrderInput | Prisma.SortOrder
+  estimatedHours?: Prisma.SortOrder
+  additionalHours?: Prisma.SortOrder
+  deadline?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   price?: Prisma.SortOrder
   _count?: Prisma.OrderServiceCountOrderByAggregateInput
@@ -282,12 +334,20 @@ export type OrderServiceScalarWhereWithAggregatesInput = {
   orderId?: Prisma.StringWithAggregatesFilter<"OrderService"> | string
   serviceId?: Prisma.StringWithAggregatesFilter<"OrderService"> | string
   mechanicId?: Prisma.StringNullableWithAggregatesFilter<"OrderService"> | string | null
+  estimatedHours?: Prisma.FloatWithAggregatesFilter<"OrderService"> | number
+  additionalHours?: Prisma.FloatWithAggregatesFilter<"OrderService"> | number
+  deadline?: Prisma.DateTimeNullableWithAggregatesFilter<"OrderService"> | Date | string | null
+  status?: Prisma.EnumJobStatusWithAggregatesFilter<"OrderService"> | $Enums.JobStatus
   quantity?: Prisma.FloatWithAggregatesFilter<"OrderService"> | number
   price?: Prisma.DecimalWithAggregatesFilter<"OrderService"> | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type OrderServiceCreateInput = {
   id?: string
+  estimatedHours?: number
+  additionalHours?: number
+  deadline?: Date | string | null
+  status?: $Enums.JobStatus
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   order: Prisma.OrderCreateNestedOneWithoutServicesInput
@@ -300,12 +360,20 @@ export type OrderServiceUncheckedCreateInput = {
   orderId: string
   serviceId: string
   mechanicId?: string | null
+  estimatedHours?: number
+  additionalHours?: number
+  deadline?: Date | string | null
+  status?: $Enums.JobStatus
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type OrderServiceUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  estimatedHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  additionalHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   order?: Prisma.OrderUpdateOneRequiredWithoutServicesNestedInput
@@ -318,6 +386,10 @@ export type OrderServiceUncheckedUpdateInput = {
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  estimatedHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  additionalHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -327,12 +399,20 @@ export type OrderServiceCreateManyInput = {
   orderId: string
   serviceId: string
   mechanicId?: string | null
+  estimatedHours?: number
+  additionalHours?: number
+  deadline?: Date | string | null
+  status?: $Enums.JobStatus
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type OrderServiceUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  estimatedHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  additionalHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -342,6 +422,10 @@ export type OrderServiceUncheckedUpdateManyInput = {
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  estimatedHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  additionalHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -361,11 +445,17 @@ export type OrderServiceCountOrderByAggregateInput = {
   orderId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   mechanicId?: Prisma.SortOrder
+  estimatedHours?: Prisma.SortOrder
+  additionalHours?: Prisma.SortOrder
+  deadline?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   price?: Prisma.SortOrder
 }
 
 export type OrderServiceAvgOrderByAggregateInput = {
+  estimatedHours?: Prisma.SortOrder
+  additionalHours?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   price?: Prisma.SortOrder
 }
@@ -375,6 +465,10 @@ export type OrderServiceMaxOrderByAggregateInput = {
   orderId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   mechanicId?: Prisma.SortOrder
+  estimatedHours?: Prisma.SortOrder
+  additionalHours?: Prisma.SortOrder
+  deadline?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   price?: Prisma.SortOrder
 }
@@ -384,11 +478,17 @@ export type OrderServiceMinOrderByAggregateInput = {
   orderId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   mechanicId?: Prisma.SortOrder
+  estimatedHours?: Prisma.SortOrder
+  additionalHours?: Prisma.SortOrder
+  deadline?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   price?: Prisma.SortOrder
 }
 
 export type OrderServiceSumOrderByAggregateInput = {
+  estimatedHours?: Prisma.SortOrder
+  additionalHours?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   price?: Prisma.SortOrder
 }
@@ -519,8 +619,16 @@ export type OrderServiceUncheckedUpdateManyWithoutOrderNestedInput = {
   deleteMany?: Prisma.OrderServiceScalarWhereInput | Prisma.OrderServiceScalarWhereInput[]
 }
 
+export type EnumJobStatusFieldUpdateOperationsInput = {
+  set?: $Enums.JobStatus
+}
+
 export type OrderServiceCreateWithoutMechanicInput = {
   id?: string
+  estimatedHours?: number
+  additionalHours?: number
+  deadline?: Date | string | null
+  status?: $Enums.JobStatus
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   order: Prisma.OrderCreateNestedOneWithoutServicesInput
@@ -531,6 +639,10 @@ export type OrderServiceUncheckedCreateWithoutMechanicInput = {
   id?: string
   orderId: string
   serviceId: string
+  estimatedHours?: number
+  additionalHours?: number
+  deadline?: Date | string | null
+  status?: $Enums.JobStatus
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -569,12 +681,20 @@ export type OrderServiceScalarWhereInput = {
   orderId?: Prisma.StringFilter<"OrderService"> | string
   serviceId?: Prisma.StringFilter<"OrderService"> | string
   mechanicId?: Prisma.StringNullableFilter<"OrderService"> | string | null
+  estimatedHours?: Prisma.FloatFilter<"OrderService"> | number
+  additionalHours?: Prisma.FloatFilter<"OrderService"> | number
+  deadline?: Prisma.DateTimeNullableFilter<"OrderService"> | Date | string | null
+  status?: Prisma.EnumJobStatusFilter<"OrderService"> | $Enums.JobStatus
   quantity?: Prisma.FloatFilter<"OrderService"> | number
   price?: Prisma.DecimalFilter<"OrderService"> | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type OrderServiceCreateWithoutServiceInput = {
   id?: string
+  estimatedHours?: number
+  additionalHours?: number
+  deadline?: Date | string | null
+  status?: $Enums.JobStatus
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   order: Prisma.OrderCreateNestedOneWithoutServicesInput
@@ -585,6 +705,10 @@ export type OrderServiceUncheckedCreateWithoutServiceInput = {
   id?: string
   orderId: string
   mechanicId?: string | null
+  estimatedHours?: number
+  additionalHours?: number
+  deadline?: Date | string | null
+  status?: $Enums.JobStatus
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -617,6 +741,10 @@ export type OrderServiceUpdateManyWithWhereWithoutServiceInput = {
 
 export type OrderServiceCreateWithoutOrderInput = {
   id?: string
+  estimatedHours?: number
+  additionalHours?: number
+  deadline?: Date | string | null
+  status?: $Enums.JobStatus
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   service: Prisma.ServiceCreateNestedOneWithoutOrderServicesInput
@@ -627,6 +755,10 @@ export type OrderServiceUncheckedCreateWithoutOrderInput = {
   id?: string
   serviceId: string
   mechanicId?: string | null
+  estimatedHours?: number
+  additionalHours?: number
+  deadline?: Date | string | null
+  status?: $Enums.JobStatus
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -661,12 +793,20 @@ export type OrderServiceCreateManyMechanicInput = {
   id?: string
   orderId: string
   serviceId: string
+  estimatedHours?: number
+  additionalHours?: number
+  deadline?: Date | string | null
+  status?: $Enums.JobStatus
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type OrderServiceUpdateWithoutMechanicInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  estimatedHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  additionalHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   order?: Prisma.OrderUpdateOneRequiredWithoutServicesNestedInput
@@ -677,6 +817,10 @@ export type OrderServiceUncheckedUpdateWithoutMechanicInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
+  estimatedHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  additionalHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -685,6 +829,10 @@ export type OrderServiceUncheckedUpdateManyWithoutMechanicInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
+  estimatedHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  additionalHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -693,12 +841,20 @@ export type OrderServiceCreateManyServiceInput = {
   id?: string
   orderId: string
   mechanicId?: string | null
+  estimatedHours?: number
+  additionalHours?: number
+  deadline?: Date | string | null
+  status?: $Enums.JobStatus
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type OrderServiceUpdateWithoutServiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  estimatedHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  additionalHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   order?: Prisma.OrderUpdateOneRequiredWithoutServicesNestedInput
@@ -709,6 +865,10 @@ export type OrderServiceUncheckedUpdateWithoutServiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  estimatedHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  additionalHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -717,6 +877,10 @@ export type OrderServiceUncheckedUpdateManyWithoutServiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  estimatedHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  additionalHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -725,12 +889,20 @@ export type OrderServiceCreateManyOrderInput = {
   id?: string
   serviceId: string
   mechanicId?: string | null
+  estimatedHours?: number
+  additionalHours?: number
+  deadline?: Date | string | null
+  status?: $Enums.JobStatus
   quantity?: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type OrderServiceUpdateWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  estimatedHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  additionalHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   service?: Prisma.ServiceUpdateOneRequiredWithoutOrderServicesNestedInput
@@ -741,6 +913,10 @@ export type OrderServiceUncheckedUpdateWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  estimatedHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  additionalHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -749,6 +925,10 @@ export type OrderServiceUncheckedUpdateManyWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  estimatedHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  additionalHours?: Prisma.FloatFieldUpdateOperationsInput | number
+  deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
@@ -760,6 +940,10 @@ export type OrderServiceSelect<ExtArgs extends runtime.Types.Extensions.Internal
   orderId?: boolean
   serviceId?: boolean
   mechanicId?: boolean
+  estimatedHours?: boolean
+  additionalHours?: boolean
+  deadline?: boolean
+  status?: boolean
   quantity?: boolean
   price?: boolean
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
@@ -772,6 +956,10 @@ export type OrderServiceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   orderId?: boolean
   serviceId?: boolean
   mechanicId?: boolean
+  estimatedHours?: boolean
+  additionalHours?: boolean
+  deadline?: boolean
+  status?: boolean
   quantity?: boolean
   price?: boolean
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
@@ -784,6 +972,10 @@ export type OrderServiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   orderId?: boolean
   serviceId?: boolean
   mechanicId?: boolean
+  estimatedHours?: boolean
+  additionalHours?: boolean
+  deadline?: boolean
+  status?: boolean
   quantity?: boolean
   price?: boolean
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
@@ -796,11 +988,15 @@ export type OrderServiceSelectScalar = {
   orderId?: boolean
   serviceId?: boolean
   mechanicId?: boolean
+  estimatedHours?: boolean
+  additionalHours?: boolean
+  deadline?: boolean
+  status?: boolean
   quantity?: boolean
   price?: boolean
 }
 
-export type OrderServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "serviceId" | "mechanicId" | "quantity" | "price", ExtArgs["result"]["orderService"]>
+export type OrderServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "serviceId" | "mechanicId" | "estimatedHours" | "additionalHours" | "deadline" | "status" | "quantity" | "price", ExtArgs["result"]["orderService"]>
 export type OrderServiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
@@ -829,6 +1025,10 @@ export type $OrderServicePayload<ExtArgs extends runtime.Types.Extensions.Intern
     orderId: string
     serviceId: string
     mechanicId: string | null
+    estimatedHours: number
+    additionalHours: number
+    deadline: Date | null
+    status: $Enums.JobStatus
     quantity: number
     price: runtime.Decimal
   }, ExtArgs["result"]["orderService"]>
@@ -1261,6 +1461,10 @@ export interface OrderServiceFieldRefs {
   readonly orderId: Prisma.FieldRef<"OrderService", 'String'>
   readonly serviceId: Prisma.FieldRef<"OrderService", 'String'>
   readonly mechanicId: Prisma.FieldRef<"OrderService", 'String'>
+  readonly estimatedHours: Prisma.FieldRef<"OrderService", 'Float'>
+  readonly additionalHours: Prisma.FieldRef<"OrderService", 'Float'>
+  readonly deadline: Prisma.FieldRef<"OrderService", 'DateTime'>
+  readonly status: Prisma.FieldRef<"OrderService", 'JobStatus'>
   readonly quantity: Prisma.FieldRef<"OrderService", 'Float'>
   readonly price: Prisma.FieldRef<"OrderService", 'Decimal'>
 }

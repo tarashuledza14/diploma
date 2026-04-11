@@ -8,6 +8,7 @@ import { ProtectedRoute } from '@/modules/auth';
 import {
 	ClientsPage,
 	DashboardPage,
+	DispatchPage,
 	KanbanPage,
 	LoginPage,
 	ManualsPage,
@@ -15,6 +16,7 @@ import {
 	OrderDetailsPage,
 	OrdersPage,
 	SettingsPage,
+	TeamPage,
 	VehiclePage,
 } from '@/pages';
 import { InventoryPage } from '@/pages/InventoryPage';
@@ -141,6 +143,17 @@ export const router = createBrowserRouter([
 						),
 					},
 					{
+						path: '/dispatch',
+						element: (
+							<Suspense fallback={<Loading />}>
+								<PageTitle titleKey='router.titles.dispatch'>
+									<DispatchPage />
+								</PageTitle>
+							</Suspense>
+						),
+					},
+
+					{
 						path: '/orders/board',
 						element: (
 							<Suspense fallback={<Loading />}>
@@ -175,6 +188,16 @@ export const router = createBrowserRouter([
 			{
 				element: <ProtectedRoute allowedRoles={['ADMIN']} fallbackPath='/' />,
 				children: [
+					{
+						path: '/team',
+						element: (
+							<Suspense fallback={<Loading />}>
+								<PageTitle titleKey='router.titles.team'>
+									<TeamPage />
+								</PageTitle>
+							</Suspense>
+						),
+					},
 					{
 						path: '/settings',
 						element: (

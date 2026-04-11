@@ -1,5 +1,6 @@
 export { ClientsPage } from './ClientsPage.tsx';
 export { DashboardPage } from './DashboardPage';
+export { DispatchPage } from './DispatchPage';
 export { InventoryPage } from './InventoryPage';
 export { KanbanPage } from './KanbanPage';
 export { LoginPage } from './LoginPage';
@@ -9,4 +10,5 @@ export { OrderDetailsPage } from './OrderDetailsPage';
 export { OrdersPage } from './OrdersPage';
 export { ServicesPage } from './ServicesPage.tsx';
 export { SettingsPage } from './SettingsPage';
+export { TeamPage } from './TeamPage';
 export { VehiclePage } from './VehiclePage';

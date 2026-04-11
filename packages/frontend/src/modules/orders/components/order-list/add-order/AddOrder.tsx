@@ -1,8 +1,10 @@
+import { useUserStore } from '@/modules/auth';
 import { CreateOrderPayload, OrdersService } from '@/modules/orders/api';
 import {
 	OrderPartItem,
 	OrderServiceItem,
 } from '@/modules/orders/interfaces/new-order.interface';
+import { mergeMechanicsWithWorkload } from '@/modules/orders/lib/merge-mechanics-with-workload';
 import { ordersKeys } from '@/modules/orders/queries/keys';
 import {
 	Button,
@@ -57,9 +59,11 @@ export function NewOrderModal({
 	defaultStatus = OrderStatus.NEW,
 }: NewOrderModalProps) {
 	const { t } = useTranslation();
+	const role = useUserStore(state => state.user?.role);
 	const [open, setOpen] = useState(false);
 	const queryClient = useQueryClient();
 	const minMileageRef = useRef(0);
+	const canSeeWorkload = role === 'ADMIN' || role === 'MANAGER';
 
 	const form = useForm<NewOrderForm>({
 		resolver: zodResolver(newOrderSchema),
@@ -106,10 +110,20 @@ export function NewOrderModal({
 		queryFn: () => OrdersService.getNewOrderMeta(),
 	});
 
+	const { data: mechanicsWorkload } = useQuery({
+		queryKey: ordersKeys.workload(),
+		queryFn: () => OrdersService.getMechanicsWorkload(),
+		enabled: open && canSeeWorkload,
+		staleTime: 30_000,
+	});
+
 	const clients = meta?.clients ?? [];
 	const vehicles = meta?.vehicles ?? [];
 	const servicesMeta = meta?.services ?? [];
-	const mechanics = meta?.mechanics ?? [];
+	const mechanics = mergeMechanicsWithWorkload(
+		meta?.mechanics ?? [],
+		mechanicsWorkload ?? [],
+	);
 	const parts = meta?.parts ?? [];
 
 	const clientId = form.watch('clientId');

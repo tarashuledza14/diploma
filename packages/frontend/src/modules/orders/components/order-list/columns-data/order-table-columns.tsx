@@ -118,6 +118,24 @@ export function getOrderTableColumns({
 			enableSorting: true,
 		},
 		{
+			id: 'mechanic.fullName',
+			accessorFn: row => row.mechanic?.fullName ?? '',
+			header: ({ column }) => (
+				<DataTableColumnHeader
+					column={column}
+					label={t('orders.columns.mechanic')}
+				/>
+			),
+			cell: ({ row }) => row.original.mechanic?.fullName ?? '—',
+			meta: {
+				label: t('orders.columns.mechanic'),
+				placeholder: t('orders.filters.searchMechanic'),
+				variant: 'text',
+			},
+			enableColumnFilter: true,
+			enableSorting: true,
+		},
+		{
 			id: 'vehicle',
 			accessorFn: row =>
 				`${row.vehicle.year} ${row.vehicle.brand} ${row.vehicle.model}`,

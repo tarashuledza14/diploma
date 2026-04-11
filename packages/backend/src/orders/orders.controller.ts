@@ -40,8 +40,8 @@ export class OrdersController {
 
 	@Auth(Role.ADMIN, Role.MANAGER)
 	@Get('meta/new')
-	getNewOrderMeta() {
-		return this.ordersService.getNewOrderMeta();
+	getNewOrderMeta(@CurrentUser() user: AuthUser) {
+		return this.ordersService.getNewOrderMeta(user);
 	}
 
 	@Auth(Role.ADMIN, Role.MANAGER)

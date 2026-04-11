@@ -318,6 +318,10 @@ export const OrderServiceScalarFieldEnum = {
   orderId: 'orderId',
   serviceId: 'serviceId',
   mechanicId: 'mechanicId',
+  estimatedHours: 'estimatedHours',
+  additionalHours: 'additionalHours',
+  deadline: 'deadline',
+  status: 'status',
   quantity: 'quantity',
   price: 'price'
 } as const

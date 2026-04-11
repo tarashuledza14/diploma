@@ -134,6 +134,7 @@ export class OrdersService {
 						priority: createOrderDto.priority,
 						vehicle: { connect: { id: createOrderDto.vehicleId } },
 						client: { connect: { id: createOrderDto.clientId } },
+						manager: { connect: { id: actor.id } },
 					},
 				});
 
@@ -197,10 +198,31 @@ export class OrdersService {
 				}),
 				this.db.order.count({ where: scopedFilters }),
 			]);
-			const normalizedOrders = orders.map(order => ({
-				...order,
-				services: order.services.map(s => s.service),
-			}));
+			const normalizedOrders = orders.map(order => {
+				const serviceMechanics = order.services
+					.map(s => s.mechanic)
+					.filter((mechanic): mechanic is { id: string; fullName: string } =>
+						Boolean(mechanic),
+					);
+
+				const uniqueServiceMechanics = Array.from(
+					new Map(
+						serviceMechanics.map(mechanic => [mechanic.id, mechanic]),
+					).values(),
+				);
+
+				const resolvedMechanic =
+					order.mechanic ??
+					(uniqueServiceMechanics.length === 1
+						? uniqueServiceMechanics[0]
+						: null);
+
+				return {
+					...order,
+					mechanic: resolvedMechanic,
+					services: order.services.map(s => s.service),
+				};
+			});
 			const visibleOrders = this.isMechanic(user)
 				? normalizedOrders.map(order => ({ ...order, totalAmount: '0' }))
 				: normalizedOrders;
@@ -653,8 +675,12 @@ export class OrdersService {
 		});
 	}
 
-	async getNewOrderMeta() {
+	async getNewOrderMeta(user: AuthUser) {
 		try {
+			const organizationFilter = user.organizationId
+				? { organizationId: user.organizationId }
+				: {};
+
 			const [clients, vehicles, services, mechanics, parts] = await Promise.all(
 				[
 					this.db.client.findMany({
@@ -694,6 +720,7 @@ export class OrdersService {
 						where: {
 							role: 'MECHANIC',
 							deletedAt: null,
+							...organizationFilter,
 						},
 						select: {
 							id: true,
@@ -728,6 +755,30 @@ export class OrdersService {
 				vehicleMileages.map(vm => [vm.vehicleId, vm._max.mileage || 0]),
 			);
 
+			const openStatuses = [
+				OrderStatus.NEW,
+				OrderStatus.IN_PROGRESS,
+				OrderStatus.WAITING_PARTS,
+			] as const;
+
+			const mechanicOpenTasks = new Map<string, number>();
+			await Promise.all(
+				mechanics.map(async mechanic => {
+					const openTasksCount = await this.db.order.count({
+						where: {
+							deletedAt: null,
+							status: { in: [...openStatuses] },
+							OR: [
+								{ mechanicId: mechanic.id },
+								{ services: { some: { mechanicId: mechanic.id } } },
+							],
+						},
+					});
+
+					mechanicOpenTasks.set(mechanic.id, openTasksCount);
+				}),
+			);
+
 			return {
 				clients: clients.map(client => ({
 					id: client.id,
@@ -755,6 +806,7 @@ export class OrdersService {
 					id: mechanic.id,
 					name: mechanic.fullName,
 					specialty: '',
+					openTasksCount: mechanicOpenTasks.get(mechanic.id) ?? 0,
 				})),
 				parts: parts.map(part => {
 					const totalStock = part.inventory.reduce(
@@ -855,9 +907,16 @@ export class OrdersService {
 			const serviceData = services.find(
 				service => service.id === serviceItem.serviceId,
 			);
+			const estimatedHours = Number(
+				serviceItem.estimatedHours ?? serviceData?.estimatedTime ?? 1,
+			);
+			const additionalHours = Number(serviceItem.additionalHours ?? 0);
 			return {
 				serviceId: serviceItem.serviceId,
 				mechanicId: serviceItem.mechanicId || null,
+				estimatedHours,
+				additionalHours,
+				deadline: serviceItem.deadline ? new Date(serviceItem.deadline) : null,
 				quantity: 1,
 				price: serviceData ? serviceData.price : 0,
 			};

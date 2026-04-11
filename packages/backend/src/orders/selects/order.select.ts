@@ -24,6 +24,12 @@ export const orderSelect = {
 	},
 	services: {
 		select: {
+			mechanic: {
+				select: {
+					id: true,
+					fullName: true,
+				},
+			},
 			service: {
 				select: {
 					id: true,

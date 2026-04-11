@@ -8,6 +8,7 @@ import {
 	CardContent,
 	CardHeader,
 	CardTitle,
+	DatePicker,
 	DialogFooter,
 	Input,
 	Label,
@@ -290,10 +291,11 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 									<div className='grid grid-cols-1 gap-4'>
 										<div className='space-y-2'>
 											<Label>{t('orders.newOrder.fields.endDate')}</Label>
-											<Input
-												type='date'
+											<DatePicker
 												value={form.watch('endDate') || ''}
-												onChange={e => form.setValue('endDate', e.target.value)}
+												onChange={value =>
+													form.setValue('endDate', value ?? '')
+												}
 											/>
 										</div>
 									</div>
