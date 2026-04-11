@@ -2099,6 +2099,7 @@ export const UserScalarFieldEnum = {
   role: 'role',
   fullName: 'fullName',
   avatar: 'avatar',
+  lastLoginAt: 'lastLoginAt',
   deletedAt: 'deletedAt',
   organizationId: 'organizationId',
   createdAt: 'createdAt',
@@ -2381,6 +2382,7 @@ export const AppSettingsScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   appName: 'appName',
+  currency: 'currency',
   logoKey: 'logoKey',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -2664,6 +2666,20 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'Currency'
+ */
+export type EnumCurrencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Currency'>
+    
+
+
+/**
+ * Reference to a field of type 'Currency[]'
+ */
+export type ListEnumCurrencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Currency[]'>
     
 
 /**

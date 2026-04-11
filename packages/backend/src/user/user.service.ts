@@ -37,4 +37,18 @@ export class UserService {
 	async findAll(): Promise<User[]> {
 		return this.prisma.user.findMany();
 	}
+
+	async updateLastLoginAt(id: string): Promise<User> {
+		return this.prisma.user.update({
+			where: { id },
+			data: { lastLoginAt: new Date() },
+		});
+	}
+
+	async updatePassword(id: string, password: string): Promise<User> {
+		return this.prisma.user.update({
+			where: { id },
+			data: { password },
+		});
+	}
 }

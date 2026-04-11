@@ -30,6 +30,7 @@ interface GetInventoryTableColumnsProps {
 		React.SetStateAction<DataTableRowAction<InventoryPart> | null>
 	>;
 	dictionaries?: InventoryDictionaries;
+	formatCurrency: (value: number | string | null | undefined) => string;
 	t: TFunction;
 	canManageInventory?: boolean;
 }
@@ -37,6 +38,7 @@ interface GetInventoryTableColumnsProps {
 export function getInventoryTableColumns({
 	setRowAction,
 	dictionaries,
+	formatCurrency,
 	t,
 	canManageInventory = true,
 }: GetInventoryTableColumnsProps): ColumnDef<InventoryPart>[] {
@@ -296,8 +298,7 @@ export function getInventoryTableColumns({
 
 				const formatPrice = (value: unknown) => {
 					if (value == null) return '—';
-					const num = typeof value === 'number' ? value : Number(value);
-					return !isNaN(num) ? `$${num.toFixed(2)}` : '—';
+					return formatCurrency(value as number | string);
 				};
 
 				return (

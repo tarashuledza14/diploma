@@ -25,11 +25,13 @@ interface GetServicesTableColumnsProps {
 		React.SetStateAction<DataTableRowAction<Service> | null>
 	>;
 	dictionaries: ServiceDictionaries | undefined;
+	formatCurrency: (value: number | string | null | undefined) => string;
 	t: TFunction;
 }
 export function getServicesTableColumns({
 	setRowAction,
 	dictionaries,
+	formatCurrency,
 	t,
 }: GetServicesTableColumnsProps): ColumnDef<Service>[] {
 	return [
@@ -213,7 +215,7 @@ export function getServicesTableColumns({
 			),
 			cell: ({ row }) => {
 				const retail = row.original.price;
-				return <div className='font-medium'>${retail}</div>;
+				return <div className='font-medium'>{formatCurrency(retail)}</div>;
 			},
 			meta: {
 				label: t('services.columns.price'),

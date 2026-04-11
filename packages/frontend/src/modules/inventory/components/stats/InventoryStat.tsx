@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import { InventoryService } from '@/modules/inventory/api/inventory.service';
 import { inventoryKeys } from '@/modules/inventory/query/keys';
 import {
@@ -19,6 +20,7 @@ import { useTranslation } from 'react-i18next';
 
 export function InventoryStats() {
 	const { t } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 	const { data } = useQuery({
 		queryKey: inventoryKeys.stats(),
 		queryFn: () => InventoryService.getStats(),
@@ -49,10 +51,10 @@ export function InventoryStats() {
 				<StatIndicator variant='icon' color='success'>
 					<DollarSign />
 				</StatIndicator>
-				<StatValue>${purchaseValue.toLocaleString()}</StatValue>
+				<StatValue>{formatCurrency(purchaseValue)}</StatValue>
 				<StatDescription>
 					{t('inventory.stats.retailValue', {
-						value: retailValue.toLocaleString(),
+						value: formatCurrency(retailValue),
 					})}
 				</StatDescription>
 			</Stat>

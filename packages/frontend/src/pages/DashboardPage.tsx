@@ -1,3 +1,4 @@
+import { toMoneyNumber, useCurrencyFormatter } from '@/modules/app-settings';
 import { ClientService } from '@/modules/clients/api/client.service';
 import {
 	AlertsCard,
@@ -34,28 +35,9 @@ const statusColors: Record<OrderStatus, string> = {
 	[OrderStatus.CANCELLED]: 'bg-zinc-200 text-zinc-700',
 };
 
-function formatMoney(value: number) {
-	return `$${value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2,
-	})}`;
-}
-
-function parseAmount(value: string | number | null | undefined) {
-	if (typeof value === 'number') {
-		return Number.isFinite(value) ? value : 0;
-	}
-
-	if (typeof value === 'string') {
-		const parsed = Number(value);
-		return Number.isFinite(parsed) ? parsed : 0;
-	}
-
-	return 0;
-}
-
 export function DashboardPage() {
 	const { t } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 	const orderStatuses: Array<{ status: OrderStatus; label: string }> = [
 		{ status: OrderStatus.NEW, label: t('orderStatus.NEW') },
 		{ status: OrderStatus.IN_PROGRESS, label: t('orderStatus.IN_PROGRESS') },
@@ -122,7 +104,7 @@ export function DashboardPage() {
 			order.status === OrderStatus.PAID ||
 			order.status === OrderStatus.COMPLETED
 		) {
-			return sum + parseAmount(order.totalAmount);
+			return sum + toMoneyNumber(order.totalAmount);
 		}
 		return sum;
 	}, 0);
@@ -164,7 +146,7 @@ export function DashboardPage() {
 		},
 		{
 			title: t('dashboard.stats.revenue.title'),
-			value: formatMoney(paidOrCompletedRevenue),
+			value: formatCurrency(paidOrCompletedRevenue),
 			change: `${completedCount}`,
 			trend: paidOrCompletedRevenue > 0 ? 'up' : 'neutral',
 			icon: DollarSign,

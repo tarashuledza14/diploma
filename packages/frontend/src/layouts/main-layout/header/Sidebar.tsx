@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
+import favicon from '../../../../favicon.svg';
 
 import { useAppBrandingQuery } from '@/modules/app-settings';
 import { useUserStore } from '@/modules/auth';
@@ -142,7 +143,11 @@ export function AppSidebar() {
 											className='size-full object-cover'
 										/>
 									) : (
-										<Car className='size-4' />
+										<img
+											src={favicon}
+											alt={brandName}
+											className='size-16 object-contain'
+										/>
 									)}
 								</div>
 								<div className='grid flex-1 text-left text-sm leading-tight'>

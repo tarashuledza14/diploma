@@ -157,6 +157,11 @@
 		"myAccount": "Мій акаунт",
 		"profile": "Профіль",
 		"settings": "Налаштування",
+		"language": "Мова",
+		"languages": {
+			"english": "Англ",
+			"ukrainian": "Укр"
+		},
 		"logout": "Вийти"
 	},
 	"header": {
@@ -183,6 +188,12 @@
 		"form": {
 			"title": "Параметри",
 			"appNameLabel": "Назва застосунку",
+			"currencyLabel": "Валюта за замовчуванням",
+			"currencyOptions": {
+				"UAH": "UAH (гривня)",
+				"USD": "USD (долар США)",
+				"EUR": "EUR (євро)"
+			},
 			"logoLabel": "Логотип (файл)",
 			"logoPlaceholder": "https://...",
 			"logoHint": "Завантажте зображення логотипа (PNG/JPG/WebP). Після вибору відкриється кропер 1:1.",
@@ -205,6 +216,26 @@
 			"appNameRequired": "Назва застосунку обов'язкова.",
 			"logoTypeInvalid": "Будь ласка, виберіть файл зображення.",
 			"cropFailed": "Не вдалося обрізати зображення. Спробуйте ще раз."
+		}
+	},
+	"passwordSettings": {
+		"title": "Зміна пароля",
+		"form": {
+			"currentPasswordLabel": "Поточний пароль",
+			"newPasswordLabel": "Новий пароль",
+			"confirmPasswordLabel": "Підтвердіть новий пароль"
+		},
+		"actions": {
+			"update": "Оновити пароль"
+		},
+		"messages": {
+			"updated": "Пароль успішно оновлено"
+		},
+		"errors": {
+			"requiredFields": "Заповніть усі поля для зміни пароля.",
+			"minLength": "Новий пароль має містити щонайменше 8 символів.",
+			"passwordMismatch": "Новий пароль і підтвердження не співпадають.",
+			"updateFailed": "Не вдалося оновити пароль."
 		}
 	},
 	"auth": {
@@ -351,7 +382,7 @@
 		"stats": {
 			"totalParts": "Усього запчастин",
 			"purchaseValue": "Закупівельна вартість",
-			"retailValue": "Роздріб: ${{value}}",
+			"retailValue": "Роздріб: {{value}}",
 			"reserved": "Зарезервовано",
 			"lowStock": "Низький залишок",
 			"outOfStock": "Немає в наявності"

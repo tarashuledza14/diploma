@@ -34,11 +34,13 @@ interface GetClientTableColumnsProps {
 	setRowAction: React.Dispatch<
 		React.SetStateAction<DataTableRowAction<Client> | null>
 	>;
+	formatCurrency: (value: number | string | null | undefined) => string;
 	t: TFunction;
 }
 
 export function getClientTableColumns({
 	setRowAction,
+	formatCurrency,
 	t,
 }: GetClientTableColumnsProps): ColumnDef<Client>[] {
 	return [
@@ -223,7 +225,7 @@ export function getClientTableColumns({
 			),
 			cell: ({ cell }) => {
 				const totalSpent = cell.getValue<number>();
-				return <div className='font-medium'>${totalSpent}</div>;
+				return <div className='font-medium'>{formatCurrency(totalSpent)}</div>;
 			},
 
 			meta: {

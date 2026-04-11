@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import {
 	DataTable,
 	DataTableAdvancedToolbar,
@@ -23,6 +24,7 @@ interface ServiceTableProps {
 }
 export function ServiceTable({ data, pageCount }: ServiceTableProps) {
 	const { t, i18n } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 	const { data: dictionaries } = useSuspenseQuery({
 		queryKey: serviceKeys.categories(),
 		queryFn: () => ServicesService.getDictionaries(),
@@ -32,8 +34,14 @@ export function ServiceTable({ data, pageCount }: ServiceTableProps) {
 		useState<DataTableRowAction<Service> | null>(null);
 
 	const columns = useMemo(
-		() => getServicesTableColumns({ setRowAction, dictionaries, t }),
-		[setRowAction, dictionaries, t, i18n.resolvedLanguage],
+		() =>
+			getServicesTableColumns({
+				setRowAction,
+				dictionaries,
+				formatCurrency,
+				t,
+			}),
+		[setRowAction, dictionaries, formatCurrency, t, i18n.resolvedLanguage],
 	);
 
 	const { table, shallow, debounceMs, throttleMs } = useDataTable({

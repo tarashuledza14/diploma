@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import { OrderPartItem } from '@/modules/orders/interfaces/new-order.interface';
 import {
 	Button,
@@ -28,6 +29,7 @@ export const PartRow: React.FC<PartRowProps> = ({
 	onChange,
 }) => {
 	const { t } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 	const selectedPart = parts.find(p => p.id === part.partId);
 
 	return (
@@ -67,7 +69,8 @@ export const PartRow: React.FC<PartRowProps> = ({
 						<SelectContent>
 							{parts.map(partItem => (
 								<SelectItem key={partItem.id} value={partItem.id}>
-									{partItem.name} - ${partItem.price} (Stock: {partItem.stock})
+									{partItem.name} - {formatCurrency(partItem.price)} (Stock:{' '}
+									{partItem.stock})
 								</SelectItem>
 							))}
 						</SelectContent>
@@ -89,8 +92,8 @@ export const PartRow: React.FC<PartRowProps> = ({
 
 			{selectedPart && (
 				<div className='text-sm text-muted-foreground'>
-					{t('orders.newOrder.summary.subtotal')}: $
-					{(selectedPart.price * part.quantity).toFixed(2)}
+					{t('orders.newOrder.summary.subtotal')}:{' '}
+					{formatCurrency(selectedPart.price * part.quantity)}
 				</div>
 			)}
 		</div>

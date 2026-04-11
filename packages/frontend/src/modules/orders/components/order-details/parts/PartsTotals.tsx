@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import { Separator } from '@/shared/components/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -13,6 +14,7 @@ export function PartsTotals({
 	grandTotal,
 }: PartsTotalsProps) {
 	const { t } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 
 	return (
 		<div className='flex justify-end'>
@@ -21,18 +23,18 @@ export function PartsTotals({
 					<span className='text-muted-foreground'>
 						{t('orders.totals.partsTotal')}
 					</span>
-					<span className='font-medium'>${partsTotal.toFixed(2)}</span>
+					<span className='font-medium'>{formatCurrency(partsTotal)}</span>
 				</div>
 				<div className='flex justify-between text-sm'>
 					<span className='text-muted-foreground'>
 						{t('orders.totals.servicesTotal')}
 					</span>
-					<span className='font-medium'>${servicesTotal.toFixed(2)}</span>
+					<span className='font-medium'>{formatCurrency(servicesTotal)}</span>
 				</div>
 				<Separator />
 				<div className='flex justify-between text-lg font-bold'>
 					<span>{t('orders.totals.grandTotal')}</span>
-					<span>${grandTotal.toFixed(2)}</span>
+					<span>{formatCurrency(grandTotal)}</span>
 				</div>
 			</div>
 		</div>

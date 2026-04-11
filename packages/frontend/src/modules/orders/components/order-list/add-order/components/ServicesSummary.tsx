@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -11,6 +12,7 @@ export const ServicesSummary: React.FC<ServicesSummaryProps> = ({
 	totalPrice,
 }) => {
 	const { t } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 
 	if (!totalDuration && !totalPrice) return null;
 	return (
@@ -27,7 +29,7 @@ export const ServicesSummary: React.FC<ServicesSummaryProps> = ({
 				<span className='text-muted-foreground'>
 					{t('orders.totals.servicesTotal')}:
 				</span>
-				<span className='font-medium'>${totalPrice.toFixed(2)}</span>
+				<span className='font-medium'>{formatCurrency(totalPrice)}</span>
 			</div>
 		</div>
 	);

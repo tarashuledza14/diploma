@@ -4,6 +4,7 @@ import {
 	Get,
 	HttpCode,
 	HttpStatus,
+	Patch,
 	Post,
 	Req,
 	Res,
@@ -13,7 +14,10 @@ import { Request, Response } from 'express';
 import { Role } from 'prisma/generated/prisma/client';
 import { AuthService } from './auth.service';
 import { Auth } from './decorators/auth.decorator';
+import { CurrentUser } from './decorators/user.decorators';
 import { AuthDto, RegisterDto } from './dto/auth.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { AuthUser } from './types/auth-user.type';
 
 @Controller('auth')
 export class AuthController {
@@ -69,5 +73,14 @@ export class AuthController {
 		);
 
 		return response;
+	}
+
+	@Auth()
+	@Patch('password')
+	changePassword(
+		@CurrentUser() user: AuthUser,
+		@Body() dto: ChangePasswordDto,
+	) {
+		return this.authService.changePassword(user.id, dto);
 	}
 }

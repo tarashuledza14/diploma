@@ -64,6 +64,12 @@ enum ClientType {
   VIP
 }
 
+enum Currency {
+  UAH
+  USD
+  EUR
+}
+
 enum PartCondition {
   NEW
   USED
@@ -76,13 +82,14 @@ enum PartCondition {
 
 // 1. Таблиця ТІЛЬКИ для персоналу (Admin, Manager, Mechanic)
 model User {
-  id        String    @id @default(cuid())
-  email     String    @unique
-  password  String // Обов'язкове поле!
-  role      Role      @default(MECHANIC)
-  fullName  String
-  avatar    String?
-  deletedAt DateTime?
+  id          String    @id @default(cuid())
+  email       String    @unique
+  password    String // Обов'язкове поле!
+  role        Role      @default(MECHANIC)
+  fullName    String
+  avatar      String?
+  lastLoginAt DateTime? @map("last_login_at")
+  deletedAt   DateTime?
 
   organizationId String?       @map("organization_id")
   organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
@@ -474,6 +481,7 @@ model AppSettings {
   organizationId String       @unique @map("organization_id")
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   appName        String       @default("AutoCRM") @map("app_name")
+  currency       Currency     @default(UAH) @map("currency")
   logoKey        String?      @map("logo_key") @db.Text
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime     @updatedAt @map("updated_at")

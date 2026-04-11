@@ -6,12 +6,14 @@ import {
 	Param,
 	Patch,
 	Post,
+	Query,
 } from '@nestjs/common';
 import { Role } from 'prisma/generated/prisma/client';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { CurrentUser } from 'src/auth/decorators/user.decorators';
 import { AuthUser } from 'src/auth/types/auth-user.type';
 import { CreateTeamUserDto } from './dto/create-team-user.dto';
+import { GetTeamUsersDto } from './dto/get-team-users.dto';
 import { UpdateTeamUserDto } from './dto/update-team-user.dto';
 import { TeamService } from './team.service';
 
@@ -21,8 +23,8 @@ export class TeamController {
 	constructor(private readonly teamService: TeamService) {}
 
 	@Get('users')
-	getUsers(@CurrentUser() actor: AuthUser) {
-		return this.teamService.getUsers(actor);
+	getUsers(@CurrentUser() actor: AuthUser, @Query() query: GetTeamUsersDto) {
+		return this.teamService.getUsers(actor, query);
 	}
 
 	@Post('users')

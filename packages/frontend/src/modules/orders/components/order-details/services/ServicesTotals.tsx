@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import { useTranslation } from 'react-i18next';
 
 interface ServicesTotalsProps {
@@ -6,6 +7,7 @@ interface ServicesTotalsProps {
 
 export function ServicesTotals({ servicesTotal }: ServicesTotalsProps) {
 	const { t } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 
 	return (
 		<div className='flex justify-end'>
@@ -14,7 +16,7 @@ export function ServicesTotals({ servicesTotal }: ServicesTotalsProps) {
 					<span className='text-muted-foreground'>
 						{t('orders.totals.servicesTotal')}
 					</span>
-					<span className='font-medium'>${servicesTotal.toFixed(2)}</span>
+					<span className='font-medium'>{formatCurrency(servicesTotal)}</span>
 				</div>
 			</div>
 		</div>

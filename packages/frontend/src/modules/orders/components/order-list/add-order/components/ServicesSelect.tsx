@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import {
 	Button,
 	Command,
@@ -32,6 +33,7 @@ export const ServicesSelect: React.FC<ServicesSelectProps> = ({
 	setOpen,
 }) => {
 	const { t } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 	return (
 		<div className='space-y-2'>
 			<Label>{t('orders.newOrder.fields.services')} *</Label>
@@ -85,7 +87,7 @@ export const ServicesSelect: React.FC<ServicesSelectProps> = ({
 												</span>
 											</div>
 											<span className='font-medium'>
-												${service.price.toFixed(2)}
+												{formatCurrency(service.price)}
 											</span>
 										</div>
 									</CommandItem>

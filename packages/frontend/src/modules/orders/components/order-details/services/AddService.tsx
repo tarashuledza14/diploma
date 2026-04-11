@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import {
 	Button,
 	Dialog,
@@ -30,6 +31,7 @@ export function AddService({
 	isPending = false,
 }: AddServiceProps) {
 	const { t } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 	const [open, setOpen] = useState(false);
 	const [selectedServiceId, setSelectedServiceId] = useState('');
 
@@ -74,7 +76,7 @@ export function AddService({
 						<SelectContent>
 							{serviceOptions.map(service => (
 								<SelectItem key={service.id} value={service.id}>
-									{service.name} - ${service.price}
+									{service.name} - {formatCurrency(service.price)}
 								</SelectItem>
 							))}
 						</SelectContent>

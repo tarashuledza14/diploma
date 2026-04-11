@@ -1,5 +1,5 @@
 import { removeFromStorage, useUserStore } from '@/modules/auth';
-import { LogOut, Settings, User } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -16,6 +16,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '../../../shared/components/ui/dropdown-menu';
+import { UserLanguageSubmenu } from './UserLanguageSubmenu';
 
 export function UserMenu() {
 	const { t } = useTranslation();
@@ -54,16 +55,7 @@ export function UserMenu() {
 			<DropdownMenuContent align='end' className='w-56'>
 				<DropdownMenuLabel>{t('userMenu.myAccount')}</DropdownMenuLabel>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem>
-					<User className='mr-2 h-4 w-4' />
-					{t('userMenu.profile')}
-					{/* TODO: Navigate to /profile */}
-				</DropdownMenuItem>
-				<DropdownMenuItem>
-					<Settings className='mr-2 h-4 w-4' />
-					{t('userMenu.settings')}
-					{/* TODO: Navigate to /settings */}
-				</DropdownMenuItem>
+				<UserLanguageSubmenu />
 				<DropdownMenuSeparator />
 				<DropdownMenuItem onClick={onLogout} className='text-destructive'>
 					<LogOut className='mr-2 h-4 w-4' />

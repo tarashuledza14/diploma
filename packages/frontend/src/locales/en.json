@@ -157,6 +157,11 @@
 		"myAccount": "My account",
 		"profile": "Profile",
 		"settings": "Settings",
+		"language": "Language",
+		"languages": {
+			"english": "Eng",
+			"ukrainian": "Ukr"
+		},
 		"logout": "Log out"
 	},
 	"header": {
@@ -183,6 +188,12 @@
 		"form": {
 			"title": "Configuration",
 			"appNameLabel": "Application name",
+			"currencyLabel": "Default currency",
+			"currencyOptions": {
+				"UAH": "UAH (hryvnia)",
+				"USD": "USD (US dollar)",
+				"EUR": "EUR (euro)"
+			},
 			"logoLabel": "Logo (file)",
 			"logoPlaceholder": "https://...",
 			"logoHint": "Upload a logo image (PNG/JPG/WebP). A 1:1 cropper will open after selection.",
@@ -205,6 +216,26 @@
 			"appNameRequired": "Application name is required.",
 			"logoTypeInvalid": "Please choose an image file.",
 			"cropFailed": "Failed to crop the image. Please try again."
+		}
+	},
+	"passwordSettings": {
+		"title": "Change Password",
+		"form": {
+			"currentPasswordLabel": "Current password",
+			"newPasswordLabel": "New password",
+			"confirmPasswordLabel": "Confirm new password"
+		},
+		"actions": {
+			"update": "Update password"
+		},
+		"messages": {
+			"updated": "Password updated successfully"
+		},
+		"errors": {
+			"requiredFields": "Fill in all password fields.",
+			"minLength": "New password must be at least 8 characters.",
+			"passwordMismatch": "New password and confirmation do not match.",
+			"updateFailed": "Failed to update password."
 		}
 	},
 	"auth": {
@@ -351,7 +382,7 @@
 		"stats": {
 			"totalParts": "Total Parts",
 			"purchaseValue": "Purchase Value",
-			"retailValue": "Retail: ${{value}}",
+			"retailValue": "Retail: {{value}}",
 			"reserved": "Reserved",
 			"lowStock": "Low Stock",
 			"outOfStock": "Out of Stock"

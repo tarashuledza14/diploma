@@ -1,6 +1,5 @@
 import { useNotifications } from '@/modules/notifications';
 import { SidebarTrigger, ThemeSwitcher } from '@/shared';
-import { LangSwitcher } from './LangSwitcher';
 import { NotificationButton } from './NotificationButton';
 import { UserMenu } from './UserMenu';
 
@@ -12,7 +11,6 @@ export function Header() {
 			<SidebarTrigger />
 			{/* <SearchBar /> */}
 			<div className='flex items-center gap-4'>
-				<LangSwitcher />
 				<ThemeSwitcher />
 				<NotificationButton count={unreadCount} />
 				<UserMenu />

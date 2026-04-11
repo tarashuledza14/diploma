@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import { OrderServiceItem } from '@/modules/orders/interfaces/new-order.interface';
 import {
 	Badge,
@@ -30,6 +31,7 @@ export const ServiceRow: React.FC<ServiceRowProps> = ({
 	onChange,
 }) => {
 	const { t } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 	const selectedService = services.find(s => s.id === service.serviceId);
 	const hasRequiredCategories = selectedService?.requiredCategories?.length > 0;
 
@@ -111,7 +113,7 @@ export const ServiceRow: React.FC<ServiceRowProps> = ({
 						<SelectContent>
 							{services.map(svc => (
 								<SelectItem key={svc.id} value={svc.id}>
-									{svc.name} - ${svc.price}
+									{svc.name} - {formatCurrency(svc.price)}
 								</SelectItem>
 							))}
 						</SelectContent>

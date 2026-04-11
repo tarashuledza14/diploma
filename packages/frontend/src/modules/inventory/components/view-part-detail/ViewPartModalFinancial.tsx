@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import { DollarSign } from 'lucide-react';
 import { PartPriceRule } from '../../interfaces/inventory.interfaces';
 
@@ -8,6 +9,7 @@ interface ViewPartModalFinancialProps {
 export function ViewPartModalFinancial({
 	priceRules,
 }: ViewPartModalFinancialProps) {
+	const { formatCurrency } = useCurrencyFormatter();
 	if (!priceRules.length) return null;
 	return (
 		<div>
@@ -26,7 +28,7 @@ export function ViewPartModalFinancial({
 						</span>
 						<span className='font-medium text-right'>
 							{rule.fixedPrice
-								? `$${rule.fixedPrice}`
+								? formatCurrency(rule.fixedPrice)
 								: rule.markupPercent
 									? `${rule.markupPercent}% markup`
 									: 'N/A'}

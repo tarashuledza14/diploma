@@ -1,3 +1,4 @@
+import { toMoneyNumber, useCurrencyFormatter } from '@/modules/app-settings';
 import { OrdersService } from '@/modules/orders/api';
 import { OrderListItem } from '@/modules/orders/interfaces/order.interface';
 import {
@@ -30,28 +31,13 @@ interface ViewVehicleDetailsDialogProps {
 	selectedVehicle?: VehicleWithOwnerInfo;
 }
 
-function asCurrency(value: number) {
-	return new Intl.NumberFormat('en-US', {
-		style: 'currency',
-		currency: 'USD',
-		maximumFractionDigits: 2,
-	}).format(value);
-}
-
-function parseOrderAmount(value: string | number | null | undefined) {
-	if (typeof value === 'number') {
-		return value;
-	}
-
-	if (!value) {
-		return 0;
-	}
-
-	const parsed = Number(value);
-	return Number.isFinite(parsed) ? parsed : 0;
-}
-
-function ServiceHistoryItem({ order }: { order: OrderListItem }) {
+function ServiceHistoryItem({
+	order,
+	formatCurrency,
+}: {
+	order: OrderListItem;
+	formatCurrency: (value: number | string | null | undefined) => string;
+}) {
 	const { t } = useTranslation();
 	const orderDate = order.endDate || null;
 
@@ -71,7 +57,7 @@ function ServiceHistoryItem({ order }: { order: OrderListItem }) {
 						</div>
 					</div>
 					<p className='text-2xl font-bold'>
-						{asCurrency(parseOrderAmount(order.totalAmount))}
+						{formatCurrency(order.totalAmount)}
 					</p>
 				</div>
 
@@ -99,6 +85,7 @@ export function ViewVehicleDetailsDialog({
 	selectedVehicle,
 }: ViewVehicleDetailsDialogProps) {
 	const { t } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 
 	const { data, isLoading } = useQuery({
 		queryKey: ['vehicle-details-orders', selectedVehicle?.id],
@@ -123,7 +110,7 @@ export function ViewVehicleDetailsDialog({
 
 	const totals = useMemo(() => {
 		const totalSpent = orders.reduce(
-			(sum, order) => sum + parseOrderAmount(order.totalAmount),
+			(sum, order) => sum + toMoneyNumber(order.totalAmount),
 			0,
 		);
 
@@ -178,7 +165,7 @@ export function ViewVehicleDetailsDialog({
 									<span>{t('vehicles.details.totalSpent')}</span>
 								</div>
 								<p className='text-4xl font-bold'>
-									{asCurrency(totals.totalSpent)}
+									{formatCurrency(totals.totalSpent)}
 								</p>
 							</CardContent>
 						</Card>
@@ -216,7 +203,11 @@ export function ViewVehicleDetailsDialog({
 								) : null}
 
 								{orders.map(order => (
-									<ServiceHistoryItem key={order.id} order={order} />
+									<ServiceHistoryItem
+										key={order.id}
+										order={order}
+										formatCurrency={formatCurrency}
+									/>
 								))}
 							</div>
 						</ScrollArea>

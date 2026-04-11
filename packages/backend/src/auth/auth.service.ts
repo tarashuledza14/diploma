@@ -10,6 +10,7 @@ import { Response } from 'express';
 import { User } from 'prisma/generated/prisma/client';
 import { UserService } from 'src/user/user.service';
 import { AuthDto, RegisterDto } from './dto/auth.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -23,12 +24,40 @@ export class AuthService {
 
 	async login(dto: AuthDto) {
 		const user = await this.validateUser(dto);
-		const tokens = await this.issueTokens(user.id);
+		const updatedUser = await this.userService.updateLastLoginAt(user.id);
+		const tokens = await this.issueTokens(updatedUser.id);
 
 		return {
-			user: this.returnUserFields(user),
+			user: this.returnUserFields(updatedUser),
 			...tokens,
 		};
+	}
+
+	async changePassword(userId: string, dto: ChangePasswordDto) {
+		const user = await this.userService.findById(userId);
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+
+		const isValidCurrentPassword = await verify(
+			user.password,
+			dto.currentPassword,
+		);
+		if (!isValidCurrentPassword) {
+			throw new BadRequestException('Current password is incorrect');
+		}
+
+		const isSamePassword = await verify(user.password, dto.newPassword);
+		if (isSamePassword) {
+			throw new BadRequestException(
+				'New password must be different from current password',
+			);
+		}
+
+		const hashedPassword = await hash(dto.newPassword);
+		await this.userService.updatePassword(user.id, hashedPassword);
+
+		return { success: true };
 	}
 	async register(dto: RegisterDto) {
 		const existUser = await this.userService.findByEmail(dto.email);

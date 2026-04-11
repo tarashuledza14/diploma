@@ -80,6 +80,15 @@ export const ClientType = {
 export type ClientType = (typeof ClientType)[keyof typeof ClientType]
 
 
+export const Currency = {
+  UAH: 'UAH',
+  USD: 'USD',
+  EUR: 'EUR'
+} as const
+
+export type Currency = (typeof Currency)[keyof typeof Currency]
+
+
 export const PartCondition = {
   NEW: 'NEW',
   USED: 'USED',

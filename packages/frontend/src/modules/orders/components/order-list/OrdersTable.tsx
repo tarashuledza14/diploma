@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import { useUserStore } from '@/modules/auth';
 import {
 	DataTable,
@@ -23,6 +24,7 @@ interface OrdersTableProps {
 
 export function OrdersTable({ data, pageCount }: OrdersTableProps) {
 	const { t, i18n } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 	const role = useUserStore(state => state.user?.role);
 	const [rowAction, setRowAction] =
 		useState<DataTableRowAction<OrderListItem> | null>(null);
@@ -33,10 +35,11 @@ export function OrdersTable({ data, pageCount }: OrdersTableProps) {
 				setRowAction,
 				statusColors,
 				priorityColors,
+				formatCurrency,
 				t,
 				role,
 			}),
-		[setRowAction, t, role, i18n.resolvedLanguage],
+		[setRowAction, formatCurrency, t, role, i18n.resolvedLanguage],
 	);
 
 	const { table, shallow, debounceMs, throttleMs } =

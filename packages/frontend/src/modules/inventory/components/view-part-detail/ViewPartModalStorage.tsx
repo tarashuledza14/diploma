@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import dayjs from 'dayjs';
 import { Box } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +12,7 @@ export function ViewPartModalStorage({
 	selectedPart,
 }: ViewPartModalStorageProps) {
 	const { t } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 	const inventory = selectedPart.inventory ?? [];
 	if (!inventory.length) return null;
 	return (
@@ -44,7 +46,7 @@ export function ViewPartModalStorage({
 							</span>
 							<span className='font-mono text-right'>
 								{item.purchasePrice
-									? `$${item.purchasePrice}`
+									? formatCurrency(item.purchasePrice)
 									: t('common.notAvailable')}
 							</span>
 						</div>

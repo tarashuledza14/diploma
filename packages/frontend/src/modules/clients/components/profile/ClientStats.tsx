@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import { Card, CardContent } from '@/shared/components/ui';
 import { formatDate } from '@/shared/lib/format';
 import { Calendar, Car, ClipboardList, DollarSign } from 'lucide-react';
@@ -10,6 +11,7 @@ interface ClientStatsProps {
 
 export function ClientStats({ selectedClient }: ClientStatsProps) {
 	const { t } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 	return (
 		<div className='grid grid-cols-4 gap-3 pb-4'>
 			<Card>
@@ -33,7 +35,9 @@ export function ClientStats({ selectedClient }: ClientStatsProps) {
 			<Card>
 				<CardContent className='p-3 text-center'>
 					<DollarSign className='h-5 w-5 mx-auto mb-1 text-muted-foreground' />
-					<p className='text-2xl font-bold'>${selectedClient.totalSpent}</p>
+					<p className='text-2xl font-bold'>
+						{formatCurrency(selectedClient.totalSpent)}
+					</p>
 					<p className='text-xs text-muted-foreground'>
 						{t('clients.profile.stats.totalSpent')}
 					</p>

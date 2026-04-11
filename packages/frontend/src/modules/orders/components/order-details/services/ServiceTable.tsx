@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import {
 	Button,
 	Table,
@@ -26,6 +27,7 @@ export function ServiceTable({
 	isPending = false,
 }: Props) {
 	const { t } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 
 	return (
 		<Table>
@@ -58,7 +60,9 @@ export function ServiceTable({
 						<TableCell>{service.laborHours ?? 0}h</TableCell>
 						{showFinancials && (
 							<TableCell className='text-right font-medium'>
-								${(Number(service.price) * (service.quantity ?? 1)).toFixed(2)}
+								{formatCurrency(
+									Number(service.price) * (service.quantity ?? 1),
+								)}
 							</TableCell>
 						)}
 						{canManageServices && (

@@ -98,6 +98,7 @@ export const UserScalarFieldEnum = {
   role: 'role',
   fullName: 'fullName',
   avatar: 'avatar',
+  lastLoginAt: 'lastLoginAt',
   deletedAt: 'deletedAt',
   organizationId: 'organizationId',
   createdAt: 'createdAt',
@@ -380,6 +381,7 @@ export const AppSettingsScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   appName: 'appName',
+  currency: 'currency',
   logoKey: 'logoKey',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

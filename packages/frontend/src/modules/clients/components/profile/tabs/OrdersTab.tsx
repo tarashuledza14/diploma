@@ -1,4 +1,5 @@
-import type { Order } from '@/modules/orders';
+import { useCurrencyFormatter } from '@/modules/app-settings';
+import type { Order } from '@/modules/orders/interfaces/order.interface';
 import { Badge, Card, CardContent, ScrollArea } from '@/shared/components/ui';
 import { formatDate } from '@/shared/lib/format';
 
@@ -11,8 +12,9 @@ export function OrdersTab({
 	mockClientOrders,
 	orderStatusColors,
 }: OrdersTabProps) {
+	const { formatCurrency } = useCurrencyFormatter();
 	return (
-		<ScrollArea className='h-[200px]'>
+		<ScrollArea className='h-50'>
 			<div className='space-y-2 pr-4'>
 				{mockClientOrders.map(order => (
 					<Card key={order.id}>
@@ -24,7 +26,9 @@ export function OrdersTab({
 										{order.status.toUpperCase()}
 									</Badge>
 								</div>
-								<span className='font-semibold'>${order.totalAmount}</span>
+								<span className='font-semibold'>
+									{formatCurrency(order.totalAmount)}
+								</span>
 							</div>
 							<div className='flex items-center justify-between text-sm text-muted-foreground'>
 								<span>

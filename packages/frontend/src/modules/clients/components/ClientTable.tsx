@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import {
 	DataTable,
 	DataTableAdvancedToolbar,
@@ -23,13 +24,14 @@ interface ClientTableProps {
 
 export function ClientTable({ data, pageCount, isLoading }: ClientTableProps) {
 	const { t, i18n } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 	const [rowAction, setRowAction] = useState<DataTableRowAction<Client> | null>(
 		null,
 	);
 
 	const columns = useMemo(
-		() => getClientTableColumns({ setRowAction, t }),
-		[setRowAction, t, i18n.resolvedLanguage],
+		() => getClientTableColumns({ setRowAction, formatCurrency, t }),
+		[setRowAction, formatCurrency, t, i18n.resolvedLanguage],
 	);
 	const { table, shallow, debounceMs, throttleMs } = useDataTable<Client>({
 		data,
@@ -48,6 +50,12 @@ export function ClientTable({ data, pageCount, isLoading }: ClientTableProps) {
 		shallow: false,
 		clearOnDefault: true,
 	});
+
+	if (isLoading && data.length === 0) {
+		return (
+			<p className='text-sm text-muted-foreground'>{t('common.loading')}</p>
+		);
+	}
 
 	return (
 		<>

@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import {
 	DataTable,
 	DataTableAdvancedToolbar,
@@ -30,6 +31,7 @@ export function InventoryTable({
 	canManageInventory = true,
 }: InventoryTableProps) {
 	const { t, i18n } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 	const [rowAction, setRowAction] =
 		useState<DataTableRowAction<InventoryPart> | null>(null);
 
@@ -44,10 +46,18 @@ export function InventoryTable({
 			getInventoryTableColumns({
 				setRowAction,
 				dictionaries,
+				formatCurrency,
 				t,
 				canManageInventory,
 			}),
-		[setRowAction, dictionaries, t, canManageInventory, i18n.resolvedLanguage],
+		[
+			setRowAction,
+			dictionaries,
+			formatCurrency,
+			t,
+			canManageInventory,
+			i18n.resolvedLanguage,
+		],
 	);
 	const { table, shallow, debounceMs, throttleMs } = useDataTable({
 		data,

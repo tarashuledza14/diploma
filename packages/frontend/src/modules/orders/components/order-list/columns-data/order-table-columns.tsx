@@ -28,6 +28,7 @@ interface GetOrderTableColumnsProps {
 	>;
 	statusColors: Record<string, string>;
 	priorityColors: Record<string, string>;
+	formatCurrency: (value: number | string | null | undefined) => string;
 	t: TFunction;
 	role?: UserRole;
 }
@@ -36,6 +37,7 @@ export function getOrderTableColumns({
 	setRowAction,
 	statusColors,
 	priorityColors,
+	formatCurrency,
 	t,
 	role,
 }: GetOrderTableColumnsProps): ColumnDef<OrderListItem>[] {
@@ -271,7 +273,9 @@ export function getOrderTableColumns({
 							/>
 						),
 						cell: ({ row }) => (
-							<div className='font-medium'>{row.original.totalAmount}</div>
+							<div className='font-medium'>
+								{formatCurrency(row.original.totalAmount)}
+							</div>
 						),
 						meta: {
 							label: t('orders.columns.total'),

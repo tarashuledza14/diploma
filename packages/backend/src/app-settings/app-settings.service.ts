@@ -4,6 +4,8 @@ import {
 	Injectable,
 	NotFoundException,
 } from '@nestjs/common';
+import { Currency } from 'prisma/generated/prisma/client';
+import sharp from 'sharp';
 import { DmsService } from 'src/dms/dms.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateAppBrandingDto } from './dto/update-app-branding.dto';
@@ -11,6 +13,8 @@ import { UpdateAppBrandingDto } from './dto/update-app-branding.dto';
 @Injectable()
 export class AppSettingsService {
 	private readonly defaultAppName = 'AutoCRM';
+	private readonly processedLogoSize = 256;
+	private readonly processedLogoRadius = 56;
 
 	constructor(
 		private readonly db: PrismaService,
@@ -22,6 +26,7 @@ export class AppSettingsService {
 		const settings = await this.ensureTenantSettings(tenantId);
 		return this.toBrandingResponse(
 			settings.appName,
+			settings.currency,
 			settings.logoKey,
 			tenantId,
 		);
@@ -39,22 +44,32 @@ export class AppSettingsService {
 			throw new BadRequestException('appName cannot be empty');
 		}
 
+		const currency = dto.currency;
+
 		const updated = await this.db.appSettings.upsert({
 			where: { organizationId: tenantId },
 			update: {
 				appName,
+				currency,
 			},
 			create: {
 				organizationId: tenantId,
 				appName,
+				currency,
 			},
 			select: {
 				appName: true,
+				currency: true,
 				logoKey: true,
 			},
 		});
 
-		return this.toBrandingResponse(updated.appName, updated.logoKey, tenantId);
+		return this.toBrandingResponse(
+			updated.appName,
+			updated.currency,
+			updated.logoKey,
+			tenantId,
+		);
 	}
 
 	async uploadLogo(
@@ -72,8 +87,10 @@ export class AppSettingsService {
 			throw new BadRequestException('Only image files are allowed');
 		}
 
+		const processedFile = await this.prepareRoundedLogo(file);
+
 		const { key } = await this.dmsService.uploadTenantFile(
-			file,
+			processedFile,
 			tenantId,
 			'branding',
 		);
@@ -86,15 +103,22 @@ export class AppSettingsService {
 			create: {
 				organizationId: tenantId,
 				appName: this.defaultAppName,
+				currency: Currency.UAH,
 				logoKey: key,
 			},
 			select: {
 				appName: true,
+				currency: true,
 				logoKey: true,
 			},
 		});
 
-		return this.toBrandingResponse(updated.appName, updated.logoKey, tenantId);
+		return this.toBrandingResponse(
+			updated.appName,
+			updated.currency,
+			updated.logoKey,
+			tenantId,
+		);
 	}
 
 	private async ensureTenantSettings(organizationId: string) {
@@ -106,10 +130,12 @@ export class AppSettingsService {
 			create: {
 				organizationId,
 				appName: this.defaultAppName,
+				currency: Currency.UAH,
 				logoKey: null,
 			},
 			select: {
 				appName: true,
+				currency: true,
 				logoKey: true,
 			},
 		});
@@ -117,6 +143,7 @@ export class AppSettingsService {
 
 	private async toBrandingResponse(
 		appName: string,
+		currency: Currency,
 		logoKey: string | null,
 		organizationId: string,
 	) {
@@ -129,6 +156,7 @@ export class AppSettingsService {
 
 		return {
 			appName,
+			currency,
 			logoUrl,
 		};
 	}
@@ -156,6 +184,41 @@ export class AppSettingsService {
 
 		if (!organization) {
 			throw new NotFoundException('Organization not found');
+		}
+	}
+
+	private async prepareRoundedLogo(file: Express.Multer.File) {
+		try {
+			const roundedMask = Buffer.from(
+				`<svg width="${this.processedLogoSize}" height="${this.processedLogoSize}"><rect x="0" y="0" width="${this.processedLogoSize}" height="${this.processedLogoSize}" rx="${this.processedLogoRadius}" ry="${this.processedLogoRadius}" /></svg>`,
+			);
+
+			const buffer = await sharp(file.buffer)
+				.rotate()
+				.ensureAlpha()
+				.resize(this.processedLogoSize, this.processedLogoSize, {
+					fit: 'cover',
+					position: 'centre',
+				})
+				.composite([
+					{
+						input: roundedMask,
+						blend: 'dest-in',
+					},
+				])
+				.png({ compressionLevel: 9 })
+				.toBuffer();
+
+			const baseName = file.originalname.replace(/\.[^.]+$/, '');
+
+			return {
+				...file,
+				buffer,
+				mimetype: 'image/png',
+				originalname: `${baseName || 'logo'}.png`,
+			};
+		} catch {
+			throw new BadRequestException('Failed to process logo image');
 		}
 	}
 }

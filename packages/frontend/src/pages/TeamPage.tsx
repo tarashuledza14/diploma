@@ -12,13 +12,24 @@ import {
 	useTeamUsersQuery,
 	useUpdateTeamUserMutation,
 } from '@/modules/team';
-import { useState } from 'react';
+import { useTableSearchParams } from '@/shared';
+import { parseAsString, useQueryState } from 'nuqs';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 export function TeamPage() {
 	const { t } = useTranslation();
-	const { data, isLoading } = useTeamUsersQuery();
+	const searchParams = useTableSearchParams();
+	const [fullName] = useQueryState('fullName', parseAsString.withDefault(''));
+	const teamSearchParams = useMemo(
+		() => ({
+			...searchParams,
+			fullName: fullName.trim() || undefined,
+		}),
+		[searchParams, fullName],
+	);
+	const { data, isLoading } = useTeamUsersQuery(teamSearchParams);
 	const { mutateAsync: createUser, isPending: isCreating } =
 		useCreateTeamUserMutation();
 	const { mutateAsync: updateUser, isPending: isUpdating } =
@@ -33,6 +44,7 @@ export function TeamPage() {
 		useState<CreateTeamUserResponse | null>(null);
 
 	const users = data?.data ?? [];
+	const pageCount = data?.pageCount ?? 0;
 
 	const handleInvite = async (formData: InviteFormData) => {
 		try {
@@ -94,7 +106,8 @@ export function TeamPage() {
 			) : null}
 
 			<TeamTable
-				users={users}
+				data={users}
+				pageCount={pageCount}
 				onEdit={setEditingUser}
 				onBlock={setBlockingUser}
 				isLoading={isLoading}

@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import {
 	OrderPartItem,
 	OrderServiceItem,
@@ -95,6 +96,7 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 	minMileage = 0,
 }) => {
 	const { t } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 	const resolvedSubmitLabel =
 		submitLabel ?? t('orders.newOrder.actions.createWorkOrder');
 	const resolvedPendingSubmitLabel =
@@ -431,19 +433,19 @@ export const NewOrderFormContent: React.FC<NewOrderFormContentProps> = ({
 									<div className='flex justify-between text-sm'>
 										<span>{t('orders.newOrder.summary.servicesTotal')}</span>
 										<span className='font-medium'>
-											${servicesTotal.toFixed(2)}
+											{formatCurrency(servicesTotal)}
 										</span>
 									</div>
 									<div className='flex justify-between text-sm'>
 										<span>{t('orders.newOrder.summary.partsTotal')}</span>
 										<span className='font-medium'>
-											${partsTotal.toFixed(2)}
+											{formatCurrency(partsTotal)}
 										</span>
 									</div>
 									<Separator />
 									<div className='flex justify-between text-base font-semibold'>
 										<span>{t('orders.newOrder.summary.totalAmount')}</span>
-										<span>${totalAmount.toFixed(2)}</span>
+										<span>{formatCurrency(totalAmount)}</span>
 									</div>
 								</div>
 							</CardContent>

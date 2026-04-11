@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import {
 	Button,
 	Dialog,
@@ -36,6 +37,7 @@ export function AddPart({
 	isPending = false,
 }: AddPartProps) {
 	const { t } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 	const [open, setOpen] = useState(false);
 	const [selectedPartId, setSelectedPartId] = useState('');
 	const [quantity, setQuantity] = useState(1);
@@ -77,7 +79,8 @@ export function AddPart({
 						<SelectContent>
 							{partOptions.map(part => (
 								<SelectItem key={part.id} value={part.id}>
-									{part.name} - ${part.price} (Stock: {part.stock})
+									{part.name} - {formatCurrency(part.price)} (Stock:{' '}
+									{part.stock})
 								</SelectItem>
 							))}
 						</SelectContent>

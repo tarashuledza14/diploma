@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import { Badge } from '@/shared/components/ui';
 import { X } from 'lucide-react';
 import React from 'react';
@@ -11,12 +12,13 @@ export const SelectedServicesTags: React.FC<SelectedServicesTagsProps> = ({
 	selectedServicesData,
 	removeService,
 }) => {
+	const { formatCurrency } = useCurrencyFormatter();
 	if (!selectedServicesData.length) return null;
 	return (
 		<div className='flex flex-wrap gap-2 mt-2'>
 			{selectedServicesData.map(service => (
 				<Badge key={service.id} variant='secondary' className='gap-1'>
-					{service.name} (${service.price})
+					{service.name} ({formatCurrency(service.price)})
 					<button
 						type='button'
 						onClick={() => removeService(service.id)}

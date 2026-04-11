@@ -1,3 +1,4 @@
+import { useCurrencyFormatter } from '@/modules/app-settings';
 import {
 	Button,
 	Input,
@@ -28,6 +29,7 @@ export function PartsTable({
 	isPending = false,
 }: Props) {
 	const { t } = useTranslation();
+	const { formatCurrency } = useCurrencyFormatter();
 	return (
 		<Table>
 			<TableHeader>
@@ -69,13 +71,12 @@ export function PartsTable({
 								/>
 							</TableCell>
 							{showFinancials && (
-								<TableCell>${Number(part.unitPrice).toFixed(2)}</TableCell>
+								<TableCell>{formatCurrency(part.unitPrice)}</TableCell>
 							)}
 							{showFinancials && (
 								<TableCell className='text-right font-medium'>
-									$
-									{((part.quantity ?? 0) * Number(part.unitPrice ?? 0)).toFixed(
-										2,
+									{formatCurrency(
+										(part.quantity ?? 0) * Number(part.unitPrice ?? 0),
 									)}
 								</TableCell>
 							)}

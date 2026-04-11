@@ -8,6 +8,7 @@ export { TeamTable } from './components/TeamTable';
 export type {
 	CreateTeamUserPayload,
 	CreateTeamUserResponse,
+	GetTeamUsersParams,
 	TeamAccountStatus,
 	TeamUser,
 	TeamUsersResponse,

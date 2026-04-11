@@ -1,3 +1,4 @@
+import { PaginationFilterSortOptions } from '@/shared';
 import { UserRole } from '@/shared/interfaces/user.interface';
 
 export type TeamAccountStatus = 'ACTIVE' | 'PENDING_CONFIRMATION' | 'BLOCKED';
@@ -16,6 +17,12 @@ export interface TeamUser {
 
 export interface TeamUsersResponse {
 	data: TeamUser[];
+	pageCount: number;
+	total: number;
+}
+
+export interface GetTeamUsersParams extends PaginationFilterSortOptions<TeamUser> {
+	fullName?: string;
 }
 
 export interface CreateTeamUserPayload {
