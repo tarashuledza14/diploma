@@ -386,6 +386,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   Organization: 'Organization',
+  TeamInvite: 'TeamInvite',
   Client: 'Client',
   Vehicle: 'Vehicle',
   PartCategory: 'PartCategory',
@@ -421,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "organization" | "client" | "vehicle" | "partCategory" | "serviceCategory" | "partsManufacturer" | "partsBrand" | "partsSupplier" | "part" | "partInventory" | "stockMovement" | "partPriceRule" | "service" | "order" | "orderPart" | "orderService" | "document" | "chatSession" | "chatMessage" | "notification" | "appSettings"
+    modelProps: "user" | "organization" | "teamInvite" | "client" | "vehicle" | "partCategory" | "serviceCategory" | "partsManufacturer" | "partsBrand" | "partsSupplier" | "part" | "partInventory" | "stockMovement" | "partPriceRule" | "service" | "order" | "orderPart" | "orderService" | "document" | "chatSession" | "chatMessage" | "notification" | "appSettings"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -570,6 +571,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.OrganizationCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.OrganizationCountAggregateOutputType> | number
+        }
+      }
+    }
+    TeamInvite: {
+      payload: Prisma.$TeamInvitePayload<ExtArgs>
+      fields: Prisma.TeamInviteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TeamInviteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamInvitePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TeamInviteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamInvitePayload>
+        }
+        findFirst: {
+          args: Prisma.TeamInviteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamInvitePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TeamInviteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamInvitePayload>
+        }
+        findMany: {
+          args: Prisma.TeamInviteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamInvitePayload>[]
+        }
+        create: {
+          args: Prisma.TeamInviteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamInvitePayload>
+        }
+        createMany: {
+          args: Prisma.TeamInviteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TeamInviteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamInvitePayload>[]
+        }
+        delete: {
+          args: Prisma.TeamInviteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamInvitePayload>
+        }
+        update: {
+          args: Prisma.TeamInviteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamInvitePayload>
+        }
+        deleteMany: {
+          args: Prisma.TeamInviteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TeamInviteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TeamInviteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamInvitePayload>[]
+        }
+        upsert: {
+          args: Prisma.TeamInviteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamInvitePayload>
+        }
+        aggregate: {
+          args: Prisma.TeamInviteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTeamInvite>
+        }
+        groupBy: {
+          args: Prisma.TeamInviteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TeamInviteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TeamInviteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TeamInviteCountAggregateOutputType> | number
         }
       }
     }
@@ -2119,6 +2194,24 @@ export const OrganizationScalarFieldEnum = {
 export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
 
 
+export const TeamInviteScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  organizationId: 'organizationId',
+  createdById: 'createdById',
+  email: 'email',
+  role: 'role',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TeamInviteScalarFieldEnum = (typeof TeamInviteScalarFieldEnum)[keyof typeof TeamInviteScalarFieldEnum]
+
+
 export const ClientScalarFieldEnum = {
   id: 'id',
   fullName: 'fullName',
@@ -2783,6 +2876,7 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   organization?: Prisma.OrganizationOmit
+  teamInvite?: Prisma.TeamInviteOmit
   client?: Prisma.ClientOmit
   vehicle?: Prisma.VehicleOmit
   partCategory?: Prisma.PartCategoryOmit

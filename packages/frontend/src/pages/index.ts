@@ -8,6 +8,7 @@ export { ManualsPage } from './ManualsPage';
 export { NotificationsPage } from './NotificationsPage';
 export { OrderDetailsPage } from './OrderDetailsPage';
 export { OrdersPage } from './OrdersPage';
+export { RegisterPage } from './RegisterPage';
 export { ServicesPage } from './ServicesPage.tsx';
 export { SettingsPage } from './SettingsPage';
 export { TeamPage } from './TeamPage';

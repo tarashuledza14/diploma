@@ -6,9 +6,12 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { hash, verify } from 'argon2';
+import { createHash } from 'crypto';
 import { Response } from 'express';
 import { User } from 'prisma/generated/prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
+import { AcceptInviteDto } from './dto/accept-invite.dto';
 import { AuthDto, RegisterDto } from './dto/auth.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 
@@ -20,6 +23,7 @@ export class AuthService {
 	constructor(
 		private userService: UserService,
 		private jwtService: JwtService,
+		private readonly db: PrismaService,
 	) {}
 
 	async login(dto: AuthDto) {
@@ -74,6 +78,78 @@ export class AuthService {
 
 		return {
 			user: this.returnUserFields(user),
+			...tokens,
+		};
+	}
+
+	async acceptInvite(dto: AcceptInviteDto) {
+		const tokenHash = this.hashInviteToken(dto.token);
+		const invite = await this.db.teamInvite.findUnique({
+			where: {
+				tokenHash,
+			},
+			include: {
+				user: true,
+			},
+		});
+
+		if (!invite || invite.usedAt || invite.revokedAt) {
+			throw new BadRequestException('Invite token is invalid');
+		}
+
+		if (invite.expiresAt.getTime() < Date.now()) {
+			throw new BadRequestException('Invite token has expired');
+		}
+
+		if (invite.user.deletedAt) {
+			throw new BadRequestException('Invited user is blocked');
+		}
+
+		const hashedPassword = await hash(dto.password);
+		const fullName = dto.fullName?.trim();
+
+		const updatedUser = await this.db.$transaction(async tx => {
+			const user = await tx.user.update({
+				where: {
+					id: invite.userId,
+				},
+				data: {
+					password: hashedPassword,
+					...(fullName ? { fullName } : {}),
+					lastLoginAt: new Date(),
+				},
+			});
+
+			await tx.teamInvite.update({
+				where: {
+					id: invite.id,
+				},
+				data: {
+					usedAt: new Date(),
+				},
+			});
+
+			await tx.teamInvite.updateMany({
+				where: {
+					userId: invite.userId,
+					id: {
+						not: invite.id,
+					},
+					usedAt: null,
+					revokedAt: null,
+				},
+				data: {
+					revokedAt: new Date(),
+				},
+			});
+
+			return user;
+		});
+
+		const tokens = await this.issueTokens(updatedUser.id);
+
+		return {
+			user: this.returnUserFields(updatedUser),
 			...tokens,
 		};
 	}
@@ -137,6 +213,10 @@ export class AuthService {
 		if (!isValid) throw new UnauthorizedException('User not authorized');
 
 		return user;
+	}
+
+	private hashInviteToken(token: string): string {
+		return createHash('sha256').update(token).digest('hex');
 	}
 
 	private returnUserFields(user: User) {

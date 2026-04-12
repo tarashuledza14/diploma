@@ -1,3 +1,4 @@
+export { AcceptInviteForm } from './components/AcceptInviteForm';
 export { LoginCard } from './components/LoginCard';
 export { ProtectedRoute } from './components/ProtectedRoutes';
 export {

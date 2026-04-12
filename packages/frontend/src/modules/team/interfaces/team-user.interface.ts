@@ -37,5 +37,6 @@ export interface UpdateTeamUserPayload {
 }
 
 export interface CreateTeamUserResponse extends TeamUser {
-	temporaryPassword: string;
+	inviteEmailSent: boolean;
+	inviteExpiresAt: string;
 }

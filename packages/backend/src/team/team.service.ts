@@ -3,13 +3,15 @@ import {
 	ConflictException,
 	ForbiddenException,
 	Injectable,
+	InternalServerErrorException,
 	NotFoundException,
 } from '@nestjs/common';
 import { hash } from 'argon2';
-import { randomBytes } from 'crypto';
+import { createHash, randomBytes } from 'crypto';
 import { OrderStatus, Role } from 'prisma/generated/prisma/client';
 import { AuthUser } from 'src/auth/types/auth-user.type';
 import { FilterService } from 'src/filter/filter.service';
+import { MailService } from 'src/mail/mail.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTeamUserDto } from './dto/create-team-user.dto';
@@ -24,6 +26,7 @@ export class TeamService {
 		private readonly db: PrismaService,
 		private readonly paginationService: PaginationService,
 		private readonly filterService: FilterService,
+		private readonly mailService: MailService,
 	) {}
 
 	async getUsers(actor: AuthUser, input: GetTeamUsersDto) {
@@ -124,42 +127,104 @@ export class TeamService {
 			throw new BadRequestException('Unsupported role for team member');
 		}
 
+		const normalizedEmail = dto.email.toLowerCase().trim();
 		const existingUser = await this.db.user.findUnique({
-			where: { email: dto.email.toLowerCase() },
+			where: { email: normalizedEmail },
 			select: { id: true },
 		});
 		if (existingUser) {
 			throw new ConflictException('User with this email already exists');
 		}
 
-		const temporaryPassword = this.createTemporaryPassword();
-		const hashedPassword = await hash(temporaryPassword);
+		const inviteToken = this.createInviteToken();
+		const tokenHash = this.hashInviteToken(inviteToken);
+		const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 3);
+
 		const fullName =
 			dto.fullName?.trim() || this.fallbackNameFromEmail(dto.email);
 
-		const createdUser = await this.db.user.create({
-			data: {
-				email: dto.email.toLowerCase(),
-				fullName,
-				role: dto.role,
-				password: hashedPassword,
-				organizationId,
-			},
-			select: {
-				id: true,
-				email: true,
-				fullName: true,
-				role: true,
-				createdAt: true,
-				lastLoginAt: true,
-				deletedAt: true,
-			},
-		});
+		let createdUserId: string | null = null;
+		let createdUser: {
+			id: string;
+			email: string;
+			fullName: string;
+			role: Role;
+			createdAt: Date;
+			lastLoginAt: Date | null;
+			deletedAt: Date | null;
+		} | null = null;
+
+		try {
+			const hiddenInitialPassword = this.createTemporaryPassword();
+			const hashedPassword = await hash(hiddenInitialPassword);
+
+			createdUser = await this.db.$transaction(async tx => {
+				const user = await tx.user.create({
+					data: {
+						email: normalizedEmail,
+						fullName,
+						role: dto.role,
+						password: hashedPassword,
+						organizationId,
+					},
+					select: {
+						id: true,
+						email: true,
+						fullName: true,
+						role: true,
+						createdAt: true,
+						lastLoginAt: true,
+						deletedAt: true,
+					},
+				});
+
+				await tx.teamInvite.create({
+					data: {
+						userId: user.id,
+						organizationId,
+						createdById: actor.id,
+						email: user.email,
+						role: user.role,
+						tokenHash,
+						expiresAt,
+					},
+				});
+
+				return user;
+			});
+
+			createdUserId = createdUser.id;
+
+			await this.mailService.sendTeamInviteEmail({
+				to: createdUser.email,
+				fullName: createdUser.fullName,
+				role: createdUser.role,
+				inviteToken,
+				expiresAt,
+			});
+		} catch (error) {
+			if (createdUserId) {
+				await this.cleanupFailedInviteCreation(createdUserId);
+			}
+
+			if (error instanceof BadRequestException) {
+				throw error;
+			}
+
+			throw new InternalServerErrorException(
+				'Failed to create invited user and send email invitation',
+			);
+		}
+
+		if (!createdUser) {
+			throw new InternalServerErrorException('Failed to create team member');
+		}
 
 		return {
 			...createdUser,
 			accountStatus: 'PENDING_CONFIRMATION' as AccountStatus,
-			temporaryPassword,
+			inviteEmailSent: true,
+			inviteExpiresAt: expiresAt,
 		};
 	}
 
@@ -289,6 +354,35 @@ export class TeamService {
 
 	private createTemporaryPassword(): string {
 		return `${randomBytes(9).toString('base64url')}A1`;
+	}
+
+	private createInviteToken(): string {
+		return randomBytes(32).toString('base64url');
+	}
+
+	private hashInviteToken(token: string): string {
+		return createHash('sha256').update(token).digest('hex');
+	}
+
+	private async cleanupFailedInviteCreation(userId: string): Promise<void> {
+		try {
+			await this.db.$transaction(async tx => {
+				await tx.teamInvite.deleteMany({
+					where: {
+						userId,
+						usedAt: null,
+					},
+				});
+
+				await tx.user.delete({
+					where: {
+						id: userId,
+					},
+				});
+			});
+		} catch {
+			// ignore cleanup failures to preserve original error surface
+		}
 	}
 
 	private fallbackNameFromEmail(email: string): string {

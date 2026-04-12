@@ -91,16 +91,14 @@ export function TeamPage() {
 			{inviteResult ? (
 				<div className='rounded-md border border-amber-300 bg-amber-50 p-4'>
 					<p className='text-sm font-medium text-amber-800'>
-						{t('team.messages.temporaryPasswordNotice')}
+						{t('team.messages.inviteEmailNotice')}
 					</p>
 					<p className='mt-1 text-sm text-amber-900'>
 						{inviteResult.fullName} ({inviteResult.email})
 					</p>
-					<p className='mt-2 text-sm'>
-						{t('team.fields.temporaryPassword')}:
-						<span className='font-mono font-semibold'>
-							{inviteResult.temporaryPassword}
-						</span>
+					<p className='mt-2 text-sm text-amber-900'>
+						{t('team.messages.inviteExpiresAt')}:{' '}
+						{new Date(inviteResult.inviteExpiresAt).toLocaleString()}
 					</p>
 				</div>
 			) : null}

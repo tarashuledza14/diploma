@@ -10,6 +10,7 @@
  */
 export type * from './models/User'
 export type * from './models/Organization'
+export type * from './models/TeamInvite'
 export type * from './models/Client'
 export type * from './models/Vehicle'
 export type * from './models/PartCategory'

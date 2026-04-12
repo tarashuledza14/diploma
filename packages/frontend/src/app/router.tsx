@@ -15,6 +15,7 @@ import {
 	NotificationsPage,
 	OrderDetailsPage,
 	OrdersPage,
+	RegisterPage,
 	SettingsPage,
 	TeamPage,
 	VehiclePage,
@@ -51,6 +52,16 @@ export const router = createBrowserRouter([
 			<Suspense fallback={<Loading />}>
 				<PageTitle titleKey='router.titles.login'>
 					<LoginPage />
+				</PageTitle>
+			</Suspense>
+		),
+	},
+	{
+		path: '/register',
+		element: (
+			<Suspense fallback={<Loading />}>
+				<PageTitle titleKey='router.titles.register'>
+					<RegisterPage />
 				</PageTitle>
 			</Suspense>
 		),

@@ -28,6 +28,11 @@ export type User = Prisma.UserModel
  */
 export type Organization = Prisma.OrganizationModel
 /**
+ * Model TeamInvite
+ * 
+ */
+export type TeamInvite = Prisma.TeamInviteModel
+/**
  * Model Client
  * 
  */

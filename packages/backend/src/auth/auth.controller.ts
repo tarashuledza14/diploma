@@ -17,6 +17,7 @@ import { Role } from 'prisma/generated/prisma/client';
 import { AuthService } from './auth.service';
 import { Auth } from './decorators/auth.decorator';
 import { CurrentUser } from './decorators/user.decorators';
+import { AcceptInviteDto } from './dto/accept-invite.dto';
 import { AuthDto, RegisterDto } from './dto/auth.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { AuthUser } from './types/auth-user.type';
@@ -75,6 +76,19 @@ export class AuthController {
 		@Res({ passthrough: true }) res: Response,
 	) {
 		const { refreshToken, ...response } = await this.authService.register(dto);
+		this.authService.addRefreshTokenToResponse(res, refreshToken);
+		return response;
+	}
+
+	@HttpCode(HttpStatus.OK)
+	@Throttle({ default: { limit: 10, ttl: 60_000 } })
+	@Post('accept-invite')
+	async acceptInvite(
+		@Body() dto: AcceptInviteDto,
+		@Res({ passthrough: true }) res: Response,
+	) {
+		const { refreshToken, ...response } =
+			await this.authService.acceptInvite(dto);
 		this.authService.addRefreshTokenToResponse(res, refreshToken);
 		return response;
 	}

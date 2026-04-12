@@ -26,4 +26,17 @@ export class AuthAPI {
 
 		return response.data;
 	}
+
+	static async acceptInvite(payload: {
+		token: string;
+		password: string;
+		fullName?: string;
+	}) {
+		const response = await instance.post<IAuthResponse>(
+			`${this.PREFIX}/accept-invite`,
+			payload,
+		);
+
+		return response.data;
+	}
 }

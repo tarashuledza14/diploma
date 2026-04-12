@@ -273,6 +273,29 @@
 		},
 		"messages": {
 			"loggedInSuccessfully": "Logged in successfully"
+		},
+		"invite": {
+			"title": "Complete registration",
+			"subtitle": "Set your password to activate your invited account",
+			"submit": "Complete registration",
+			"submitting": "Completing...",
+			"confirmPassword": "Confirm password",
+			"invalidTitle": "Invalid invitation link",
+			"invalidDescription": "The invitation link is missing or malformed. Request a new invitation from your admin.",
+			"placeholders": {
+				"fullName": "Your full name",
+				"password": "Create password",
+				"confirmPassword": "Repeat password"
+			},
+			"errors": {
+				"requiredFields": "Fill in password and confirmation fields",
+				"minLength": "Password must be at least 8 characters",
+				"passwordMismatch": "Password and confirmation do not match",
+				"acceptFailed": "Failed to complete registration"
+			},
+			"messages": {
+				"success": "Registration completed successfully"
+			}
 		}
 	},
 	"dashboard": {
@@ -1071,13 +1094,14 @@
 			}
 		},
 		"messages": {
-			"inviteSuccess": "Team member created successfully",
+			"inviteSuccess": "Invitation email sent successfully",
 			"inviteError": "Failed to invite team member",
 			"updateSuccess": "Team member updated successfully",
 			"updateError": "Failed to update team member",
 			"blockSuccess": "Team member blocked",
 			"blockError": "Failed to block team member",
-			"temporaryPasswordNotice": "Save this temporary password and share it with the employee using a secure channel."
+			"inviteEmailNotice": "Invitation email has been sent to the employee.",
+			"inviteExpiresAt": "Invite expires at"
 		}
 	},
 	"router": {
@@ -1085,6 +1109,7 @@
 		"notFound": "Page not found",
 		"titles": {
 			"login": "Login",
+			"register": "Registration",
 			"dashboard": "Dashboard",
 			"myTasks": "My tasks",
 			"assistant": "AI Assistant",

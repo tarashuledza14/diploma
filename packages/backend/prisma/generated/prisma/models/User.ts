@@ -237,6 +237,8 @@ export type UserWhereInput = {
   stockMovements?: Prisma.StockMovementListRelationFilter
   chatSessions?: Prisma.ChatSessionListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
+  teamInvites?: Prisma.TeamInviteListRelationFilter
+  createdInvites?: Prisma.TeamInviteListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -258,6 +260,8 @@ export type UserOrderByWithRelationInput = {
   stockMovements?: Prisma.StockMovementOrderByRelationAggregateInput
   chatSessions?: Prisma.ChatSessionOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
+  teamInvites?: Prisma.TeamInviteOrderByRelationAggregateInput
+  createdInvites?: Prisma.TeamInviteOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -282,6 +286,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   stockMovements?: Prisma.StockMovementListRelationFilter
   chatSessions?: Prisma.ChatSessionListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
+  teamInvites?: Prisma.TeamInviteListRelationFilter
+  createdInvites?: Prisma.TeamInviteListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -336,6 +342,8 @@ export type UserCreateInput = {
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
   chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -356,6 +364,8 @@ export type UserUncheckedCreateInput = {
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
   chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUpdateInput = {
@@ -376,6 +386,8 @@ export type UserUpdateInput = {
   stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
   chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -396,6 +408,8 @@ export type UserUncheckedUpdateInput = {
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
   chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -491,14 +505,14 @@ export type UserOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type UserNullableScalarRelationFilter = {
-  is?: Prisma.UserWhereInput | null
-  isNot?: Prisma.UserWhereInput | null
-}
-
 export type UserScalarRelationFilter = {
   is?: Prisma.UserWhereInput
   isNot?: Prisma.UserWhereInput
+}
+
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -561,6 +575,36 @@ export type UserUncheckedUpdateManyWithoutOrganizationNestedInput = {
   update?: Prisma.UserUpdateWithWhereUniqueWithoutOrganizationInput | Prisma.UserUpdateWithWhereUniqueWithoutOrganizationInput[]
   updateMany?: Prisma.UserUpdateManyWithWhereWithoutOrganizationInput | Prisma.UserUpdateManyWithWhereWithoutOrganizationInput[]
   deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserCreateNestedOneWithoutTeamInvitesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTeamInvitesInput, Prisma.UserUncheckedCreateWithoutTeamInvitesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTeamInvitesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutCreatedInvitesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedInvitesInput, Prisma.UserUncheckedCreateWithoutCreatedInvitesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedInvitesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutTeamInvitesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTeamInvitesInput, Prisma.UserUncheckedCreateWithoutTeamInvitesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTeamInvitesInput
+  upsert?: Prisma.UserUpsertWithoutTeamInvitesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTeamInvitesInput, Prisma.UserUpdateWithoutTeamInvitesInput>, Prisma.UserUncheckedUpdateWithoutTeamInvitesInput>
+}
+
+export type UserUpdateOneWithoutCreatedInvitesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedInvitesInput, Prisma.UserUncheckedCreateWithoutCreatedInvitesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedInvitesInput
+  upsert?: Prisma.UserUpsertWithoutCreatedInvitesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedInvitesInput, Prisma.UserUpdateWithoutCreatedInvitesInput>, Prisma.UserUncheckedUpdateWithoutCreatedInvitesInput>
 }
 
 export type UserCreateNestedOneWithoutStockMovementsInput = {
@@ -674,6 +718,8 @@ export type UserCreateWithoutOrganizationInput = {
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
   chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutOrganizationInput = {
@@ -693,6 +739,8 @@ export type UserUncheckedCreateWithoutOrganizationInput = {
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
   chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutOrganizationInput = {
@@ -738,6 +786,206 @@ export type UserScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
 }
 
+export type UserCreateWithoutTeamInvitesInput = {
+  id?: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  fullName: string
+  avatar?: string | null
+  lastLoginAt?: Date | string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  managerOrders?: Prisma.OrderCreateNestedManyWithoutManagerInput
+  mechanicOrders?: Prisma.OrderCreateNestedManyWithoutMechanicInput
+  serviceJobs?: Prisma.OrderServiceCreateNestedManyWithoutMechanicInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutTeamInvitesInput = {
+  id?: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  fullName: string
+  avatar?: string | null
+  lastLoginAt?: Date | string | null
+  deletedAt?: Date | string | null
+  organizationId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutManagerInput
+  mechanicOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutMechanicInput
+  serviceJobs?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutMechanicInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutTeamInvitesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutTeamInvitesInput, Prisma.UserUncheckedCreateWithoutTeamInvitesInput>
+}
+
+export type UserCreateWithoutCreatedInvitesInput = {
+  id?: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  fullName: string
+  avatar?: string | null
+  lastLoginAt?: Date | string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  managerOrders?: Prisma.OrderCreateNestedManyWithoutManagerInput
+  mechanicOrders?: Prisma.OrderCreateNestedManyWithoutMechanicInput
+  serviceJobs?: Prisma.OrderServiceCreateNestedManyWithoutMechanicInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCreatedInvitesInput = {
+  id?: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  fullName: string
+  avatar?: string | null
+  lastLoginAt?: Date | string | null
+  deletedAt?: Date | string | null
+  organizationId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  managerOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutManagerInput
+  mechanicOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutMechanicInput
+  serviceJobs?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutMechanicInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
+  chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCreatedInvitesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedInvitesInput, Prisma.UserUncheckedCreateWithoutCreatedInvitesInput>
+}
+
+export type UserUpsertWithoutTeamInvitesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTeamInvitesInput, Prisma.UserUncheckedUpdateWithoutTeamInvitesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTeamInvitesInput, Prisma.UserUncheckedCreateWithoutTeamInvitesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutTeamInvitesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTeamInvitesInput, Prisma.UserUncheckedUpdateWithoutTeamInvitesInput>
+}
+
+export type UserUpdateWithoutTeamInvitesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutUsersNestedInput
+  managerOrders?: Prisma.OrderUpdateManyWithoutManagerNestedInput
+  mechanicOrders?: Prisma.OrderUpdateManyWithoutMechanicNestedInput
+  serviceJobs?: Prisma.OrderServiceUpdateManyWithoutMechanicNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutTeamInvitesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerOrders?: Prisma.OrderUncheckedUpdateManyWithoutManagerNestedInput
+  mechanicOrders?: Prisma.OrderUncheckedUpdateManyWithoutMechanicNestedInput
+  serviceJobs?: Prisma.OrderServiceUncheckedUpdateManyWithoutMechanicNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUpsertWithoutCreatedInvitesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedInvitesInput, Prisma.UserUncheckedUpdateWithoutCreatedInvitesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedInvitesInput, Prisma.UserUncheckedCreateWithoutCreatedInvitesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedInvitesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedInvitesInput, Prisma.UserUncheckedUpdateWithoutCreatedInvitesInput>
+}
+
+export type UserUpdateWithoutCreatedInvitesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutUsersNestedInput
+  managerOrders?: Prisma.OrderUpdateManyWithoutManagerNestedInput
+  mechanicOrders?: Prisma.OrderUpdateManyWithoutMechanicNestedInput
+  serviceJobs?: Prisma.OrderServiceUpdateManyWithoutMechanicNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedInvitesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerOrders?: Prisma.OrderUncheckedUpdateManyWithoutManagerNestedInput
+  mechanicOrders?: Prisma.OrderUncheckedUpdateManyWithoutMechanicNestedInput
+  serviceJobs?: Prisma.OrderServiceUncheckedUpdateManyWithoutMechanicNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
+  chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutUserNestedInput
+}
+
 export type UserCreateWithoutStockMovementsInput = {
   id?: string
   email: string
@@ -755,6 +1003,8 @@ export type UserCreateWithoutStockMovementsInput = {
   serviceJobs?: Prisma.OrderServiceCreateNestedManyWithoutMechanicInput
   chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutStockMovementsInput = {
@@ -774,6 +1024,8 @@ export type UserUncheckedCreateWithoutStockMovementsInput = {
   serviceJobs?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutMechanicInput
   chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutStockMovementsInput = {
@@ -809,6 +1061,8 @@ export type UserUpdateWithoutStockMovementsInput = {
   serviceJobs?: Prisma.OrderServiceUpdateManyWithoutMechanicNestedInput
   chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStockMovementsInput = {
@@ -828,6 +1082,8 @@ export type UserUncheckedUpdateWithoutStockMovementsInput = {
   serviceJobs?: Prisma.OrderServiceUncheckedUpdateManyWithoutMechanicNestedInput
   chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutManagerOrdersInput = {
@@ -847,6 +1103,8 @@ export type UserCreateWithoutManagerOrdersInput = {
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
   chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutManagerOrdersInput = {
@@ -866,6 +1124,8 @@ export type UserUncheckedCreateWithoutManagerOrdersInput = {
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
   chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutManagerOrdersInput = {
@@ -890,6 +1150,8 @@ export type UserCreateWithoutMechanicOrdersInput = {
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
   chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutMechanicOrdersInput = {
@@ -909,6 +1171,8 @@ export type UserUncheckedCreateWithoutMechanicOrdersInput = {
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
   chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutMechanicOrdersInput = {
@@ -944,6 +1208,8 @@ export type UserUpdateWithoutManagerOrdersInput = {
   stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
   chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutManagerOrdersInput = {
@@ -963,6 +1229,8 @@ export type UserUncheckedUpdateWithoutManagerOrdersInput = {
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
   chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutMechanicOrdersInput = {
@@ -993,6 +1261,8 @@ export type UserUpdateWithoutMechanicOrdersInput = {
   stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
   chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMechanicOrdersInput = {
@@ -1012,6 +1282,8 @@ export type UserUncheckedUpdateWithoutMechanicOrdersInput = {
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
   chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutServiceJobsInput = {
@@ -1031,6 +1303,8 @@ export type UserCreateWithoutServiceJobsInput = {
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
   chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutServiceJobsInput = {
@@ -1050,6 +1324,8 @@ export type UserUncheckedCreateWithoutServiceJobsInput = {
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
   chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutServiceJobsInput = {
@@ -1085,6 +1361,8 @@ export type UserUpdateWithoutServiceJobsInput = {
   stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
   chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutServiceJobsInput = {
@@ -1104,6 +1382,8 @@ export type UserUncheckedUpdateWithoutServiceJobsInput = {
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
   chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutChatSessionsInput = {
@@ -1123,6 +1403,8 @@ export type UserCreateWithoutChatSessionsInput = {
   serviceJobs?: Prisma.OrderServiceCreateNestedManyWithoutMechanicInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutChatSessionsInput = {
@@ -1142,6 +1424,8 @@ export type UserUncheckedCreateWithoutChatSessionsInput = {
   serviceJobs?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutMechanicInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutChatSessionsInput = {
@@ -1177,6 +1461,8 @@ export type UserUpdateWithoutChatSessionsInput = {
   serviceJobs?: Prisma.OrderServiceUpdateManyWithoutMechanicNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChatSessionsInput = {
@@ -1196,6 +1482,8 @@ export type UserUncheckedUpdateWithoutChatSessionsInput = {
   serviceJobs?: Prisma.OrderServiceUncheckedUpdateManyWithoutMechanicNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -1215,6 +1503,8 @@ export type UserCreateWithoutNotificationsInput = {
   serviceJobs?: Prisma.OrderServiceCreateNestedManyWithoutMechanicInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutUserInput
   chatSessions?: Prisma.ChatSessionCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -1234,6 +1524,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   serviceJobs?: Prisma.OrderServiceUncheckedCreateNestedManyWithoutMechanicInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutUserInput
   chatSessions?: Prisma.ChatSessionUncheckedCreateNestedManyWithoutUserInput
+  teamInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutUserInput
+  createdInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -1269,6 +1561,8 @@ export type UserUpdateWithoutNotificationsInput = {
   serviceJobs?: Prisma.OrderServiceUpdateManyWithoutMechanicNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
   chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -1288,6 +1582,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   serviceJobs?: Prisma.OrderServiceUncheckedUpdateManyWithoutMechanicNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
   chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateManyOrganizationInput = {
@@ -1320,6 +1616,8 @@ export type UserUpdateWithoutOrganizationInput = {
   stockMovements?: Prisma.StockMovementUpdateManyWithoutUserNestedInput
   chatSessions?: Prisma.ChatSessionUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOrganizationInput = {
@@ -1339,6 +1637,8 @@ export type UserUncheckedUpdateWithoutOrganizationInput = {
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutUserNestedInput
   chatSessions?: Prisma.ChatSessionUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  teamInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutUserNestedInput
+  createdInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutOrganizationInput = {
@@ -1366,6 +1666,8 @@ export type UserCountOutputType = {
   stockMovements: number
   chatSessions: number
   notifications: number
+  teamInvites: number
+  createdInvites: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1375,6 +1677,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   stockMovements?: boolean | UserCountOutputTypeCountStockMovementsArgs
   chatSessions?: boolean | UserCountOutputTypeCountChatSessionsArgs
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
+  teamInvites?: boolean | UserCountOutputTypeCountTeamInvitesArgs
+  createdInvites?: boolean | UserCountOutputTypeCountCreatedInvitesArgs
 }
 
 /**
@@ -1429,6 +1733,20 @@ export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.NotificationWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountTeamInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TeamInviteWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TeamInviteWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1449,6 +1767,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   stockMovements?: boolean | Prisma.User$stockMovementsArgs<ExtArgs>
   chatSessions?: boolean | Prisma.User$chatSessionsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
+  teamInvites?: boolean | Prisma.User$teamInvitesArgs<ExtArgs>
+  createdInvites?: boolean | Prisma.User$createdInvitesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1505,6 +1825,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   stockMovements?: boolean | Prisma.User$stockMovementsArgs<ExtArgs>
   chatSessions?: boolean | Prisma.User$chatSessionsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
+  teamInvites?: boolean | Prisma.User$teamInvitesArgs<ExtArgs>
+  createdInvites?: boolean | Prisma.User$createdInvitesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1524,6 +1846,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
     chatSessions: Prisma.$ChatSessionPayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
+    teamInvites: Prisma.$TeamInvitePayload<ExtArgs>[]
+    createdInvites: Prisma.$TeamInvitePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1938,6 +2262,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   stockMovements<T extends Prisma.User$stockMovementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   chatSessions<T extends Prisma.User$chatSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$chatSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  teamInvites<T extends Prisma.User$teamInvitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$teamInvitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdInvites<T extends Prisma.User$createdInvitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdInvitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2534,6 +2860,54 @@ export type User$notificationsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
+}
+
+/**
+ * User.teamInvites
+ */
+export type User$teamInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TeamInvite
+   */
+  select?: Prisma.TeamInviteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TeamInvite
+   */
+  omit?: Prisma.TeamInviteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TeamInviteInclude<ExtArgs> | null
+  where?: Prisma.TeamInviteWhereInput
+  orderBy?: Prisma.TeamInviteOrderByWithRelationInput | Prisma.TeamInviteOrderByWithRelationInput[]
+  cursor?: Prisma.TeamInviteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TeamInviteScalarFieldEnum | Prisma.TeamInviteScalarFieldEnum[]
+}
+
+/**
+ * User.createdInvites
+ */
+export type User$createdInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TeamInvite
+   */
+  select?: Prisma.TeamInviteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TeamInvite
+   */
+  omit?: Prisma.TeamInviteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TeamInviteInclude<ExtArgs> | null
+  where?: Prisma.TeamInviteWhereInput
+  orderBy?: Prisma.TeamInviteOrderByWithRelationInput | Prisma.TeamInviteOrderByWithRelationInput[]
+  cursor?: Prisma.TeamInviteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TeamInviteScalarFieldEnum | Prisma.TeamInviteScalarFieldEnum[]
 }
 
 /**
