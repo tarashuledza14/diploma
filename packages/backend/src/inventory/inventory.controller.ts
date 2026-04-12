@@ -21,7 +21,10 @@ export class InventoryController {
 
 	@Auth(Role.ADMIN, Role.MANAGER, Role.MECHANIC)
 	@Get()
-	async getAll(@Query() params: GetInventoryDto, @CurrentUser() user: AuthUser) {
+	async getAll(
+		@Query() params: GetInventoryDto,
+		@CurrentUser() user: AuthUser,
+	) {
 		console.log('GET', params);
 		return this.inventoryService.getAll(params, user);
 	}

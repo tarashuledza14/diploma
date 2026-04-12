@@ -2,7 +2,6 @@ import {
 	BadRequestException,
 	ForbiddenException,
 	Injectable,
-	NotFoundException,
 } from '@nestjs/common';
 import { OrderStatus } from 'prisma/generated/prisma/client';
 import { AuthUser } from 'src/auth/types/auth-user.type';

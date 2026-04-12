@@ -32,7 +32,10 @@ export class ClientsController {
 
 	@Auth(Role.ADMIN, Role.MANAGER)
 	@Post()
-	async createClient(@Body() data: CreateClientDto, @CurrentUser() user: AuthUser) {
+	async createClient(
+		@Body() data: CreateClientDto,
+		@CurrentUser() user: AuthUser,
+	) {
 		return this.clientsService.create(data, user);
 	}
 
@@ -62,7 +65,10 @@ export class ClientsController {
 
 	@Auth(Role.ADMIN, Role.MANAGER, Role.MECHANIC)
 	@Get(':id')
-	async getClientDetails(@Param('id') id: string, @CurrentUser() user: AuthUser) {
+	async getClientDetails(
+		@Param('id') id: string,
+		@CurrentUser() user: AuthUser,
+	) {
 		return this.clientsService.getClientDetails(id, user);
 	}
 }

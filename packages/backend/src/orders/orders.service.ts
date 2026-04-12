@@ -587,7 +587,9 @@ export class OrdersService {
 			});
 
 			if (!mechanic) {
-				throw new BadRequestException('Mechanic not found in your organization');
+				throw new BadRequestException(
+					'Mechanic not found in your organization',
+				);
 			}
 		}
 
@@ -1366,21 +1368,21 @@ export class OrdersService {
 
 	private async getOrderRecipients(orderId: string, excludedUserId?: string) {
 		const order = await this.db.order.findUnique({
-				where: { id: orderId },
-				select: {
-					client: {
-						select: {
-							organizationId: true,
-						},
-					},
-					mechanicId: true,
-					services: {
-						select: {
-							mechanicId: true,
-						},
+			where: { id: orderId },
+			select: {
+				client: {
+					select: {
+						organizationId: true,
 					},
 				},
-			});
+				mechanicId: true,
+				services: {
+					select: {
+						mechanicId: true,
+					},
+				},
+			},
+		});
 
 		if (!order) {
 			return [];

@@ -39,7 +39,10 @@ export class VehiclesController {
 
 	@Auth(Role.ADMIN, Role.MANAGER, Role.MECHANIC)
 	@Get()
-	async getAllVehicles(@Query() data: GetVehiclesDto, @CurrentUser() user: AuthUser) {
+	async getAllVehicles(
+		@Query() data: GetVehiclesDto,
+		@CurrentUser() user: AuthUser,
+	) {
 		return this.vehiclesService.getAll(data, user);
 	}
 

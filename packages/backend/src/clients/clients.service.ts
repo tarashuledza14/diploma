@@ -42,7 +42,11 @@ export class ClientsService {
 		}
 	}
 
-	async update(clientId: string, data: Partial<CreateClientDto>, actor: AuthUser) {
+	async update(
+		clientId: string,
+		data: Partial<CreateClientDto>,
+		actor: AuthUser,
+	) {
 		const organizationId = this.assertOrganizationId(actor);
 		try {
 			const client = await this.db.client.findFirst({
