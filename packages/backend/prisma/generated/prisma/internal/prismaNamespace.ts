@@ -2201,6 +2201,7 @@ export const TeamInviteScalarFieldEnum = {
   createdById: 'createdById',
   email: 'email',
   role: 'role',
+  language: 'language',
   tokenHash: 'tokenHash',
   expiresAt: 'expiresAt',
   usedAt: 'usedAt',
@@ -2574,6 +2575,20 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'InviteLanguage'
+ */
+export type EnumInviteLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InviteLanguage'>
+    
+
+
+/**
+ * Reference to a field of type 'InviteLanguage[]'
+ */
+export type ListEnumInviteLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InviteLanguage[]'>
     
 
 

@@ -21,11 +21,19 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
+import { InviteLanguage } from '../interfaces/team-user.interface';
+
+function getDefaultInviteLanguage(
+	language: string | undefined,
+): InviteLanguage {
+	return language?.toLowerCase().startsWith('en') ? 'EN' : 'UK';
+}
 
 export interface InviteFormData {
 	email: string;
 	fullName?: string;
 	role: UserRole;
+	language: InviteLanguage;
 }
 
 interface InviteTeamMemberDialogProps {
@@ -41,12 +49,13 @@ export function InviteTeamMemberDialog({
 	onSubmit,
 	isSubmitting,
 }: InviteTeamMemberDialogProps) {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 
 	const schema = z.object({
 		email: z.email(t('team.form.errors.invalidEmail')),
 		fullName: z.string().trim().optional(),
 		role: z.enum(['ADMIN', 'MANAGER', 'MECHANIC']),
+		language: z.enum(['UK', 'EN']),
 	});
 
 	const {
@@ -62,16 +71,26 @@ export function InviteTeamMemberDialog({
 			email: '',
 			fullName: '',
 			role: 'MECHANIC',
+			language: getDefaultInviteLanguage(
+				i18n.resolvedLanguage ?? i18n.language,
+			),
 		},
 	});
 
 	useEffect(() => {
 		if (!open) {
 			reset();
+			return;
 		}
-	}, [open, reset]);
+
+		setValue(
+			'language',
+			getDefaultInviteLanguage(i18n.resolvedLanguage ?? i18n.language),
+		);
+	}, [open, reset, setValue, i18n.resolvedLanguage, i18n.language]);
 
 	const role = watch('role');
+	const language = watch('language');
 
 	return (
 		<ResponsiveDialog open={open} onOpenChange={onOpenChange}>
@@ -115,6 +134,30 @@ export function InviteTeamMemberDialog({
 								<SelectItem value='ADMIN'>ADMIN</SelectItem>
 								<SelectItem value='MANAGER'>MANAGER</SelectItem>
 								<SelectItem value='MECHANIC'>MECHANIC</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+
+					<div className='space-y-2'>
+						<Label>{t('team.fields.inviteLanguage')} *</Label>
+						<Select
+							value={language}
+							onValueChange={value =>
+								setValue('language', value as InviteLanguage)
+							}
+						>
+							<SelectTrigger>
+								<SelectValue
+									placeholder={t('team.form.placeholders.inviteLanguage')}
+								/>
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value='UK'>
+									{t('team.languageOptions.uk')}
+								</SelectItem>
+								<SelectItem value='EN'>
+									{t('team.languageOptions.en')}
+								</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>

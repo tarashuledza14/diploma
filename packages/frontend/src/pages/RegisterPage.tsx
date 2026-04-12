@@ -8,13 +8,26 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/shared/components/ui/card';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useSearchParams } from 'react-router-dom';
 
 export function RegisterPage() {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const [searchParams] = useSearchParams();
 	const inviteToken = searchParams.get('inviteToken') || '';
+	const inviteLanguage = searchParams.get('lang');
+
+	useEffect(() => {
+		if (!inviteLanguage) {
+			return;
+		}
+
+		const normalized = inviteLanguage.toLowerCase();
+		if (normalized === 'uk' || normalized === 'en') {
+			void i18n.changeLanguage(normalized);
+		}
+	}, [inviteLanguage, i18n]);
 
 	if (!inviteToken) {
 		return (

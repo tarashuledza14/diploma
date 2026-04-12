@@ -31,6 +31,7 @@ export type TeamInviteMinAggregateOutputType = {
   createdById: string | null
   email: string | null
   role: $Enums.Role | null
+  language: $Enums.InviteLanguage | null
   tokenHash: string | null
   expiresAt: Date | null
   usedAt: Date | null
@@ -46,6 +47,7 @@ export type TeamInviteMaxAggregateOutputType = {
   createdById: string | null
   email: string | null
   role: $Enums.Role | null
+  language: $Enums.InviteLanguage | null
   tokenHash: string | null
   expiresAt: Date | null
   usedAt: Date | null
@@ -61,6 +63,7 @@ export type TeamInviteCountAggregateOutputType = {
   createdById: number
   email: number
   role: number
+  language: number
   tokenHash: number
   expiresAt: number
   usedAt: number
@@ -78,6 +81,7 @@ export type TeamInviteMinAggregateInputType = {
   createdById?: true
   email?: true
   role?: true
+  language?: true
   tokenHash?: true
   expiresAt?: true
   usedAt?: true
@@ -93,6 +97,7 @@ export type TeamInviteMaxAggregateInputType = {
   createdById?: true
   email?: true
   role?: true
+  language?: true
   tokenHash?: true
   expiresAt?: true
   usedAt?: true
@@ -108,6 +113,7 @@ export type TeamInviteCountAggregateInputType = {
   createdById?: true
   email?: true
   role?: true
+  language?: true
   tokenHash?: true
   expiresAt?: true
   usedAt?: true
@@ -196,6 +202,7 @@ export type TeamInviteGroupByOutputType = {
   createdById: string | null
   email: string
   role: $Enums.Role
+  language: $Enums.InviteLanguage
   tokenHash: string
   expiresAt: Date
   usedAt: Date | null
@@ -232,6 +239,7 @@ export type TeamInviteWhereInput = {
   createdById?: Prisma.StringNullableFilter<"TeamInvite"> | string | null
   email?: Prisma.StringFilter<"TeamInvite"> | string
   role?: Prisma.EnumRoleFilter<"TeamInvite"> | $Enums.Role
+  language?: Prisma.EnumInviteLanguageFilter<"TeamInvite"> | $Enums.InviteLanguage
   tokenHash?: Prisma.StringFilter<"TeamInvite"> | string
   expiresAt?: Prisma.DateTimeFilter<"TeamInvite"> | Date | string
   usedAt?: Prisma.DateTimeNullableFilter<"TeamInvite"> | Date | string | null
@@ -250,6 +258,7 @@ export type TeamInviteOrderByWithRelationInput = {
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  language?: Prisma.SortOrder
   tokenHash?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -272,6 +281,7 @@ export type TeamInviteWhereUniqueInput = Prisma.AtLeast<{
   createdById?: Prisma.StringNullableFilter<"TeamInvite"> | string | null
   email?: Prisma.StringFilter<"TeamInvite"> | string
   role?: Prisma.EnumRoleFilter<"TeamInvite"> | $Enums.Role
+  language?: Prisma.EnumInviteLanguageFilter<"TeamInvite"> | $Enums.InviteLanguage
   expiresAt?: Prisma.DateTimeFilter<"TeamInvite"> | Date | string
   usedAt?: Prisma.DateTimeNullableFilter<"TeamInvite"> | Date | string | null
   revokedAt?: Prisma.DateTimeNullableFilter<"TeamInvite"> | Date | string | null
@@ -289,6 +299,7 @@ export type TeamInviteOrderByWithAggregationInput = {
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  language?: Prisma.SortOrder
   tokenHash?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -310,6 +321,7 @@ export type TeamInviteScalarWhereWithAggregatesInput = {
   createdById?: Prisma.StringNullableWithAggregatesFilter<"TeamInvite"> | string | null
   email?: Prisma.StringWithAggregatesFilter<"TeamInvite"> | string
   role?: Prisma.EnumRoleWithAggregatesFilter<"TeamInvite"> | $Enums.Role
+  language?: Prisma.EnumInviteLanguageWithAggregatesFilter<"TeamInvite"> | $Enums.InviteLanguage
   tokenHash?: Prisma.StringWithAggregatesFilter<"TeamInvite"> | string
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"TeamInvite"> | Date | string
   usedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"TeamInvite"> | Date | string | null
@@ -322,6 +334,7 @@ export type TeamInviteCreateInput = {
   id?: string
   email: string
   role: $Enums.Role
+  language?: $Enums.InviteLanguage
   tokenHash: string
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -340,6 +353,7 @@ export type TeamInviteUncheckedCreateInput = {
   createdById?: string | null
   email: string
   role: $Enums.Role
+  language?: $Enums.InviteLanguage
   tokenHash: string
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -352,6 +366,7 @@ export type TeamInviteUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  language?: Prisma.EnumInviteLanguageFieldUpdateOperationsInput | $Enums.InviteLanguage
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -370,6 +385,7 @@ export type TeamInviteUncheckedUpdateInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  language?: Prisma.EnumInviteLanguageFieldUpdateOperationsInput | $Enums.InviteLanguage
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -385,6 +401,7 @@ export type TeamInviteCreateManyInput = {
   createdById?: string | null
   email: string
   role: $Enums.Role
+  language?: $Enums.InviteLanguage
   tokenHash: string
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -397,6 +414,7 @@ export type TeamInviteUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  language?: Prisma.EnumInviteLanguageFieldUpdateOperationsInput | $Enums.InviteLanguage
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -412,6 +430,7 @@ export type TeamInviteUncheckedUpdateManyInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  language?: Prisma.EnumInviteLanguageFieldUpdateOperationsInput | $Enums.InviteLanguage
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -437,6 +456,7 @@ export type TeamInviteCountOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   email?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  language?: Prisma.SortOrder
   tokenHash?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
@@ -452,6 +472,7 @@ export type TeamInviteMaxOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   email?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  language?: Prisma.SortOrder
   tokenHash?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
@@ -467,6 +488,7 @@ export type TeamInviteMinOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   email?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  language?: Prisma.SortOrder
   tokenHash?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
@@ -601,10 +623,15 @@ export type TeamInviteUncheckedUpdateManyWithoutOrganizationNestedInput = {
   deleteMany?: Prisma.TeamInviteScalarWhereInput | Prisma.TeamInviteScalarWhereInput[]
 }
 
+export type EnumInviteLanguageFieldUpdateOperationsInput = {
+  set?: $Enums.InviteLanguage
+}
+
 export type TeamInviteCreateWithoutUserInput = {
   id?: string
   email: string
   role: $Enums.Role
+  language?: $Enums.InviteLanguage
   tokenHash: string
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -621,6 +648,7 @@ export type TeamInviteUncheckedCreateWithoutUserInput = {
   createdById?: string | null
   email: string
   role: $Enums.Role
+  language?: $Enums.InviteLanguage
   tokenHash: string
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -643,6 +671,7 @@ export type TeamInviteCreateWithoutCreatedByInput = {
   id?: string
   email: string
   role: $Enums.Role
+  language?: $Enums.InviteLanguage
   tokenHash: string
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -659,6 +688,7 @@ export type TeamInviteUncheckedCreateWithoutCreatedByInput = {
   organizationId: string
   email: string
   role: $Enums.Role
+  language?: $Enums.InviteLanguage
   tokenHash: string
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -703,6 +733,7 @@ export type TeamInviteScalarWhereInput = {
   createdById?: Prisma.StringNullableFilter<"TeamInvite"> | string | null
   email?: Prisma.StringFilter<"TeamInvite"> | string
   role?: Prisma.EnumRoleFilter<"TeamInvite"> | $Enums.Role
+  language?: Prisma.EnumInviteLanguageFilter<"TeamInvite"> | $Enums.InviteLanguage
   tokenHash?: Prisma.StringFilter<"TeamInvite"> | string
   expiresAt?: Prisma.DateTimeFilter<"TeamInvite"> | Date | string
   usedAt?: Prisma.DateTimeNullableFilter<"TeamInvite"> | Date | string | null
@@ -731,6 +762,7 @@ export type TeamInviteCreateWithoutOrganizationInput = {
   id?: string
   email: string
   role: $Enums.Role
+  language?: $Enums.InviteLanguage
   tokenHash: string
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -747,6 +779,7 @@ export type TeamInviteUncheckedCreateWithoutOrganizationInput = {
   createdById?: string | null
   email: string
   role: $Enums.Role
+  language?: $Enums.InviteLanguage
   tokenHash: string
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -787,6 +820,7 @@ export type TeamInviteCreateManyUserInput = {
   createdById?: string | null
   email: string
   role: $Enums.Role
+  language?: $Enums.InviteLanguage
   tokenHash: string
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -801,6 +835,7 @@ export type TeamInviteCreateManyCreatedByInput = {
   organizationId: string
   email: string
   role: $Enums.Role
+  language?: $Enums.InviteLanguage
   tokenHash: string
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -813,6 +848,7 @@ export type TeamInviteUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  language?: Prisma.EnumInviteLanguageFieldUpdateOperationsInput | $Enums.InviteLanguage
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -829,6 +865,7 @@ export type TeamInviteUncheckedUpdateWithoutUserInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  language?: Prisma.EnumInviteLanguageFieldUpdateOperationsInput | $Enums.InviteLanguage
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -843,6 +880,7 @@ export type TeamInviteUncheckedUpdateManyWithoutUserInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  language?: Prisma.EnumInviteLanguageFieldUpdateOperationsInput | $Enums.InviteLanguage
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -855,6 +893,7 @@ export type TeamInviteUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  language?: Prisma.EnumInviteLanguageFieldUpdateOperationsInput | $Enums.InviteLanguage
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -871,6 +910,7 @@ export type TeamInviteUncheckedUpdateWithoutCreatedByInput = {
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  language?: Prisma.EnumInviteLanguageFieldUpdateOperationsInput | $Enums.InviteLanguage
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -885,6 +925,7 @@ export type TeamInviteUncheckedUpdateManyWithoutCreatedByInput = {
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  language?: Prisma.EnumInviteLanguageFieldUpdateOperationsInput | $Enums.InviteLanguage
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -899,6 +940,7 @@ export type TeamInviteCreateManyOrganizationInput = {
   createdById?: string | null
   email: string
   role: $Enums.Role
+  language?: $Enums.InviteLanguage
   tokenHash: string
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -911,6 +953,7 @@ export type TeamInviteUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  language?: Prisma.EnumInviteLanguageFieldUpdateOperationsInput | $Enums.InviteLanguage
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -927,6 +970,7 @@ export type TeamInviteUncheckedUpdateWithoutOrganizationInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  language?: Prisma.EnumInviteLanguageFieldUpdateOperationsInput | $Enums.InviteLanguage
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -941,6 +985,7 @@ export type TeamInviteUncheckedUpdateManyWithoutOrganizationInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  language?: Prisma.EnumInviteLanguageFieldUpdateOperationsInput | $Enums.InviteLanguage
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -958,6 +1003,7 @@ export type TeamInviteSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   createdById?: boolean
   email?: boolean
   role?: boolean
+  language?: boolean
   tokenHash?: boolean
   expiresAt?: boolean
   usedAt?: boolean
@@ -976,6 +1022,7 @@ export type TeamInviteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   createdById?: boolean
   email?: boolean
   role?: boolean
+  language?: boolean
   tokenHash?: boolean
   expiresAt?: boolean
   usedAt?: boolean
@@ -994,6 +1041,7 @@ export type TeamInviteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   createdById?: boolean
   email?: boolean
   role?: boolean
+  language?: boolean
   tokenHash?: boolean
   expiresAt?: boolean
   usedAt?: boolean
@@ -1012,6 +1060,7 @@ export type TeamInviteSelectScalar = {
   createdById?: boolean
   email?: boolean
   role?: boolean
+  language?: boolean
   tokenHash?: boolean
   expiresAt?: boolean
   usedAt?: boolean
@@ -1020,7 +1069,7 @@ export type TeamInviteSelectScalar = {
   updatedAt?: boolean
 }
 
-export type TeamInviteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "organizationId" | "createdById" | "email" | "role" | "tokenHash" | "expiresAt" | "usedAt" | "revokedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["teamInvite"]>
+export type TeamInviteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "organizationId" | "createdById" | "email" | "role" | "language" | "tokenHash" | "expiresAt" | "usedAt" | "revokedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["teamInvite"]>
 export type TeamInviteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -1051,6 +1100,7 @@ export type $TeamInvitePayload<ExtArgs extends runtime.Types.Extensions.Internal
     createdById: string | null
     email: string
     role: $Enums.Role
+    language: $Enums.InviteLanguage
     tokenHash: string
     expiresAt: Date
     usedAt: Date | null
@@ -1489,6 +1539,7 @@ export interface TeamInviteFieldRefs {
   readonly createdById: Prisma.FieldRef<"TeamInvite", 'String'>
   readonly email: Prisma.FieldRef<"TeamInvite", 'String'>
   readonly role: Prisma.FieldRef<"TeamInvite", 'Role'>
+  readonly language: Prisma.FieldRef<"TeamInvite", 'InviteLanguage'>
   readonly tokenHash: Prisma.FieldRef<"TeamInvite", 'String'>
   readonly expiresAt: Prisma.FieldRef<"TeamInvite", 'DateTime'>
   readonly usedAt: Prisma.FieldRef<"TeamInvite", 'DateTime'>

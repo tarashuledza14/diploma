@@ -1052,7 +1052,12 @@
 		"fields": {
 			"fullName": "ПІБ",
 			"role": "Роль",
-			"temporaryPassword": "Тимчасовий пароль"
+			"temporaryPassword": "Тимчасовий пароль",
+			"inviteLanguage": "Мова запрошення"
+		},
+		"languageOptions": {
+			"uk": "Українська",
+			"en": "Англійська"
 		},
 		"columns": {
 			"fullName": "ПІБ",
@@ -1086,7 +1091,8 @@
 		"form": {
 			"emailImmutable": "Email не можна змінити після реєстрації.",
 			"placeholders": {
-				"role": "Оберіть роль"
+				"role": "Оберіть роль",
+				"inviteLanguage": "Оберіть мову"
 			},
 			"errors": {
 				"invalidEmail": "Некоректний email",

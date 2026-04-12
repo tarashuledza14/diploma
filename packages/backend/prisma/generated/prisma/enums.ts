@@ -98,6 +98,14 @@ export const PartCondition = {
 export type PartCondition = (typeof PartCondition)[keyof typeof PartCondition]
 
 
+export const InviteLanguage = {
+  UK: 'UK',
+  EN: 'EN'
+} as const
+
+export type InviteLanguage = (typeof InviteLanguage)[keyof typeof InviteLanguage]
+
+
 export const ChatMessageRole = {
   USER: 'USER',
   ASSISTANT: 'ASSISTANT'

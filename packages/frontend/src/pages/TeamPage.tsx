@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 export function TeamPage() {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const searchParams = useTableSearchParams();
 	const [fullName] = useQueryState('fullName', parseAsString.withDefault(''));
 	const teamSearchParams = useMemo(
@@ -48,7 +48,18 @@ export function TeamPage() {
 
 	const handleInvite = async (formData: InviteFormData) => {
 		try {
-			const created = await createUser(formData);
+			const fallbackLanguage: 'EN' | 'UK' = (
+				i18n.resolvedLanguage ?? i18n.language
+			)
+				.toLowerCase()
+				.startsWith('en')
+				? 'EN'
+				: 'UK';
+
+			const created = await createUser({
+				...formData,
+				language: formData.language ?? fallbackLanguage,
+			});
 			setInviteResult(created);
 			setIsInviteOpen(false);
 			toast.success(t('team.messages.inviteSuccess'));

@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
 	IsEmail,
 	IsEnum,
@@ -5,7 +6,7 @@ import {
 	IsString,
 	MinLength,
 } from 'class-validator';
-import { Role } from 'prisma/generated/prisma/client';
+import { InviteLanguage, Role } from 'prisma/generated/prisma/client';
 
 export class CreateTeamUserDto {
 	@IsEmail()
@@ -18,4 +19,11 @@ export class CreateTeamUserDto {
 
 	@IsEnum(Role)
 	role: Role;
+
+	@IsOptional()
+	@Transform(({ value }) =>
+		typeof value === 'string' ? value.trim().toUpperCase() : value,
+	)
+	@IsEnum(InviteLanguage)
+	language?: InviteLanguage;
 }

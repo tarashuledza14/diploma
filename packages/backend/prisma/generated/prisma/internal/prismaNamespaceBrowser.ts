@@ -126,6 +126,7 @@ export const TeamInviteScalarFieldEnum = {
   createdById: 'createdById',
   email: 'email',
   role: 'role',
+  language: 'language',
   tokenHash: 'tokenHash',
   expiresAt: 'expiresAt',
   usedAt: 'usedAt',

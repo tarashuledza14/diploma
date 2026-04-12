@@ -152,6 +152,23 @@ export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
 }
 
+export type EnumInviteLanguageFilter<$PrismaModel = never> = {
+  equals?: $Enums.InviteLanguage | Prisma.EnumInviteLanguageFieldRefInput<$PrismaModel>
+  in?: $Enums.InviteLanguage[] | Prisma.ListEnumInviteLanguageFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InviteLanguage[] | Prisma.ListEnumInviteLanguageFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInviteLanguageFilter<$PrismaModel> | $Enums.InviteLanguage
+}
+
+export type EnumInviteLanguageWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InviteLanguage | Prisma.EnumInviteLanguageFieldRefInput<$PrismaModel>
+  in?: $Enums.InviteLanguage[] | Prisma.ListEnumInviteLanguageFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InviteLanguage[] | Prisma.ListEnumInviteLanguageFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInviteLanguageWithAggregatesFilter<$PrismaModel> | $Enums.InviteLanguage
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInviteLanguageFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInviteLanguageFilter<$PrismaModel>
+}
+
 export type DecimalFilter<$PrismaModel = never> = {
   equals?: runtime.Decimal | runtime.DecimalJsLike | number | string | Prisma.DecimalFieldRefInput<$PrismaModel>
   in?: runtime.Decimal[] | runtime.DecimalJsLike[] | number[] | string[] | Prisma.ListDecimalFieldRefInput<$PrismaModel>
@@ -670,6 +687,23 @@ export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
+}
+
+export type NestedEnumInviteLanguageFilter<$PrismaModel = never> = {
+  equals?: $Enums.InviteLanguage | Prisma.EnumInviteLanguageFieldRefInput<$PrismaModel>
+  in?: $Enums.InviteLanguage[] | Prisma.ListEnumInviteLanguageFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InviteLanguage[] | Prisma.ListEnumInviteLanguageFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInviteLanguageFilter<$PrismaModel> | $Enums.InviteLanguage
+}
+
+export type NestedEnumInviteLanguageWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InviteLanguage | Prisma.EnumInviteLanguageFieldRefInput<$PrismaModel>
+  in?: $Enums.InviteLanguage[] | Prisma.ListEnumInviteLanguageFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InviteLanguage[] | Prisma.ListEnumInviteLanguageFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInviteLanguageWithAggregatesFilter<$PrismaModel> | $Enums.InviteLanguage
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInviteLanguageFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInviteLanguageFilter<$PrismaModel>
 }
 
 export type NestedDecimalFilter<$PrismaModel = never> = {

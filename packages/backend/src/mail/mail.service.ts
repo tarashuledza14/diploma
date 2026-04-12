@@ -1,11 +1,14 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
+import { InviteLanguage } from 'prisma/generated/prisma/client';
+import { buildTeamInviteEmailContent } from './team-invite-email.templates';
 
 interface TeamInviteEmailInput {
 	to: string;
 	fullName: string;
 	role: string;
+	language: InviteLanguage;
 	inviteToken: string;
 	expiresAt: Date;
 }
@@ -20,11 +23,19 @@ export class MailService {
 		);
 	}
 
-	private buildInviteUrl(inviteToken: string): string {
+	private buildInviteUrl(
+		inviteToken: string,
+		language: InviteLanguage,
+	): string {
 		const frontendUrl = this.getFrontendUrl();
 		const url = new URL('/register', frontendUrl);
 		url.searchParams.set('inviteToken', inviteToken);
+		url.searchParams.set('lang', this.toAppLanguage(language));
 		return url.toString();
+	}
+
+	private toAppLanguage(language: InviteLanguage): 'uk' | 'en' {
+		return language === InviteLanguage.EN ? 'en' : 'uk';
 	}
 
 	private createTransporter() {
@@ -56,34 +67,28 @@ export class MailService {
 		const from =
 			this.configService.get<string>('SMTP_FROM') ||
 			'AutoCRM <no-reply@autocrm.local>';
-		const inviteUrl = this.buildInviteUrl(input.inviteToken);
+		const inviteUrl = this.buildInviteUrl(input.inviteToken, input.language);
 		const transporter = this.createTransporter();
 
-		const expiresAtFormatted = input.expiresAt.toLocaleString('uk-UA', {
+		const dateLocale = input.language === InviteLanguage.EN ? 'en-US' : 'uk-UA';
+		const expiresAtFormatted = input.expiresAt.toLocaleString(dateLocale, {
 			timeZone: 'Europe/Kyiv',
+		});
+
+		const content = buildTeamInviteEmailContent({
+			fullName: input.fullName,
+			role: input.role,
+			inviteUrl,
+			expiresAtFormatted,
+			language: input.language,
 		});
 
 		await transporter.sendMail({
 			from,
 			to: input.to,
-			subject: 'Запрошення до AutoCRM',
-			text: [
-				`Вітаємо, ${input.fullName}!`,
-				`Вас додано до команди AutoCRM з роллю ${input.role}.`,
-				`Щоб завершити реєстрацію, відкрийте посилання: ${inviteUrl}`,
-				`Посилання дійсне до: ${expiresAtFormatted}`,
-			].join('\n'),
-			html: `
-				<div style="font-family: Arial, sans-serif; line-height: 1.5; color: #111827;">
-					<h2 style="margin-bottom: 12px;">Вітаємо, ${input.fullName}!</h2>
-					<p style="margin-bottom: 12px;">Вас додано до команди <b>AutoCRM</b> з роллю <b>${input.role}</b>.</p>
-					<p style="margin-bottom: 16px;">Натисніть кнопку нижче, щоб завершити реєстрацію:</p>
-					<a href="${inviteUrl}" style="display: inline-block; background: #111827; color: #ffffff; text-decoration: none; padding: 10px 16px; border-radius: 6px;">Завершити реєстрацію</a>
-					<p style="margin-top: 16px;">Або відкрийте це посилання вручну:</p>
-					<p><a href="${inviteUrl}">${inviteUrl}</a></p>
-					<p style="margin-top: 16px; color: #6b7280;">Посилання дійсне до: ${expiresAtFormatted}</p>
-				</div>
-			`,
+			subject: content.subject,
+			text: content.text,
+			html: content.html,
 		});
 
 		return inviteUrl;

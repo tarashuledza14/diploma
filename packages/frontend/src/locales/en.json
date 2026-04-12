@@ -1052,7 +1052,12 @@
 		"fields": {
 			"fullName": "Full name",
 			"role": "Role",
-			"temporaryPassword": "Temporary password"
+			"temporaryPassword": "Temporary password",
+			"inviteLanguage": "Invite language"
+		},
+		"languageOptions": {
+			"uk": "Ukrainian",
+			"en": "English"
 		},
 		"columns": {
 			"fullName": "Full name",
@@ -1086,7 +1091,8 @@
 		"form": {
 			"emailImmutable": "Email cannot be changed after registration.",
 			"placeholders": {
-				"role": "Select role"
+				"role": "Select role",
+				"inviteLanguage": "Select language"
 			},
 			"errors": {
 				"invalidEmail": "Invalid email",

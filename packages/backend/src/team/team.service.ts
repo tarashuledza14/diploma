@@ -8,7 +8,11 @@ import {
 } from '@nestjs/common';
 import { hash } from 'argon2';
 import { createHash, randomBytes } from 'crypto';
-import { OrderStatus, Role } from 'prisma/generated/prisma/client';
+import {
+	InviteLanguage,
+	OrderStatus,
+	Role,
+} from 'prisma/generated/prisma/client';
 import { AuthUser } from 'src/auth/types/auth-user.type';
 import { FilterService } from 'src/filter/filter.service';
 import { MailService } from 'src/mail/mail.service';
@@ -139,6 +143,7 @@ export class TeamService {
 		const inviteToken = this.createInviteToken();
 		const tokenHash = this.hashInviteToken(inviteToken);
 		const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 3);
+		const inviteLanguage = this.resolveInviteLanguage(dto.language);
 
 		const fullName =
 			dto.fullName?.trim() || this.fallbackNameFromEmail(dto.email);
@@ -185,6 +190,7 @@ export class TeamService {
 						createdById: actor.id,
 						email: user.email,
 						role: user.role,
+						language: inviteLanguage,
 						tokenHash,
 						expiresAt,
 					},
@@ -199,6 +205,7 @@ export class TeamService {
 				to: createdUser.email,
 				fullName: createdUser.fullName,
 				role: createdUser.role,
+				language: inviteLanguage,
 				inviteToken,
 				expiresAt,
 			});
@@ -362,6 +369,19 @@ export class TeamService {
 
 	private hashInviteToken(token: string): string {
 		return createHash('sha256').update(token).digest('hex');
+	}
+
+	private resolveInviteLanguage(language: unknown): InviteLanguage {
+		if (typeof language !== 'string') {
+			return InviteLanguage.UK;
+		}
+
+		const normalized = language.trim().toUpperCase();
+		if (normalized === InviteLanguage.EN) {
+			return InviteLanguage.EN;
+		}
+
+		return InviteLanguage.UK;
 	}
 
 	private async cleanupFailedInviteCreation(userId: string): Promise<void> {

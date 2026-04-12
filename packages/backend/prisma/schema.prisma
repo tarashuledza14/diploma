@@ -76,6 +76,11 @@ enum PartCondition {
   REFURBISHED
 }
 
+enum InviteLanguage {
+  UK
+  EN
+}
+
 // ==========================================
 // PEOPLE & VEHICLES (Люди та Автомобілі)
 // ==========================================
@@ -128,21 +133,22 @@ model Organization {
 }
 
 model TeamInvite {
-  id             String       @id @default(cuid())
-  userId         String       @map("user_id")
-  user           User         @relation("InviteRecipient", fields: [userId], references: [id], onDelete: Cascade)
-  organizationId String       @map("organization_id")
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  createdById    String?      @map("created_by_id")
-  createdBy      User?        @relation("InviteCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  id             String         @id @default(cuid())
+  userId         String         @map("user_id")
+  user           User           @relation("InviteRecipient", fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String         @map("organization_id")
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdById    String?        @map("created_by_id")
+  createdBy      User?          @relation("InviteCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
   email          String
   role           Role
-  tokenHash      String       @unique @map("token_hash")
-  expiresAt      DateTime     @map("expires_at")
-  usedAt         DateTime?    @map("used_at")
-  revokedAt      DateTime?    @map("revoked_at")
-  createdAt      DateTime     @default(now()) @map("created_at")
-  updatedAt      DateTime     @updatedAt @map("updated_at")
+  language       InviteLanguage @default(UK)
+  tokenHash      String         @unique @map("token_hash")
+  expiresAt      DateTime       @map("expires_at")
+  usedAt         DateTime?      @map("used_at")
+  revokedAt      DateTime?      @map("revoked_at")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
 
   @@index([userId])
   @@index([organizationId])
