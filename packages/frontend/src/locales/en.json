@@ -39,7 +39,25 @@
 		"toggle": "Toggle theme",
 		"light": "Light",
 		"dark": "Dark",
-		"system": "System"
+		"system": "System",
+		"preset": {
+			"title": "Color Theme",
+			"label": "Palette preset",
+			"description": "Applies to the entire app and is saved for your account in this browser.",
+			"options": {
+				"purple": "Purple",
+				"blue": "Blue",
+				"default": "Default"
+			}
+		},
+		"chrome": {
+			"label": "Header and sidebar",
+			"description": "Choose whether navigation panels should blend with the main content or stay contrasty.",
+			"options": {
+				"linked": "Blend with content",
+				"contrast": "Contrast"
+			}
+		}
 	},
 	"search": {
 		"globalPlaceholder": "Search orders, clients, vehicles..."

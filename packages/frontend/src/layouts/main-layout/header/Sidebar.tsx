@@ -28,6 +28,7 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 	SidebarRail,
+	useTheme,
 } from '@/shared';
 import { UserRole } from '@/shared/interfaces/user.interface';
 
@@ -45,9 +46,20 @@ interface NavGroup {
 
 export function AppSidebar() {
 	const { t } = useTranslation();
+	const { chromeMode } = useTheme();
 	const { pathname } = useLocation();
 	const role = useUserStore(state => state.user?.role);
 	const { data: branding } = useAppBrandingQuery();
+	const isContrastChrome = chromeMode === 'contrast';
+	const sidebarTextClass = isContrastChrome
+		? 'text-zinc-100'
+		: 'text-sidebar-foreground';
+	const sidebarSubtleTextClass = isContrastChrome
+		? 'text-zinc-400'
+		: 'text-sidebar-foreground/70';
+	const sidebarItemTextClass = isContrastChrome
+		? 'text-zinc-100 hover:text-white data-[active=true]:text-white'
+		: 'text-sidebar-foreground hover:text-sidebar-accent-foreground data-[active=true]:text-sidebar-accent-foreground';
 	const brandName = branding?.appName?.trim() || t('sidebar.brand.name');
 	const brandLogoUrl = branding?.logoUrl?.trim() || null;
 	const navGroups: NavGroup[] = [
@@ -129,11 +141,20 @@ export function AppSidebar() {
 	const isActive = (url: string) => pathname === url;
 
 	return (
-		<Sidebar collapsible='icon'>
+		<Sidebar
+			collapsible='icon'
+			style={{
+				color: isContrastChrome ? '#f4f4f5' : 'var(--sidebar-foreground)',
+			}}
+		>
 			<SidebarHeader>
 				<SidebarMenu>
 					<SidebarMenuItem>
-						<SidebarMenuButton size='lg' asChild>
+						<SidebarMenuButton
+							size='lg'
+							asChild
+							className={sidebarItemTextClass}
+						>
 							<Link to='/'>
 								<div className='flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg bg-primary text-primary-foreground'>
 									{brandLogoUrl ? (
@@ -151,8 +172,14 @@ export function AppSidebar() {
 									)}
 								</div>
 								<div className='grid flex-1 text-left text-sm leading-tight'>
-									<span className='truncate font-semibold'>{brandName}</span>
-									<span className='truncate text-xs'>
+									<span
+										className={`truncate font-semibold ${sidebarTextClass}`}
+									>
+										{brandName}
+									</span>
+									<span
+										className={`truncate text-xs ${sidebarSubtleTextClass}`}
+									>
 										{t('sidebar.brand.plan')}
 									</span>
 								</div>
@@ -165,7 +192,9 @@ export function AppSidebar() {
 			<SidebarContent>
 				{visibleGroups.map(group => (
 					<SidebarGroup key={group.label}>
-						<SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+						<SidebarGroupLabel className={sidebarSubtleTextClass}>
+							{group.label}
+						</SidebarGroupLabel>
 						<SidebarGroupContent>
 							<SidebarMenu>
 								{group.items.map(item => (
@@ -174,6 +203,7 @@ export function AppSidebar() {
 											asChild
 											isActive={isActive(item.url)}
 											tooltip={item.title}
+											className={sidebarItemTextClass}
 										>
 											<Link to={item.url}>
 												<item.icon />
@@ -196,6 +226,7 @@ export function AppSidebar() {
 										asChild
 										isActive={isActive('/team')}
 										tooltip={t('sidebar.items.team')}
+										className={sidebarItemTextClass}
 									>
 										<Link to='/team'>
 											<Users />
@@ -208,6 +239,7 @@ export function AppSidebar() {
 										asChild
 										isActive={isActive('/settings')}
 										tooltip={t('sidebar.items.settings')}
+										className={sidebarItemTextClass}
 									>
 										<Link to='/settings'>
 											<Settings />

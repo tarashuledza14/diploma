@@ -13,6 +13,8 @@ import {
 	CardContent,
 	CardHeader,
 	CardTitle,
+	cn,
+	ColorSwatch,
 	FileUpload,
 	FileUploadDropzone,
 	FileUploadTrigger,
@@ -23,6 +25,9 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
+	ThemeChromeMode,
+	ThemePreset,
+	useTheme,
 } from '@/shared';
 import { useMutation } from '@tanstack/react-query';
 import { Car, CloudUpload } from 'lucide-react';
@@ -34,6 +39,28 @@ const currencyOptions: AppCurrency[] = ['UAH', 'USD', 'EUR'];
 
 export function SettingsPage() {
 	const { t } = useTranslation();
+	const { preset, setPreset, chromeMode, setChromeMode } = useTheme();
+	const presetOptions: Array<{
+		value: ThemePreset;
+		labelKey: string;
+		swatchColor: string;
+	}> = [
+		{
+			value: 'purple',
+			labelKey: 'theme.preset.options.purple',
+			swatchColor: '#8b5cf6',
+		},
+		{
+			value: 'blue',
+			labelKey: 'theme.preset.options.blue',
+			swatchColor: '#3b82f6',
+		},
+		{
+			value: 'default',
+			labelKey: 'theme.preset.options.default',
+			swatchColor: '#111827',
+		},
+	];
 	const { data, isLoading, isError, refetch } = useAppBrandingQuery();
 	const { mutateAsync: updateBranding, isPending } =
 		useUpdateBrandingMutation();
@@ -192,6 +219,81 @@ export function SettingsPage() {
 						{t('brandingSettings.subtitle')}
 					</p>
 				</div>
+
+				<Card>
+					<CardHeader>
+						<CardTitle>{t('theme.preset.title')}</CardTitle>
+					</CardHeader>
+					<CardContent className='space-y-2'>
+						<Label>{t('theme.preset.label')}</Label>
+						<div
+							role='radiogroup'
+							aria-label={t('theme.preset.label')}
+							className='grid gap-2 sm:grid-cols-3'
+						>
+							{presetOptions.map(option => {
+								const isSelected = preset === option.value;
+
+								return (
+									<button
+										key={option.value}
+										type='button'
+										role='radio'
+										aria-checked={isSelected}
+										aria-label={t(option.labelKey)}
+										onClick={() => setPreset(option.value)}
+										className={cn(
+											'flex items-center gap-3 rounded-md border px-3 py-2 text-left transition-colors hover:bg-accent/40',
+											isSelected
+												? 'border-primary bg-accent/30 ring-1 ring-primary/30'
+												: 'border-border',
+										)}
+									>
+										<ColorSwatch
+											color={option.swatchColor}
+											size='sm'
+											withoutTransparency
+											className={cn(
+												'shrink-0 border-border',
+												isSelected &&
+													'ring-2 ring-primary ring-offset-1 ring-offset-background',
+											)}
+										/>
+										<span className='text-sm font-medium'>
+											{t(option.labelKey)}
+										</span>
+									</button>
+								);
+							})}
+						</div>
+						<p className='text-xs text-muted-foreground'>
+							{t('theme.preset.description')}
+						</p>
+
+						<div className='space-y-2 pt-2'>
+							<Label htmlFor='chromeMode'>{t('theme.chrome.label')}</Label>
+							<Select
+								value={chromeMode}
+								onValueChange={value => setChromeMode(value as ThemeChromeMode)}
+							>
+								<SelectTrigger id='chromeMode'>
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value='linked'>
+										{t('theme.chrome.options.linked')}
+									</SelectItem>
+									<SelectItem value='contrast'>
+										{t('theme.chrome.options.contrast')}
+									</SelectItem>
+								</SelectContent>
+							</Select>
+							<p className='text-xs text-muted-foreground'>
+								{t('theme.chrome.description')}
+							</p>
+						</div>
+					</CardContent>
+				</Card>
 
 				{isLoading ? (
 					<p className='text-sm text-muted-foreground'>{t('common.loading')}</p>
