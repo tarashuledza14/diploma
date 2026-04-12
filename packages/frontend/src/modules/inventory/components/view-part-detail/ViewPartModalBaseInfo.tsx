@@ -1,4 +1,4 @@
-import { Badge } from '@/shared';
+import { Badge, cn, compactSecondaryBadgeClass } from '@/shared';
 import { FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { InventoryPart } from '../../interfaces/inventory.interfaces';
@@ -45,7 +45,10 @@ export function ViewPartModalBaseInfo({
 					<span className='text-muted-foreground'>
 						{t('inventory.form.base.categoryLabel')}
 					</span>
-					<Badge variant='secondary' className='font-normal'>
+					<Badge
+						variant='secondary'
+						className={cn(compactSecondaryBadgeClass, 'font-normal')}
+					>
 						{selectedPart.category?.name ?? t('common.notAvailable')}
 					</Badge>
 				</div>

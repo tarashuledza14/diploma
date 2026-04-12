@@ -1,4 +1,4 @@
-import { Badge } from '@/shared';
+import { Badge, compactSecondaryBadgeClass } from '@/shared';
 import { ArrowUpDown } from 'lucide-react';
 
 interface ViewPartModalCompatibilityProps {
@@ -17,7 +17,11 @@ export function ViewPartModalCompatibility({
 			</h4>
 			<div className='flex flex-wrap gap-1.5'>
 				{compatibility.map(c => (
-					<Badge key={c} variant='outline' className='text-xs'>
+					<Badge
+						key={c}
+						variant='secondary'
+						className={compactSecondaryBadgeClass}
+					>
 						{c}
 					</Badge>
 				))}

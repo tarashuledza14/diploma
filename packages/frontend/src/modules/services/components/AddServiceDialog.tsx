@@ -2,6 +2,7 @@ import {
 	Badge,
 	Button,
 	Checkbox,
+	compactSecondaryBadgeClass,
 	Input,
 	Label,
 	Popover,
@@ -216,14 +217,17 @@ export function AddServiceDialog({
 															<Badge
 																key={id}
 																variant='secondary'
-																className='text-xs'
+																className={compactSecondaryBadgeClass}
 															>
 																{cat.name}
 															</Badge>
 														) : null;
 													})}
 													{field.value.length > 2 && (
-														<Badge variant='outline'>
+														<Badge
+															variant='secondary'
+															className={compactSecondaryBadgeClass}
+														>
 															+{field.value.length - 2}
 														</Badge>
 													)}

@@ -1,6 +1,7 @@
 import {
 	Badge,
 	Button,
+	inventoryConditionColors,
 	ResponsiveDialogDescription,
 	ResponsiveDialogHeader,
 	ResponsiveDialogTitle,
@@ -20,22 +21,22 @@ function getConditionBadge(
 		case PartCondition.NEW:
 			return {
 				label: t('inventory.form.details.condition.new'),
-				className: 'bg-green-100 text-green-700 border-green-200',
+				className: inventoryConditionColors.NEW,
 			};
 		case PartCondition.USED:
 			return {
 				label: t('inventory.form.details.condition.used'),
-				className: 'bg-amber-100 text-amber-700 border-amber-200',
+				className: inventoryConditionColors.USED,
 			};
 		case PartCondition.REFURBISHED:
 			return {
 				label: t('inventory.form.details.condition.refurbished'),
-				className: 'bg-blue-100 text-blue-700 border-blue-200',
+				className: inventoryConditionColors.REFURBISHED,
 			};
 		default:
 			return {
 				label: t('inventory.unknown'),
-				className: 'bg-gray-100 text-gray-700 border-gray-200',
+				className: inventoryConditionColors.UNKNOWN,
 			};
 	}
 }
@@ -73,7 +74,7 @@ export function ViewPartModalHeader({
 						<span className='hidden sm:inline'>|</span>
 						<span>{selectedPart.brand?.name || t('common.notAvailable')}</span>
 						<span className='hidden sm:inline'>|</span>
-						<Badge variant='outline' className={conditionBadge.className}>
+						<Badge className={conditionBadge.className}>
 							{conditionBadge.label}
 						</Badge>
 					</ResponsiveDialogDescription>

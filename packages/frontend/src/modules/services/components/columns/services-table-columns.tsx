@@ -2,6 +2,8 @@ import {
 	Badge,
 	Button,
 	Checkbox,
+	cn,
+	compactSecondaryBadgeClass,
 	DataTableColumnHeader,
 	DropdownMenu,
 	DropdownMenuContent,
@@ -10,6 +12,7 @@ import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
+	serviceStatusColors,
 } from '@/shared';
 import { DataTableRowAction } from '@/types/data-table';
 import { ColumnDef } from '@tanstack/react-table';
@@ -99,7 +102,9 @@ export function getServicesTableColumns({
 			cell: ({ row }) => {
 				const category = row.original.category;
 				return category ? (
-					<Badge variant='outline'>{category.name}</Badge>
+					<Badge variant='secondary' className={compactSecondaryBadgeClass}>
+						{category.name}
+					</Badge>
 				) : (
 					<span className='text-muted-foreground'>-</span>
 				);
@@ -160,7 +165,8 @@ export function getServicesTableColumns({
 						{visibleCategories.map(c => (
 							<Badge
 								key={c.id}
-								className='bg-white text-black hover:bg-gray-100'
+								variant='secondary'
+								className={compactSecondaryBadgeClass}
 							>
 								{c.name}
 							</Badge>
@@ -170,7 +176,10 @@ export function getServicesTableColumns({
 								<PopoverTrigger asChild>
 									<Badge
 										variant='secondary'
-										className='cursor-pointer hover:bg-secondary/80'
+										className={cn(
+											compactSecondaryBadgeClass,
+											'cursor-pointer hover:bg-secondary/80',
+										)}
 									>
 										+{hiddenCount}
 									</Badge>
@@ -181,7 +190,11 @@ export function getServicesTableColumns({
 								>
 									<div className='flex flex-wrap gap-1.5'>
 										{categories.slice(maxVisible).map(c => (
-											<Badge key={c.id} variant='outline' className='text-xs'>
+											<Badge
+												key={c.id}
+												variant='secondary'
+												className={compactSecondaryBadgeClass}
+											>
 												{c.name}
 											</Badge>
 										))}
@@ -237,9 +250,10 @@ export function getServicesTableColumns({
 				const status = row.original.status
 					? t('services.status.active')
 					: t('services.status.inactive');
+				const statusTone = row.original.status ? 'ACTIVE' : 'INACTIVE';
 
 				return (
-					<Badge variant={row.original.status ? 'default' : 'secondary'}>
+					<Badge className={cn(serviceStatusColors[statusTone])}>
 						{status}
 					</Badge>
 				);

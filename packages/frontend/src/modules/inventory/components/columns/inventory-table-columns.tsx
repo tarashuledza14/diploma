@@ -6,6 +6,7 @@ import {
 	Badge,
 	Button,
 	Checkbox,
+	compactSecondaryBadgeClass,
 	DataTableColumnHeader,
 	DropdownMenu,
 	DropdownMenuContent,
@@ -109,7 +110,11 @@ export function getInventoryTableColumns({
 					label={t('inventory.columns.category')}
 				/>
 			),
-			cell: ({ row }) => <Badge>{row.original.category?.name}</Badge>,
+			cell: ({ row }) => (
+				<Badge variant='secondary' className={compactSecondaryBadgeClass}>
+					{row.original.category?.name}
+				</Badge>
+			),
 			enableSorting: true,
 			enableColumnFilter: true,
 			enableHiding: true,
@@ -156,7 +161,11 @@ export function getInventoryTableColumns({
 					label={t('inventory.columns.brand')}
 				/>
 			),
-			cell: ({ cell }) => <Badge>{cell.getValue<string>()}</Badge>,
+			cell: ({ cell }) => (
+				<Badge variant='secondary' className={compactSecondaryBadgeClass}>
+					{cell.getValue<string>()}
+				</Badge>
+			),
 			enableSorting: true,
 			enableColumnFilter: true,
 			enableHiding: true,

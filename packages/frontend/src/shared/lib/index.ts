@@ -1,3 +1,4 @@
+export * from './badge-colors';
 export * from './compose-refs';
 export * from './data-table';
 export * from './format';

@@ -1,5 +1,10 @@
 import { StockMovement } from '@/modules/inventory/interfaces/get-inventory.interfaces';
-import { Badge, formatDate, ScrollArea } from '@/shared';
+import {
+	Badge,
+	formatDate,
+	inventoryMovementColors,
+	ScrollArea,
+} from '@/shared';
 import { ArrowUpDown, Clock, History, Package, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -11,27 +16,27 @@ function getMovementBadge(
 		case 'RECEIVED':
 			return {
 				label: t('inventory.movement.types.received'),
-				className: 'bg-green-100 text-green-700 border-green-200',
+				className: inventoryMovementColors.RECEIVED,
 			};
 		case 'ISSUED':
 			return {
 				label: t('inventory.movement.types.issued'),
-				className: 'bg-blue-100 text-blue-700 border-blue-200',
+				className: inventoryMovementColors.ISSUED,
 			};
 		case 'RESERVED':
 			return {
 				label: t('inventory.movement.types.reserved'),
-				className: 'bg-amber-100 text-amber-700 border-amber-200',
+				className: inventoryMovementColors.RESERVED,
 			};
 		case 'RETURNED':
 			return {
 				label: t('inventory.movement.types.returned'),
-				className: 'bg-purple-100 text-purple-700 border-purple-200',
+				className: inventoryMovementColors.RETURNED,
 			};
 		default:
 			return {
 				label: type,
-				className: 'bg-gray-100 text-gray-700 border-gray-200',
+				className: inventoryMovementColors.UNKNOWN,
 			};
 	}
 }
@@ -77,9 +82,7 @@ export function MovementHistoryList({
 								</div>
 								<div className='flex-1 min-w-0'>
 									<div className='flex items-center gap-2 mb-0.5'>
-										<Badge variant='outline' className={badge.className}>
-											{badge.label}
-										</Badge>
+										<Badge className={badge.className}>{badge.label}</Badge>
 										<span className='text-sm font-medium'>
 											{(mov.type === 'RECEIVED' || mov.type === 'RETURNED') &&
 												'+'}
