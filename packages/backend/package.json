@@ -41,6 +41,7 @@
 		"@nestjs/passport": "^11.0.5",
 		"@nestjs/platform-express": "^10.3.10",
 		"@nestjs/platform-socket.io": "^10.4.22",
+		"@nestjs/throttler": "^6.5.0",
 		"@nestjs/websockets": "^10.4.22",
 		"@qdrant/js-client-rest": "^1.17.0",
 		"argon2": "^0.44.0",

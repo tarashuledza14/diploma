@@ -9,7 +9,9 @@ import {
 	Req,
 	Res,
 	UnauthorizedException,
+	UseGuards,
 } from '@nestjs/common';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { Request, Response } from 'express';
 import { Role } from 'prisma/generated/prisma/client';
 import { AuthService } from './auth.service';
@@ -20,10 +22,32 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { AuthUser } from './types/auth-user.type';
 
 @Controller('auth')
+@UseGuards(ThrottlerGuard)
 export class AuthController {
 	constructor(private authService: AuthService) {}
 
+	private getCookieValue(req: Request, name: string): string | null {
+		const rawCookieHeader = req.headers.cookie;
+		if (!rawCookieHeader) {
+			return null;
+		}
+
+		const cookies = rawCookieHeader.split(';');
+		for (const cookie of cookies) {
+			const [cookieName, ...rest] = cookie.trim().split('=');
+			if (cookieName !== name) {
+				continue;
+			}
+
+			const value = rest.join('=');
+			return value ? decodeURIComponent(value) : null;
+		}
+
+		return null;
+	}
+
 	@HttpCode(HttpStatus.OK)
+	@Throttle({ default: { limit: 10, ttl: 60_000 } })
 	@Post('login')
 	async signIn(@Body() dto: AuthDto) {
 		return this.authService.login(dto);
@@ -36,6 +60,7 @@ export class AuthController {
 	}
 
 	@HttpCode(200)
+	@Throttle({ default: { limit: 30, ttl: 60_000 } })
 	@Post('logout')
 	async logout(@Res({ passthrough: true }) res: Response) {
 		this.authService.removeRefreshTokenToResponse(res);
@@ -55,14 +80,16 @@ export class AuthController {
 	}
 	// @UsePipes(new ValidationPipe())
 	@HttpCode(200)
+	@Throttle({ default: { limit: 20, ttl: 60_000 } })
 	@Post('access-token')
 	async getNewTokens(
 		@Req() req: Request,
 		@Res({ passthrough: true }) res: Response,
 	) {
-		const refreshTokenFromCookies = req.cookies([
+		const refreshTokenFromCookies = this.getCookieValue(
+			req,
 			this.authService.REFRESH_TOKEN_NAME,
-		]);
+		);
 		if (!refreshTokenFromCookies) {
 			this.authService.removeRefreshTokenToResponse(res);
 			throw new UnauthorizedException('Refresh token not passed');

@@ -1,5 +1,4 @@
 import { instance } from '@/api';
-import { getAccessToken } from '@/modules/auth';
 
 interface StreamPayload {
 	type?: string;
@@ -32,11 +31,7 @@ export function streamChatMessage(
 	callbacks: StreamCallbacks,
 ): () => void {
 	const baseUrl = instance.defaults.baseURL ?? 'http://localhost:4200/api';
-	const accessToken = getAccessToken();
 	const query = new URLSearchParams({ message, chatId });
-	if (accessToken) {
-		query.set('token', accessToken);
-	}
 	const streamUrl = `${baseUrl}/chat/stream?${query.toString()}`;
 	const source = new EventSource(streamUrl, { withCredentials: true });
 

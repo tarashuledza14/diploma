@@ -113,6 +113,10 @@ model Organization {
   id         String       @id @default(cuid())
   name       String
   users      User[]
+  clients    Client[]
+  vehicles   Vehicle[]
+  parts      Part[]
+  services   Service[]
   appSetting AppSettings?
   createdAt  DateTime     @default(now()) @map("created_at")
   updatedAt  DateTime     @updatedAt @map("updated_at")
@@ -127,6 +131,9 @@ model Client {
   phone    String  @unique // Для СТО телефон важливіший за email
   email    String?
   notes    String? // Нотатки про клієнта ("Любить каву", "Проблемний")
+
+  organizationId String?       @map("organization_id")
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
 
   // Денормалізовані поля для швидкого сортування
   totalSpent   Decimal   @default(0) @map("total_spent")
@@ -146,6 +153,7 @@ model Client {
   @@index([totalOrders])
   @@index([vehicleCount])
   @@index([latestVisit])
+  @@index([organizationId])
   @@map("clients")
 }
 
@@ -162,6 +170,9 @@ model Vehicle {
   ownerId String @map("owner_id")
   owner   Client @relation(fields: [ownerId], references: [id])
 
+  organizationId String?       @map("organization_id")
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
   lastService   DateTime?     @map("last_service_date")
   totalServices Int           @default(0) @map("total_services") // Кількість виконаних робіт
   notes         String? // Нотатки про авто
@@ -173,6 +184,7 @@ model Vehicle {
   deletedAt DateTime?
   createdAt DateTime  @default(now()) @map("created_at")
 
+  @@index([organizationId])
   @@map("vehicles")
 }
 
@@ -230,6 +242,9 @@ model Part {
   sku  String  @unique
   oem  String?
 
+  organizationId String?       @map("organization_id")
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
   categoryId String
   category   PartCategory @relation(fields: [categoryId], references: [id])
 
@@ -267,6 +282,7 @@ model Part {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([organizationId])
   @@map("parts")
 }
 
@@ -324,6 +340,9 @@ model Service {
   estimatedTime Float   @default(1.0) @map("estimated_time")
   status        Boolean @default(true)
 
+  organizationId String?       @map("organization_id")
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
   categoryId String?
   category   ServiceCategory? @relation(fields: [categoryId], references: [id])
 
@@ -332,6 +351,7 @@ model Service {
 
   createdAt DateTime @default(now()) @map("created_at")
 
+  @@index([organizationId])
   @@map("services")
 }
 

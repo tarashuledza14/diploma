@@ -1,9 +1,11 @@
 import {
 	BadRequestException,
+	ForbiddenException,
 	Injectable,
 	NotFoundException,
 } from '@nestjs/common';
 import { OrderStatus, Prisma, Role } from 'prisma/generated/prisma/client';
+import { AuthUser } from 'src/auth/types/auth-user.type';
 import { FilterService } from 'src/filter/filter.service';
 import { NotificationsService } from 'src/notifications/notifications.service';
 import { PaginationService } from 'src/pagination/pagination.service';
@@ -18,6 +20,14 @@ export class InventoryService {
 		private readonly filterService: FilterService,
 		private readonly notificationsService: NotificationsService,
 	) {}
+
+	private assertOrganizationId(user: AuthUser): string {
+		if (!user.organizationId) {
+			throw new ForbiddenException('User is not attached to organization');
+		}
+
+		return user.organizationId;
+	}
 
 	async createPart(
 		data: Omit<
@@ -36,7 +46,9 @@ export class InventoryService {
 			inventory?: Prisma.PartInventoryCreateWithoutPartInput[];
 			priceRules?: Prisma.PartPriceRuleCreateWithoutPartInput[];
 		},
+		actor: AuthUser,
 	) {
+		const organizationId = this.assertOrganizationId(actor);
 		const {
 			category,
 			brand,
@@ -55,6 +67,11 @@ export class InventoryService {
 		return this.db.part.create({
 			data: {
 				...rest,
+				organization: {
+					connect: {
+						id: organizationId,
+					},
+				},
 				category: { connect: { id: category.id } },
 				brand: { connect: { id: brand.id } },
 
@@ -88,7 +105,9 @@ export class InventoryService {
 
 	async updatePart(
 		data: any, // Приймаємо дані
+		actor: AuthUser,
 	) {
+		const organizationId = this.assertOrganizationId(actor);
 		console.log('data', data);
 		const {
 			id,
@@ -119,8 +138,11 @@ export class InventoryService {
 
 		const { updatedPart, qtyDifference } = await this.db.$transaction(
 			async tx => {
-				const currentPart = await tx.part.findUnique({
-					where: { id },
+				const currentPart = await tx.part.findFirst({
+					where: {
+						id,
+						organizationId,
+					},
 					include: { inventory: true },
 				});
 
@@ -215,13 +237,15 @@ export class InventoryService {
 				id,
 				updatedPart.name,
 				qtyDifference,
+				organizationId,
 			);
 		}
 
 		return updatedPart;
 	}
 
-	async getAll(input: GetInventoryDto) {
+	async getAll(input: GetInventoryDto, actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		const { skip, perPage } = this.paginationService.getPagination({
 			page: input.page,
 			perPage: input.perPage,
@@ -232,12 +256,20 @@ export class InventoryService {
 			input.joinOperator,
 			false,
 		);
+		const scopedFilter = {
+			AND: [
+				filter,
+				{
+					organizationId,
+				},
+			],
+		};
 
 		const sortFilter = this.filterService.getSortFilter(input.sort);
 
 		const [parts, total] = await Promise.all([
 			this.db.part.findMany({
-				where: filter,
+				where: scopedFilter,
 				orderBy: sortFilter,
 				skip,
 				take: perPage,
@@ -256,7 +288,7 @@ export class InventoryService {
 					supplierId: true,
 				},
 			}),
-			this.db.part.count({ where: filter }),
+			this.db.part.count({ where: scopedFilter }),
 		]);
 
 		return {
@@ -266,8 +298,12 @@ export class InventoryService {
 		};
 	}
 
-	async getStatistics() {
+	async getStatistics(actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		const parts = await this.db.part.findMany({
+			where: {
+				organizationId,
+			},
 			select: {
 				minStock: true,
 				inventory: {
@@ -354,9 +390,28 @@ export class InventoryService {
 	}
 
 	// ДОДАНО: Метод для вікна Movement History
-	async getPartMovementHistory(partId: string) {
+	async getPartMovementHistory(partId: string, actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
+
+		const part = await this.db.part.findFirst({
+			where: {
+				id: partId,
+				organizationId,
+			},
+			select: { id: true },
+		});
+
+		if (!part) {
+			throw new NotFoundException('Part not found');
+		}
+
 		const movements = await this.db.stockMovement.findMany({
-			where: { partId },
+			where: {
+				partId,
+				part: {
+					organizationId,
+				},
+			},
 			orderBy: { createdAt: 'desc' }, // Нові зверху
 			include: {
 				user: { select: { fullName: true } },
@@ -385,14 +440,20 @@ export class InventoryService {
 			history: movements,
 		};
 	}
-	async deleteBulk(ids: string[]) {
+	async deleteBulk(ids: string[], actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		if (!ids?.length) {
 			throw new BadRequestException('ids are required for bulk delete');
 		}
 
 		const partsWithMovements = await this.db.stockMovement.groupBy({
 			by: ['partId'],
-			where: { partId: { in: ids } },
+			where: {
+				partId: { in: ids },
+				part: {
+					organizationId,
+				},
+			},
 		});
 
 		if (partsWithMovements.length) {
@@ -403,13 +464,26 @@ export class InventoryService {
 
 		await this.db.$transaction(async tx => {
 			await tx.partInventory.deleteMany({
-				where: { partId: { in: ids } },
+				where: {
+					partId: { in: ids },
+					part: {
+						organizationId,
+					},
+				},
 			});
 			await tx.partPriceRule.deleteMany({
-				where: { partId: { in: ids } },
+				where: {
+					partId: { in: ids },
+					part: {
+						organizationId,
+					},
+				},
 			});
 			await tx.part.deleteMany({
-				where: { id: { in: ids } },
+				where: {
+					id: { in: ids },
+					organizationId,
+				},
 			});
 		});
 	}
@@ -531,10 +605,14 @@ export class InventoryService {
 		partId: string,
 		partName: string,
 		deliveredQty: number,
+		organizationId: string,
 	) {
 		const relatedOrders = await this.db.order.findMany({
 			where: {
 				deletedAt: null,
+				client: {
+					organizationId,
+				},
 				status: OrderStatus.WAITING_PARTS,
 				parts: {
 					some: {
@@ -580,6 +658,7 @@ export class InventoryService {
 		const mechanics = await this.db.user.findMany({
 			where: {
 				id: { in: [...mechanicIds] },
+				organizationId,
 				role: Role.MECHANIC,
 				deletedAt: null,
 			},

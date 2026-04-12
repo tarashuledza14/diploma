@@ -166,7 +166,7 @@ export function ManualsPage() {
 								onValueChange={files => setSelectedFiles(files.slice(0, 1))}
 								accept='application/pdf,.pdf'
 								maxFiles={1}
-								maxSize={10 * 1024 * 1024}
+								maxSize={20 * 1024 * 1024}
 								multiple={false}
 								disabled={isUploading}
 								onFileReject={(_, message) => {

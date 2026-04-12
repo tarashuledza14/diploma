@@ -143,17 +143,6 @@ export const router = createBrowserRouter([
 						),
 					},
 					{
-						path: '/dispatch',
-						element: (
-							<Suspense fallback={<Loading />}>
-								<PageTitle titleKey='router.titles.dispatch'>
-									<DispatchPage />
-								</PageTitle>
-							</Suspense>
-						),
-					},
-
-					{
 						path: '/orders/board',
 						element: (
 							<Suspense fallback={<Loading />}>
@@ -173,6 +162,16 @@ export const router = createBrowserRouter([
 					/>
 				),
 				children: [
+					{
+						path: '/dispatch',
+						element: (
+							<Suspense fallback={<Loading />}>
+								<PageTitle titleKey='router.titles.dispatch'>
+									<DispatchPage />
+								</PageTitle>
+							</Suspense>
+						),
+					},
 					{
 						path: '/services',
 						element: (

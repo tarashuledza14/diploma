@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+	BadRequestException,
+	ForbiddenException,
+	Injectable,
+	NotFoundException,
+} from '@nestjs/common';
+import { AuthUser } from 'src/auth/types/auth-user.type';
 import { FilterService } from 'src/filter/filter.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -13,10 +19,22 @@ export class ClientsService {
 		private readonly filterService: FilterService,
 	) {}
 
-	async create(data: CreateClientDto) {
+	private assertOrganizationId(user: AuthUser): string {
+		if (!user.organizationId) {
+			throw new ForbiddenException('User is not attached to organization');
+		}
+
+		return user.organizationId;
+	}
+
+	async create(data: CreateClientDto, actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		try {
 			return this.db.client.create({
-				data,
+				data: {
+					...data,
+					organizationId,
+				},
 			});
 		} catch (error) {
 			console.error('Error creating client:', error);
@@ -24,46 +42,93 @@ export class ClientsService {
 		}
 	}
 
-	async update(clientId: string, data: Partial<CreateClientDto>) {
+	async update(clientId: string, data: Partial<CreateClientDto>, actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		try {
+			const client = await this.db.client.findFirst({
+				where: {
+					id: clientId,
+					organizationId,
+				},
+				select: { id: true },
+			});
+
+			if (!client) {
+				throw new NotFoundException('Client not found');
+			}
+
 			return this.db.client.update({
 				where: { id: clientId },
 				data,
 			});
 		} catch (error) {
 			console.error('Error updating client:', error);
+			if (error instanceof NotFoundException) {
+				throw error;
+			}
 			throw new BadRequestException('Failed to update client');
 		}
 	}
-	async getClientDetails(clientId: string) {
+	async getClientDetails(clientId: string, actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		try {
-			return this.db.client.findUnique({
-				where: { id: clientId },
+			const client = await this.db.client.findFirst({
+				where: {
+					id: clientId,
+					organizationId,
+				},
 				include: {
 					vehicles: true,
 					orders: true,
 				},
 			});
+
+			if (!client) {
+				throw new NotFoundException('Client not found');
+			}
+
+			return client;
 		} catch (error) {
 			console.error('Error fetching client details:', error);
+			if (error instanceof NotFoundException) {
+				throw error;
+			}
 			throw new BadRequestException('Failed to fetch client details');
 		}
 	}
 
-	async delete(clientId: string) {
+	async delete(clientId: string, actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
+		const client = await this.db.client.findFirst({
+			where: {
+				id: clientId,
+				organizationId,
+			},
+			select: { id: true },
+		});
+
+		if (!client) {
+			throw new NotFoundException('Client not found');
+		}
+
 		return this.db.client.update({
 			where: { id: clientId },
 			data: { deletedAt: new Date() },
 		});
 	}
-	async deleteBulk(clientIds: string[]) {
+	async deleteBulk(clientIds: string[], actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		return this.db.client.updateMany({
-			where: { id: { in: clientIds } },
+			where: {
+				id: { in: clientIds },
+				organizationId,
+			},
 			data: { deletedAt: new Date() },
 		});
 	}
 
-	async getClients(input: GetClientsDto) {
+	async getClients(input: GetClientsDto, actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		console.log('client data', input);
 		try {
 			const { skip: offset, perPage } = this.paginationService.getPagination({
@@ -74,17 +139,26 @@ export class ClientsService {
 				input.filters,
 				input.joinOperator,
 			);
+			const where = {
+				AND: [
+					filters,
+					{
+						organizationId,
+						deletedAt: null,
+					},
+				],
+			};
 			console.log('filters', JSON.stringify(filters));
 			const sorts = this.filterService.getSortFilter(input.sort || []);
 			const orderBy = sorts.length ? sorts : [{ fullName: 'asc' as const }];
 			const [clients, total] = await Promise.all([
 				this.db.client.findMany({
 					skip: offset,
-					where: filters,
+					where,
 					take: input.perPage,
 					orderBy,
 				}),
-				this.db.client.count({ where: filters }),
+				this.db.client.count({ where }),
 			]);
 
 			const pageCount = this.paginationService.getPageCount(total, perPage);

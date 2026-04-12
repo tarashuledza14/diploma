@@ -49,8 +49,9 @@ export class OrdersController {
 	async getRecommendedParts(
 		@Query('vehicleId') vehicleId: string,
 		@Query('serviceId') serviceId: string,
+		@CurrentUser() user: AuthUser,
 	) {
-		return this.ordersService.getRecommendedParts(vehicleId, serviceId);
+		return this.ordersService.getRecommendedParts(vehicleId, serviceId, user);
 	}
 
 	@Auth(Role.ADMIN, Role.MANAGER, Role.MECHANIC)

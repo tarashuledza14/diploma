@@ -1,5 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+	BadRequestException,
+	ForbiddenException,
+	Injectable,
+	NotFoundException,
+} from '@nestjs/common';
 import { OrderStatus } from 'prisma/generated/prisma/client';
+import { AuthUser } from 'src/auth/types/auth-user.type';
 import { FilterService } from 'src/filter/filter.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -16,15 +22,32 @@ export class VehiclesService {
 		private readonly paginationService: PaginationService,
 	) {}
 
-	async create(data: CreateVehicleDto) {
-		const client = await this.db.client.findUnique({
-			where: { id: data.ownerId },
+	private assertOrganizationId(user: AuthUser): string {
+		if (!user.organizationId) {
+			throw new ForbiddenException('User is not attached to organization');
+		}
+
+		return user.organizationId;
+	}
+
+	async create(data: CreateVehicleDto, actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
+
+		const client = await this.db.client.findFirst({
+			where: {
+				id: data.ownerId,
+				organizationId,
+				deletedAt: null,
+			},
 		});
 		if (!client) {
 			throw new BadRequestException('Client not found');
 		}
 		const createdVehicle = await this.db.vehicle.create({
-			data,
+			data: {
+				...data,
+				organizationId,
+			},
 		});
 
 		await this.recalculateClientVehicleCount(createdVehicle.ownerId);
@@ -32,9 +55,13 @@ export class VehiclesService {
 		return createdVehicle;
 	}
 
-	async update(id: string, data: UpdateVehicleDto) {
-		const existingVehicle = await this.db.vehicle.findUnique({
-			where: { id },
+	async update(id: string, data: UpdateVehicleDto, actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
+		const existingVehicle = await this.db.vehicle.findFirst({
+			where: {
+				id,
+				organizationId,
+			},
 			select: { ownerId: true },
 		});
 
@@ -43,8 +70,12 @@ export class VehiclesService {
 		}
 
 		if (data.ownerId) {
-			const client = await this.db.client.findUnique({
-				where: { id: data.ownerId },
+			const client = await this.db.client.findFirst({
+				where: {
+					id: data.ownerId,
+					organizationId,
+					deletedAt: null,
+				},
 			});
 
 			if (!client) {
@@ -67,18 +98,28 @@ export class VehiclesService {
 		return updatedVehicle;
 	}
 
-	async updateBulk(data: BulkUpdateVehicleDto) {
+	async updateBulk(data: BulkUpdateVehicleDto, actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		const { ids, field, value } = data;
 		const previousOwners =
 			field === 'ownerId'
 				? await this.db.vehicle.findMany({
-						where: { id: { in: ids } },
+						where: {
+							id: { in: ids },
+							organizationId,
+						},
 						select: { ownerId: true },
 					})
 				: [];
 
 		if (field === 'ownerId') {
-			const client = await this.db.client.findUnique({ where: { id: value } });
+			const client = await this.db.client.findFirst({
+				where: {
+					id: value,
+					organizationId,
+					deletedAt: null,
+				},
+			});
 			if (!client) {
 				throw new BadRequestException('Client not found');
 			}
@@ -87,6 +128,7 @@ export class VehiclesService {
 		const result = await this.db.vehicle.updateMany({
 			where: {
 				id: { in: ids },
+				organizationId,
 			},
 			data: { [field]: value },
 		});
@@ -104,9 +146,14 @@ export class VehiclesService {
 		return result;
 	}
 
-	async getStatusCounts() {
+	async getStatusCounts(actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		const counts = await this.db.vehicle.groupBy({
 			by: ['status'],
+			where: {
+				organizationId,
+				deletedAt: null,
+			},
 			_count: { status: true },
 		});
 		return counts.reduce(
@@ -118,7 +165,8 @@ export class VehiclesService {
 		);
 	}
 
-	async getAll(input: GetVehiclesDto) {
+	async getAll(input: GetVehiclesDto, actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		const { skip, perPage } = this.paginationService.getPagination({
 			page: input.page,
 			perPage: input.perPage,
@@ -127,10 +175,19 @@ export class VehiclesService {
 			input.filters,
 			input.joinOperator,
 		);
+		const scopedFilter = {
+			AND: [
+				filter,
+				{
+					organizationId,
+					deletedAt: null,
+				},
+			],
+		};
 		const sortFilter = this.filterService.getSortFilter(input.sort);
 		const [vehicles, total] = await Promise.all([
 			this.db.vehicle.findMany({
-				where: filter,
+				where: scopedFilter,
 				orderBy: sortFilter,
 				skip,
 				take: perPage,
@@ -143,7 +200,7 @@ export class VehiclesService {
 					},
 				},
 			}),
-			this.db.vehicle.count({ where: filter }),
+			this.db.vehicle.count({ where: scopedFilter }),
 		]);
 		return {
 			data: vehicles,
@@ -180,10 +237,12 @@ export class VehiclesService {
 		});
 	}
 
-	async deleteBulk(ids: string[]) {
+	async deleteBulk(ids: string[], actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		const affectedVehicles = await this.db.vehicle.findMany({
 			where: {
 				id: { in: ids },
+				organizationId,
 				deletedAt: null,
 			},
 			select: { ownerId: true },
@@ -192,6 +251,7 @@ export class VehiclesService {
 		const result = await this.db.vehicle.updateMany({
 			where: {
 				id: { in: ids },
+				organizationId,
 			},
 			data: { deletedAt: new Date() },
 		});

@@ -1,5 +1,10 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+	ForbiddenException,
+	Injectable,
+	InternalServerErrorException,
+} from '@nestjs/common';
 import { Prisma } from 'prisma/generated/prisma/client';
+import { AuthUser } from 'src/auth/types/auth-user.type';
 import { FilterService } from 'src/filter/filter.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -15,21 +20,39 @@ export class ServiceService {
 		private readonly filterService: FilterService,
 	) {}
 
-	async deleteService(id: string) {
+	private assertOrganizationId(user: AuthUser): string {
+		if (!user.organizationId) {
+			throw new ForbiddenException('User is not attached to organization');
+		}
+
+		return user.organizationId;
+	}
+
+	async deleteService(id: string, actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		try {
-			return this.db.service.delete({
-				where: { id },
+			const result = await this.db.service.deleteMany({
+				where: {
+					id,
+					organizationId,
+				},
 			});
+
+			return { deleted: result.count };
 		} catch (error) {
 			console.error('Error deleting service:', error);
 			throw new InternalServerErrorException(error);
 		}
 	}
 
-	async deleteBulk(ids: string[]) {
+	async deleteBulk(ids: string[], actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		try {
 			await this.db.service.deleteMany({
-				where: { id: { in: ids } },
+				where: {
+					id: { in: ids },
+					organizationId,
+				},
 			});
 			return { deleted: ids.length };
 		} catch (error) {
@@ -38,10 +61,14 @@ export class ServiceService {
 		}
 	}
 
-	async updateBulkStatus(ids: string[], status: boolean) {
+	async updateBulkStatus(ids: string[], status: boolean, actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		try {
 			const result = await this.db.service.updateMany({
-				where: { id: { in: ids } },
+				where: {
+					id: { in: ids },
+					organizationId,
+				},
 				data: { status },
 			});
 			return { count: result.count };
@@ -51,10 +78,12 @@ export class ServiceService {
 		}
 	}
 
-	async create(data: CreateServiceDto) {
+	async create(data: CreateServiceDto, actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		try {
 			return this.db.service.create({
 				data: {
+					organizationId,
 					name: data.name,
 					description: data.description,
 					price: data.price,
@@ -76,7 +105,8 @@ export class ServiceService {
 		}
 	}
 
-	async update(data: UpdateServiceDto) {
+	async update(data: UpdateServiceDto, actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		try {
 			const { id, requiredCategoryIds, categoryId, ...rest } = data;
 			const updateData: Prisma.ServiceUpdateInput = {
@@ -92,6 +122,18 @@ export class ServiceService {
 					set: requiredCategoryIds.map(id => ({ id })),
 				};
 			}
+			const candidate = await this.db.service.findFirst({
+				where: {
+					id,
+					organizationId,
+				},
+				select: { id: true },
+			});
+
+			if (!candidate) {
+				throw new ForbiddenException('Service not found in your organization');
+			}
+
 			return this.db.service.update({
 				where: { id },
 				data: updateData,
@@ -102,11 +144,15 @@ export class ServiceService {
 			});
 		} catch (error) {
 			console.error('Error updating service:', error);
+			if (error instanceof ForbiddenException) {
+				throw error;
+			}
 			throw new InternalServerErrorException(error);
 		}
 	}
 
-	async getServices(input: GetServicesDto) {
+	async getServices(input: GetServicesDto, actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		try {
 			const { skip: offset, perPage } = this.paginationService.getPagination({
 				page: input.page,
@@ -117,11 +163,19 @@ export class ServiceService {
 				input.joinOperator,
 				false,
 			);
+			const scopedFilters = {
+				AND: [
+					filters,
+					{
+						organizationId,
+					},
+				],
+			};
 			const sorts = this.filterService.getSortFilter(input.sort || []);
 			const [services, total] = await Promise.all([
 				this.db.service.findMany({
 					skip: offset,
-					where: filters,
+					where: scopedFilters,
 					take: input.perPage,
 					orderBy: sorts,
 					include: {
@@ -134,7 +188,7 @@ export class ServiceService {
 						},
 					},
 				}),
-				this.db.service.count({ where: filters }),
+				this.db.service.count({ where: scopedFilters }),
 			]);
 
 			const pageCount = this.paginationService.getPageCount(total, perPage);

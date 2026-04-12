@@ -60,7 +60,9 @@ export class AuthService {
 		return { success: true };
 	}
 	async register(dto: RegisterDto) {
-		const existUser = await this.userService.findByEmail(dto.email);
+		const existUser = await this.userService.findByEmail(dto.email, {
+			includeDeleted: true,
+		});
 		if (existUser) throw new BadRequestException('User already exist!');
 		const hashedPassword = await hash(dto.password);
 		const user = await this.userService.create({
@@ -81,6 +83,9 @@ export class AuthService {
 		if (!result) throw new UnauthorizedException('Invalid refresh token');
 
 		const user = await this.userService.findById(result.id);
+		if (!user) {
+			throw new UnauthorizedException('User not found');
+		}
 
 		const tokens = await this.issueTokens(user.id);
 

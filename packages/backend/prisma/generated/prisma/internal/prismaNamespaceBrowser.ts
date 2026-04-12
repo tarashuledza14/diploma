@@ -124,6 +124,7 @@ export const ClientScalarFieldEnum = {
   phone: 'phone',
   email: 'email',
   notes: 'notes',
+  organizationId: 'organizationId',
   totalSpent: 'totalSpent',
   totalOrders: 'totalOrders',
   vehicleCount: 'vehicleCount',
@@ -145,6 +146,7 @@ export const VehicleScalarFieldEnum = {
   plateNumber: 'plateNumber',
   mileage: 'mileage',
   ownerId: 'ownerId',
+  organizationId: 'organizationId',
   lastService: 'lastService',
   totalServices: 'totalServices',
   notes: 'notes',
@@ -204,6 +206,7 @@ export const PartScalarFieldEnum = {
   name: 'name',
   sku: 'sku',
   oem: 'oem',
+  organizationId: 'organizationId',
   categoryId: 'categoryId',
   brandId: 'brandId',
   barcode: 'barcode',
@@ -274,6 +277,7 @@ export const ServiceScalarFieldEnum = {
   price: 'price',
   estimatedTime: 'estimatedTime',
   status: 'status',
+  organizationId: 'organizationId',
   categoryId: 'categoryId',
   createdAt: 'createdAt'
 } as const

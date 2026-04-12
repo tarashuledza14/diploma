@@ -33,19 +33,62 @@ export class OrdersService {
 		private readonly notificationsService: NotificationsService,
 	) {}
 
-	async getRecommendedParts(vehicleId: string, serviceId: string) {
+	private assertOrganizationId(user: AuthUser): string {
+		if (!user.organizationId) {
+			throw new ForbiddenException('User is not attached to organization');
+		}
+
+		return user.organizationId;
+	}
+
+	private applyOrganizationScope(
+		where: Prisma.OrderWhereInput,
+		organizationId: string,
+	): Prisma.OrderWhereInput {
+		if (!where || Object.keys(where).length === 0) {
+			return {
+				client: {
+					organizationId,
+				},
+			};
+		}
+
+		return {
+			AND: [
+				where,
+				{
+					client: {
+						organizationId,
+					},
+				},
+			],
+		};
+	}
+
+	async getRecommendedParts(
+		vehicleId: string,
+		serviceId: string,
+		user: AuthUser,
+	) {
+		const organizationId = this.assertOrganizationId(user);
 		if (!vehicleId || !serviceId) {
 			throw new BadRequestException('vehicleId and serviceId are required');
 		}
 
-		const service = await this.db.service.findUnique({
-			where: { id: serviceId },
+		const service = await this.db.service.findFirst({
+			where: {
+				id: serviceId,
+				organizationId,
+			},
 			include: { requiredCategories: true },
 		});
 		if (!service) throw new NotFoundException('Service not found');
 
-		const vehicle = await this.db.vehicle.findUnique({
-			where: { id: vehicleId },
+		const vehicle = await this.db.vehicle.findFirst({
+			where: {
+				id: vehicleId,
+				organizationId,
+			},
 			include: { owner: true },
 		});
 		if (!vehicle) throw new NotFoundException('Vehicle not found');
@@ -56,6 +99,7 @@ export class OrdersService {
 
 			const partsWithInventory = await this.db.part.findMany({
 				where: {
+					organizationId,
 					categoryId: { in: categoryIds },
 					inventory: {
 						some: {
@@ -114,9 +158,39 @@ export class OrdersService {
 
 	async create(createOrderDto: CreateOrderDto, actor: AuthUser) {
 		try {
+			const organizationId = this.assertOrganizationId(actor);
+
+			const [client, vehicle] = await Promise.all([
+				this.db.client.findFirst({
+					where: {
+						id: createOrderDto.clientId,
+						organizationId,
+						deletedAt: null,
+					},
+					select: { id: true },
+				}),
+				this.db.vehicle.findFirst({
+					where: {
+						id: createOrderDto.vehicleId,
+						organizationId,
+						deletedAt: null,
+					},
+					select: { id: true },
+				}),
+			]);
+
+			if (!client) {
+				throw new BadRequestException('Client not found in your organization');
+			}
+
+			if (!vehicle) {
+				throw new BadRequestException('Vehicle not found in your organization');
+			}
+
 			const pricing = await this.buildOrderPricing(
 				createOrderDto.services,
 				createOrderDto.parts,
+				organizationId,
 			);
 
 			const result = await this.db.$transaction(async tx => {
@@ -196,6 +270,7 @@ export class OrdersService {
 
 	async findAll(input: GetOrdersDto, user: AuthUser) {
 		try {
+			const organizationId = this.assertOrganizationId(user);
 			const { skip: offset, perPage } = this.paginationService.getPagination({
 				page: input.page,
 				perPage: input.perPage,
@@ -204,7 +279,11 @@ export class OrdersService {
 				input.filters,
 				input.joinOperator,
 			);
-			const scopedFilters = this.applyMechanicScope(filters, user);
+			const orgScopedFilters = this.applyOrganizationScope(
+				filters,
+				organizationId,
+			);
+			const scopedFilters = this.applyMechanicScope(orgScopedFilters, user);
 
 			const sorts = this.filterService.getSortFilter(input.sort || []);
 			const orderBy = sorts.length ? sorts : [{ orderNumber: 'desc' as const }];
@@ -259,8 +338,12 @@ export class OrdersService {
 	}
 
 	async findOne(id: string, user: AuthUser) {
+		const organizationId = this.assertOrganizationId(user);
 		const order = await this.db.order.findFirst({
-			where: this.applyMechanicScope({ id }, user),
+			where: this.applyMechanicScope(
+				this.applyOrganizationScope({ id }, organizationId),
+				user,
+			),
 			select: orderDetailSelect,
 		});
 
@@ -328,8 +411,14 @@ export class OrdersService {
 	}
 
 	async update(id: string, updateOrderDto: UpdateOrderDto, actor: AuthUser) {
-		const existingOrder = await this.db.order.findUnique({
-			where: { id },
+		const organizationId = this.assertOrganizationId(actor);
+		const existingOrder = await this.db.order.findFirst({
+			where: {
+				id,
+				client: {
+					organizationId,
+				},
+			},
 			include: {
 				services: true,
 				parts: true,
@@ -338,6 +427,36 @@ export class OrdersService {
 
 		if (!existingOrder) {
 			throw new NotFoundException('Order not found');
+		}
+
+		if (updateOrderDto.clientId) {
+			const client = await this.db.client.findFirst({
+				where: {
+					id: updateOrderDto.clientId,
+					organizationId,
+					deletedAt: null,
+				},
+				select: { id: true },
+			});
+
+			if (!client) {
+				throw new BadRequestException('Client not found in your organization');
+			}
+		}
+
+		if (updateOrderDto.vehicleId) {
+			const vehicle = await this.db.vehicle.findFirst({
+				where: {
+					id: updateOrderDto.vehicleId,
+					organizationId,
+					deletedAt: null,
+				},
+				select: { id: true },
+			});
+
+			if (!vehicle) {
+				throw new BadRequestException('Vehicle not found in your organization');
+			}
 		}
 
 		const nextServices =
@@ -354,7 +473,11 @@ export class OrdersService {
 				quantity: part.quantity,
 			}));
 
-		const pricing = await this.buildOrderPricing(nextServices, nextParts);
+		const scopedPricing = await this.buildOrderPricing(
+			nextServices,
+			nextParts,
+			organizationId,
+		);
 
 		const updatedOrder = await this.db.$transaction(async tx => {
 			const updatedOrder = await tx.order.update({
@@ -375,15 +498,15 @@ export class OrdersService {
 						updateOrderDto.notes !== undefined
 							? updateOrderDto.notes || null
 							: existingOrder.description,
-					totalAmount: pricing.totalAmount,
+					totalAmount: scopedPricing.totalAmount,
 				},
 			});
 
 			if (updateOrderDto.services !== undefined) {
 				await tx.orderService.deleteMany({ where: { orderId: id } });
-				if (pricing.orderServicesData.length > 0) {
+				if (scopedPricing.orderServicesData.length > 0) {
 					await tx.orderService.createMany({
-						data: pricing.orderServicesData.map(item => ({
+						data: scopedPricing.orderServicesData.map(item => ({
 							...item,
 							orderId: id,
 						})),
@@ -393,9 +516,9 @@ export class OrdersService {
 
 			if (updateOrderDto.parts !== undefined) {
 				await tx.orderPart.deleteMany({ where: { orderId: id } });
-				if (pricing.orderPartsData.length > 0) {
+				if (scopedPricing.orderPartsData.length > 0) {
 					await tx.orderPart.createMany({
-						data: pricing.orderPartsData.map(item => ({
+						data: scopedPricing.orderPartsData.map(item => ({
 							...item,
 							orderId: id,
 						})),
@@ -441,8 +564,32 @@ export class OrdersService {
 	}
 
 	async quickUpdate(id: string, dto: QuickUpdateOrderDto, actor: AuthUser) {
-		const existing = await this.db.order.findUnique({ where: { id } });
+		const organizationId = this.assertOrganizationId(actor);
+		const existing = await this.db.order.findFirst({
+			where: {
+				id,
+				client: {
+					organizationId,
+				},
+			},
+		});
 		if (!existing) throw new NotFoundException('Order not found');
+
+		if (dto.mechanicId) {
+			const mechanic = await this.db.user.findFirst({
+				where: {
+					id: dto.mechanicId,
+					organizationId,
+					role: Role.MECHANIC,
+					deletedAt: null,
+				},
+				select: { id: true },
+			});
+
+			if (!mechanic) {
+				throw new BadRequestException('Mechanic not found in your organization');
+			}
+		}
 
 		const updatedOrder = await this.db.order.update({
 			where: { id },
@@ -485,6 +632,7 @@ export class OrdersService {
 	}
 
 	async updateBulk(data: BulkUpdateOrderDto, user: AuthUser) {
+		const organizationId = this.assertOrganizationId(user);
 		const { ids, status, priority } = data;
 		const isMechanic = this.isMechanic(user);
 
@@ -515,9 +663,12 @@ export class OrdersService {
 		}
 
 		const where = this.applyMechanicScope(
-			{
-				id: { in: ids },
-			},
+			this.applyOrganizationScope(
+				{
+					id: { in: ids },
+				},
+				organizationId,
+			),
 			user,
 		);
 
@@ -592,6 +743,7 @@ export class OrdersService {
 			await Promise.all(
 				targetOrders.map(order =>
 					this.notifyManagersOnly({
+						organizationId,
 						type: 'ORDER_COMPLETED',
 						message: `✅ Роботу виконано: Механік ${user.fullName} завершив ремонт №${order.orderNumber}`,
 						metadata: { orderId: order.id, orderNumber: order.orderNumber },
@@ -1183,6 +1335,7 @@ export class OrdersService {
 	}
 
 	private async notifyManagersOnly(input: {
+		organizationId: string;
 		type: NotificationType;
 		message: string;
 		metadata?: Prisma.InputJsonValue;
@@ -1190,6 +1343,7 @@ export class OrdersService {
 	}) {
 		const managers = await this.db.user.findMany({
 			where: {
+				organizationId: input.organizationId,
 				role: Role.MANAGER,
 				deletedAt: null,
 				...(input.excludedUserId ? { id: { not: input.excludedUserId } } : {}),
@@ -1211,10 +1365,14 @@ export class OrdersService {
 	}
 
 	private async getOrderRecipients(orderId: string, excludedUserId?: string) {
-		const [order, managers] = await Promise.all([
-			this.db.order.findUnique({
+		const order = await this.db.order.findUnique({
 				where: { id: orderId },
 				select: {
+					client: {
+						select: {
+							organizationId: true,
+						},
+					},
 					mechanicId: true,
 					services: {
 						select: {
@@ -1222,20 +1380,26 @@ export class OrdersService {
 						},
 					},
 				},
-			}),
-			this.db.user.findMany({
-				where: {
-					role: Role.MANAGER,
-					deletedAt: null,
-					...(excludedUserId ? { id: { not: excludedUserId } } : {}),
-				},
-				select: { id: true, role: true },
-			}),
-		]);
+			});
 
 		if (!order) {
 			return [];
 		}
+
+		const organizationId = order.client.organizationId;
+		if (!organizationId) {
+			return [];
+		}
+
+		const scopedManagers = await this.db.user.findMany({
+			where: {
+				organizationId,
+				role: Role.MANAGER,
+				deletedAt: null,
+				...(excludedUserId ? { id: { not: excludedUserId } } : {}),
+			},
+			select: { id: true, role: true },
+		});
 
 		const mechanicIds = new Set<string>();
 		if (order.mechanicId) {
@@ -1251,6 +1415,7 @@ export class OrdersService {
 		const mechanics = mechanicIds.size
 			? await this.db.user.findMany({
 					where: {
+						organizationId,
 						id: { in: [...mechanicIds] },
 						role: Role.MECHANIC,
 						deletedAt: null,
@@ -1260,7 +1425,7 @@ export class OrdersService {
 				})
 			: [];
 
-		const users = [...managers, ...mechanics];
+		const users = [...scopedManagers, ...mechanics];
 		const deduped = new Map<string, { id: string; role: Role }>();
 		for (const user of users) {
 			deduped.set(user.id, user);
@@ -1300,10 +1465,19 @@ export class OrdersService {
 	}
 
 	async delete(id: string, actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		return this.db.$transaction(async tx => {
-			const existingOrder = await tx.order.findUnique({
-				where: { id },
+			const existingOrder = await tx.order.findFirst({
+				where: {
+					id,
+					client: {
+						organizationId,
+					},
+				},
 				select: {
+					id: true,
+					clientId: true,
+					vehicleId: true,
 					status: true,
 					parts: {
 						select: {
@@ -1319,7 +1493,7 @@ export class OrdersService {
 			}
 
 			const deletedOrder = await tx.order.update({
-				where: { id },
+				where: { id: existingOrder.id },
 				data: { deletedAt: new Date() },
 			});
 
@@ -1351,13 +1525,20 @@ export class OrdersService {
 	}
 
 	async deleteBulk(ids: string[], actor: AuthUser) {
+		const organizationId = this.assertOrganizationId(actor);
 		if (!ids?.length) {
 			throw new BadRequestException('ids are required for bulk delete');
 		}
 
 		return this.db.$transaction(async tx => {
 			const affectedOrders = await tx.order.findMany({
-				where: { id: { in: ids }, deletedAt: null },
+				where: {
+					id: { in: ids },
+					deletedAt: null,
+					client: {
+						organizationId,
+					},
+				},
 				select: {
 					id: true,
 					clientId: true,
@@ -1373,7 +1554,12 @@ export class OrdersService {
 			});
 
 			const result = await tx.order.updateMany({
-				where: { id: { in: ids } },
+				where: {
+					id: { in: ids },
+					client: {
+						organizationId,
+					},
+				},
 				data: { deletedAt: new Date() },
 			});
 
@@ -1410,13 +1596,16 @@ export class OrdersService {
 
 	async getNewOrderMeta(user: AuthUser) {
 		try {
-			const organizationFilter = user.organizationId
-				? { organizationId: user.organizationId }
-				: {};
+			const organizationId = this.assertOrganizationId(user);
+			const organizationFilter = { organizationId };
 
 			const [clients, vehicles, services, mechanics, parts] = await Promise.all(
 				[
 					this.db.client.findMany({
+						where: {
+							...organizationFilter,
+							deletedAt: null,
+						},
 						select: {
 							id: true,
 							fullName: true,
@@ -1425,6 +1614,10 @@ export class OrdersService {
 						},
 					}),
 					this.db.vehicle.findMany({
+						where: {
+							...organizationFilter,
+							deletedAt: null,
+						},
 						select: {
 							id: true,
 							ownerId: true,
@@ -1435,7 +1628,7 @@ export class OrdersService {
 						},
 					}),
 					this.db.service.findMany({
-						where: { status: true },
+						where: { status: true, ...organizationFilter },
 						select: {
 							id: true,
 							name: true,
@@ -1462,6 +1655,7 @@ export class OrdersService {
 					}),
 					this.db.part.findMany({
 						where: {
+							...organizationFilter,
 							inventory: {
 								some: {
 									quantity: { gt: 0 },
@@ -1479,6 +1673,11 @@ export class OrdersService {
 
 			const vehicleMileages = await this.db.order.groupBy({
 				by: ['vehicleId'],
+				where: {
+					client: {
+						organizationId,
+					},
+				},
 				_max: {
 					mileage: true,
 				},
@@ -1499,6 +1698,9 @@ export class OrdersService {
 				mechanics.map(async mechanic => {
 					const openTasksCount = await this.db.order.count({
 						where: {
+							client: {
+								organizationId,
+							},
 							deletedAt: null,
 							status: { in: [...openStatuses] },
 							OR: [
@@ -1614,16 +1816,26 @@ export class OrdersService {
 		return avgPurchasePrice * 1.3;
 	}
 
-	private async buildOrderPricing(servicesInput: any[], partsInput: any[]) {
+	private async buildOrderPricing(
+		servicesInput: any[],
+		partsInput: any[],
+		organizationId: string,
+	) {
 		const serviceIds = servicesInput.map(service => service.serviceId);
 		const partIds = partsInput.map(part => part.partId);
 
 		const [services, partsData] = await Promise.all([
 			this.db.service.findMany({
-				where: { id: { in: serviceIds } },
+				where: {
+					id: { in: serviceIds },
+					organizationId,
+				},
 			}),
 			this.db.part.findMany({
-				where: { id: { in: partIds } },
+				where: {
+					id: { in: partIds },
+					organizationId,
+				},
 				include: {
 					inventory: true,
 					priceRules: true,
