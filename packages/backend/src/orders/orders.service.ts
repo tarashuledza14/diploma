@@ -156,6 +156,26 @@ export class OrdersService {
 					});
 				}
 
+				await this.syncDenormalizedStats(
+					{
+						clientIds: [order.clientId],
+						vehicleIds: [order.vehicleId],
+					},
+					tx,
+				);
+
+				await this.syncStockMovementsForOrderTransition(
+					{
+						orderId: order.id,
+						userId: actor.id,
+						fromStatus: null,
+						toStatus: order.status,
+						fromParts: [],
+						toParts: createOrderDto.parts,
+					},
+					tx,
+				);
+
 				return order;
 			});
 
@@ -383,6 +403,29 @@ export class OrdersService {
 				}
 			}
 
+			await this.syncDenormalizedStats(
+				{
+					clientIds: [existingOrder.clientId, updatedOrder.clientId],
+					vehicleIds: [existingOrder.vehicleId, updatedOrder.vehicleId],
+				},
+				tx,
+			);
+
+			await this.syncStockMovementsForOrderTransition(
+				{
+					orderId: updatedOrder.id,
+					userId: actor.id,
+					fromStatus: existingOrder.status,
+					toStatus: updatedOrder.status,
+					fromParts: existingOrder.parts.map(part => ({
+						partId: part.partId,
+						quantity: part.quantity,
+					})),
+					toParts: nextParts,
+				},
+				tx,
+			);
+
 			return updatedOrder;
 		});
 
@@ -415,8 +458,20 @@ export class OrdersService {
 					? { endDate: dto.endDate ? new Date(dto.endDate) : null }
 					: {}),
 			},
-			select: { id: true, orderNumber: true, mechanicId: true, endDate: true },
+			select: {
+				id: true,
+				orderNumber: true,
+				mechanicId: true,
+				endDate: true,
+				vehicleId: true,
+			},
 		});
+
+		if (dto.endDate !== undefined) {
+			await this.syncDenormalizedStats({
+				vehicleIds: [updatedOrder.vehicleId],
+			});
+		}
 
 		await this.notifyOrderChange({
 			orderId: updatedOrder.id,
@@ -466,19 +521,72 @@ export class OrdersService {
 			user,
 		);
 
-		const targetOrders = await this.db.order.findMany({
-			where,
-			select: { id: true, orderNumber: true },
+		const { targetOrders, result } = await this.db.$transaction(async tx => {
+			const targetOrders = await tx.order.findMany({
+				where,
+				select: {
+					id: true,
+					orderNumber: true,
+					vehicleId: true,
+					status: true,
+					parts: {
+						select: {
+							partId: true,
+							quantity: true,
+						},
+					},
+				},
+			});
+
+			if (!targetOrders.length) {
+				return {
+					targetOrders,
+					result: { count: 0 },
+				};
+			}
+
+			const result = await tx.order.updateMany({
+				where,
+				data: updateData,
+			});
+
+			if (status !== undefined) {
+				await this.syncDenormalizedStats(
+					{
+						vehicleIds: targetOrders.map(order => order.vehicleId),
+					},
+					tx,
+				);
+
+				await Promise.all(
+					targetOrders.map(order =>
+						this.syncStockMovementsForOrderTransition(
+							{
+								orderId: order.id,
+								userId: user.id,
+								fromStatus: order.status,
+								toStatus: status as OrderStatus,
+								fromParts: order.parts.map(part => ({
+									partId: part.partId,
+									quantity: part.quantity,
+								})),
+								toParts: order.parts.map(part => ({
+									partId: part.partId,
+									quantity: part.quantity,
+								})),
+							},
+							tx,
+						),
+					),
+				);
+			}
+
+			return { targetOrders, result };
 		});
 
 		if (!targetOrders.length) {
-			return { count: 0 };
+			return result;
 		}
-
-		const result = await this.db.order.updateMany({
-			where,
-			data: updateData,
-		});
 
 		if (status === OrderStatus.COMPLETED && isMechanic) {
 			await Promise.all(
@@ -538,6 +646,540 @@ export class OrdersService {
 				}),
 			),
 		);
+	}
+
+	private async recalculateClientStats(
+		clientId: string,
+		tx?: Prisma.TransactionClient,
+	) {
+		const dbClient = tx ?? this.db;
+
+		const [vehicles, orders, latestOrder] = await Promise.all([
+			dbClient.vehicle.count({
+				where: { ownerId: clientId, deletedAt: null },
+			}),
+			dbClient.order.aggregate({
+				where: { clientId, deletedAt: null },
+				_count: true,
+				_sum: { totalAmount: true },
+			}),
+			dbClient.order.findFirst({
+				where: { clientId, deletedAt: null },
+				orderBy: { startDate: 'desc' },
+				select: { startDate: true },
+			}),
+		]);
+
+		await dbClient.client.update({
+			where: { id: clientId },
+			data: {
+				vehicleCount: vehicles,
+				totalOrders: orders._count,
+				totalSpent: orders._sum.totalAmount || 0,
+				latestVisit: latestOrder?.startDate || null,
+			},
+		});
+	}
+
+	private async recalculateVehicleStats(
+		vehicleId: string,
+		tx?: Prisma.TransactionClient,
+	) {
+		const dbClient = tx ?? this.db;
+
+		const [totalServices, latestCompletedOrder] = await Promise.all([
+			dbClient.order.count({
+				where: {
+					vehicleId,
+					deletedAt: null,
+					status: OrderStatus.COMPLETED,
+				},
+			}),
+			dbClient.order.findFirst({
+				where: {
+					vehicleId,
+					deletedAt: null,
+					status: OrderStatus.COMPLETED,
+					endDate: { not: null },
+				},
+				orderBy: { endDate: 'desc' },
+				select: { endDate: true },
+			}),
+		]);
+
+		await dbClient.vehicle.update({
+			where: { id: vehicleId },
+			data: {
+				totalServices,
+				lastService: latestCompletedOrder?.endDate || null,
+			},
+		});
+	}
+
+	private async syncDenormalizedStats(
+		input: {
+			clientIds?: string[];
+			vehicleIds?: string[];
+		},
+		tx?: Prisma.TransactionClient,
+	) {
+		const clientIds = [...new Set((input.clientIds || []).filter(Boolean))];
+		const vehicleIds = [...new Set((input.vehicleIds || []).filter(Boolean))];
+
+		await Promise.all([
+			...clientIds.map(clientId => this.recalculateClientStats(clientId, tx)),
+			...vehicleIds.map(vehicleId =>
+				this.recalculateVehicleStats(vehicleId, tx),
+			),
+		]);
+	}
+
+	private getOrderStockState(
+		status: OrderStatus | null,
+	): 'reserved' | 'issued' | 'none' {
+		if (!status) {
+			return 'none';
+		}
+
+		if (
+			status === OrderStatus.NEW ||
+			status === OrderStatus.IN_PROGRESS ||
+			status === OrderStatus.WAITING_PARTS
+		) {
+			return 'reserved';
+		}
+
+		if (status === OrderStatus.COMPLETED || status === OrderStatus.PAID) {
+			return 'issued';
+		}
+
+		return 'none';
+	}
+
+	private toPartQuantityMap(
+		parts: Array<{ partId: string; quantity: number }>,
+	): Map<string, number> {
+		const map = new Map<string, number>();
+		for (const part of parts) {
+			const qty = Number(part.quantity || 0);
+			if (qty <= 0) {
+				continue;
+			}
+
+			map.set(part.partId, (map.get(part.partId) || 0) + qty);
+		}
+
+		return map;
+	}
+
+	private pushMovementEventsFromMap(input: {
+		events: Prisma.StockMovementCreateManyInput[];
+		orderId: string;
+		userId?: string;
+		map: Map<string, number>;
+		type: 'RESERVED' | 'ISSUED' | 'RETURNED';
+		reason: string;
+	}) {
+		for (const [partId, quantity] of input.map.entries()) {
+			if (quantity <= 0) {
+				continue;
+			}
+
+			input.events.push({
+				partId,
+				orderId: input.orderId,
+				userId: input.userId || null,
+				type: input.type,
+				quantity,
+				reason: input.reason,
+			});
+		}
+	}
+
+	private createDeltaMovementEvents(input: {
+		orderId: string;
+		userId?: string;
+		fromStatus: OrderStatus | null;
+		toStatus: OrderStatus | null;
+		fromParts: Array<{ partId: string; quantity: number }>;
+		toParts: Array<{ partId: string; quantity: number }>;
+	}): Prisma.StockMovementCreateManyInput[] {
+		const fromState = this.getOrderStockState(input.fromStatus);
+		const toState = this.getOrderStockState(input.toStatus);
+
+		const fromMap = this.toPartQuantityMap(input.fromParts);
+		const toMap = this.toPartQuantityMap(input.toParts);
+		const events: Prisma.StockMovementCreateManyInput[] = [];
+		const transition = `${input.fromStatus ?? 'NONE'} -> ${input.toStatus ?? 'NONE'}`;
+
+		if (fromState === toState) {
+			if (fromState === 'none') {
+				return events;
+			}
+
+			const type = fromState === 'reserved' ? 'RESERVED' : 'ISSUED';
+			const allPartIds = new Set([...fromMap.keys(), ...toMap.keys()]);
+
+			for (const partId of allPartIds) {
+				const oldQty = fromMap.get(partId) || 0;
+				const newQty = toMap.get(partId) || 0;
+
+				if (newQty > oldQty) {
+					events.push({
+						partId,
+						orderId: input.orderId,
+						userId: input.userId || null,
+						type,
+						quantity: newQty - oldQty,
+						reason: `Order stock delta (${transition})`,
+					});
+				} else if (oldQty > newQty) {
+					events.push({
+						partId,
+						orderId: input.orderId,
+						userId: input.userId || null,
+						type: 'RETURNED',
+						quantity: oldQty - newQty,
+						reason: `Order stock delta (${transition})`,
+					});
+				}
+			}
+
+			return events;
+		}
+
+		if (fromState === 'none' && toState === 'reserved') {
+			this.pushMovementEventsFromMap({
+				events,
+				orderId: input.orderId,
+				userId: input.userId,
+				map: toMap,
+				type: 'RESERVED',
+				reason: `Order became active (${transition})`,
+			});
+			return events;
+		}
+
+		if (fromState === 'none' && toState === 'issued') {
+			this.pushMovementEventsFromMap({
+				events,
+				orderId: input.orderId,
+				userId: input.userId,
+				map: toMap,
+				type: 'ISSUED',
+				reason: `Order completed from non-stock state (${transition})`,
+			});
+			return events;
+		}
+
+		if (fromState === 'reserved' && toState === 'none') {
+			this.pushMovementEventsFromMap({
+				events,
+				orderId: input.orderId,
+				userId: input.userId,
+				map: fromMap,
+				type: 'RETURNED',
+				reason: `Order left active state (${transition})`,
+			});
+			return events;
+		}
+
+		if (fromState === 'issued' && toState === 'none') {
+			this.pushMovementEventsFromMap({
+				events,
+				orderId: input.orderId,
+				userId: input.userId,
+				map: fromMap,
+				type: 'RETURNED',
+				reason: `Order reopened/cancelled after issue (${transition})`,
+			});
+			return events;
+		}
+
+		if (fromState === 'reserved' && toState === 'issued') {
+			this.pushMovementEventsFromMap({
+				events,
+				orderId: input.orderId,
+				userId: input.userId,
+				map: toMap,
+				type: 'ISSUED',
+				reason: `Order completed (${transition})`,
+			});
+
+			for (const [partId, oldQty] of fromMap.entries()) {
+				const newQty = toMap.get(partId) || 0;
+				if (oldQty > newQty) {
+					events.push({
+						partId,
+						orderId: input.orderId,
+						userId: input.userId || null,
+						type: 'RETURNED',
+						quantity: oldQty - newQty,
+						reason: `Unused reserved quantity returned (${transition})`,
+					});
+				}
+			}
+
+			return events;
+		}
+
+		if (fromState === 'issued' && toState === 'reserved') {
+			this.pushMovementEventsFromMap({
+				events,
+				orderId: input.orderId,
+				userId: input.userId,
+				map: fromMap,
+				type: 'RETURNED',
+				reason: `Order moved back to active state (${transition})`,
+			});
+
+			this.pushMovementEventsFromMap({
+				events,
+				orderId: input.orderId,
+				userId: input.userId,
+				map: toMap,
+				type: 'RESERVED',
+				reason: `Order moved back to active state (${transition})`,
+			});
+		}
+
+		return events;
+	}
+
+	private async validateStockAvailabilityForTransition(
+		input: {
+			orderId: string;
+			fromStatus: OrderStatus | null;
+			toStatus: OrderStatus | null;
+			fromParts: Array<{ partId: string; quantity: number }>;
+			toParts: Array<{ partId: string; quantity: number }>;
+		},
+		tx?: Prisma.TransactionClient,
+	) {
+		const dbClient = tx ?? this.db;
+		const partIds = [
+			...new Set([...input.fromParts, ...input.toParts].map(p => p.partId)),
+		];
+
+		if (!partIds.length) {
+			return;
+		}
+
+		const fromState = this.getOrderStockState(input.fromStatus);
+		const toState = this.getOrderStockState(input.toStatus);
+
+		const fromMap = this.toPartQuantityMap(input.fromParts);
+		const toMap = this.toPartQuantityMap(input.toParts);
+
+		const fromAllocatedMap =
+			fromState === 'none' ? new Map<string, number>() : fromMap;
+		const toAllocatedMap =
+			toState === 'none' ? new Map<string, number>() : toMap;
+
+		const [onHandRows, reservedRows] = await Promise.all([
+			dbClient.partInventory.groupBy({
+				by: ['partId'],
+				where: { partId: { in: partIds } },
+				_sum: { quantity: true },
+			}),
+			dbClient.orderPart.groupBy({
+				by: ['partId'],
+				where: {
+					partId: { in: partIds },
+					order: {
+						deletedAt: null,
+						status: {
+							in: [
+								OrderStatus.NEW,
+								OrderStatus.IN_PROGRESS,
+								OrderStatus.WAITING_PARTS,
+							],
+						},
+						id: { not: input.orderId },
+					},
+				},
+				_sum: { quantity: true },
+			}),
+		]);
+
+		const onHandMap = new Map<string, number>();
+		for (const row of onHandRows) {
+			onHandMap.set(row.partId, row._sum.quantity || 0);
+		}
+
+		const reservedMap = new Map<string, number>();
+		for (const row of reservedRows) {
+			reservedMap.set(row.partId, row._sum.quantity || 0);
+		}
+
+		for (const partId of partIds) {
+			const currentOnHand = onHandMap.get(partId) || 0;
+			const reservedByOtherOrders = reservedMap.get(partId) || 0;
+			const availableForAllocation = currentOnHand - reservedByOtherOrders;
+
+			const fromAllocated = fromAllocatedMap.get(partId) || 0;
+			const toAllocated = toAllocatedMap.get(partId) || 0;
+			const additionalAllocation = Math.max(toAllocated - fromAllocated, 0);
+
+			if (additionalAllocation > availableForAllocation) {
+				throw new BadRequestException(
+					`Not enough stock for part ${partId}: required additional ${additionalAllocation}, available ${Math.max(availableForAllocation, 0)}.`,
+				);
+			}
+		}
+	}
+
+	private async consumePartInventory(
+		partId: string,
+		quantity: number,
+		tx: Prisma.TransactionClient,
+	) {
+		let remaining = quantity;
+
+		const batches = await tx.partInventory.findMany({
+			where: { partId },
+			orderBy: [{ receivedAt: 'asc' }, { id: 'asc' }],
+			select: { id: true, quantity: true },
+		});
+
+		for (const batch of batches) {
+			if (remaining <= 0) {
+				break;
+			}
+
+			const toConsume = Math.min(batch.quantity, remaining);
+			if (toConsume <= 0) {
+				continue;
+			}
+
+			await tx.partInventory.update({
+				where: { id: batch.id },
+				data: { quantity: { decrement: toConsume } },
+			});
+
+			remaining -= toConsume;
+		}
+
+		if (remaining > 0) {
+			throw new BadRequestException(
+				`Not enough stock for part ${partId}: missing ${remaining} item(s).`,
+			);
+		}
+	}
+
+	private async returnPartInventory(
+		partId: string,
+		quantity: number,
+		tx: Prisma.TransactionClient,
+	) {
+		const latestBatch = await tx.partInventory.findFirst({
+			where: { partId },
+			orderBy: [{ receivedAt: 'desc' }, { id: 'desc' }],
+			select: {
+				id: true,
+				purchasePrice: true,
+				location: true,
+			},
+		});
+
+		if (latestBatch) {
+			await tx.partInventory.update({
+				where: { id: latestBatch.id },
+				data: { quantity: { increment: quantity } },
+			});
+			return;
+		}
+
+		await tx.partInventory.create({
+			data: {
+				partId,
+				quantity,
+				purchasePrice: new Prisma.Decimal(0),
+				location: 'AUTO_RETURN',
+			},
+		});
+	}
+
+	private async applyInventoryDeltaForIssuedTransition(
+		input: {
+			fromStatus: OrderStatus | null;
+			toStatus: OrderStatus | null;
+			fromParts: Array<{ partId: string; quantity: number }>;
+			toParts: Array<{ partId: string; quantity: number }>;
+		},
+		tx: Prisma.TransactionClient,
+	) {
+		const fromState = this.getOrderStockState(input.fromStatus);
+		const toState = this.getOrderStockState(input.toStatus);
+
+		const fromIssuedMap =
+			fromState === 'issued'
+				? this.toPartQuantityMap(input.fromParts)
+				: new Map<string, number>();
+		const toIssuedMap =
+			toState === 'issued'
+				? this.toPartQuantityMap(input.toParts)
+				: new Map<string, number>();
+
+		const partIds = [
+			...new Set([...fromIssuedMap.keys(), ...toIssuedMap.keys()]),
+		];
+
+		for (const partId of partIds) {
+			const fromIssuedQty = fromIssuedMap.get(partId) || 0;
+			const toIssuedQty = toIssuedMap.get(partId) || 0;
+			const delta = toIssuedQty - fromIssuedQty;
+
+			if (delta > 0) {
+				await this.consumePartInventory(partId, delta, tx);
+				continue;
+			}
+
+			if (delta < 0) {
+				await this.returnPartInventory(partId, Math.abs(delta), tx);
+			}
+		}
+	}
+
+	private async syncStockMovementsForOrderTransition(
+		input: {
+			orderId: string;
+			userId?: string;
+			fromStatus: OrderStatus | null;
+			toStatus: OrderStatus | null;
+			fromParts: Array<{ partId: string; quantity: number }>;
+			toParts: Array<{ partId: string; quantity: number }>;
+		},
+		tx?: Prisma.TransactionClient,
+	) {
+		if (tx) {
+			await this.validateStockAvailabilityForTransition(input, tx);
+			await this.applyInventoryDeltaForIssuedTransition(input, tx);
+
+			const events = this.createDeltaMovementEvents(input);
+			if (!events.length) {
+				return;
+			}
+
+			await tx.stockMovement.createMany({
+				data: events,
+			});
+			return;
+		}
+
+		await this.db.$transaction(async transaction => {
+			await this.validateStockAvailabilityForTransition(input, transaction);
+			await this.applyInventoryDeltaForIssuedTransition(input, transaction);
+
+			const events = this.createDeltaMovementEvents(input);
+			if (!events.length) {
+				return;
+			}
+
+			await transaction.stockMovement.createMany({
+				data: events,
+			});
+		});
 	}
 
 	private async notifyManagersOnly(input: {
@@ -657,21 +1299,112 @@ export class OrdersService {
 		};
 	}
 
-	async delete(id: string) {
-		return this.db.order.update({
-			where: { id },
-			data: { deletedAt: new Date() },
+	async delete(id: string, actor: AuthUser) {
+		return this.db.$transaction(async tx => {
+			const existingOrder = await tx.order.findUnique({
+				where: { id },
+				select: {
+					status: true,
+					parts: {
+						select: {
+							partId: true,
+							quantity: true,
+						},
+					},
+				},
+			});
+
+			if (!existingOrder) {
+				throw new NotFoundException('Order not found');
+			}
+
+			const deletedOrder = await tx.order.update({
+				where: { id },
+				data: { deletedAt: new Date() },
+			});
+
+			await this.syncStockMovementsForOrderTransition(
+				{
+					orderId: deletedOrder.id,
+					userId: actor.id,
+					fromStatus: existingOrder.status,
+					toStatus: null,
+					fromParts: existingOrder.parts.map(part => ({
+						partId: part.partId,
+						quantity: part.quantity,
+					})),
+					toParts: [],
+				},
+				tx,
+			);
+
+			await this.syncDenormalizedStats(
+				{
+					clientIds: [deletedOrder.clientId],
+					vehicleIds: [deletedOrder.vehicleId],
+				},
+				tx,
+			);
+
+			return deletedOrder;
 		});
 	}
 
-	async deleteBulk(ids: string[]) {
+	async deleteBulk(ids: string[], actor: AuthUser) {
 		if (!ids?.length) {
 			throw new BadRequestException('ids are required for bulk delete');
 		}
 
-		return this.db.order.updateMany({
-			where: { id: { in: ids } },
-			data: { deletedAt: new Date() },
+		return this.db.$transaction(async tx => {
+			const affectedOrders = await tx.order.findMany({
+				where: { id: { in: ids }, deletedAt: null },
+				select: {
+					id: true,
+					clientId: true,
+					vehicleId: true,
+					status: true,
+					parts: {
+						select: {
+							partId: true,
+							quantity: true,
+						},
+					},
+				},
+			});
+
+			const result = await tx.order.updateMany({
+				where: { id: { in: ids } },
+				data: { deletedAt: new Date() },
+			});
+
+			await Promise.all(
+				affectedOrders.map(order =>
+					this.syncStockMovementsForOrderTransition(
+						{
+							orderId: order.id,
+							userId: actor.id,
+							fromStatus: order.status,
+							toStatus: null,
+							fromParts: order.parts.map(part => ({
+								partId: part.partId,
+								quantity: part.quantity,
+							})),
+							toParts: [],
+						},
+						tx,
+					),
+				),
+			);
+
+			await this.syncDenormalizedStats(
+				{
+					clientIds: affectedOrders.map(order => order.clientId),
+					vehicleIds: affectedOrders.map(order => order.vehicleId),
+				},
+				tx,
+			);
+
+			return result;
 		});
 	}
 

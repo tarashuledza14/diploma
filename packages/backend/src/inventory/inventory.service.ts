@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+	BadRequestException,
+	Injectable,
+	NotFoundException,
+} from '@nestjs/common';
 import { OrderStatus, Prisma, Role } from 'prisma/generated/prisma/client';
 import { FilterService } from 'src/filter/filter.service';
 import { NotificationsService } from 'src/notifications/notifications.service';
@@ -43,10 +47,10 @@ export class InventoryService {
 			...rest
 		} = data;
 
-		// ДОДАНО: Дістаємо початкову кількість для запису в історію
-		const initialQty = inventory?.[0]?.quantity
-			? Number(inventory[0].quantity)
-			: 0;
+		const initialQty = (inventory || []).reduce(
+			(sum, entry) => sum + Number(entry.quantity || 0),
+			0,
+		);
 
 		return this.db.part.create({
 			data: {
@@ -100,94 +104,118 @@ export class InventoryService {
 		} = data;
 
 		if (!id) {
-			throw new Error('Part ID is required for update');
+			throw new BadRequestException('Part ID is required for update');
 		}
 
-		// ДОДАНО: 1. Витягуємо поточну запчастину з бази, щоб дізнатись СТАРУ кількість
-		const currentPart = await this.db.part.findUnique({
-			where: { id },
-			include: { inventory: true },
-		});
+		const inventoryInput = inventory?.[0];
+		const desiredTotalQty =
+			inventoryInput?.quantity !== undefined
+				? Number(inventoryInput.quantity)
+				: undefined;
 
-		const oldQty = currentPart?.inventory?.[0]?.quantity || 0;
-		const newQty =
-			inventory?.[0]?.quantity !== undefined
-				? Number(inventory[0].quantity)
-				: oldQty;
+		if (desiredTotalQty !== undefined && desiredTotalQty < 0) {
+			throw new BadRequestException('Inventory quantity cannot be negative');
+		}
 
-		// Вираховуємо різницю (наприклад, було 10, стало 12 -> різниця +2)
-		const qtyDifference = newQty - oldQty;
+		const { updatedPart, qtyDifference } = await this.db.$transaction(
+			async tx => {
+				const currentPart = await tx.part.findUnique({
+					where: { id },
+					include: { inventory: true },
+				});
 
-		// 2. Оновлюємо саму запчастину
-		const updatedPart = await this.db.part.update({
-			where: { id },
-			data: {
-				...rest,
-				...(category?.id && { category: { connect: { id: category.id } } }),
-				...(brand?.id && { brand: { connect: { id: brand.id } } }),
+				if (!currentPart) {
+					throw new NotFoundException('Part not found');
+				}
 
-				manufacturer: manufacturer?.id
-					? { connect: { id: manufacturer.id } }
-					: manufacturer === null
-						? { disconnect: true }
-						: undefined,
-
-				supplier: supplier?.id
-					? { connect: { id: supplier.id } }
-					: supplier === null
-						? { disconnect: true }
-						: undefined,
-
-				...(priceRules?.length && {
-					priceRules: {
-						updateMany: {
-							where: { clientType: priceRules[0].clientType },
-							data: { fixedPrice: priceRules[0].fixedPrice },
-						},
-					},
-				}),
-
-				...(inventory?.length && {
-					inventory: {
-						updateMany: {
-							where: {},
-							data: {
-								quantity: newQty, // Оновлюємо кількість
-								location: inventory[0].location,
-								purchasePrice: inventory[0].purchasePrice,
-							},
-						},
-					},
-				}),
-			},
-			include: {
-				category: true,
-				brand: true,
-				manufacturer: true,
-				supplier: true,
-				inventory: true,
-				priceRules: true,
-			},
-		});
-
-		// ДОДАНО: 3. Створюємо запис про коригування залишку (якщо кількість змінилася)
-		if (qtyDifference !== 0) {
-			await this.db.stockMovement.create({
-				data: {
-					partId: id,
-					type: 'ADJUSTMENT',
-					quantity: qtyDifference, // Буде + або -
-					reason: 'Manual stock adjustment via edit form',
-				},
-			});
-
-			if (qtyDifference > 0) {
-				await this.notifyMechanicsAboutPartDelivery(
-					id,
-					updatedPart.name,
-					qtyDifference,
+				const oldQty = currentPart.inventory.reduce(
+					(sum, item) => sum + item.quantity,
+					0,
 				);
-			}
+				const newQty = desiredTotalQty ?? oldQty;
+				const qtyDifference = newQty - oldQty;
+
+				if (qtyDifference > 0) {
+					await this.addStockToLatestBatch(
+						tx,
+						id,
+						qtyDifference,
+						inventoryInput,
+					);
+				} else if (qtyDifference < 0) {
+					await this.consumeStockFromBatches(tx, id, Math.abs(qtyDifference));
+				}
+
+				if (
+					inventoryInput &&
+					desiredTotalQty === undefined &&
+					(inventoryInput.location !== undefined ||
+						inventoryInput.purchasePrice !== undefined)
+				) {
+					await this.updateLatestBatchMetadata(tx, id, inventoryInput);
+				}
+
+				const updatedPart = await tx.part.update({
+					where: { id },
+					data: {
+						...rest,
+						...(category?.id && {
+							category: { connect: { id: category.id } },
+						}),
+						...(brand?.id && { brand: { connect: { id: brand.id } } }),
+
+						manufacturer: manufacturer?.id
+							? { connect: { id: manufacturer.id } }
+							: manufacturer === null
+								? { disconnect: true }
+								: undefined,
+
+						supplier: supplier?.id
+							? { connect: { id: supplier.id } }
+							: supplier === null
+								? { disconnect: true }
+								: undefined,
+
+						...(priceRules?.length && {
+							priceRules: {
+								updateMany: {
+									where: { clientType: priceRules[0].clientType },
+									data: { fixedPrice: priceRules[0].fixedPrice },
+								},
+							},
+						}),
+					},
+					include: {
+						category: true,
+						brand: true,
+						manufacturer: true,
+						supplier: true,
+						inventory: true,
+						priceRules: true,
+					},
+				});
+
+				if (qtyDifference !== 0) {
+					await tx.stockMovement.create({
+						data: {
+							partId: id,
+							type: 'ADJUSTMENT',
+							quantity: qtyDifference,
+							reason: 'Manual stock adjustment via edit form',
+						},
+					});
+				}
+
+				return { updatedPart, qtyDifference };
+			},
+		);
+
+		if (qtyDifference > 0) {
+			await this.notifyMechanicsAboutPartDelivery(
+				id,
+				updatedPart.name,
+				qtyDifference,
+			);
 		}
 
 		return updatedPart;
@@ -251,6 +279,7 @@ export class InventoryService {
 				orderParts: {
 					where: {
 						order: {
+							deletedAt: null,
 							status: {
 								in: ['NEW', 'IN_PROGRESS', 'WAITING_PARTS'],
 							},
@@ -340,13 +369,15 @@ export class InventoryService {
 			issued: 0,
 			reserved: 0,
 			returned: 0,
+			adjustment: 0,
 		};
 
 		movements.forEach(m => {
 			if (m.type === 'RECEIVED') stats.received += m.quantity;
 			if (m.type === 'ISSUED') stats.issued += Math.abs(m.quantity);
 			if (m.type === 'RESERVED') stats.reserved += Math.abs(m.quantity);
-			if (m.type === 'RETURNED') stats.returned += m.quantity;
+			if (m.type === 'RETURNED') stats.returned += Math.abs(m.quantity);
+			if (m.type === 'ADJUSTMENT') stats.adjustment += m.quantity;
 		});
 
 		return {
@@ -355,6 +386,21 @@ export class InventoryService {
 		};
 	}
 	async deleteBulk(ids: string[]) {
+		if (!ids?.length) {
+			throw new BadRequestException('ids are required for bulk delete');
+		}
+
+		const partsWithMovements = await this.db.stockMovement.groupBy({
+			by: ['partId'],
+			where: { partId: { in: ids } },
+		});
+
+		if (partsWithMovements.length) {
+			throw new BadRequestException(
+				'Cannot delete parts with stock movement history. Remove them from catalog manually or archive them instead.',
+			);
+		}
+
 		await this.db.$transaction(async tx => {
 			await tx.partInventory.deleteMany({
 				where: { partId: { in: ids } },
@@ -362,12 +408,122 @@ export class InventoryService {
 			await tx.partPriceRule.deleteMany({
 				where: { partId: { in: ids } },
 			});
-			await tx.stockMovement.deleteMany({
-				where: { partId: { in: ids } },
-			});
 			await tx.part.deleteMany({
 				where: { id: { in: ids } },
 			});
+		});
+	}
+
+	private async consumeStockFromBatches(
+		tx: Prisma.TransactionClient,
+		partId: string,
+		quantity: number,
+	) {
+		let remaining = quantity;
+
+		const batches = await tx.partInventory.findMany({
+			where: { partId },
+			orderBy: [{ receivedAt: 'asc' }, { id: 'asc' }],
+			select: { id: true, quantity: true },
+		});
+
+		for (const batch of batches) {
+			if (remaining <= 0) {
+				break;
+			}
+
+			const toConsume = Math.min(batch.quantity, remaining);
+			if (toConsume <= 0) {
+				continue;
+			}
+
+			await tx.partInventory.update({
+				where: { id: batch.id },
+				data: {
+					quantity: { decrement: toConsume },
+				},
+			});
+
+			remaining -= toConsume;
+		}
+
+		if (remaining > 0) {
+			throw new BadRequestException(
+				`Not enough stock to reduce part ${partId} by ${quantity}.`,
+			);
+		}
+	}
+
+	private async addStockToLatestBatch(
+		tx: Prisma.TransactionClient,
+		partId: string,
+		quantity: number,
+		inventoryInput?: { location?: string; purchasePrice?: number | string },
+	) {
+		const latestBatch = await tx.partInventory.findFirst({
+			where: { partId },
+			orderBy: [{ receivedAt: 'desc' }, { id: 'desc' }],
+			select: { id: true },
+		});
+
+		if (latestBatch) {
+			await tx.partInventory.update({
+				where: { id: latestBatch.id },
+				data: {
+					quantity: { increment: quantity },
+					...(inventoryInput?.location !== undefined
+						? { location: inventoryInput.location }
+						: {}),
+					...(inventoryInput?.purchasePrice !== undefined
+						? {
+								purchasePrice: new Prisma.Decimal(inventoryInput.purchasePrice),
+							}
+						: {}),
+				},
+			});
+			return;
+		}
+
+		await tx.partInventory.create({
+			data: {
+				partId,
+				quantity,
+				purchasePrice:
+					inventoryInput?.purchasePrice !== undefined
+						? new Prisma.Decimal(inventoryInput.purchasePrice)
+						: new Prisma.Decimal(0),
+				location: inventoryInput?.location || 'MAIN',
+			},
+		});
+	}
+
+	private async updateLatestBatchMetadata(
+		tx: Prisma.TransactionClient,
+		partId: string,
+		inventoryInput: { location?: string; purchasePrice?: number | string },
+	) {
+		const latestBatch = await tx.partInventory.findFirst({
+			where: { partId },
+			orderBy: [{ receivedAt: 'desc' }, { id: 'desc' }],
+			select: { id: true },
+		});
+
+		if (!latestBatch) {
+			return;
+		}
+
+		await tx.partInventory.update({
+			where: { id: latestBatch.id },
+			data: {
+				...(inventoryInput.location !== undefined
+					? { location: inventoryInput.location }
+					: {}),
+				...(inventoryInput.purchasePrice !== undefined
+					? {
+							purchasePrice: new Prisma.Decimal(inventoryInput.purchasePrice),
+						}
+					: {}),
+			},
 		});
 	}
 

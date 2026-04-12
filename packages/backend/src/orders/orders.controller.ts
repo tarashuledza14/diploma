@@ -87,13 +87,13 @@ export class OrdersController {
 
 	@Auth(Role.ADMIN, Role.MANAGER)
 	@Delete(':id')
-	delete(@Param('id') id: string) {
-		return this.ordersService.delete(id);
+	delete(@Param('id') id: string, @CurrentUser() user: AuthUser) {
+		return this.ordersService.delete(id, user);
 	}
 
 	@Auth(Role.ADMIN, Role.MANAGER)
 	@Delete()
-	deleteBulk(@Body('ids') ids: string[]) {
-		return this.ordersService.deleteBulk(ids);
+	deleteBulk(@Body('ids') ids: string[], @CurrentUser() user: AuthUser) {
+		return this.ordersService.deleteBulk(ids, user);
 	}
 }

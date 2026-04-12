@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { OrderStatus } from 'prisma/generated/prisma/client';
 import { FilterService } from 'src/filter/filter.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -22,12 +23,25 @@ export class VehiclesService {
 		if (!client) {
 			throw new BadRequestException('Client not found');
 		}
-		return this.db.vehicle.create({
+		const createdVehicle = await this.db.vehicle.create({
 			data,
 		});
+
+		await this.recalculateClientVehicleCount(createdVehicle.ownerId);
+
+		return createdVehicle;
 	}
 
 	async update(id: string, data: UpdateVehicleDto) {
+		const existingVehicle = await this.db.vehicle.findUnique({
+			where: { id },
+			select: { ownerId: true },
+		});
+
+		if (!existingVehicle) {
+			throw new BadRequestException('Vehicle not found');
+		}
+
 		if (data.ownerId) {
 			const client = await this.db.client.findUnique({
 				where: { id: data.ownerId },
@@ -38,20 +52,56 @@ export class VehiclesService {
 			}
 		}
 
-		return this.db.vehicle.update({
+		const updatedVehicle = await this.db.vehicle.update({
 			where: { id },
 			data,
 		});
+
+		await Promise.all([
+			this.recalculateClientVehicleCount(existingVehicle.ownerId),
+			...(updatedVehicle.ownerId !== existingVehicle.ownerId
+				? [this.recalculateClientVehicleCount(updatedVehicle.ownerId)]
+				: []),
+		]);
+
+		return updatedVehicle;
 	}
 
 	async updateBulk(data: BulkUpdateVehicleDto) {
 		const { ids, field, value } = data;
-		return this.db.vehicle.updateMany({
+		const previousOwners =
+			field === 'ownerId'
+				? await this.db.vehicle.findMany({
+						where: { id: { in: ids } },
+						select: { ownerId: true },
+					})
+				: [];
+
+		if (field === 'ownerId') {
+			const client = await this.db.client.findUnique({ where: { id: value } });
+			if (!client) {
+				throw new BadRequestException('Client not found');
+			}
+		}
+
+		const result = await this.db.vehicle.updateMany({
 			where: {
 				id: { in: ids },
 			},
 			data: { [field]: value },
 		});
+
+		if (field === 'ownerId') {
+			const ownerIds = [
+				...new Set([...previousOwners.map(item => item.ownerId), value]),
+			];
+
+			await Promise.all(
+				ownerIds.map(ownerId => this.recalculateClientVehicleCount(ownerId)),
+			);
+		}
+
+		return result;
 	}
 
 	async getStatusCounts() {
@@ -131,33 +181,69 @@ export class VehiclesService {
 	}
 
 	async deleteBulk(ids: string[]) {
-		return this.db.vehicle.updateMany({
+		const affectedVehicles = await this.db.vehicle.findMany({
+			where: {
+				id: { in: ids },
+				deletedAt: null,
+			},
+			select: { ownerId: true },
+		});
+
+		const result = await this.db.vehicle.updateMany({
 			where: {
 				id: { in: ids },
 			},
 			data: { deletedAt: new Date() },
 		});
+
+		const ownerIds = [...new Set(affectedVehicles.map(item => item.ownerId))];
+		await Promise.all(
+			ownerIds.map(ownerId => this.recalculateClientVehicleCount(ownerId)),
+		);
+
+		return result;
 	}
 	async recalculateVehicleStats(vehicleId: string) {
-		const orders = await this.db.order.findMany({
-			where: { vehicleId },
-			select: { endDate: true },
-			orderBy: { endDate: 'desc' },
-			take: 1,
-		});
-
-		const totalServices = await this.db.order.count({
-			where: { vehicleId, status: 'COMPLETED' },
-		});
-
-		const lastServiceDate = orders.length > 0 ? orders[0].endDate : null;
+		const [totalServices, latestCompletedOrder] = await Promise.all([
+			this.db.order.count({
+				where: {
+					vehicleId,
+					deletedAt: null,
+					status: OrderStatus.COMPLETED,
+				},
+			}),
+			this.db.order.findFirst({
+				where: {
+					vehicleId,
+					deletedAt: null,
+					status: OrderStatus.COMPLETED,
+					endDate: { not: null },
+				},
+				select: { endDate: true },
+				orderBy: { endDate: 'desc' },
+			}),
+		]);
 
 		await this.db.vehicle.update({
 			where: { id: vehicleId },
 			data: {
 				totalServices,
-				lastService: lastServiceDate,
+				lastService: latestCompletedOrder?.endDate || null,
 			},
+		});
+	}
+
+	private async recalculateClientVehicleCount(clientId: string) {
+		const activeVehiclesCount = await this.db.vehicle.count({
+			where: {
+				ownerId: clientId,
+				deletedAt: null,
+			},
+		});
+
+		await this.db.client.update({
+			where: { id: clientId },
+			data: { vehicleCount: activeVehiclesCount },
 		});
 	}
 }

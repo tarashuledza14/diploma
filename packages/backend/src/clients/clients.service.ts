@@ -141,14 +141,16 @@ export class ClientsService {
 
 	async recalculateClientStats(clientId: string) {
 		const [vehicles, orders, latestOrder] = await Promise.all([
-			this.db.vehicle.count({ where: { ownerId: clientId } }),
+			this.db.vehicle.count({
+				where: { ownerId: clientId, deletedAt: null },
+			}),
 			this.db.order.aggregate({
-				where: { clientId },
+				where: { clientId, deletedAt: null },
 				_count: true,
 				_sum: { totalAmount: true },
 			}),
 			this.db.order.findFirst({
-				where: { clientId },
+				where: { clientId, deletedAt: null },
 				orderBy: { startDate: 'desc' },
 				select: { startDate: true },
 			}),
