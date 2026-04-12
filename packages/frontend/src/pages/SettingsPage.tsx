@@ -13,6 +13,9 @@ import {
 	CardContent,
 	CardHeader,
 	CardTitle,
+	FileUpload,
+	FileUploadDropzone,
+	FileUploadTrigger,
 	Input,
 	Label,
 	Select,
@@ -22,8 +25,8 @@ import {
 	SelectValue,
 } from '@/shared';
 import { useMutation } from '@tanstack/react-query';
-import { Car } from 'lucide-react';
-import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
+import { Car, CloudUpload } from 'lucide-react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
@@ -53,6 +56,7 @@ export function SettingsPage() {
 	const [currentPassword, setCurrentPassword] = useState('');
 	const [newPassword, setNewPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
+	const [logoUploadFiles, setLogoUploadFiles] = useState<File[]>([]);
 	const [cropSourceFile, setCropSourceFile] = useState<File | null>(null);
 	const [isCropperOpen, setIsCropperOpen] = useState(false);
 	const [isInitialized, setIsInitialized] = useState(false);
@@ -122,15 +126,8 @@ export function SettingsPage() {
 	const previewLogo = temporaryPreviewLogo ?? data?.logoUrl ?? null;
 	const isSaving = isPending || isUploadingLogo;
 
-	const onLogoInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0] ?? null;
-
-		// Allow selecting the same file again after closing cropper.
-		event.target.value = '';
-
-		if (!file) {
-			return;
-		}
+	const onLogoFileAccept = (file: File) => {
+		setLogoUploadFiles([]);
 
 		if (!file.type.startsWith('image/')) {
 			toast.error(t('brandingSettings.errors.logoTypeInvalid'));
@@ -145,6 +142,7 @@ export function SettingsPage() {
 		setIsCropperOpen(open);
 
 		if (!open) {
+			setLogoUploadFiles([]);
 			setCropSourceFile(null);
 		}
 	};
@@ -319,12 +317,28 @@ export function SettingsPage() {
 											<Label htmlFor='logoFile'>
 												{t('brandingSettings.form.logoLabel')}
 											</Label>
-											<Input
-												id='logoFile'
-												type='file'
+											<FileUpload
+												name='logoFile'
+												label={t('brandingSettings.form.logoLabel')}
+												value={logoUploadFiles}
+												onValueChange={setLogoUploadFiles}
+												onFileAccept={onLogoFileAccept}
+												onFileReject={(_, message) => toast.error(message)}
 												accept='image/*'
-												onChange={onLogoInputChange}
-											/>
+												maxFiles={1}
+												multiple={false}
+												disabled={isSaving}
+											>
+												<FileUploadDropzone className='flex-row flex-wrap border-dotted text-center'>
+													<CloudUpload className='size-4' />
+													{t('brandingSettings.form.logoHint')}
+													<FileUploadTrigger asChild>
+														<Button variant='link' size='sm' className='p-0'>
+															{t('common.select')}
+														</Button>
+													</FileUploadTrigger>
+												</FileUploadDropzone>
+											</FileUpload>
 											<p className='text-xs text-muted-foreground'>
 												{t('brandingSettings.form.logoHint')}
 											</p>

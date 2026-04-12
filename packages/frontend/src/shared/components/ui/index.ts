@@ -13,6 +13,7 @@ export * from './dialog';
 export * from './drawer';
 export * from './dropdown-menu';
 export * from './faceted';
+export * from './file-upload';
 export * from './input';
 export * from './kanban';
 export * from './label';

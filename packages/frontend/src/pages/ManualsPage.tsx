@@ -10,6 +10,14 @@ import {
 	CardContent,
 	CardHeader,
 	CardTitle,
+	FileUpload,
+	FileUploadDropzone,
+	FileUploadItem,
+	FileUploadItemDelete,
+	FileUploadItemMetadata,
+	FileUploadItemPreview,
+	FileUploadList,
+	FileUploadTrigger,
 	Input,
 	Table,
 	TableBody,
@@ -19,7 +27,14 @@ import {
 	TableRow,
 } from '@/shared';
 import { useQuery } from '@tanstack/react-query';
-import { ExternalLink, FileText, RefreshCw, Trash2 } from 'lucide-react';
+import {
+	CloudUpload,
+	ExternalLink,
+	FileText,
+	RefreshCw,
+	Trash2,
+	X,
+} from 'lucide-react';
 import { useDeferredValue, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -29,13 +44,14 @@ export function ManualsPage() {
 	const role = useUserStore(state => state.user?.role);
 	const canManageManuals = role === 'ADMIN' || role === 'MANAGER';
 	const [carModel, setCarModel] = useState('');
-	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+	const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 	const [isUploading, setIsUploading] = useState(false);
 	const [search, setSearch] = useState('');
 	const [openingManualId, setOpeningManualId] = useState<string | null>(null);
 	const [manualToDelete, setManualToDelete] = useState<ManualItem | null>(null);
 	const [deletingManualId, setDeletingManualId] = useState<string | null>(null);
 	const deferredSearch = useDeferredValue(search.trim());
+	const selectedFile = selectedFiles[0] ?? null;
 
 	const {
 		data: manuals,
@@ -89,7 +105,7 @@ export function ManualsPage() {
 		try {
 			await ManualsService.uploadManual(selectedFile, normalizedModel);
 			toast.success(t('manuals.upload.success'));
-			setSelectedFile(null);
+			setSelectedFiles([]);
 			setCarModel('');
 			await refetch();
 		} catch {
@@ -137,22 +153,64 @@ export function ManualsPage() {
 						</p>
 					</CardHeader>
 					<CardContent className='space-y-3'>
-						<div className='grid gap-3 md:grid-cols-2'>
+						<div className='grid gap-3'>
 							<Input
 								type='text'
 								value={carModel}
 								onChange={event => setCarModel(event.target.value)}
 								placeholder={t('manuals.upload.carModelPlaceholder')}
 							/>
-							<Input
-								type='file'
+							<FileUpload
+								label={t('manuals.upload.title')}
+								value={selectedFiles}
+								onValueChange={files => setSelectedFiles(files.slice(0, 1))}
 								accept='application/pdf,.pdf'
-								onChange={event =>
-									setSelectedFile(event.target.files?.[0] || null)
-								}
-							/>
+								maxFiles={1}
+								maxSize={10 * 1024 * 1024}
+								multiple={false}
+								disabled={isUploading}
+								onFileReject={(_, message) => {
+									if (message === 'File type not accepted') {
+										toast.error(t('manuals.upload.errors.onlyPdf'));
+										return;
+									}
+
+									toast.error(message);
+								}}
+							>
+								<FileUploadDropzone className='border-dotted text-center'>
+									<CloudUpload className='size-4' />
+									{t('orders.media.dropzoneTitle')}
+									<FileUploadTrigger asChild>
+										<Button variant='link' size='sm' className='p-0'>
+											{t('common.select')}
+										</Button>
+									</FileUploadTrigger>
+								</FileUploadDropzone>
+								<FileUploadList>
+									{selectedFiles.map((file, index) => (
+										<FileUploadItem
+											key={`${file.name}-${file.size}-${index}`}
+											value={file}
+										>
+											<FileUploadItemPreview />
+											<FileUploadItemMetadata />
+											<FileUploadItemDelete asChild>
+												<Button
+													variant='ghost'
+													size='icon-sm'
+													className='size-7'
+												>
+													<X className='size-4' />
+													<span className='sr-only'>{t('common.delete')}</span>
+												</Button>
+											</FileUploadItemDelete>
+										</FileUploadItem>
+									))}
+								</FileUploadList>
+							</FileUpload>
 						</div>
-						<div className='flex items-center justify-between gap-3'>
+						<div className='mt-4 flex items-center justify-between gap-3'>
 							<p className='truncate text-sm text-muted-foreground'>
 								{selectedFile
 									? selectedFile.name
