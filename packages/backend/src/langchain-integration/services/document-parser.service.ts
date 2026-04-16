@@ -7,7 +7,11 @@ import {
 	NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { promises as fs } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
 import { PDFDocument } from 'pdf-lib';
+import { PDFParse } from 'pdf-parse';
 import { pdf as renderPdfToImages } from 'pdf-to-img';
 import { DmsService } from 'src/dms/dms.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -136,6 +140,7 @@ export class DocumentParserService {
 			>();
 			const imageStats = {
 				detectedImageElements: 0,
+				detectedImagePagesByScan: 0,
 				missingPageNumber: 0,
 				uniqueImagePages: 0,
 				convertedFullPages: 0,
@@ -198,90 +203,201 @@ export class DocumentParserService {
 				this.logLangchainDocsDebugPreview(langchainDocs);
 			}
 
-			const needsFallback = pagesWithImages.size === 0;
-			if (needsFallback) {
-				// Smart filter kept pages are tracked in original PDF numbering.
-				// Rendering uses filtered PDF numbering (1..filteredPages), so map by index.
-				keptPages.forEach((_, index) => {
-					pagesWithImages.add(index + 1);
+			const imageScanEnabled = this.resolveBooleanConfig(
+				'RAG_UNSTRUCTURED_IMAGE_SCAN_ENABLED',
+				false,
+			);
+			const fullPageImageFallbackEnabled = this.resolveBooleanConfig(
+				'RAG_ENABLE_FULL_PAGE_IMAGE_FALLBACK',
+				true,
+			);
+			const fullPageImageFallbackMaxPages = this.resolvePositiveIntegerConfig(
+				'RAG_FULL_PAGE_IMAGE_FALLBACK_MAX_PAGES',
+				120,
+			);
+			const candidateImagePages = this.buildCappedFallbackPages(
+				optimizedPdf.filteredPages,
+				fullPageImageFallbackMaxPages,
+			);
+			const candidateImageRanges =
+				this.buildContiguousRangesFromPages(candidateImagePages);
+
+			if (
+				partitionMode === 'hi_res' &&
+				imageScanEnabled &&
+				pagesWithImages.size === 0 &&
+				candidateImageRanges.length > 0
+			) {
+				const scannedImagePages = await this.detectImagePagesWithHiResScan({
+					pdfBuffer: optimizedPdf.filteredBuffer,
+					fileName: file.originalname,
+					pageRanges: candidateImageRanges,
 				});
 
+				for (const scannedPage of scannedImagePages) {
+					pagesWithImages.add(scannedPage);
+				}
+
+				imageStats.detectedImagePagesByScan = scannedImagePages.length;
+				this.logger.log(
+					`Hi-res image scan detected ${scannedImagePages.length} pages with image elements within ${candidateImagePages.length} candidate pages.`,
+				);
+			} else if (
+				partitionMode === 'hi_res' &&
+				!imageScanEnabled &&
+				pagesWithImages.size === 0
+			) {
+				this.logger.log(
+					'Skipping hi-res image scan (RAG_UNSTRUCTURED_IMAGE_SCAN_ENABLED=false) to avoid second full PDF pass.',
+				);
+			}
+
+			const shouldActivateFullPageImageFallback =
+				fullPageImageFallbackEnabled &&
+				partitionMode === 'hi_res' &&
+				pagesWithImages.size === 0;
+
+			if (shouldActivateFullPageImageFallback) {
+				const fallbackPages = candidateImagePages;
+				for (const fallbackPage of fallbackPages) {
+					pagesWithImages.add(fallbackPage);
+				}
+
 				this.logger.warn(
-					`Unstructured returned 0 images (likely due to 'fast' mode fallback). Activating SmartFilter fallback: rendering all ${pagesWithImages.size} kept pages as full-page PNGs.`,
+					`Unstructured returned 0 images in hi_res mode. Full-page image fallback enabled: rendering ${fallbackPages.length} pages as PNGs (cap=${fullPageImageFallbackMaxPages}).`,
+				);
+			} else if (pagesWithImages.size === 0) {
+				this.logger.log(
+					`Skipping full-page image fallback (mode=${partitionMode}, enabled=${fullPageImageFallbackEnabled}). Continuing with text-only ingestion.`,
 				);
 			}
 
 			const sortedPagesWithImages = [...pagesWithImages].sort((a, b) => a - b);
 			imageStats.uniqueImagePages = sortedPagesWithImages.length;
+			const useSharedImageRenderer = this.resolveBooleanConfig(
+				'RAG_USE_SHARED_IMAGE_RENDERER',
+				false,
+			);
+			let preparedImageRenderer: any = null;
+			let preparedImageRendererTempPath: string | null = null;
 
-			for (const pageNumber of sortedPagesWithImages) {
-				if (pageNumber > optimizedPdf.filteredPages) {
-					imageStats.outOfRangePages += 1;
-					this.logger.warn(
-						`Skipping image page ${pageNumber}: out of filtered PDF range (1-${optimizedPdf.filteredPages}).`,
-					);
-					continue;
-				}
-
-				if (debugLogsOnly) {
-					this.logger.log(
-						`[DEBUG] Skipping S3 full-page image upload for page ${pageNumber} (logs-only mode).`,
-					);
-					continue;
-				}
-
+			if (
+				useSharedImageRenderer &&
+				sortedPagesWithImages.length > 0 &&
+				!debugLogsOnly
+			) {
 				try {
-					const fullPageImageBuffer = await this.renderFullPagePng(
+					const preparedRenderer = await this.preparePdfImageRenderer(
 						optimizedPdf.filteredBuffer,
-						pageNumber,
 					);
-					imageStats.convertedFullPages += 1;
-
-					this.logger.log(
-						`Знайдено схему на сторінці ${pageNumber}. Рендеримо повну сторінку і завантажуємо в S3...`,
-					);
-
-					const s3File = {
-						buffer: fullPageImageBuffer,
-						originalname: `${carModel.replace(/\s+/g, '_')}_fullpage_${pageNumber}_${uuidv4().slice(0, 6)}.png`,
-						mimetype: 'image/png',
-					} as Express.Multer.File;
-
-					const uploadRes = await this.dmsService.uploadSingleFile({
-						file: s3File,
-						isPublic: false,
-						tenantId: organizationId,
-						folder: 'manuals/images',
-					});
-					imageStats.uploadedFullPages += 1;
-					fullPageImageByPage.set(pageNumber, {
-						key: uploadRes.key,
-						url: uploadRes.url,
-					});
-
-					langchainDocs.push(
-						new Document({
-							pageContent: `Повна технічна схема/сторінка з мануалу ${carModel}. Сторінка ${pageNumber}.`,
-							metadata: {
-								vectorRef: manualVectorRef,
-								carModel,
-								organizationId,
-								imageUrl: uploadRes.url,
-								fullPageImageUrl: uploadRes.url,
-								imageKey: uploadRes.key,
-								fullPageImageKey: uploadRes.key,
-								pageNumber,
-								source: file.originalname,
-								type: 'FullPageImage',
-							},
-						}),
-					);
+					preparedImageRenderer = preparedRenderer.document;
+					preparedImageRendererTempPath = preparedRenderer.tempPdfPath;
 				} catch (error) {
-					imageStats.conversionErrors += 1;
 					this.logger.warn(
-						`Failed to render/upload full page image for page ${pageNumber}: ${this.formatErrorForLog(error)}`,
+						`Failed to prepare shared PDF image renderer. Falling back to per-page rendering: ${this.formatErrorForLog(error)}`,
 					);
 				}
+			} else if (sortedPagesWithImages.length > 0 && !debugLogsOnly) {
+				this.logger.log(
+					'Shared PDF image renderer disabled (RAG_USE_SHARED_IMAGE_RENDERER=false). Using per-page renderer for stability.',
+				);
+			}
+
+			try {
+				for (const pageNumber of sortedPagesWithImages) {
+					if (pageNumber > optimizedPdf.filteredPages) {
+						imageStats.outOfRangePages += 1;
+						this.logger.warn(
+							`Skipping image page ${pageNumber}: out of filtered PDF range (1-${optimizedPdf.filteredPages}).`,
+						);
+						continue;
+					}
+
+					if (debugLogsOnly) {
+						this.logger.log(
+							`[DEBUG] Skipping S3 full-page image upload for page ${pageNumber} (logs-only mode).`,
+						);
+						continue;
+					}
+
+					try {
+						let fullPageImageBuffer: Buffer;
+
+						if (preparedImageRenderer) {
+							try {
+								fullPageImageBuffer =
+									await this.renderFullPagePngFromPreparedDocument(
+										preparedImageRenderer,
+										pageNumber,
+									);
+							} catch (sharedRendererError) {
+								this.logger.warn(
+									`Shared renderer failed on page ${pageNumber}. Switching to per-page renderer: ${this.formatErrorForLog(sharedRendererError)}`,
+								);
+								preparedImageRenderer = null;
+								await this.cleanupTempFile(preparedImageRendererTempPath);
+								preparedImageRendererTempPath = null;
+								fullPageImageBuffer = await this.renderFullPagePng(
+									optimizedPdf.filteredBuffer,
+									pageNumber,
+								);
+							}
+						} else {
+							fullPageImageBuffer = await this.renderFullPagePng(
+								optimizedPdf.filteredBuffer,
+								pageNumber,
+							);
+						}
+						imageStats.convertedFullPages += 1;
+
+						this.logger.log(
+							`Знайдено схему на сторінці ${pageNumber}. Рендеримо повну сторінку і завантажуємо в S3...`,
+						);
+
+						const s3File = {
+							buffer: fullPageImageBuffer,
+							originalname: `${carModel.replace(/\s+/g, '_')}_fullpage_${pageNumber}_${uuidv4().slice(0, 6)}.png`,
+							mimetype: 'image/png',
+						} as Express.Multer.File;
+
+						const uploadRes = await this.dmsService.uploadSingleFile({
+							file: s3File,
+							isPublic: false,
+							tenantId: organizationId,
+							folder: 'manuals/images',
+						});
+						imageStats.uploadedFullPages += 1;
+						fullPageImageByPage.set(pageNumber, {
+							key: uploadRes.key,
+							url: uploadRes.url,
+						});
+
+						langchainDocs.push(
+							new Document({
+								pageContent: `Повна технічна схема/сторінка з мануалу ${carModel}. Сторінка ${pageNumber}.`,
+								metadata: {
+									vectorRef: manualVectorRef,
+									carModel,
+									organizationId,
+									imageUrl: uploadRes.url,
+									fullPageImageUrl: uploadRes.url,
+									imageKey: uploadRes.key,
+									fullPageImageKey: uploadRes.key,
+									pageNumber,
+									source: file.originalname,
+									type: 'FullPageImage',
+								},
+							}),
+						);
+					} catch (error) {
+						imageStats.conversionErrors += 1;
+						this.logger.warn(
+							`Failed to render/upload full page image for page ${pageNumber}: ${this.formatErrorForLog(error)}`,
+						);
+					}
+				}
+			} finally {
+				await this.cleanupTempFile(preparedImageRendererTempPath);
 			}
 
 			imageStats.linkedTextChunks = this.attachFullPageImageUrlsToTextDocs(
@@ -290,7 +406,7 @@ export class DocumentParserService {
 			);
 
 			this.logger.log(
-				`Full-page image summary: detectedElements=${imageStats.detectedImageElements}, uniquePages=${imageStats.uniqueImagePages}, converted=${imageStats.convertedFullPages}, uploaded=${imageStats.uploadedFullPages}, linkedTextChunks=${imageStats.linkedTextChunks}, missingPageNumber=${imageStats.missingPageNumber}, outOfRange=${imageStats.outOfRangePages}, conversionErrors=${imageStats.conversionErrors}.`,
+				`Full-page image summary: detectedElements=${imageStats.detectedImageElements}, scannedPages=${imageStats.detectedImagePagesByScan}, uniquePages=${imageStats.uniqueImagePages}, converted=${imageStats.convertedFullPages}, uploaded=${imageStats.uploadedFullPages}, linkedTextChunks=${imageStats.linkedTextChunks}, missingPageNumber=${imageStats.missingPageNumber}, outOfRange=${imageStats.outOfRangePages}, conversionErrors=${imageStats.conversionErrors}.`,
 			);
 
 			this.logger.log(
@@ -375,6 +491,14 @@ export class DocumentParserService {
 			if (imageStats.uploadedFullPages > 0) {
 				this.logger.log(
 					`Мануал ${carModel} успішно оброблено: зображення (${imageStats.uploadedFullPages}) в S3, вектори в Qdrant!`,
+				);
+			} else if (!fullPageImageFallbackEnabled) {
+				this.logger.log(
+					`Мануал ${carModel} оброблено без зображень у S3 (uploaded=0). Це очікувано: RAG_ENABLE_FULL_PAGE_IMAGE_FALLBACK=false. Вектори в Qdrant збережено.`,
+				);
+			} else if (partitionMode !== 'hi_res') {
+				this.logger.log(
+					`Мануал ${carModel} оброблено без зображень у S3 (uploaded=0). Partition mode=${partitionMode}, тому image-елементи могли не бути повернуті. Вектори в Qdrant збережено.`,
 				);
 			} else {
 				this.logger.warn(
@@ -700,9 +824,102 @@ export class DocumentParserService {
 	}
 
 	private async renderFullPagePng(pdfBuffer: Buffer, pageNumber: number) {
-		const document = await renderPdfToImages(pdfBuffer, {
-			scale: this.fullPageImageScale,
+		const tempPdfPath = join(
+			tmpdir(),
+			`manual_render_${uuidv4().slice(0, 8)}.pdf`,
+		);
+
+		await fs.writeFile(tempPdfPath, pdfBuffer);
+
+		try {
+			const { document } = await this.createPdfToImagesDocument({
+				tempPdfPath,
+				pdfBuffer,
+				reason: 'per-page-render',
+			});
+			return await this.renderFullPagePngFromPreparedDocument(
+				document,
+				pageNumber,
+			);
+		} finally {
+			await this.cleanupTempFile(tempPdfPath);
+		}
+	}
+
+	private async preparePdfImageRenderer(pdfBuffer: Buffer) {
+		const tempPdfPath = join(
+			tmpdir(),
+			`manual_render_${uuidv4().slice(0, 8)}.pdf`,
+		);
+
+		await fs.writeFile(tempPdfPath, pdfBuffer);
+		const { document, strategy } = await this.createPdfToImagesDocument({
+			tempPdfPath,
+			pdfBuffer,
+			reason: 'shared-renderer',
 		});
+
+		this.logger.log(`Prepared PDF image renderer using strategy=${strategy}.`);
+
+		return {
+			document,
+			tempPdfPath,
+		};
+	}
+
+	private async createPdfToImagesDocument(params: {
+		tempPdfPath: string;
+		pdfBuffer: Buffer;
+		reason: 'shared-renderer' | 'per-page-render';
+	}) {
+		const attempts: Array<{
+			strategy: 'temp-path' | 'uint8array' | 'buffer';
+			input: string | Uint8Array | Buffer;
+		}> = [
+			{
+				strategy: 'temp-path',
+				input: params.tempPdfPath,
+			},
+			{
+				strategy: 'uint8array',
+				input: new Uint8Array(params.pdfBuffer),
+			},
+			{
+				strategy: 'buffer',
+				input: params.pdfBuffer,
+			},
+		];
+
+		let lastError: unknown = null;
+
+		for (const attempt of attempts) {
+			try {
+				const document = await renderPdfToImages(attempt.input as any, {
+					scale: this.fullPageImageScale,
+				});
+
+				return {
+					document,
+					strategy: attempt.strategy,
+				};
+			} catch (error) {
+				lastError = error;
+				this.logger.warn(
+					`pdf-to-img init failed (${params.reason}, strategy=${attempt.strategy}): ${this.formatErrorForLog(error)}`,
+				);
+			}
+		}
+
+		throw lastError || new Error('Unable to initialize pdf-to-img renderer');
+	}
+
+	private async renderFullPagePngFromPreparedDocument(
+		document: any,
+		pageNumber: number,
+	) {
+		if (!document || typeof document.getPage !== 'function') {
+			throw new Error('Prepared pdf-to-img document is invalid.');
+		}
 
 		if (pageNumber < 1 || pageNumber > document.length) {
 			throw new Error(
@@ -710,15 +927,60 @@ export class DocumentParserService {
 			);
 		}
 
-		const imageBuffer = await document.getPage(pageNumber);
+		try {
+			const imageBuffer = await document.getPage(pageNumber);
+			if (!imageBuffer || imageBuffer.length === 0) {
+				throw new Error(
+					`pdf-to-img returned an empty buffer for page ${pageNumber}.`,
+				);
+			}
 
-		if (!imageBuffer || imageBuffer.length === 0) {
-			throw new Error(
-				`pdf-to-img returned an empty buffer for page ${pageNumber}.`,
+			return Buffer.isBuffer(imageBuffer)
+				? imageBuffer
+				: Buffer.from(imageBuffer);
+		} catch (getPageError) {
+			this.logger.warn(
+				`pdf-to-img getPage failed for page ${pageNumber}. Trying iterator fallback: ${this.formatErrorForLog(getPageError)}`,
 			);
+
+			if (!document || typeof document[Symbol.asyncIterator] !== 'function') {
+				throw getPageError;
+			}
+
+			let cursor = 0;
+			for await (const image of document as AsyncIterable<
+				Buffer | Uint8Array | ArrayBuffer
+			>) {
+				cursor += 1;
+				if (cursor !== pageNumber) {
+					continue;
+				}
+
+				if (!image) {
+					break;
+				}
+
+				if (Buffer.isBuffer(image)) {
+					return image;
+				}
+
+				if (image instanceof Uint8Array) {
+					return Buffer.from(image);
+				}
+
+				return Buffer.from(image);
+			}
+
+			throw getPageError;
+		}
+	}
+
+	private async cleanupTempFile(filePath: string | null | undefined) {
+		if (!filePath) {
+			return;
 		}
 
-		return imageBuffer;
+		await fs.unlink(filePath).catch(() => undefined);
 	}
 
 	private async addDocumentsToQdrantInBatches(documents: Document[]) {
@@ -827,6 +1089,28 @@ export class DocumentParserService {
 
 	private async partitionWithFallback(pdfBuffer: Buffer, fileName: string) {
 		const chunkingConfig = this.resolveUnstructuredChunkingConfig();
+		const totalPages = await this.getPdfPageCount(pdfBuffer);
+		const localTextFallbackEnabled = this.isFlagEnabled(
+			'RAG_UNSTRUCTURED_LOCAL_TEXT_FALLBACK',
+		);
+		const partitionBatchThresholdPages = this.resolvePositiveIntegerConfig(
+			'RAG_UNSTRUCTURED_PARTITION_BATCH_THRESHOLD_PAGES',
+			180,
+		);
+		const partitionBatchPageSize = 2;
+		const partitionBatchRetryCount = this.resolvePositiveIntegerConfig(
+			'RAG_UNSTRUCTURED_PARTITION_BATCH_RETRY_COUNT',
+			2,
+		);
+		const partitionBatchRetryDelayMs = this.resolvePositiveIntegerConfig(
+			'RAG_UNSTRUCTURED_PARTITION_BATCH_RETRY_DELAY_MS',
+			1200,
+		);
+		const partitionMinSplitPageSize = this.resolvePositiveIntegerConfig(
+			'RAG_UNSTRUCTURED_PARTITION_MIN_SPLIT_PAGE_SIZE',
+			10,
+		);
+		const shouldUseBatchedPartition = totalPages > partitionBatchThresholdPages;
 
 		const attempts: Array<{
 			mode: 'hi_res' | 'ocr_only' | 'fast';
@@ -884,8 +1168,27 @@ export class DocumentParserService {
 		for (const attempt of attempts) {
 			try {
 				this.logger.log(
-					`Partition attempt: mode=${attempt.mode}, splitPdfPage=false, chunkingStrategy=${attempt.params.chunkingStrategy}, maxCharacters=${attempt.params.maxCharacters}, combineUnderNChars=${attempt.params.combineUnderNChars}, newAfterNChars=${attempt.params.newAfterNChars}`,
+					`Partition attempt: mode=${attempt.mode}, splitPdfPage=false, chunkingStrategy=${attempt.params.chunkingStrategy}, maxCharacters=${attempt.params.maxCharacters}, combineUnderNChars=${attempt.params.combineUnderNChars}, newAfterNChars=${attempt.params.newAfterNChars}, totalPages=${totalPages}, batched=${shouldUseBatchedPartition}`,
 				);
+
+				if (shouldUseBatchedPartition) {
+					const elements = await this.partitionPdfInBatches({
+						pdfBuffer,
+						fileName,
+						attemptMode: attempt.mode,
+						attemptParams: attempt.params,
+						totalPages,
+						batchPageSize: partitionBatchPageSize,
+						retryCount: partitionBatchRetryCount,
+						retryDelayMs: partitionBatchRetryDelayMs,
+						minSplitPageSize: partitionMinSplitPageSize,
+					});
+
+					return {
+						elements,
+						mode: attempt.mode,
+					};
+				}
 
 				const response = await this.unstructuredClient.general.partition({
 					partitionParameters: {
@@ -907,6 +1210,41 @@ export class DocumentParserService {
 					mode: attempt.mode,
 				};
 			} catch (error) {
+				if (
+					!shouldUseBatchedPartition &&
+					totalPages > 1 &&
+					this.isRetryableUnstructuredError(error)
+				) {
+					this.logger.warn(
+						`Partition attempt failed for mode=${attempt.mode}. Retrying in batched mode due to retryable upstream error.`,
+					);
+
+					try {
+						const elements = await this.partitionPdfInBatches({
+							pdfBuffer,
+							fileName,
+							attemptMode: attempt.mode,
+							attemptParams: attempt.params,
+							totalPages,
+							batchPageSize: partitionBatchPageSize,
+							retryCount: partitionBatchRetryCount,
+							retryDelayMs: partitionBatchRetryDelayMs,
+							minSplitPageSize: partitionMinSplitPageSize,
+						});
+
+						return {
+							elements,
+							mode: attempt.mode,
+						};
+					} catch (batchedError) {
+						lastError = batchedError;
+						this.logger.warn(
+							`Partition batched retry failed for mode=${attempt.mode}: ${this.formatErrorForLog(batchedError)}`,
+						);
+						continue;
+					}
+				}
+
 				lastError = error;
 				this.logger.warn(
 					`Partition attempt failed for mode=${attempt.mode}: ${this.formatErrorForLog(error)}`,
@@ -914,7 +1252,489 @@ export class DocumentParserService {
 			}
 		}
 
+		if (localTextFallbackEnabled) {
+			try {
+				this.logger.warn(
+					`All Unstructured partition attempts failed. Activating local text fallback for ${fileName}.`,
+				);
+				const elements = await this.partitionWithLocalPdfText(
+					pdfBuffer,
+					totalPages,
+				);
+				return {
+					elements,
+					mode: 'local_pdfparse',
+				};
+			} catch (localFallbackError) {
+				this.logger.warn(
+					`Local text fallback failed: ${this.formatErrorForLog(localFallbackError)}`,
+				);
+			}
+		}
+
 		throw lastError || new Error('All partition attempts failed');
+	}
+
+	private async detectImagePagesWithHiResScan(params: {
+		pdfBuffer: Buffer;
+		fileName: string;
+		pageRanges: Array<[number, number]>;
+	}) {
+		if (!params.pageRanges.length) {
+			return [] as number[];
+		}
+
+		const partitionBatchRetryCount = this.resolvePositiveIntegerConfig(
+			'RAG_UNSTRUCTURED_PARTITION_BATCH_RETRY_COUNT',
+			2,
+		);
+		const partitionBatchRetryDelayMs = this.resolvePositiveIntegerConfig(
+			'RAG_UNSTRUCTURED_PARTITION_BATCH_RETRY_DELAY_MS',
+			1200,
+		);
+		const partitionMinSplitPageSize = this.resolvePositiveIntegerConfig(
+			'RAG_UNSTRUCTURED_PARTITION_MIN_SPLIT_PAGE_SIZE',
+			10,
+		);
+
+		const imagePages = new Set<number>();
+		for (const [startPage, endPage] of params.pageRanges) {
+			try {
+				const rangeElements = await this.partitionRangeResilient({
+					pdfBuffer: params.pdfBuffer,
+					fileName: params.fileName,
+					attemptParams: {
+						strategy: 'hi_res' as any,
+						coordinates: true,
+						splitPdfPage: false,
+						pdfInferTableStructure: false,
+						extractImageBlockTypes: ['Image'],
+					},
+					startPage,
+					endPage,
+					retryCount: partitionBatchRetryCount,
+					retryDelayMs: partitionBatchRetryDelayMs,
+					minSplitPageSize: partitionMinSplitPageSize,
+				});
+
+				for (const element of rangeElements) {
+					if (!element || element.type !== 'Image') {
+						continue;
+					}
+
+					const pageNumber = this.normalizePageNumber(
+						element.metadata?.page_number,
+					);
+					if (pageNumber !== null) {
+						imagePages.add(pageNumber);
+					}
+				}
+			} catch (error) {
+				this.logger.warn(
+					`Hi-res image scan failed for range ${startPage}-${endPage}: ${this.formatErrorForLog(error)}`,
+				);
+			}
+		}
+
+		return [...imagePages].sort((a, b) => a - b);
+	}
+
+	private buildCappedFallbackPages(totalPages: number, maxPages: number) {
+		if (totalPages <= 0) {
+			return [] as number[];
+		}
+
+		const safeMaxPages = Math.max(1, Math.min(totalPages, maxPages));
+		if (safeMaxPages >= totalPages) {
+			return Array.from({ length: totalPages }, (_, index) => index + 1);
+		}
+
+		if (safeMaxPages === 1) {
+			return [1];
+		}
+
+		const pageSet = new Set<number>();
+		const step = (totalPages - 1) / (safeMaxPages - 1);
+
+		for (let i = 0; i < safeMaxPages; i += 1) {
+			const page = Math.min(totalPages, Math.max(1, Math.round(1 + i * step)));
+			pageSet.add(page);
+		}
+
+		return [...pageSet].sort((a, b) => a - b);
+	}
+
+	private buildContiguousRangesFromPages(pages: number[]) {
+		if (!pages.length) {
+			return [] as Array<[number, number]>;
+		}
+
+		const sortedUniquePages = [...new Set(pages)]
+			.filter(page => Number.isFinite(page) && page > 0)
+			.sort((a, b) => a - b);
+
+		if (!sortedUniquePages.length) {
+			return [] as Array<[number, number]>;
+		}
+
+		const ranges: Array<[number, number]> = [];
+		let rangeStart = sortedUniquePages[0];
+		let previous = sortedUniquePages[0];
+
+		for (let i = 1; i < sortedUniquePages.length; i += 1) {
+			const page = sortedUniquePages[i];
+			if (page === previous + 1) {
+				previous = page;
+				continue;
+			}
+
+			ranges.push([rangeStart, previous]);
+			rangeStart = page;
+			previous = page;
+		}
+
+		ranges.push([rangeStart, previous]);
+		return ranges;
+	}
+
+	private async partitionWithLocalPdfText(
+		pdfBuffer: Buffer,
+		totalPages: number,
+	) {
+		const parser = new PDFParse({
+			data: new Uint8Array(pdfBuffer),
+		});
+
+		try {
+			const textResult = await parser.getText();
+			const rawText =
+				typeof textResult?.text === 'string' ? textResult.text : '';
+			const elements = this.buildLocalTextFallbackElements(rawText, totalPages);
+
+			if (elements.length === 0) {
+				throw new Error('Local parser extracted empty text payload');
+			}
+
+			this.logger.log(
+				`Local text fallback extracted ${elements.length} elements from PDF text.`,
+			);
+
+			return elements;
+		} finally {
+			await parser.destroy().catch(() => undefined);
+		}
+	}
+
+	private buildLocalTextFallbackElements(rawText: string, totalPages: number) {
+		if (!rawText || rawText.trim().length === 0) {
+			return [] as any[];
+		}
+
+		const targetChunkSize = this.resolvePositiveIntegerConfig(
+			'RAG_LOCAL_TEXT_FALLBACK_CHARS_PER_ELEMENT',
+			1800,
+		);
+		const cleanedText = rawText
+			.replace(/\u0000/g, ' ')
+			.replace(/[\u0001-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, ' ')
+			.replace(/\r/g, '\n');
+		const blocks = cleanedText
+			.split(/\n\s*\n+/)
+			.map(block => block.replace(/\s+/g, ' ').trim())
+			.filter(Boolean);
+
+		const sourceBlocks =
+			blocks.length > 0 ? blocks : [cleanedText.replace(/\s+/g, ' ').trim()];
+		const chunks: string[] = [];
+		let currentChunk = '';
+
+		for (const block of sourceBlocks) {
+			const candidate = currentChunk ? `${currentChunk}\n\n${block}` : block;
+
+			if (candidate.length <= targetChunkSize || !currentChunk) {
+				currentChunk = candidate;
+				continue;
+			}
+
+			chunks.push(currentChunk);
+			currentChunk = block;
+		}
+
+		if (currentChunk) {
+			chunks.push(currentChunk);
+		}
+
+		const totalChars = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
+		const charsPerPageEstimate =
+			totalPages > 0 && totalChars > 0
+				? Math.max(600, Math.floor(totalChars / totalPages))
+				: 0;
+		const elements: any[] = [];
+		let consumedChars = 0;
+
+		for (const chunk of chunks) {
+			if (!chunk.trim()) {
+				continue;
+			}
+
+			const estimatedPageNumber =
+				charsPerPageEstimate > 0
+					? Math.min(
+							totalPages,
+							Math.max(1, Math.floor(consumedChars / charsPerPageEstimate) + 1),
+						)
+					: undefined;
+
+			elements.push({
+				type: 'NarrativeText',
+				text: chunk,
+				metadata: {
+					page_number: estimatedPageNumber,
+					extraction_source: 'local_pdfparse_fallback',
+				},
+			});
+
+			consumedChars += chunk.length;
+		}
+
+		return elements;
+	}
+
+	private async partitionPdfInBatches(params: {
+		pdfBuffer: Buffer;
+		fileName: string;
+		attemptMode: 'hi_res' | 'ocr_only' | 'fast';
+		attemptParams: any;
+		totalPages: number;
+		batchPageSize: number;
+		retryCount: number;
+		retryDelayMs: number;
+		minSplitPageSize: number;
+	}) {
+		const pageRanges = this.buildPageRanges(
+			params.totalPages,
+			Math.max(1, params.batchPageSize),
+		);
+		const allElements: any[] = [];
+
+		this.logger.log(
+			`Partitioning in batches: mode=${params.attemptMode}, totalPages=${params.totalPages}, batches=${pageRanges.length}, pageSize=${params.batchPageSize}.`,
+		);
+
+		for (let i = 0; i < pageRanges.length; i += 1) {
+			const [startPage, endPage] = pageRanges[i];
+			const batchElements = await this.partitionRangeResilient({
+				pdfBuffer: params.pdfBuffer,
+				fileName: params.fileName,
+				attemptParams: params.attemptParams,
+				startPage,
+				endPage,
+				retryCount: params.retryCount,
+				retryDelayMs: params.retryDelayMs,
+				minSplitPageSize: params.minSplitPageSize,
+			});
+			allElements.push(...batchElements);
+
+			this.logger.log(
+				`Partition batch ${i + 1}/${pageRanges.length} completed for pages ${startPage}-${endPage}: elements=${batchElements.length}.`,
+			);
+		}
+
+		return allElements;
+	}
+
+	private async partitionRangeResilient(params: {
+		pdfBuffer: Buffer;
+		fileName: string;
+		attemptParams: any;
+		startPage: number;
+		endPage: number;
+		retryCount: number;
+		retryDelayMs: number;
+		minSplitPageSize: number;
+	}): Promise<any[]> {
+		let lastError: unknown = null;
+
+		for (
+			let attemptIndex = 0;
+			attemptIndex <= params.retryCount;
+			attemptIndex += 1
+		) {
+			try {
+				const batchBuffer = await this.extractPdfPageRange(
+					params.pdfBuffer,
+					params.startPage,
+					params.endPage,
+				);
+
+				const response = await this.unstructuredClient.general.partition({
+					partitionParameters: {
+						files: {
+							content: new Uint8Array(batchBuffer),
+							fileName: this.buildPartitionBatchFileName(
+								params.fileName,
+								params.startPage,
+								params.endPage,
+							),
+						},
+						...params.attemptParams,
+					},
+				});
+
+				const rawResponse: any = response;
+				const elements =
+					rawResponse?.elements ||
+					(Array.isArray(rawResponse) ? rawResponse : []);
+				const offset = params.startPage - 1;
+				this.applyPageNumberOffset(elements, offset);
+
+				return elements;
+			} catch (error) {
+				lastError = error;
+				if (
+					!this.isRetryableUnstructuredError(error) ||
+					attemptIndex >= params.retryCount
+				) {
+					break;
+				}
+
+				const waitMs = params.retryDelayMs * (attemptIndex + 1);
+				this.logger.warn(
+					`Retrying partition range ${params.startPage}-${params.endPage} after retryable error (attempt ${attemptIndex + 1}/${params.retryCount + 1}, wait=${waitMs}ms): ${this.formatErrorForLog(error)}`,
+				);
+				await this.delay(waitMs);
+			}
+		}
+
+		const pageCount = params.endPage - params.startPage + 1;
+		if (
+			lastError &&
+			this.isRetryableUnstructuredError(lastError) &&
+			pageCount > params.minSplitPageSize
+		) {
+			const midPage = Math.floor((params.startPage + params.endPage) / 2);
+			if (midPage <= params.startPage || midPage >= params.endPage) {
+				throw lastError;
+			}
+
+			this.logger.warn(
+				`Splitting overloaded partition range ${params.startPage}-${params.endPage} into ${params.startPage}-${midPage} and ${midPage + 1}-${params.endPage}.`,
+			);
+
+			const left = await this.partitionRangeResilient({
+				...params,
+				startPage: params.startPage,
+				endPage: midPage,
+			});
+			const right = await this.partitionRangeResilient({
+				...params,
+				startPage: midPage + 1,
+				endPage: params.endPage,
+			});
+
+			return [...left, ...right];
+		}
+
+		throw lastError || new Error('Partition range processing failed');
+	}
+
+	private async delay(ms: number) {
+		if (ms <= 0) {
+			return;
+		}
+
+		await new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+	private buildPageRanges(totalPages: number, pageSize: number) {
+		if (totalPages <= 0) {
+			return [] as Array<[number, number]>;
+		}
+
+		const ranges: Array<[number, number]> = [];
+		for (let start = 1; start <= totalPages; start += pageSize) {
+			const end = Math.min(totalPages, start + pageSize - 1);
+			ranges.push([start, end]);
+		}
+
+		return ranges;
+	}
+
+	private async getPdfPageCount(pdfBuffer: Buffer) {
+		const pdf = await PDFDocument.load(pdfBuffer, {
+			ignoreEncryption: true,
+		});
+		return pdf.getPageCount();
+	}
+
+	private async extractPdfPageRange(
+		pdfBuffer: Buffer,
+		startPage: number,
+		endPage: number,
+	) {
+		const source = await PDFDocument.load(pdfBuffer, {
+			ignoreEncryption: true,
+		});
+		const totalPages = source.getPageCount();
+		const clampedStart = Math.max(1, Math.min(totalPages, startPage));
+		const clampedEnd = Math.max(clampedStart, Math.min(totalPages, endPage));
+		const output = await PDFDocument.create();
+
+		const pageIndexes = Array.from(
+			{ length: clampedEnd - clampedStart + 1 },
+			(_, index) => clampedStart - 1 + index,
+		);
+		const copiedPages = await output.copyPages(source, pageIndexes);
+		for (const page of copiedPages) {
+			output.addPage(page);
+		}
+
+		const bytes = await output.save();
+		return Buffer.from(bytes);
+	}
+
+	private applyPageNumberOffset(elements: any[], offset: number) {
+		if (!offset || !Array.isArray(elements) || elements.length === 0) {
+			return;
+		}
+
+		for (const element of elements) {
+			if (!element || typeof element !== 'object') {
+				continue;
+			}
+
+			const metadata = (element as { metadata?: any }).metadata;
+			if (!metadata || typeof metadata !== 'object') {
+				continue;
+			}
+
+			const rawPageNumber = Number(metadata.page_number);
+			if (!Number.isFinite(rawPageNumber) || rawPageNumber <= 0) {
+				continue;
+			}
+
+			metadata.page_number = Math.floor(rawPageNumber) + offset;
+		}
+	}
+
+	private buildPartitionBatchFileName(
+		fileName: string,
+		startPage: number,
+		endPage: number,
+	) {
+		const sanitizedName = fileName.replace(/\.pdf$/i, '');
+		return `${sanitizedName}_pages_${startPage}-${endPage}.pdf`;
+	}
+
+	private isRetryableUnstructuredError(error: unknown) {
+		const message = this.formatErrorForLog(error).toLowerCase();
+		return (
+			message.includes('server is under heavy load') ||
+			message.includes('service unavailable') ||
+			message.includes('status code 503') ||
+			message.includes('fetch failed') ||
+			message.includes('timeout')
+		);
 	}
 
 	private resolveUnstructuredChunkingConfig() {
@@ -952,6 +1772,34 @@ export class DocumentParserService {
 		}
 
 		return Math.floor(parsed);
+	}
+
+	private resolveBooleanConfig(name: string, defaultValue: boolean) {
+		const rawValue = this.configService.get<string>(name);
+		if (typeof rawValue !== 'string' || rawValue.trim() === '') {
+			return defaultValue;
+		}
+
+		const normalized = rawValue.trim().toLowerCase();
+		if (
+			normalized === '1' ||
+			normalized === 'true' ||
+			normalized === 'yes' ||
+			normalized === 'on'
+		) {
+			return true;
+		}
+
+		if (
+			normalized === '0' ||
+			normalized === 'false' ||
+			normalized === 'no' ||
+			normalized === 'off'
+		) {
+			return false;
+		}
+
+		return defaultValue;
 	}
 
 	private formatErrorForLog(error: unknown) {
