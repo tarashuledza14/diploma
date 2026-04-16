@@ -113,6 +113,11 @@ export type OrderService = Prisma.OrderServiceModel
  */
 export type Document = Prisma.DocumentModel
 /**
+ * Model ManualOriginalChunk
+ * 
+ */
+export type ManualOriginalChunk = Prisma.ManualOriginalChunkModel
+/**
  * Model ChatSession
  * 
  */

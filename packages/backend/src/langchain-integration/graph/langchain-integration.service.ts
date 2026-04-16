@@ -41,6 +41,22 @@ function getChunkText(msg: any): string {
 	return '';
 }
 
+function sanitizeAssistantText(rawText: string): string {
+	if (!rawText) {
+		return '';
+	}
+
+	const withoutInlineToolCalls = rawText
+		.replace(/BEGIN_TOOL_CALL\.[\w-]+\([\s\S]*?\)\s*/gi, '')
+		.replace(/BEGIN_TOOL_CALL[\s\S]*?END_TOOL_CALL\s*/gi, '')
+		.replace(/BEGIN_TOOL_CALL[\s\S]*$/gi, '');
+
+	return withoutInlineToolCalls
+		.replace(/\n{3,}/g, '\n\n')
+		.replace(/[ \t]+\n/g, '\n')
+		.trim();
+}
+
 /** Остання відповідь асистента без проміжних викликів інструментів (для збереження в чат). */
 function extractAssistantReplyFromMessages(
 	messages: any[] | undefined,
@@ -65,17 +81,18 @@ function extractAssistantReplyFromMessages(
 		}
 
 		const text = getChunkText(msg).trim();
-		if (!text) {
+		const sanitizedText = sanitizeAssistantText(text);
+		if (!sanitizedText) {
 			continue;
 		}
 		if (
-			text.includes('EXECUTING_SQL_QUERY') ||
-			text.includes('Call to tool was made')
+			sanitizedText.includes('EXECUTING_SQL_QUERY') ||
+			sanitizedText.includes('Call to tool was made')
 		) {
 			continue;
 		}
 
-		return text;
+		return sanitizedText;
 	}
 
 	return '';
@@ -96,7 +113,7 @@ function extractLatestToolContentFromMessages(
 			continue;
 		}
 
-		const text = getChunkText(msg).trim();
+		const text = sanitizeAssistantText(getChunkText(msg).trim());
 		if (!text) {
 			continue;
 		}
@@ -105,6 +122,23 @@ function extractLatestToolContentFromMessages(
 	}
 
 	return '';
+}
+
+function isToolLimitErrorText(text: string): boolean {
+	return /tool call limit exceeded|do not call\s+['`"]?execute_sql['`"]?/i.test(
+		text,
+	);
+}
+
+function isInternalToolErrorText(text: string): boolean {
+	return /prismaclientknownrequesterror|invalid\s+`.*`\s+invocation|requesthandler\.ts|^error:/i.test(
+		text,
+	);
+}
+
+function buildFriendlyToolFailureMessage(userMessage: string): string {
+	void userMessage;
+	return 'Сталася внутрішня помилка під час обробки запиту. Будь ласка, повторіть питання одним коротким повідомленням або вкажіть точні фільтри (період, ліміт, організація).';
 }
 
 @Injectable()
@@ -225,7 +259,7 @@ Assistant: ${firstAiResponse}`;
 
 		const currentUser = await this.db.user.findUnique({
 			where: { id: userId },
-			select: { role: true },
+			select: { role: true, organizationId: true },
 		});
 
 		if (!currentUser) {
@@ -278,6 +312,7 @@ Assistant: ${firstAiResponse}`;
 						messages: [new HumanMessage(normalizedUserMessage)],
 						next: 'supervisor',
 						userRole: currentUser.role,
+						organizationId: currentUser.organizationId,
 					};
 
 					/**
@@ -318,7 +353,11 @@ Assistant: ${firstAiResponse}`;
 							lastGraphState?.messages,
 						);
 						if (fallbackToolText) {
-							assistantText = fallbackToolText;
+							assistantText =
+								isToolLimitErrorText(fallbackToolText) ||
+								isInternalToolErrorText(fallbackToolText)
+									? buildFriendlyToolFailureMessage(normalizedUserMessage)
+									: fallbackToolText;
 							subscriber.next({
 								data: { type: 'text_chunk', text: assistantText },
 							} as MessageEvent);
@@ -326,6 +365,16 @@ Assistant: ${firstAiResponse}`;
 								`Used tool-content fallback for empty assistant reply in chat ${chatId}.`,
 							);
 						}
+					}
+
+					if (
+						assistantText &&
+						(isToolLimitErrorText(assistantText) ||
+							isInternalToolErrorText(assistantText))
+					) {
+						assistantText = buildFriendlyToolFailureMessage(
+							normalizedUserMessage,
+						);
 					}
 
 					await this.db.chatMessage.create({

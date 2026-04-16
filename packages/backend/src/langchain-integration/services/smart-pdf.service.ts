@@ -30,7 +30,6 @@ export class SmartPdfService {
 	private readonly logger = new Logger(SmartPdfService.name);
 	private readonly llm = new ChatOpenAI({
 		modelName: 'gpt-4o-mini',
-		temperature: 0,
 	});
 
 	async processSmartPdf(fileBuffer: Buffer): Promise<SmartPdfProcessingResult> {

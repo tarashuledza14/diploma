@@ -7,7 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { hash, verify } from 'argon2';
 import { createHash } from 'crypto';
-import { Response } from 'express';
+import { CookieOptions, Response } from 'express';
 import { User } from 'prisma/generated/prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
@@ -17,7 +17,7 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class AuthService {
-	readonly EXPIRE_DAY_REFRESH_TOKEN = 1;
+	readonly EXPIRE_DAY_REFRESH_TOKEN = 14;
 	readonly REFRESH_TOKEN_NAME = 'refreshToken';
 
 	constructor(
@@ -174,22 +174,32 @@ export class AuthService {
 		const expireIn = new Date();
 		expireIn.setDate(expireIn.getDate() + this.EXPIRE_DAY_REFRESH_TOKEN);
 
-		res.cookie(this.REFRESH_TOKEN_NAME, refreshToken, {
-			httpOnly: true,
-			domain: 'localhost',
-			expires: expireIn,
-			secure: true,
-			sameSite: 'none',
-		});
+		res.cookie(
+			this.REFRESH_TOKEN_NAME,
+			refreshToken,
+			this.getRefreshTokenCookieOptions(expireIn),
+		);
 	}
 	removeRefreshTokenToResponse(res: Response) {
-		res.cookie(this.REFRESH_TOKEN_NAME, '', {
+		res.cookie(
+			this.REFRESH_TOKEN_NAME,
+			'',
+			this.getRefreshTokenCookieOptions(new Date(0)),
+		);
+	}
+
+	private getRefreshTokenCookieOptions(expires: Date): CookieOptions {
+		const isProduction = process.env.NODE_ENV === 'production';
+		const cookieDomain = process.env.AUTH_COOKIE_DOMAIN;
+
+		return {
 			httpOnly: true,
-			domain: 'localhost',
-			expires: new Date(0),
-			secure: true,
-			sameSite: 'none',
-		});
+			expires,
+			path: '/',
+			secure: isProduction,
+			sameSite: isProduction ? 'none' : 'lax',
+			...(cookieDomain ? { domain: cookieDomain } : {}),
+		};
 	}
 
 	private async issueTokens(userId: string) {

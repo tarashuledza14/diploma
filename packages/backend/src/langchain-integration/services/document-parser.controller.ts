@@ -44,12 +44,14 @@ export class DocumentParserController {
 			file.originalname,
 		);
 		file.originalname = normalizedFileName;
+		const organizationId = this.requireOrganizationId(user);
 
 		try {
 			// Віддаємо файл нашому AI-парсеру
 			const result = await this.parserService.processAndStoreManual(
 				file,
 				carModel,
+				organizationId,
 			);
 			const smartFilter = result?.smartFilter || null;
 			const isDebugMode = Boolean(result?.debugMode);
@@ -104,21 +106,34 @@ export class DocumentParserController {
 
 	@Auth(Role.ADMIN, Role.MANAGER, Role.MECHANIC)
 	@Get()
-	getManuals(@Query('search') search?: string) {
-		return this.parserService.getManuals(search);
+	getManuals(
+		@Query('search') search: string | undefined,
+		@CurrentUser() user: AuthUser,
+	) {
+		return this.parserService.getManuals(
+			this.requireOrganizationId(user),
+			search,
+		);
 	}
 
 	@Auth(Role.ADMIN, Role.MANAGER, Role.MECHANIC)
 	@Get(':id/open')
-	openManual(@Param('id') id: string) {
-		return this.parserService.getManualOpenLink(id);
+	openManual(@Param('id') id: string, @CurrentUser() user: AuthUser) {
+		return this.parserService.getManualOpenLink(
+			id,
+			this.requireOrganizationId(user),
+		);
 	}
 
 	@Auth(Role.ADMIN, Role.MANAGER)
 	@Delete(':id')
 	async deleteManual(@Param('id') id: string, @CurrentUser() user: AuthUser) {
+		const organizationId = this.requireOrganizationId(user);
 		try {
-			const deletedManual = await this.parserService.deleteManual(id);
+			const deletedManual = await this.parserService.deleteManual(
+				id,
+				organizationId,
+			);
 			const storageCleanupPending = Boolean(
 				deletedManual.storageCleanupPending,
 			);
@@ -158,5 +173,13 @@ export class DocumentParserController {
 
 			throw error;
 		}
+	}
+
+	private requireOrganizationId(user: AuthUser) {
+		if (!user.organizationId) {
+			throw new BadRequestException('Користувач не привʼязаний до організації');
+		}
+
+		return user.organizationId;
 	}
 }

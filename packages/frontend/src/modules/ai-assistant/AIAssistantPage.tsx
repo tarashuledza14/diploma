@@ -24,6 +24,7 @@ import type {
 	AssistantTab,
 	ChatSessionSummary,
 } from './types';
+import { sanitizeAssistantContent } from './utils/sanitize-assistant-content';
 
 export function AIAssistantPage() {
 	const { t } = useTranslation();
@@ -238,7 +239,8 @@ export function AIAssistantPage() {
 				setIsLoading(false);
 				setMessages(prev =>
 					prev.map(message =>
-						message.id === assistantMessageId && !message.content.trim()
+						message.id === assistantMessageId &&
+						!sanitizeAssistantContent(message.content)
 							? {
 									...message,
 									content: t('aiAssistant.messages.noResponse'),

@@ -1,63 +1,38 @@
 import { tool } from 'langchain';
-import { QdrantService } from 'src/langchain-integration/services/qdrant.service';
+import { ManualRetrieverService } from 'src/langchain-integration/services/manual-retriever.service';
 import { z } from 'zod';
 
-export const createSearchManualsTool = (qdrantService: QdrantService) => {
+export const createSearchManualsTool = (
+	manualRetrieverService: ManualRetrieverService,
+	organizationId: string | null,
+) => {
 	return tool(
 		async ({ query, carModel }) => {
-			const normalizedCarModel = carModel?.trim() ?? '';
-			const normalizedCarModelLower = normalizedCarModel.toLowerCase();
-
-			const filter = normalizedCarModel
-				? {
-						should: [
-							{
-								key: 'metadata.carModel',
-								match: { value: normalizedCarModel },
-							},
-						],
-					}
-				: undefined;
-
-			let searchResults = await qdrantService.vectorStore.similaritySearch(
-				query,
-				6,
-				filter,
-			);
-
-			// If strict model filter misses data (e.g., "Cayenne" vs "Porsche Cayenne"),
-			// retry without filter and then prefer documents whose metadata matches model text.
-			if (searchResults.length === 0 && normalizedCarModel) {
-				searchResults = await qdrantService.vectorStore.similaritySearch(
-					`${query} ${normalizedCarModel}`,
-					10,
-				);
-
-				const matchingModelDocs = searchResults.filter(doc => {
-					const model = String(doc.metadata?.carModel ?? '').toLowerCase();
-					return model.includes(normalizedCarModelLower);
-				});
-
-				if (matchingModelDocs.length > 0) {
-					searchResults = matchingModelDocs;
-				}
+			if (!organizationId) {
+				return 'No organization context found for this request.';
 			}
 
-			searchResults = searchResults.slice(0, 6);
+			const searchResults = await manualRetrieverService.searchManuals({
+				query,
+				carModel,
+				organizationId,
+				k: 6,
+			});
 
 			if (searchResults.length === 0) {
-				return normalizedCarModel
+				return carModel?.trim()
 					? 'No manuals found for this car model.'
 					: 'No manuals found for this query.';
 			}
 
 			const seenImageUrls = new Set<string>();
-
-			return searchResults
-				.map(doc => {
-					const { pageNumber, fullPageImageUrl, imageUrl } = doc.metadata;
+			const formattedPages = await Promise.all(
+				searchResults.map(async doc => {
+					const metadata = doc.metadata as Record<string, unknown>;
+					const pageNumber = metadata.pageNumber;
 					const pageLabel = pageNumber ?? 'unknown';
-					const url = fullPageImageUrl || imageUrl;
+					const url =
+						await manualRetrieverService.resolveManualImageUrl(metadata);
 					let imgNote = '';
 
 					if (url && !seenImageUrls.has(url)) {
@@ -66,8 +41,10 @@ export const createSearchManualsTool = (qdrantService: QdrantService) => {
 					}
 
 					return `--- Page ${pageLabel} ---\n${doc.pageContent}${imgNote}`;
-				})
-				.join('\n\n');
+				}),
+			);
+
+			return formattedPages.join('\n\n');
 		},
 		{
 			name: 'search_manuals',

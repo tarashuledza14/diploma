@@ -31,4 +31,10 @@ export const AgentState = Annotation.Root({
 		reducer: (state, update) => update ?? state,
 		default: () => 'MECHANIC',
 	}),
+
+	// 6. Організація користувача для tenant-scoped запитів у db_node
+	organizationId: Annotation<string | null>({
+		reducer: (state, update) => update ?? state,
+		default: () => null,
+	}),
 });

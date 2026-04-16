@@ -125,6 +125,7 @@ model Organization {
   vehicles    Vehicle[]
   parts       Part[]
   services    Service[]
+  documents   Document[]
   appSetting  AppSettings?
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
@@ -466,13 +467,32 @@ model OrderService {
 // ==========================================
 
 model Document {
-  id         String   @id @default(cuid())
-  filename   String // Назва файлу (Manual_Golf_5.pdf)
-  content    String   @db.Text // Текст, витягнутий з PDF
-  externalId String?  @map("external_id") // ID вектора в Pinecone
-  createdAt  DateTime @default(now()) @map("created_at")
+  id             String        @id @default(cuid())
+  filename       String // Назва файлу (Manual_Golf_5.pdf)
+  content        String        @db.Text // Текст, витягнутий з PDF
+  externalId     String?       @map("external_id") // ID вектора в Pinecone
+  organizationId String?       @map("organization_id")
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  createdAt      DateTime      @default(now()) @map("created_at")
 
+  @@index([organizationId])
   @@map("documents")
+}
+
+model ManualOriginalChunk {
+  id             String   @id @default(cuid())
+  docId          String   @unique @map("doc_id")
+  vectorRef      String   @map("vector_ref")
+  pageContent    String   @map("page_content") @db.Text
+  metadata       Json
+  organizationId String?  @map("organization_id")
+  source         String?
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@index([vectorRef])
+  @@index([organizationId])
+  @@map("manual_original_chunks")
 }
 
 enum ChatMessageRole {

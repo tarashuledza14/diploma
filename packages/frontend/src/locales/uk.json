@@ -891,6 +891,97 @@
 			"allPriority": "Усі пріоритети",
 			"done": "Готово"
 		},
+		"pdf": {
+			"download": "Завантажити PDF",
+			"generating": "Генерація...",
+			"completionAct": "Акт виконаних робіт",
+			"workOrder": "Наряд-замовлення для механіка",
+			"estimate": "Оцінка ремонту",
+			"document": "Документ",
+			"downloadSuccess": "{{document}} завантажено",
+			"downloadError": "Не вдалося згенерувати PDF",
+			"documents": {
+				"common": {
+					"companyType": "Автосервіс",
+					"generatedBy": "Згенеровано в {{appName}}: {{date}}",
+					"km": "км",
+					"meta": {
+						"orderNumber": "Номер замовлення",
+						"generatedAt": "Згенеровано",
+						"orderCreated": "Замовлення створено",
+						"status": "Статус",
+						"priority": "Пріоритет",
+						"dueDate": "Термін виконання",
+						"estimateNumber": "Номер оцінки",
+						"estimateDate": "Дата оцінки",
+						"validUntil": "Дійсно до"
+					},
+					"sections": {
+						"clientAndVehicle": "Клієнт та авто",
+						"services": "Послуги",
+						"parts": "Запчастини",
+						"notes": "Примітки"
+					},
+					"fields": {
+						"client": "Клієнт",
+						"phone": "Телефон",
+						"email": "Email",
+						"vehicle": "Авто",
+						"plate": "Номер",
+						"vin": "VIN",
+						"mileage": "Пробіг",
+						"service": "Послуга",
+						"part": "Запчастина",
+						"qtyShort": "К-сть",
+						"price": "Ціна",
+						"unitPrice": "Ціна за од.",
+						"total": "Разом",
+						"servicesSubtotal": "Разом за послуги",
+						"partsSubtotal": "Разом за запчастини",
+						"grandTotal": "Загальна сума",
+						"estimatedTotal": "Орієнтовна сума"
+					},
+					"empty": {
+						"noServicesInOrder": "У замовленні немає послуг",
+						"noPartsInOrder": "У замовленні немає запчастин",
+						"noServicesAssigned": "Послуги не призначено",
+						"noPartsAssigned": "Запчастини не призначено",
+						"noServicesInEstimate": "В оцінці немає послуг",
+						"noPartsInEstimate": "В оцінці немає запчастин"
+					},
+					"signatures": {
+						"client": "Підпис клієнта",
+						"serviceManager": "Підпис менеджера сервісу",
+						"mechanic": "Підпис механіка",
+						"manager": "Підпис менеджера"
+					}
+				},
+				"completionAct": {
+					"title": "Акт виконаних робіт",
+					"subtitle": "Підтвердження для клієнта за виконаним ремонтом"
+				},
+				"workOrder": {
+					"title": "Наряд-замовлення",
+					"subtitle": "Друкований робочий лист для механіка",
+					"quantitySuffix": "x",
+					"sections": {
+						"serviceChecklist": "Чеклист послуг",
+						"partsToUse": "Запчастини до використання",
+						"mechanicNotes": "Нотатки механіка"
+					}
+				},
+				"estimate": {
+					"title": "Оцінка ремонту",
+					"subtitle": "Попередній розрахунок перед погодженням",
+					"sections": {
+						"estimatedServices": "Орієнтовні послуги",
+						"estimatedParts": "Орієнтовні запчастини",
+						"terms": "Умови"
+					},
+					"termsText": "Ця оцінка є попередньою і може змінюватися після додаткової діагностики або розбирання. Фінальний рахунок формується лише після завершення та підтвердження робіт."
+				}
+			}
+		},
 		"messages": {
 			"deleteSuccess": "Замовлення успішно видалено",
 			"deleteError": "Не вдалося видалити замовлення",
@@ -972,7 +1063,10 @@
 		},
 		"image": {
 			"manualDiagram": "Схема з мануалу",
-			"technicalDiagramAlt": "Технічна схема з мануалу"
+			"technicalDiagramAlt": "Технічна схема з мануалу",
+			"openInViewer": "Відкрити",
+			"openOriginal": "Оригінал",
+			"previewLoadFailed": "Не вдалося завантажити прев'ю. Спробуйте відкрити оригінал."
 		},
 		"suggestedQueries": {
 			"vehicleHistory": {

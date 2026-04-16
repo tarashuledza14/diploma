@@ -75,6 +75,13 @@ export class DmsService {
 			this.logger.log(`Tenant file uploaded: ${key}`);
 			return { key };
 		} catch (error) {
+			if (this.isPutAccessDenied(error)) {
+				this.logger.warn(
+					`S3 put access denied for tenant key ${key}: ${this.formatErrorForLog(error)}`,
+				);
+				throw new ForbiddenException('S3 PutObject access denied');
+			}
+
 			this.logger.error('S3 tenant upload error:', error);
 			throw new InternalServerErrorException('File upload to storage failed');
 		}
@@ -119,26 +126,53 @@ export class DmsService {
 	async uploadSingleFile({
 		file,
 		isPublic = false,
+		tenantId,
+		folder,
 	}: {
 		file: Express.Multer.File;
 		isPublic?: boolean;
+		tenantId?: string | null;
+		folder?: string;
 	}) {
 		try {
 			const safeOriginalName = file.originalname.replace(/\s+/g, '_');
-			const key = `${uuidv4()}-${safeOriginalName}`;
-
-			const command = new PutObjectCommand({
+			const key = tenantId?.trim()
+				? this.buildTenantKey(tenantId, folder || 'manuals', safeOriginalName)
+				: `${uuidv4()}-${safeOriginalName}`;
+			const basePutInput = {
 				Bucket: this.bucketName,
 				Key: key,
 				Body: file.buffer,
 				ContentType: file.mimetype,
-				...(isPublic && { ACL: 'public-read' }),
 				Metadata: {
 					originalName: encodeURIComponent(file.originalname),
+					...(tenantId?.trim() ? { tenantId } : {}),
 				},
-			});
+			};
 
-			await this.client.send(command);
+			if (isPublic) {
+				try {
+					await this.client.send(
+						new PutObjectCommand({
+							...basePutInput,
+							ACL: 'public-read',
+						}),
+					);
+				} catch (error) {
+					if (!this.isAclNotSupported(error)) {
+						throw error;
+					}
+
+					this.logger.warn(
+						`Bucket does not allow ACLs. Retrying upload without ACL for key ${key}.`,
+					);
+
+					await this.client.send(new PutObjectCommand(basePutInput));
+				}
+			} else {
+				await this.client.send(new PutObjectCommand(basePutInput));
+			}
+
 			this.logger.log(`File uploaded: ${key}`);
 
 			return {
@@ -149,6 +183,13 @@ export class DmsService {
 				isPublic,
 			};
 		} catch (error) {
+			if (this.isPutAccessDenied(error)) {
+				this.logger.warn(
+					`S3 put access denied: ${this.formatErrorForLog(error)}`,
+				);
+				throw new ForbiddenException('S3 PutObject access denied');
+			}
+
 			this.logger.error('S3 upload error:', error);
 			throw new InternalServerErrorException('File upload to storage failed');
 		}
@@ -240,6 +281,44 @@ export class DmsService {
 			e.name === 'AccessDenied' ||
 			(message.includes('accessdenied') && message.includes('getobject')) ||
 			(message.includes('not authorized') && message.includes('getobject'))
+		);
+	}
+
+	private isPutAccessDenied(error: unknown) {
+		if (!error || typeof error !== 'object') {
+			return false;
+		}
+
+		const e = error as {
+			name?: string;
+			message?: string;
+		};
+
+		const message = (e.message || '').toLowerCase();
+
+		return (
+			e.name === 'AccessDenied' ||
+			(message.includes('accessdenied') && message.includes('putobject')) ||
+			(message.includes('not authorized') && message.includes('putobject'))
+		);
+	}
+
+	private isAclNotSupported(error: unknown) {
+		if (!error || typeof error !== 'object') {
+			return false;
+		}
+
+		const e = error as {
+			name?: string;
+			message?: string;
+		};
+
+		const message = (e.message || '').toLowerCase();
+
+		return (
+			e.name === 'AccessControlListNotSupported' ||
+			message.includes('accesscontrollistnotsupported') ||
+			message.includes('bucket does not allow acls')
 		);
 	}
 

@@ -30,7 +30,7 @@ export function OrderCardHeader({ order }: { order: Order }) {
 					variant='outline'
 					className={cn('text-xs', priorityColors[order.priority])}
 				>
-					{order.priority}
+					{t(`orderPriority.${order.priority.toUpperCase()}`)}
 				</Badge>
 			</div>
 			<DropdownMenu>

@@ -50,8 +50,13 @@ export class AuthController {
 	@HttpCode(HttpStatus.OK)
 	@Throttle({ default: { limit: 10, ttl: 60_000 } })
 	@Post('login')
-	async signIn(@Body() dto: AuthDto) {
-		return this.authService.login(dto);
+	async signIn(
+		@Body() dto: AuthDto,
+		@Res({ passthrough: true }) res: Response,
+	) {
+		const { refreshToken, ...response } = await this.authService.login(dto);
+		this.authService.addRefreshTokenToResponse(res, refreshToken);
+		return response;
 	}
 
 	@Auth()
@@ -112,6 +117,7 @@ export class AuthController {
 		const { refreshToken, ...response } = await this.authService.getNewTokens(
 			refreshTokenFromCookies,
 		);
+		this.authService.addRefreshTokenToResponse(res, refreshToken);
 
 		return response;
 	}

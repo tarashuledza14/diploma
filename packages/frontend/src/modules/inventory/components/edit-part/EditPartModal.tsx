@@ -33,12 +33,12 @@ export function EditPartModal({
 	dictionaries,
 }: EditPartModalProps) {
 	const { t } = useTranslation();
-	if (!inventoryPart || !open || !dictionaries) return null;
 	const queryClient = useQueryClient();
 	const [loading, setLoading] = useState(false);
 	const { mutate } = useMutation({
-		mutationFn: (data: InventoryPart) => InventoryService.updatePart(data),
-		mutationKey: inventoryKeys.mutations.update(inventoryPart.id ?? ''),
+		mutationFn: (data: Partial<InventoryPart>) =>
+			InventoryService.updatePart(data),
+		mutationKey: inventoryKeys.mutations.update(inventoryPart?.id ?? ''),
 		onSuccess: () => {
 			onOpenChange(false);
 			toast.success(t('inventory.messages.updateSuccess'));
@@ -48,7 +48,7 @@ export function EditPartModal({
 			toast.error(t('inventory.messages.updateError'));
 		},
 	});
-	const handleSubmit = async (data: InventoryPart) => {
+	const handleSubmit = async (data: Partial<InventoryPart>) => {
 		setLoading(true);
 		try {
 			if (inventoryPart) {
@@ -58,6 +58,8 @@ export function EditPartModal({
 			setLoading(false);
 		}
 	};
+
+	if (!inventoryPart || !open || !dictionaries) return null;
 
 	return (
 		<ResponsiveDialog open={open} onOpenChange={onOpenChange}>

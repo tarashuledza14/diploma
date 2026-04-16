@@ -1,4 +1,4 @@
-import { BaseMessage } from '@langchain/core/messages';
+import { AIMessage, BaseMessage } from '@langchain/core/messages';
 import { ChatOpenAI } from '@langchain/openai';
 import {
 	Injectable,
@@ -107,7 +107,9 @@ Rules:
 - When you need data, call the tool \`execute_sql\` with ONE SELECT query.
 - Read-only only; no INSERT/UPDATE/DELETE/ALTER/DROP/CREATE/REPLACE/TRUNCATE.
 - Limit to 5 rows unless the user explicitly asks otherwise.
-- If the tool fails or returns an error, revise the SQL and try again.
+- Prefer solving in a single SQL query, but you may retry if the database returns an execution error.
+- You may call \`execute_sql\` at most 3 times in this run.
+- If all attempts fail, stop and ask for one specific clarification.
 - Prefer explicit column lists; avoid SELECT *.
 - Do not narrate or print raw SQL in the final reply to the user.
 - Reply to the user in Ukrainian using Markdown. Do not expose raw UUIDs when names exist via JOINs.
@@ -121,6 +123,22 @@ Rules:
 	\`\`\`
 
 The maximum number of \`execute_sql\` calls per run is limited; use them efficiently.`;
+	}
+
+	private isToolLimitError(error: unknown): boolean {
+		const message =
+			error instanceof Error ? error.message : String(error ?? 'Unknown error');
+		return /tool call limit exceeded|do not call\s+['`"]?execute_sql['`"]?/i.test(
+			message,
+		);
+	}
+
+	private toUserFacingDbErrorMessage(error: unknown): string {
+		if (this.isToolLimitError(error)) {
+			return 'Запит виявився занадто неоднозначним для безпечного автоматичного SQL-виконання за один прохід. Уточніть, будь ласка, період, організацію або ліміт рядків.';
+		}
+
+		return 'Не вдалося отримати дані з БД у цьому запиті. Уточніть, будь ласка, критерії (період, організація, статус, ліміт) і повторіть.';
 	}
 
 	async process(state: typeof AgentState.State) {
@@ -143,17 +161,23 @@ The maximum number of \`execute_sql\` calls per run is limited; use them efficie
 			systemPrompt: this.buildSystemPrompt(),
 			middleware: [
 				toolCallLimitMiddleware({
-					runLimit: 5,
+					runLimit: 3,
 					toolName: 'execute_sql',
 				}),
 			],
 		});
 
 		const priorCount = state.messages.length;
-		const result = await agent.invoke({
-			messages: state.messages,
-		} as Parameters<(typeof agent)['invoke']>[0]);
-		const delta = result.messages.slice(priorCount) as BaseMessage[];
+		let delta: BaseMessage[];
+
+		try {
+			const result = await agent.invoke({
+				messages: state.messages,
+			} as Parameters<(typeof agent)['invoke']>[0]);
+			delta = result.messages.slice(priorCount) as BaseMessage[];
+		} catch (error) {
+			delta = [new AIMessage(this.toUserFacingDbErrorMessage(error))];
+		}
 
 		return {
 			messages: delta,

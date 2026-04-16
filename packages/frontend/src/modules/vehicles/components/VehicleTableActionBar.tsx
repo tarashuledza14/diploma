@@ -105,13 +105,13 @@ export function VehicleTableActionBar({ table }: VehicleTableActionBarProps) {
 						</ActionBarItem>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>
-						{Object.entries(vehicleStatusInfo).map(([status, info]) => (
+						{Object.entries(vehicleStatusInfo).map(([status]) => (
 							<DropdownMenuItem
 								key={status}
 								className='capitalize'
 								onClick={() => onVehicleUpdate('status', status)}
 							>
-								{info.label}
+								{t(`vehicleStatus.${status}`)}
 							</DropdownMenuItem>
 						))}
 					</DropdownMenuContent>

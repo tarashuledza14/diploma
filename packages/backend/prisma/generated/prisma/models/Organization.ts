@@ -180,6 +180,7 @@ export type OrganizationWhereInput = {
   vehicles?: Prisma.VehicleListRelationFilter
   parts?: Prisma.PartListRelationFilter
   services?: Prisma.ServiceListRelationFilter
+  documents?: Prisma.DocumentListRelationFilter
   appSetting?: Prisma.XOR<Prisma.AppSettingsNullableScalarRelationFilter, Prisma.AppSettingsWhereInput> | null
 }
 
@@ -194,6 +195,7 @@ export type OrganizationOrderByWithRelationInput = {
   vehicles?: Prisma.VehicleOrderByRelationAggregateInput
   parts?: Prisma.PartOrderByRelationAggregateInput
   services?: Prisma.ServiceOrderByRelationAggregateInput
+  documents?: Prisma.DocumentOrderByRelationAggregateInput
   appSetting?: Prisma.AppSettingsOrderByWithRelationInput
 }
 
@@ -211,6 +213,7 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   vehicles?: Prisma.VehicleListRelationFilter
   parts?: Prisma.PartListRelationFilter
   services?: Prisma.ServiceListRelationFilter
+  documents?: Prisma.DocumentListRelationFilter
   appSetting?: Prisma.XOR<Prisma.AppSettingsNullableScalarRelationFilter, Prisma.AppSettingsWhereInput> | null
 }, "id">
 
@@ -245,6 +248,7 @@ export type OrganizationCreateInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutOrganizationInput
   parts?: Prisma.PartCreateNestedManyWithoutOrganizationInput
   services?: Prisma.ServiceCreateNestedManyWithoutOrganizationInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutOrganizationInput
   appSetting?: Prisma.AppSettingsCreateNestedOneWithoutOrganizationInput
 }
 
@@ -259,6 +263,7 @@ export type OrganizationUncheckedCreateInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOrganizationInput
   parts?: Prisma.PartUncheckedCreateNestedManyWithoutOrganizationInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutOrganizationInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutOrganizationInput
   appSetting?: Prisma.AppSettingsUncheckedCreateNestedOneWithoutOrganizationInput
 }
 
@@ -273,6 +278,7 @@ export type OrganizationUpdateInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutOrganizationNestedInput
   parts?: Prisma.PartUpdateManyWithoutOrganizationNestedInput
   services?: Prisma.ServiceUpdateManyWithoutOrganizationNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutOrganizationNestedInput
   appSetting?: Prisma.AppSettingsUpdateOneWithoutOrganizationNestedInput
 }
 
@@ -287,6 +293,7 @@ export type OrganizationUncheckedUpdateInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOrganizationNestedInput
   parts?: Prisma.PartUncheckedUpdateManyWithoutOrganizationNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   appSetting?: Prisma.AppSettingsUncheckedUpdateOneWithoutOrganizationNestedInput
 }
 
@@ -436,6 +443,22 @@ export type OrganizationUpdateOneWithoutServicesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutServicesInput, Prisma.OrganizationUpdateWithoutServicesInput>, Prisma.OrganizationUncheckedUpdateWithoutServicesInput>
 }
 
+export type OrganizationCreateNestedOneWithoutDocumentsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutDocumentsInput, Prisma.OrganizationUncheckedCreateWithoutDocumentsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutDocumentsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneWithoutDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutDocumentsInput, Prisma.OrganizationUncheckedCreateWithoutDocumentsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutDocumentsInput
+  upsert?: Prisma.OrganizationUpsertWithoutDocumentsInput
+  disconnect?: Prisma.OrganizationWhereInput | boolean
+  delete?: Prisma.OrganizationWhereInput | boolean
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutDocumentsInput, Prisma.OrganizationUpdateWithoutDocumentsInput>, Prisma.OrganizationUncheckedUpdateWithoutDocumentsInput>
+}
+
 export type OrganizationCreateNestedOneWithoutAppSettingInput = {
   create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAppSettingInput, Prisma.OrganizationUncheckedCreateWithoutAppSettingInput>
   connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAppSettingInput
@@ -460,6 +483,7 @@ export type OrganizationCreateWithoutUsersInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutOrganizationInput
   parts?: Prisma.PartCreateNestedManyWithoutOrganizationInput
   services?: Prisma.ServiceCreateNestedManyWithoutOrganizationInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutOrganizationInput
   appSetting?: Prisma.AppSettingsCreateNestedOneWithoutOrganizationInput
 }
 
@@ -473,6 +497,7 @@ export type OrganizationUncheckedCreateWithoutUsersInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOrganizationInput
   parts?: Prisma.PartUncheckedCreateNestedManyWithoutOrganizationInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutOrganizationInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutOrganizationInput
   appSetting?: Prisma.AppSettingsUncheckedCreateNestedOneWithoutOrganizationInput
 }
 
@@ -502,6 +527,7 @@ export type OrganizationUpdateWithoutUsersInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutOrganizationNestedInput
   parts?: Prisma.PartUpdateManyWithoutOrganizationNestedInput
   services?: Prisma.ServiceUpdateManyWithoutOrganizationNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutOrganizationNestedInput
   appSetting?: Prisma.AppSettingsUpdateOneWithoutOrganizationNestedInput
 }
 
@@ -515,6 +541,7 @@ export type OrganizationUncheckedUpdateWithoutUsersInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOrganizationNestedInput
   parts?: Prisma.PartUncheckedUpdateManyWithoutOrganizationNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   appSetting?: Prisma.AppSettingsUncheckedUpdateOneWithoutOrganizationNestedInput
 }
 
@@ -528,6 +555,7 @@ export type OrganizationCreateWithoutTeamInvitesInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutOrganizationInput
   parts?: Prisma.PartCreateNestedManyWithoutOrganizationInput
   services?: Prisma.ServiceCreateNestedManyWithoutOrganizationInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutOrganizationInput
   appSetting?: Prisma.AppSettingsCreateNestedOneWithoutOrganizationInput
 }
 
@@ -541,6 +569,7 @@ export type OrganizationUncheckedCreateWithoutTeamInvitesInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOrganizationInput
   parts?: Prisma.PartUncheckedCreateNestedManyWithoutOrganizationInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutOrganizationInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutOrganizationInput
   appSetting?: Prisma.AppSettingsUncheckedCreateNestedOneWithoutOrganizationInput
 }
 
@@ -570,6 +599,7 @@ export type OrganizationUpdateWithoutTeamInvitesInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutOrganizationNestedInput
   parts?: Prisma.PartUpdateManyWithoutOrganizationNestedInput
   services?: Prisma.ServiceUpdateManyWithoutOrganizationNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutOrganizationNestedInput
   appSetting?: Prisma.AppSettingsUpdateOneWithoutOrganizationNestedInput
 }
 
@@ -583,6 +613,7 @@ export type OrganizationUncheckedUpdateWithoutTeamInvitesInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOrganizationNestedInput
   parts?: Prisma.PartUncheckedUpdateManyWithoutOrganizationNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   appSetting?: Prisma.AppSettingsUncheckedUpdateOneWithoutOrganizationNestedInput
 }
 
@@ -596,6 +627,7 @@ export type OrganizationCreateWithoutClientsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutOrganizationInput
   parts?: Prisma.PartCreateNestedManyWithoutOrganizationInput
   services?: Prisma.ServiceCreateNestedManyWithoutOrganizationInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutOrganizationInput
   appSetting?: Prisma.AppSettingsCreateNestedOneWithoutOrganizationInput
 }
 
@@ -609,6 +641,7 @@ export type OrganizationUncheckedCreateWithoutClientsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOrganizationInput
   parts?: Prisma.PartUncheckedCreateNestedManyWithoutOrganizationInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutOrganizationInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutOrganizationInput
   appSetting?: Prisma.AppSettingsUncheckedCreateNestedOneWithoutOrganizationInput
 }
 
@@ -638,6 +671,7 @@ export type OrganizationUpdateWithoutClientsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutOrganizationNestedInput
   parts?: Prisma.PartUpdateManyWithoutOrganizationNestedInput
   services?: Prisma.ServiceUpdateManyWithoutOrganizationNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutOrganizationNestedInput
   appSetting?: Prisma.AppSettingsUpdateOneWithoutOrganizationNestedInput
 }
 
@@ -651,6 +685,7 @@ export type OrganizationUncheckedUpdateWithoutClientsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOrganizationNestedInput
   parts?: Prisma.PartUncheckedUpdateManyWithoutOrganizationNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   appSetting?: Prisma.AppSettingsUncheckedUpdateOneWithoutOrganizationNestedInput
 }
 
@@ -664,6 +699,7 @@ export type OrganizationCreateWithoutVehiclesInput = {
   clients?: Prisma.ClientCreateNestedManyWithoutOrganizationInput
   parts?: Prisma.PartCreateNestedManyWithoutOrganizationInput
   services?: Prisma.ServiceCreateNestedManyWithoutOrganizationInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutOrganizationInput
   appSetting?: Prisma.AppSettingsCreateNestedOneWithoutOrganizationInput
 }
 
@@ -677,6 +713,7 @@ export type OrganizationUncheckedCreateWithoutVehiclesInput = {
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutOrganizationInput
   parts?: Prisma.PartUncheckedCreateNestedManyWithoutOrganizationInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutOrganizationInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutOrganizationInput
   appSetting?: Prisma.AppSettingsUncheckedCreateNestedOneWithoutOrganizationInput
 }
 
@@ -706,6 +743,7 @@ export type OrganizationUpdateWithoutVehiclesInput = {
   clients?: Prisma.ClientUpdateManyWithoutOrganizationNestedInput
   parts?: Prisma.PartUpdateManyWithoutOrganizationNestedInput
   services?: Prisma.ServiceUpdateManyWithoutOrganizationNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutOrganizationNestedInput
   appSetting?: Prisma.AppSettingsUpdateOneWithoutOrganizationNestedInput
 }
 
@@ -719,6 +757,7 @@ export type OrganizationUncheckedUpdateWithoutVehiclesInput = {
   clients?: Prisma.ClientUncheckedUpdateManyWithoutOrganizationNestedInput
   parts?: Prisma.PartUncheckedUpdateManyWithoutOrganizationNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   appSetting?: Prisma.AppSettingsUncheckedUpdateOneWithoutOrganizationNestedInput
 }
 
@@ -732,6 +771,7 @@ export type OrganizationCreateWithoutPartsInput = {
   clients?: Prisma.ClientCreateNestedManyWithoutOrganizationInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutOrganizationInput
   services?: Prisma.ServiceCreateNestedManyWithoutOrganizationInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutOrganizationInput
   appSetting?: Prisma.AppSettingsCreateNestedOneWithoutOrganizationInput
 }
 
@@ -745,6 +785,7 @@ export type OrganizationUncheckedCreateWithoutPartsInput = {
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutOrganizationInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOrganizationInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutOrganizationInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutOrganizationInput
   appSetting?: Prisma.AppSettingsUncheckedCreateNestedOneWithoutOrganizationInput
 }
 
@@ -774,6 +815,7 @@ export type OrganizationUpdateWithoutPartsInput = {
   clients?: Prisma.ClientUpdateManyWithoutOrganizationNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutOrganizationNestedInput
   services?: Prisma.ServiceUpdateManyWithoutOrganizationNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutOrganizationNestedInput
   appSetting?: Prisma.AppSettingsUpdateOneWithoutOrganizationNestedInput
 }
 
@@ -787,6 +829,7 @@ export type OrganizationUncheckedUpdateWithoutPartsInput = {
   clients?: Prisma.ClientUncheckedUpdateManyWithoutOrganizationNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOrganizationNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   appSetting?: Prisma.AppSettingsUncheckedUpdateOneWithoutOrganizationNestedInput
 }
 
@@ -800,6 +843,7 @@ export type OrganizationCreateWithoutServicesInput = {
   clients?: Prisma.ClientCreateNestedManyWithoutOrganizationInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutOrganizationInput
   parts?: Prisma.PartCreateNestedManyWithoutOrganizationInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutOrganizationInput
   appSetting?: Prisma.AppSettingsCreateNestedOneWithoutOrganizationInput
 }
 
@@ -813,6 +857,7 @@ export type OrganizationUncheckedCreateWithoutServicesInput = {
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutOrganizationInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOrganizationInput
   parts?: Prisma.PartUncheckedCreateNestedManyWithoutOrganizationInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutOrganizationInput
   appSetting?: Prisma.AppSettingsUncheckedCreateNestedOneWithoutOrganizationInput
 }
 
@@ -842,6 +887,7 @@ export type OrganizationUpdateWithoutServicesInput = {
   clients?: Prisma.ClientUpdateManyWithoutOrganizationNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutOrganizationNestedInput
   parts?: Prisma.PartUpdateManyWithoutOrganizationNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutOrganizationNestedInput
   appSetting?: Prisma.AppSettingsUpdateOneWithoutOrganizationNestedInput
 }
 
@@ -855,6 +901,79 @@ export type OrganizationUncheckedUpdateWithoutServicesInput = {
   clients?: Prisma.ClientUncheckedUpdateManyWithoutOrganizationNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOrganizationNestedInput
   parts?: Prisma.PartUncheckedUpdateManyWithoutOrganizationNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+  appSetting?: Prisma.AppSettingsUncheckedUpdateOneWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutDocumentsInput = {
+  id?: string
+  name: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  teamInvites?: Prisma.TeamInviteCreateNestedManyWithoutOrganizationInput
+  clients?: Prisma.ClientCreateNestedManyWithoutOrganizationInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutOrganizationInput
+  parts?: Prisma.PartCreateNestedManyWithoutOrganizationInput
+  services?: Prisma.ServiceCreateNestedManyWithoutOrganizationInput
+  appSetting?: Prisma.AppSettingsCreateNestedOneWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutDocumentsInput = {
+  id?: string
+  name: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  teamInvites?: Prisma.TeamInviteUncheckedCreateNestedManyWithoutOrganizationInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutOrganizationInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOrganizationInput
+  parts?: Prisma.PartUncheckedCreateNestedManyWithoutOrganizationInput
+  services?: Prisma.ServiceUncheckedCreateNestedManyWithoutOrganizationInput
+  appSetting?: Prisma.AppSettingsUncheckedCreateNestedOneWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutDocumentsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutDocumentsInput, Prisma.OrganizationUncheckedCreateWithoutDocumentsInput>
+}
+
+export type OrganizationUpsertWithoutDocumentsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutDocumentsInput, Prisma.OrganizationUncheckedUpdateWithoutDocumentsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutDocumentsInput, Prisma.OrganizationUncheckedCreateWithoutDocumentsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutDocumentsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutDocumentsInput, Prisma.OrganizationUncheckedUpdateWithoutDocumentsInput>
+}
+
+export type OrganizationUpdateWithoutDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  teamInvites?: Prisma.TeamInviteUpdateManyWithoutOrganizationNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutOrganizationNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutOrganizationNestedInput
+  parts?: Prisma.PartUpdateManyWithoutOrganizationNestedInput
+  services?: Prisma.ServiceUpdateManyWithoutOrganizationNestedInput
+  appSetting?: Prisma.AppSettingsUpdateOneWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  teamInvites?: Prisma.TeamInviteUncheckedUpdateManyWithoutOrganizationNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOrganizationNestedInput
+  parts?: Prisma.PartUncheckedUpdateManyWithoutOrganizationNestedInput
+  services?: Prisma.ServiceUncheckedUpdateManyWithoutOrganizationNestedInput
   appSetting?: Prisma.AppSettingsUncheckedUpdateOneWithoutOrganizationNestedInput
 }
 
@@ -869,6 +988,7 @@ export type OrganizationCreateWithoutAppSettingInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutOrganizationInput
   parts?: Prisma.PartCreateNestedManyWithoutOrganizationInput
   services?: Prisma.ServiceCreateNestedManyWithoutOrganizationInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutAppSettingInput = {
@@ -882,6 +1002,7 @@ export type OrganizationUncheckedCreateWithoutAppSettingInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutOrganizationInput
   parts?: Prisma.PartUncheckedCreateNestedManyWithoutOrganizationInput
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutOrganizationInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutAppSettingInput = {
@@ -911,6 +1032,7 @@ export type OrganizationUpdateWithoutAppSettingInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutOrganizationNestedInput
   parts?: Prisma.PartUpdateManyWithoutOrganizationNestedInput
   services?: Prisma.ServiceUpdateManyWithoutOrganizationNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutAppSettingInput = {
@@ -924,6 +1046,7 @@ export type OrganizationUncheckedUpdateWithoutAppSettingInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutOrganizationNestedInput
   parts?: Prisma.PartUncheckedUpdateManyWithoutOrganizationNestedInput
   services?: Prisma.ServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 
@@ -938,6 +1061,7 @@ export type OrganizationCountOutputType = {
   vehicles: number
   parts: number
   services: number
+  documents: number
 }
 
 export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -947,6 +1071,7 @@ export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   vehicles?: boolean | OrganizationCountOutputTypeCountVehiclesArgs
   parts?: boolean | OrganizationCountOutputTypeCountPartsArgs
   services?: boolean | OrganizationCountOutputTypeCountServicesArgs
+  documents?: boolean | OrganizationCountOutputTypeCountDocumentsArgs
 }
 
 /**
@@ -1001,6 +1126,13 @@ export type OrganizationCountOutputTypeCountServicesArgs<ExtArgs extends runtime
   where?: Prisma.ServiceWhereInput
 }
 
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DocumentWhereInput
+}
+
 
 export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1013,6 +1145,7 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   vehicles?: boolean | Prisma.Organization$vehiclesArgs<ExtArgs>
   parts?: boolean | Prisma.Organization$partsArgs<ExtArgs>
   services?: boolean | Prisma.Organization$servicesArgs<ExtArgs>
+  documents?: boolean | Prisma.Organization$documentsArgs<ExtArgs>
   appSetting?: boolean | Prisma.Organization$appSettingArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organization"]>
@@ -1046,6 +1179,7 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   vehicles?: boolean | Prisma.Organization$vehiclesArgs<ExtArgs>
   parts?: boolean | Prisma.Organization$partsArgs<ExtArgs>
   services?: boolean | Prisma.Organization$servicesArgs<ExtArgs>
+  documents?: boolean | Prisma.Organization$documentsArgs<ExtArgs>
   appSetting?: boolean | Prisma.Organization$appSettingArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1061,6 +1195,7 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     vehicles: Prisma.$VehiclePayload<ExtArgs>[]
     parts: Prisma.$PartPayload<ExtArgs>[]
     services: Prisma.$ServicePayload<ExtArgs>[]
+    documents: Prisma.$DocumentPayload<ExtArgs>[]
     appSetting: Prisma.$AppSettingsPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1468,6 +1603,7 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   vehicles<T extends Prisma.Organization$vehiclesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$vehiclesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VehiclePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   parts<T extends Prisma.Organization$partsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$partsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   services<T extends Prisma.Organization$servicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  documents<T extends Prisma.Organization$documentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   appSetting<T extends Prisma.Organization$appSettingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$appSettingArgs<ExtArgs>>): Prisma.Prisma__AppSettingsClient<runtime.Types.Result.GetResult<Prisma.$AppSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2031,6 +2167,30 @@ export type Organization$servicesArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.ServiceScalarFieldEnum | Prisma.ServiceScalarFieldEnum[]
+}
+
+/**
+ * Organization.documents
+ */
+export type Organization$documentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Document
+   */
+  select?: Prisma.DocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Document
+   */
+  omit?: Prisma.DocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentInclude<ExtArgs> | null
+  where?: Prisma.DocumentWhereInput
+  orderBy?: Prisma.DocumentOrderByWithRelationInput | Prisma.DocumentOrderByWithRelationInput[]
+  cursor?: Prisma.DocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DocumentScalarFieldEnum | Prisma.DocumentScalarFieldEnum[]
 }
 
 /**

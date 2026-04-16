@@ -2,10 +2,10 @@ import { SystemMessage } from '@langchain/core/messages';
 import { ChatOpenAI } from '@langchain/openai';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { QdrantService } from 'src/langchain-integration/services/qdrant.service';
+import { ManualRetrieverService } from 'src/langchain-integration/services/manual-retriever.service';
 import { AgentState } from '../../state';
 import { handleToolCalls } from '../../utils/tool-calls';
-import { systemPrompt } from './prompts/rag-node-system.prompt';
+import { getRagNodeSystemPrompt } from './prompts/rag-node-system.prompt';
 import { createSearchManualsTool } from './tools/search-manuals.tool';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class RagNodeService {
 
 	constructor(
 		private readonly configService: ConfigService,
-		private readonly qdrantService: QdrantService,
+		private readonly manualRetrieverService: ManualRetrieverService,
 	) {
 		this.model = this.configService.get('OPENAI_MODEL') || 'gpt-5-mini';
 		this.llm = new ChatOpenAI({
@@ -24,10 +24,20 @@ export class RagNodeService {
 	}
 
 	async process(state: typeof AgentState.State) {
-		const searchTool = createSearchManualsTool(this.qdrantService);
+		const searchTool = createSearchManualsTool(
+			this.manualRetrieverService,
+			state.organizationId,
+		);
 		const llmWithTools = this.llm.bindTools([searchTool]);
 
-		const input = [new SystemMessage(systemPrompt), ...state.messages];
+		const input = [
+			new SystemMessage(
+				getRagNodeSystemPrompt({
+					language: 'uk',
+				}),
+			),
+			...state.messages,
+		];
 
 		const response = await llmWithTools.invoke(input);
 		const toolMessages = await handleToolCalls(response, {

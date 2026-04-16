@@ -70,6 +70,7 @@ export const ModelName = {
   OrderPart: 'OrderPart',
   OrderService: 'OrderService',
   Document: 'Document',
+  ManualOriginalChunk: 'ManualOriginalChunk',
   ChatSession: 'ChatSession',
   ChatMessage: 'ChatMessage',
   Notification: 'Notification',
@@ -359,10 +360,26 @@ export const DocumentScalarFieldEnum = {
   filename: 'filename',
   content: 'content',
   externalId: 'externalId',
+  organizationId: 'organizationId',
   createdAt: 'createdAt'
 } as const
 
 export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
+
+
+export const ManualOriginalChunkScalarFieldEnum = {
+  id: 'id',
+  docId: 'docId',
+  vectorRef: 'vectorRef',
+  pageContent: 'pageContent',
+  metadata: 'metadata',
+  organizationId: 'organizationId',
+  source: 'source',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ManualOriginalChunkScalarFieldEnum = (typeof ManualOriginalChunkScalarFieldEnum)[keyof typeof ManualOriginalChunkScalarFieldEnum]
 
 
 export const ChatSessionScalarFieldEnum = {
@@ -420,6 +437,13 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: 'JsonNull'
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const NullableJsonNullValueInput = {

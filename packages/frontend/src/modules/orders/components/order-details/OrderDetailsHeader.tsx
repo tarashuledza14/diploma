@@ -12,11 +12,13 @@ import { ArrowLeft, CheckCircle2, Edit } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { orderStatusOptions } from '../../constants/order-status.constants';
+import { OrderDetails } from '../../interfaces/order-details.interface';
 import { formatOrderNumber } from '../../utils/format-order-number';
 import { priorityColors, statusColors } from '../order-list/orderColors';
+import { OrderPdfDownloadMenu } from './OrderPdfDownloadMenu';
 
 interface Props {
-	order: any;
+	order: OrderDetails;
 	onStatusChange: (status: string) => void;
 	onEditOrder: () => void;
 	onCompleteOrder: () => void;
@@ -62,7 +64,7 @@ export function OrderDetailsHeader({
 								statusColors[order.status as keyof typeof statusColors],
 							)}
 						>
-							{String(order.status).replace(/_/g, ' ')}
+							{t(`orderStatus.${String(order.status)}`)}
 						</Badge>
 						<Badge
 							variant='outline'
@@ -70,7 +72,9 @@ export function OrderDetailsHeader({
 								priorityColors[order.priority as keyof typeof priorityColors],
 							)}
 						>
-							{t('orders.priorityLabel', { value: order.priority })}
+							{t('orders.priorityLabel', {
+								value: t(`orderPriority.${String(order.priority)}`),
+							})}
 						</Badge>
 					</div>
 					<p className='text-muted-foreground'>
@@ -82,6 +86,7 @@ export function OrderDetailsHeader({
 				</div>
 			</div>
 			<div className='flex gap-2'>
+				<OrderPdfDownloadMenu order={order} />
 				<Select
 					defaultValue={String(order.status)}
 					value={String(order.status)}

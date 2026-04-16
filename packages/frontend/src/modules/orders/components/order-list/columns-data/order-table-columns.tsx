@@ -207,7 +207,7 @@ export function getOrderTableColumns({
 			),
 			cell: ({ row }) => (
 				<Badge className={cn(statusColors[String(row.original.status)])}>
-					{String(row.original.status).replace(/_/g, ' ')}
+					{t(`orderStatus.${String(row.original.status)}`)}
 				</Badge>
 			),
 			meta: {
@@ -229,7 +229,7 @@ export function getOrderTableColumns({
 					variant='outline'
 					className={cn(priorityColors[String(row.original.priority)])}
 				>
-					{String(row.original.priority)}
+					{t(`orderPriority.${String(row.original.priority)}`)}
 				</Badge>
 			),
 			meta: {

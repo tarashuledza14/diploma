@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
 
 import type { AssistantMessage } from '../types';
+import { sanitizeAssistantContent } from '../utils/sanitize-assistant-content';
 import { AssistantImageCard } from './AssistantImageCard';
 import { DynamicDataTable, TableSkeletonLoader } from './DynamicDataTable.tsx';
 
@@ -47,11 +48,6 @@ function getCodeText(children: ReactNode): string {
 	}
 
 	return '';
-}
-
-function normalizeMarkdownSpacing(content: string): string {
-	// Collapse accidental 3+ blank lines from model/tool output into standard paragraph breaks.
-	return content.replace(/\n{3,}/g, '\n\n');
 }
 
 function createMarkdownComponents(
@@ -147,6 +143,8 @@ export function AssistantMessages({
 						isStreamingMessage,
 						t,
 					);
+					const normalizedContent = sanitizeAssistantContent(message.content);
+					const hasRenderableContent = normalizedContent.length > 0;
 
 					return (
 						<div
@@ -190,13 +188,20 @@ export function AssistantMessages({
 											</span>
 										</div>
 									)}
-								{!!message.content && (
+								{hasRenderableContent && (
 									<div className='min-w-0 max-w-full wrap-break-word text-[13px] sm:text-sm'>
 										<ReactMarkdown components={markdownComponents}>
-											{normalizeMarkdownSpacing(message.content)}
+											{normalizedContent}
 										</ReactMarkdown>
 									</div>
 								)}
+								{message.role === 'assistant' &&
+									!isStreamingMessage &&
+									!hasRenderableContent && (
+										<div className='min-w-0 max-w-full wrap-break-word text-[13px] sm:text-sm'>
+											{t('aiAssistant.messages.noResponse')}
+										</div>
+									)}
 								<span className='mt-1 block text-[11px] opacity-60 sm:text-xs'>
 									{message.timestamp.toLocaleTimeString([], {
 										hour: '2-digit',

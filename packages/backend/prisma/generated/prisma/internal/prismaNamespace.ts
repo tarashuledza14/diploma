@@ -403,6 +403,7 @@ export const ModelName = {
   OrderPart: 'OrderPart',
   OrderService: 'OrderService',
   Document: 'Document',
+  ManualOriginalChunk: 'ManualOriginalChunk',
   ChatSession: 'ChatSession',
   ChatMessage: 'ChatMessage',
   Notification: 'Notification',
@@ -422,7 +423,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "organization" | "teamInvite" | "client" | "vehicle" | "partCategory" | "serviceCategory" | "partsManufacturer" | "partsBrand" | "partsSupplier" | "part" | "partInventory" | "stockMovement" | "partPriceRule" | "service" | "order" | "orderPart" | "orderService" | "document" | "chatSession" | "chatMessage" | "notification" | "appSettings"
+    modelProps: "user" | "organization" | "teamInvite" | "client" | "vehicle" | "partCategory" | "serviceCategory" | "partsManufacturer" | "partsBrand" | "partsSupplier" | "part" | "partInventory" | "stockMovement" | "partPriceRule" | "service" | "order" | "orderPart" | "orderService" | "document" | "manualOriginalChunk" | "chatSession" | "chatMessage" | "notification" | "appSettings"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1832,6 +1833,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ManualOriginalChunk: {
+      payload: Prisma.$ManualOriginalChunkPayload<ExtArgs>
+      fields: Prisma.ManualOriginalChunkFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ManualOriginalChunkFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManualOriginalChunkPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ManualOriginalChunkFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManualOriginalChunkPayload>
+        }
+        findFirst: {
+          args: Prisma.ManualOriginalChunkFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManualOriginalChunkPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ManualOriginalChunkFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManualOriginalChunkPayload>
+        }
+        findMany: {
+          args: Prisma.ManualOriginalChunkFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManualOriginalChunkPayload>[]
+        }
+        create: {
+          args: Prisma.ManualOriginalChunkCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManualOriginalChunkPayload>
+        }
+        createMany: {
+          args: Prisma.ManualOriginalChunkCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ManualOriginalChunkCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManualOriginalChunkPayload>[]
+        }
+        delete: {
+          args: Prisma.ManualOriginalChunkDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManualOriginalChunkPayload>
+        }
+        update: {
+          args: Prisma.ManualOriginalChunkUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManualOriginalChunkPayload>
+        }
+        deleteMany: {
+          args: Prisma.ManualOriginalChunkDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ManualOriginalChunkUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ManualOriginalChunkUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManualOriginalChunkPayload>[]
+        }
+        upsert: {
+          args: Prisma.ManualOriginalChunkUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManualOriginalChunkPayload>
+        }
+        aggregate: {
+          args: Prisma.ManualOriginalChunkAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateManualOriginalChunk>
+        }
+        groupBy: {
+          args: Prisma.ManualOriginalChunkGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ManualOriginalChunkGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ManualOriginalChunkCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ManualOriginalChunkCountAggregateOutputType> | number
+        }
+      }
+    }
     ChatSession: {
       payload: Prisma.$ChatSessionPayload<ExtArgs>
       fields: Prisma.ChatSessionFieldRefs
@@ -2434,10 +2509,26 @@ export const DocumentScalarFieldEnum = {
   filename: 'filename',
   content: 'content',
   externalId: 'externalId',
+  organizationId: 'organizationId',
   createdAt: 'createdAt'
 } as const
 
 export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
+
+
+export const ManualOriginalChunkScalarFieldEnum = {
+  id: 'id',
+  docId: 'docId',
+  vectorRef: 'vectorRef',
+  pageContent: 'pageContent',
+  metadata: 'metadata',
+  organizationId: 'organizationId',
+  source: 'source',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ManualOriginalChunkScalarFieldEnum = (typeof ManualOriginalChunkScalarFieldEnum)[keyof typeof ManualOriginalChunkScalarFieldEnum]
 
 
 export const ChatSessionScalarFieldEnum = {
@@ -2495,6 +2586,13 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const NullableJsonNullValueInput = {
@@ -2740,6 +2838,20 @@ export type ListEnumJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
 
 
 /**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
  * Reference to a field of type 'ChatMessageRole'
  */
 export type EnumChatMessageRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatMessageRole'>
@@ -2764,20 +2876,6 @@ export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'NotificationType[]'
  */
 export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType[]'>
-    
-
-
-/**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -2908,6 +3006,7 @@ export type GlobalOmitConfig = {
   orderPart?: Prisma.OrderPartOmit
   orderService?: Prisma.OrderServiceOmit
   document?: Prisma.DocumentOmit
+  manualOriginalChunk?: Prisma.ManualOriginalChunkOmit
   chatSession?: Prisma.ChatSessionOmit
   chatMessage?: Prisma.ChatMessageOmit
   notification?: Prisma.NotificationOmit

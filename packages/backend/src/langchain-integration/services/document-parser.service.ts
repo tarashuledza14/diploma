@@ -1,24 +1,28 @@
 import { Document } from '@langchain/core/documents';
 import {
+	HttpException,
 	Injectable,
 	InternalServerErrorException,
 	Logger,
 	NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { PDFDocument } from 'pdf-lib';
 import { pdf as renderPdfToImages } from 'pdf-to-img';
 import { DmsService } from 'src/dms/dms.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UnstructuredClient } from 'unstructured-client';
 // import { Strategy } from 'unstructured-client/dist/commonjs/sdk/models/shared';
 import { v4 as uuidv4 } from 'uuid';
+import { ManualIngestionPipelineService } from './manual-ingestion-pipeline.service';
 import { QdrantService } from './qdrant.service';
-import { SmartPdfService } from './smart-pdf.service';
+import { SmartPdfProcessingResult, SmartPdfService } from './smart-pdf.service';
 
 interface ManualExternalMetadata {
 	s3Key: string | null;
 	carModel: string | null;
 	vectorRef: string | null;
+	organizationId: string | null;
 }
 
 @Injectable()
@@ -36,6 +40,7 @@ export class DocumentParserService {
 		private readonly configService: ConfigService,
 		private readonly prismaService: PrismaService,
 		private readonly smartPdfService: SmartPdfService,
+		private readonly manualIngestionPipelineService: ManualIngestionPipelineService,
 	) {
 		// Підключаємося до нашого локального Docker-контейнера (або хмарного API)
 		const serverURL =
@@ -50,16 +55,39 @@ export class DocumentParserService {
 	/**
 	 * Головний метод для обробки завантаженого PDF мануалу
 	 */
-	async processAndStoreManual(file: Express.Multer.File, carModel: string) {
+	async processAndStoreManual(
+		file: Express.Multer.File,
+		carModel: string,
+		organizationId: string,
+	) {
 		this.logger.log(
 			`Починаємо AI-парсинг мануалу для: ${carModel} через Unstructured...`,
 		);
 		const manualVectorRef = uuidv4();
+		let vectorsIndexed = false;
+		let indexedChunks = 0;
+		const debugSinglePageOnly = this.isFlagEnabled(
+			'RAG_DEBUG_SINGLE_PAGE_ONLY',
+		);
+		const debugLogsOnly = this.isFlagEnabled('RAG_DEBUG_LOGS_ONLY');
 
 		try {
-			const optimizedPdf = await this.smartPdfService.processSmartPdf(
-				file.buffer,
-			);
+			const optimizedPdf = debugSinglePageOnly
+				? await this.buildSinglePageOptimizedPdf(file.buffer)
+				: await this.smartPdfService.processSmartPdf(file.buffer);
+
+			if (debugSinglePageOnly) {
+				this.logger.warn(
+					'[DEBUG] RAG_DEBUG_SINGLE_PAGE_ONLY=true -> Smart ToC filtering is bypassed; only page 1 is processed.',
+				);
+			}
+
+			if (debugLogsOnly) {
+				this.logger.warn(
+					'[DEBUG] RAG_DEBUG_LOGS_ONLY=true -> S3/Qdrant/DB writes are disabled; logging only.',
+				);
+			}
+
 			const keptRanges = optimizedPdf.ranges;
 			const keptPages = this.expandRangesToPages(keptRanges);
 			const discardedRanges = this.getDiscardedRanges(
@@ -102,7 +130,10 @@ export class DocumentParserService {
 
 			const langchainDocs: Document[] = [];
 			const pagesWithImages = new Set<number>();
-			const fullPageImageUrlByPage = new Map<number, string>();
+			const fullPageImageByPage = new Map<
+				number,
+				{ key: string; url: string }
+			>();
 			const imageStats = {
 				detectedImageElements: 0,
 				missingPageNumber: 0,
@@ -121,6 +152,7 @@ export class DocumentParserService {
 				const metadata: Record<string, any> = {
 					vectorRef: manualVectorRef,
 					carModel,
+					organizationId,
 					source: file.originalname,
 					pageNumber,
 					type: element.type,
@@ -162,6 +194,10 @@ export class DocumentParserService {
 				}
 			}
 
+			if (debugLogsOnly) {
+				this.logLangchainDocsDebugPreview(langchainDocs);
+			}
+
 			const needsFallback = pagesWithImages.size === 0;
 			if (needsFallback) {
 				// Smart filter kept pages are tracked in original PDF numbering.
@@ -187,6 +223,13 @@ export class DocumentParserService {
 					continue;
 				}
 
+				if (debugLogsOnly) {
+					this.logger.log(
+						`[DEBUG] Skipping S3 full-page image upload for page ${pageNumber} (logs-only mode).`,
+					);
+					continue;
+				}
+
 				try {
 					const fullPageImageBuffer = await this.renderFullPagePng(
 						optimizedPdf.filteredBuffer,
@@ -206,10 +249,15 @@ export class DocumentParserService {
 
 					const uploadRes = await this.dmsService.uploadSingleFile({
 						file: s3File,
-						isPublic: true,
+						isPublic: false,
+						tenantId: organizationId,
+						folder: 'manuals/images',
 					});
 					imageStats.uploadedFullPages += 1;
-					fullPageImageUrlByPage.set(pageNumber, uploadRes.url);
+					fullPageImageByPage.set(pageNumber, {
+						key: uploadRes.key,
+						url: uploadRes.url,
+					});
 
 					langchainDocs.push(
 						new Document({
@@ -217,8 +265,11 @@ export class DocumentParserService {
 							metadata: {
 								vectorRef: manualVectorRef,
 								carModel,
+								organizationId,
 								imageUrl: uploadRes.url,
 								fullPageImageUrl: uploadRes.url,
+								imageKey: uploadRes.key,
+								fullPageImageKey: uploadRes.key,
 								pageNumber,
 								source: file.originalname,
 								type: 'FullPageImage',
@@ -235,7 +286,7 @@ export class DocumentParserService {
 
 			imageStats.linkedTextChunks = this.attachFullPageImageUrlsToTextDocs(
 				langchainDocs,
-				fullPageImageUrlByPage,
+				fullPageImageByPage,
 			);
 
 			this.logger.log(
@@ -243,20 +294,63 @@ export class DocumentParserService {
 			);
 
 			this.logger.log(
-				`Генеруємо вектори для ${langchainDocs.length} блоків і зберігаємо в Qdrant...`,
+				`Генеруємо retrieval-summary для ${langchainDocs.length} блоків і зберігаємо в Multi-Vector сховище...`,
 			);
 
 			if (langchainDocs.length > 0) {
-				await this.addDocumentsToQdrantInBatches(langchainDocs);
+				const indexingSummary =
+					await this.manualIngestionPipelineService.indexManualChunks({
+						chunks: langchainDocs,
+						vectorRef: manualVectorRef,
+						carModel,
+						organizationId,
+						source: file.originalname,
+					});
+				indexedChunks = indexingSummary.indexedChunks;
+				vectorsIndexed = indexedChunks > 0;
+
+				if (indexingSummary.skippedChunks > 0) {
+					this.logger.warn(
+						`Skipped ${indexingSummary.skippedChunks} chunks during summary/vector indexing due to malformed payload/content.`,
+					);
+				}
 			} else {
 				this.logger.warn(
 					`Після smart filtering і partition не знайдено текстових блоків для ${file.originalname}.`,
 				);
 			}
 
+			if (debugLogsOnly) {
+				return {
+					success: true,
+					debugMode: true,
+					chunksProcessed: indexedChunks,
+					manual: {
+						id: null,
+						filename: file.originalname,
+						carModel,
+						createdAt: new Date(),
+					},
+					smartFilter: {
+						mode: optimizedPdf.mode,
+						originalPages: optimizedPdf.originalPages,
+						filteredPages: optimizedPdf.filteredPages,
+						reductionPercent: optimizedPdf.reductionPercent,
+						keptRanges,
+						discardedRanges,
+						keptPages,
+						discardedPages,
+						reasoning: optimizedPdf.reasoning,
+					},
+					note: 'Logs-only debug mode enabled: no S3/Qdrant/DB writes were executed.',
+				};
+			}
+
 			const manualUpload = await this.dmsService.uploadSingleFile({
 				file,
 				isPublic: false,
+				tenantId: organizationId,
+				folder: 'manuals/files',
 			});
 
 			const extractedPreview = langchainDocs
@@ -268,22 +362,30 @@ export class DocumentParserService {
 				data: {
 					filename: file.originalname,
 					content: extractedPreview || `Manual for ${carModel}`,
+					organizationId,
 					externalId: this.encodeManualExternalMetadata({
 						s3Key: manualUpload.key,
 						carModel,
 						vectorRef: manualVectorRef,
+						organizationId,
 					}),
 				},
 			});
 
-			this.logger.log(
-				`Мануал ${carModel} успішно оброблено, картинки в S3, вектори в Qdrant!`,
-			);
+			if (imageStats.uploadedFullPages > 0) {
+				this.logger.log(
+					`Мануал ${carModel} успішно оброблено: зображення (${imageStats.uploadedFullPages}) в S3, вектори в Qdrant!`,
+				);
+			} else {
+				this.logger.warn(
+					`Мануал ${carModel} оброблено без зображень у S3 (uploaded=0). Вектори в Qdrant збережено.`,
+				);
+			}
 
 			return {
 				success: true,
 				debugMode: false,
-				chunksProcessed: langchainDocs.length,
+				chunksProcessed: indexedChunks,
 				manual: {
 					id: manualRecord.id,
 					filename: manualRecord.filename,
@@ -303,18 +405,38 @@ export class DocumentParserService {
 				},
 			};
 		} catch (error) {
+			if (vectorsIndexed) {
+				await this.qdrantService.deleteManualVectors({
+					vectorRef: manualVectorRef,
+					filename: file.originalname,
+					carModel,
+				});
+				await this.manualIngestionPipelineService.deleteManualOriginals(
+					manualVectorRef,
+				);
+				this.logger.warn(
+					`Виконано rollback векторів і docstore-оригіналів для ${file.originalname} після помилки обробки.`,
+				);
+			}
+
 			this.logger.error('Помилка під час AI-парсингу PDF:', error);
+
+			if (error instanceof HttpException) {
+				throw error;
+			}
+
 			throw new InternalServerErrorException(
 				'Не вдалося розпарсити мануал через Unstructured',
 			);
 		}
 	}
 
-	async getManuals(search?: string) {
+	async getManuals(organizationId: string, search?: string) {
 		const normalizedSearch = search?.trim().toLowerCase();
 
 		const documents = await this.prismaService.document.findMany({
 			where: {
+				organizationId,
 				externalId: {
 					not: null,
 				},
@@ -353,10 +475,11 @@ export class DocumentParserService {
 			.map(({ s3Key, ...item }) => item);
 	}
 
-	async getManualOpenLink(id: string) {
-		const manual = await this.prismaService.document.findUnique({
+	async getManualOpenLink(id: string, organizationId: string) {
+		const manual = await this.prismaService.document.findFirst({
 			where: {
 				id,
+				organizationId,
 			},
 		});
 
@@ -379,9 +502,9 @@ export class DocumentParserService {
 		};
 	}
 
-	async deleteManual(id: string) {
-		const manual = await this.prismaService.document.findUnique({
-			where: { id },
+	async deleteManual(id: string, organizationId: string) {
+		const manual = await this.prismaService.document.findFirst({
+			where: { id, organizationId },
 		});
 
 		if (!manual) {
@@ -412,6 +535,10 @@ export class DocumentParserService {
 			carModel: metadata.carModel,
 		});
 
+		await this.manualIngestionPipelineService.deleteManualOriginals(
+			metadata.vectorRef,
+		);
+
 		await this.prismaService.document.delete({
 			where: { id },
 		});
@@ -428,6 +555,7 @@ export class DocumentParserService {
 		s3Key: string;
 		carModel: string;
 		vectorRef: string;
+		organizationId: string;
 	}) {
 		return JSON.stringify(metadata);
 	}
@@ -440,6 +568,7 @@ export class DocumentParserService {
 				s3Key: null,
 				carModel: null,
 				vectorRef: null,
+				organizationId: null,
 			};
 		}
 
@@ -452,6 +581,10 @@ export class DocumentParserService {
 						typeof parsed.carModel === 'string' ? parsed.carModel : null,
 					vectorRef:
 						typeof parsed.vectorRef === 'string' ? parsed.vectorRef : null,
+					organizationId:
+						typeof parsed.organizationId === 'string'
+							? parsed.organizationId
+							: null,
 				};
 			}
 		} catch {
@@ -462,6 +595,7 @@ export class DocumentParserService {
 			s3Key: externalId.toLowerCase().includes('.pdf') ? externalId : null,
 			carModel: null,
 			vectorRef: null,
+			organizationId: null,
 		};
 	}
 
@@ -535,7 +669,7 @@ export class DocumentParserService {
 
 	private attachFullPageImageUrlsToTextDocs(
 		documents: Document[],
-		fullPageImageUrlByPage: Map<number, string>,
+		fullPageImageByPage: Map<number, { key: string; url: string }>,
 	) {
 		let linkedTextChunks = 0;
 
@@ -550,12 +684,15 @@ export class DocumentParserService {
 				continue;
 			}
 
-			const fullPageImageUrl = fullPageImageUrlByPage.get(pageNumber);
-			if (!fullPageImageUrl) {
+			const fullPageImage = fullPageImageByPage.get(pageNumber);
+			if (!fullPageImage) {
 				continue;
 			}
 
-			metadata.fullPageImageUrl = fullPageImageUrl;
+			metadata.fullPageImageUrl = fullPageImage.url;
+			metadata.imageUrl = fullPageImage.url;
+			metadata.fullPageImageKey = fullPageImage.key;
+			metadata.imageKey = fullPageImage.key;
 			linkedTextChunks += 1;
 		}
 
@@ -586,18 +723,111 @@ export class DocumentParserService {
 
 	private async addDocumentsToQdrantInBatches(documents: Document[]) {
 		const totalBatches = Math.ceil(documents.length / this.qdrantBatchSize);
+		let indexedDocs = 0;
+		let skippedDocs = 0;
 
 		for (let i = 0; i < documents.length; i += this.qdrantBatchSize) {
 			const batchIndex = Math.floor(i / this.qdrantBatchSize) + 1;
 			const batch = documents.slice(i, i + this.qdrantBatchSize);
-			await this.qdrantService.vectorStore.addDocuments(batch);
-			this.logger.log(
-				`Qdrant batch ${batchIndex}/${totalBatches} збережено (${batch.length} документів).`,
+			const batchResult = await this.addDocumentsBatchWithFallback(
+				batch,
+				batchIndex,
+				totalBatches,
 			);
+			indexedDocs += batchResult.indexedDocs;
+			skippedDocs += batchResult.skippedDocs;
+			this.logger.log(
+				`Qdrant batch ${batchIndex}/${totalBatches} processed: indexed=${batchResult.indexedDocs}, skipped=${batchResult.skippedDocs}.`,
+			);
+		}
+
+		return {
+			indexedDocs,
+			skippedDocs,
+		};
+	}
+
+	private async addDocumentsBatchWithFallback(
+		batch: Document[],
+		batchIndex: number,
+		totalBatches: number,
+	) {
+		const sanitizedBatch = batch.map(doc =>
+			this.sanitizeDocumentForEmbedding(doc),
+		);
+
+		try {
+			await this.qdrantService.vectorStore.addDocuments(sanitizedBatch);
+			return {
+				indexedDocs: sanitizedBatch.length,
+				skippedDocs: 0,
+			};
+		} catch (error) {
+			if (!this.isOpenAiJsonPayloadError(error)) {
+				throw error;
+			}
+
+			this.logger.warn(
+				`Batch ${batchIndex}/${totalBatches} failed with malformed JSON payload error. Retrying per-document fallback.`,
+			);
+
+			let indexedDocs = 0;
+			let skippedDocs = 0;
+
+			for (const document of sanitizedBatch) {
+				try {
+					await this.qdrantService.vectorStore.addDocuments([document]);
+					indexedDocs += 1;
+				} catch (docError) {
+					skippedDocs += 1;
+					this.logger.warn(
+						`Skipping one chunk after per-document fallback failure: ${this.formatErrorForLog(docError)}`,
+					);
+				}
+			}
+
+			if (indexedDocs === 0) {
+				throw error;
+			}
+
+			return {
+				indexedDocs,
+				skippedDocs,
+			};
 		}
 	}
 
+	private sanitizeDocumentForEmbedding(document: Document) {
+		return new Document({
+			pageContent: this.sanitizeTextForEmbedding(document.pageContent),
+			metadata: document.metadata,
+		});
+	}
+
+	private sanitizeTextForEmbedding(value: string) {
+		if (!value) {
+			return '';
+		}
+
+		return value
+			.replace(/\u0000/g, ' ')
+			.replace(/[\u0001-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, ' ')
+			.replace(/\s+/g, ' ')
+			.trim();
+	}
+
+	private isOpenAiJsonPayloadError(error: unknown) {
+		const message = this.formatErrorForLog(error).toLowerCase();
+		return (
+			message.includes('could not parse the json body of your request') ||
+			message.includes('not valid json') ||
+			message.includes('invalid json')
+		);
+	}
+
 	private async partitionWithFallback(pdfBuffer: Buffer, fileName: string) {
+		const chunkingConfig = this.resolveUnstructuredChunkingConfig();
+
 		const attempts: Array<{
 			mode: 'hi_res' | 'ocr_only' | 'fast';
 			params: {
@@ -606,6 +836,12 @@ export class DocumentParserService {
 				splitPdfPage: false;
 				pdfInferTableStructure: boolean;
 				extractImageBlockTypes: string[];
+				chunkingStrategy: string;
+				maxCharacters: number;
+				combineUnderNChars: number;
+				newAfterNChars: number;
+				multipageSections: boolean;
+				includeOrigElements: boolean;
 			};
 		}> = [
 			{
@@ -616,6 +852,7 @@ export class DocumentParserService {
 					splitPdfPage: false,
 					pdfInferTableStructure: true,
 					extractImageBlockTypes: ['Image'],
+					...chunkingConfig,
 				},
 			},
 			{
@@ -626,6 +863,7 @@ export class DocumentParserService {
 					splitPdfPage: false,
 					pdfInferTableStructure: false,
 					extractImageBlockTypes: [],
+					...chunkingConfig,
 				},
 			},
 			{
@@ -636,6 +874,7 @@ export class DocumentParserService {
 					splitPdfPage: false,
 					pdfInferTableStructure: false,
 					extractImageBlockTypes: [],
+					...chunkingConfig,
 				},
 			},
 		];
@@ -645,7 +884,7 @@ export class DocumentParserService {
 		for (const attempt of attempts) {
 			try {
 				this.logger.log(
-					`Partition attempt: mode=${attempt.mode}, splitPdfPage=false`,
+					`Partition attempt: mode=${attempt.mode}, splitPdfPage=false, chunkingStrategy=${attempt.params.chunkingStrategy}, maxCharacters=${attempt.params.maxCharacters}, combineUnderNChars=${attempt.params.combineUnderNChars}, newAfterNChars=${attempt.params.newAfterNChars}`,
 				);
 
 				const response = await this.unstructuredClient.general.partition({
@@ -676,6 +915,43 @@ export class DocumentParserService {
 		}
 
 		throw lastError || new Error('All partition attempts failed');
+	}
+
+	private resolveUnstructuredChunkingConfig() {
+		return {
+			chunkingStrategy:
+				(
+					this.configService.get<string>(
+						'RAG_UNSTRUCTURED_CHUNKING_STRATEGY',
+					) || 'by_title'
+				).trim() || 'by_title',
+			maxCharacters: this.resolvePositiveIntegerConfig(
+				'RAG_UNSTRUCTURED_MAX_CHARACTERS',
+				1500,
+			),
+			combineUnderNChars: this.resolvePositiveIntegerConfig(
+				'RAG_UNSTRUCTURED_COMBINE_UNDER_N_CHARS',
+				500,
+			),
+			newAfterNChars: this.resolvePositiveIntegerConfig(
+				'RAG_UNSTRUCTURED_NEW_AFTER_N_CHARS',
+				1200,
+			),
+			multipageSections: this.isFlagEnabled(
+				'RAG_UNSTRUCTURED_MULTIPAGE_SECTIONS',
+			),
+			includeOrigElements: false,
+		};
+	}
+
+	private resolvePositiveIntegerConfig(name: string, defaultValue: number) {
+		const parsed = Number(this.configService.get<string>(name));
+
+		if (!Number.isFinite(parsed) || parsed <= 0) {
+			return defaultValue;
+		}
+
+		return Math.floor(parsed);
 	}
 
 	private formatErrorForLog(error: unknown) {
@@ -709,5 +985,117 @@ export class DocumentParserService {
 			message.includes('deleteobject access denied') ||
 			message.includes('access denied')
 		);
+	}
+
+	private isFlagEnabled(name: string) {
+		const value = (this.configService.get<string>(name) || '')
+			.trim()
+			.toLowerCase();
+		return (
+			value === '1' || value === 'true' || value === 'yes' || value === 'on'
+		);
+	}
+
+	private async buildSinglePageOptimizedPdf(
+		fileBuffer: Buffer,
+	): Promise<SmartPdfProcessingResult> {
+		const source = await PDFDocument.load(fileBuffer, {
+			ignoreEncryption: true,
+		});
+		const originalPages = source.getPageCount();
+
+		if (originalPages === 0) {
+			return {
+				filteredBuffer: fileBuffer,
+				originalPages: 0,
+				filteredPages: 0,
+				reductionPercent: 0,
+				ranges: [],
+				reasoning: 'Single-page debug mode: input PDF has no pages.',
+				mode: 'safe',
+			};
+		}
+
+		const output = await PDFDocument.create();
+		const copiedPages = await output.copyPages(source, [0]);
+		output.addPage(copiedPages[0]);
+		const bytes = await output.save();
+		const filteredBuffer = Buffer.from(bytes);
+
+		return {
+			filteredBuffer,
+			originalPages,
+			filteredPages: 1,
+			reductionPercent: Number(
+				(((originalPages - 1) / originalPages) * 100).toFixed(2),
+			),
+			ranges: [[1, 1]],
+			reasoning:
+				'Single-page debug mode: ToC search is disabled and only page 1 is processed.',
+			mode: 'safe',
+		};
+	}
+
+	private logLangchainDocsDebugPreview(docs: Document[]) {
+		if (!docs.length) {
+			this.logger.warn('[DEBUG] No extracted text chunks to preview.');
+			return;
+		}
+
+		const previewLimit = this.resolveDebugPreviewLimit();
+		const previewCount = Math.min(previewLimit, docs.length);
+
+		this.logger.log(
+			`[DEBUG] Extracted chunks preview (showing ${previewCount} of ${docs.length}).`,
+		);
+
+		docs.slice(0, previewLimit).forEach((doc, index) => {
+			const metadata = doc.metadata as Record<string, unknown>;
+			this.logger.log(
+				`[DEBUG][CHUNK ${index + 1}] page=${String(metadata.pageNumber ?? 'unknown')} type=${String(metadata.type ?? 'unknown')} text="${doc.pageContent.slice(0, 500)}"`,
+			);
+		});
+
+		this.logDebugKeywordMatches(docs);
+	}
+
+	private resolveDebugPreviewLimit() {
+		const rawValue = Number(
+			this.configService.get<string>('RAG_DEBUG_PREVIEW_LIMIT') || 3,
+		);
+
+		if (!Number.isFinite(rawValue) || rawValue <= 0) {
+			return 3;
+		}
+
+		return Math.min(Math.floor(rawValue), 100);
+	}
+
+	private logDebugKeywordMatches(docs: Document[]) {
+		const keyword = (
+			this.configService.get<string>('RAG_DEBUG_FIND_TEXT') || ''
+		).trim();
+
+		if (!keyword) {
+			return;
+		}
+
+		const normalizedKeyword = keyword.toLowerCase();
+		const matchedDocs = docs.filter(doc =>
+			doc.pageContent.toLowerCase().includes(normalizedKeyword),
+		);
+
+		this.logger.log(
+			`[DEBUG] Keyword scan for "${keyword}": matched ${matchedDocs.length} of ${docs.length} chunks.`,
+		);
+
+		const matchPreviewCount = Math.min(5, matchedDocs.length);
+		for (let i = 0; i < matchPreviewCount; i += 1) {
+			const doc = matchedDocs[i];
+			const metadata = doc.metadata as Record<string, unknown>;
+			this.logger.log(
+				`[DEBUG][KEYWORD MATCH ${i + 1}] page=${String(metadata.pageNumber ?? 'unknown')} type=${String(metadata.type ?? 'unknown')} text="${doc.pageContent.slice(0, 500)}"`,
+			);
+		}
 	}
 }

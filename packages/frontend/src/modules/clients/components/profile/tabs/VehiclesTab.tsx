@@ -1,13 +1,28 @@
 import { Badge, Card, CardContent, ScrollArea } from '@/shared/components/ui';
 import { Car } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface VehiclesTabProps {
 	mockClientVehicles: any[];
 }
 
 export function VehiclesTab({ mockClientVehicles }: VehiclesTabProps) {
+	const { t } = useTranslation();
+
+	const getVehicleStatusLabel = (value: unknown) => {
+		const raw = String(value ?? '').toLowerCase();
+		if (raw === 'active') {
+			return t('services.status.active');
+		}
+		if (raw === 'inactive') {
+			return t('services.status.inactive');
+		}
+
+		return String(value ?? '-');
+	};
+
 	return (
-		<ScrollArea className='h-[200px]'>
+		<ScrollArea className='h-50'>
 			<div className='space-y-2 pr-4'>
 				{mockClientVehicles.map(vehicle => (
 					<Card key={vehicle.id}>
@@ -32,7 +47,7 @@ export function VehiclesTab({ mockClientVehicles }: VehiclesTabProps) {
 										: 'bg-gray-100 text-gray-700'
 								}
 							>
-								{vehicle.status.toUpperCase()}
+								{getVehicleStatusLabel(vehicle.status)}
 							</Badge>
 						</CardContent>
 					</Card>

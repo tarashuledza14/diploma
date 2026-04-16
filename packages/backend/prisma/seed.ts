@@ -132,6 +132,7 @@ async function main() {
 			name: 'Default Organization',
 		},
 	});
+	const organizationId = organization.id;
 
 	// --- 2. КОРИСТУВАЧІ (Staff) ---
 	const password = await argon2.hash(testPassword);
@@ -164,7 +165,7 @@ async function main() {
 				data: {
 					...user,
 					password,
-					organizationId: organization.id,
+					organizationId,
 				},
 			}),
 		),
@@ -190,13 +191,22 @@ async function main() {
 				phone: '+380671234567',
 				email: 'taras@gmail.com',
 				notes: 'VIP',
+				organizationId,
 			},
 		}),
 		await prisma.client.create({
-			data: { fullName: 'Марія Коваленко', phone: '+380502345678' },
+			data: {
+				fullName: 'Марія Коваленко',
+				phone: '+380502345678',
+				organizationId,
+			},
 		}),
 		await prisma.client.create({
-			data: { fullName: 'Олександр Петренко', phone: '+380933456789' },
+			data: {
+				fullName: 'Олександр Петренко',
+				phone: '+380933456789',
+				organizationId,
+			},
 		}),
 	];
 
@@ -213,6 +223,7 @@ async function main() {
 				plateNumber: 'АА1234ВВ',
 				mileage: 120000,
 				ownerId: clients[0].id,
+				organizationId,
 				status: VehicleStatus.OUT,
 			},
 		}),
@@ -225,6 +236,7 @@ async function main() {
 				plateNumber: 'ВВ5678КК',
 				mileage: 85000,
 				ownerId: clients[1].id,
+				organizationId,
 				status: VehicleStatus.PENDING,
 			},
 		}),
@@ -241,6 +253,7 @@ async function main() {
 				code: 'PRT-001',
 				name: 'Фільтр масляний Bosch',
 				sku: 'BOSCH-0451103336',
+				organizationId,
 				oem: '06A115561B',
 				barcode: '4047024452361',
 				unit: 'шт',
@@ -314,6 +327,7 @@ async function main() {
 				code: 'PRT-002',
 				name: 'Колодки гальмівні передні Brembo',
 				sku: 'BREMBO-P85020',
+				organizationId,
 				unit: 'комплект',
 				minStock: 2,
 				categoryId: catBrakes.id,
@@ -353,6 +367,7 @@ async function main() {
 				code: 'PRT-003',
 				name: 'Мастило моторне Castrol EDGE 5W-40',
 				sku: 'CASTROL-5W40-5L',
+				organizationId,
 				unit: 'каністра (5л)',
 				minStock: 10,
 				categoryId: catFluids.id,
@@ -391,6 +406,7 @@ async function main() {
 				code: 'PRT-004',
 				name: 'Свічки запалювання NGK',
 				sku: 'NGK-BKR6E',
+				organizationId,
 				categoryId: catElectrical.id,
 				brandId: brandsMap['NGK'],
 				inventory: {
@@ -421,6 +437,7 @@ async function main() {
 			data: {
 				name: 'Заміна мастила',
 				description: 'Комплекс',
+				organizationId,
 				price: 400,
 				estimatedTime: 1.0,
 				categoryId: srvCatMaint.id,
@@ -434,6 +451,7 @@ async function main() {
 			data: {
 				name: 'Заміна колодок',
 				description: 'Вісь',
+				organizationId,
 				price: 500,
 				estimatedTime: 2.0,
 				categoryId: srvCatReplace.id,
@@ -529,6 +547,19 @@ async function main() {
 			{ type: 'part', idx: 0, qty: 1, price: 187.5 }, // Беремо 1 Фільтр
 			{ type: 'part', idx: 2, qty: 1, price: 1190 }, // Беремо 1 Мастило
 			{ type: 'service', idx: 0, qty: 1, price: 400 },
+		],
+	);
+
+	await createOrder(
+		OrderStatus.IN_PROGRESS,
+		1, // BMW X5
+		1, // Марія Коваленко
+		manager1,
+		mechanics[1],
+		'Заміна передніх колодок',
+		[
+			{ type: 'part', idx: 1, qty: 1, price: 1800 },
+			{ type: 'service', idx: 1, qty: 1, price: 500 },
 		],
 	);
 

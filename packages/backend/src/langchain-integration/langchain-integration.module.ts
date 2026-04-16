@@ -12,6 +12,9 @@ import { SupervisorNodeService } from './graph/nodes/supervisor.node';
 import { DocumentParserController } from './services/document-parser.controller';
 import { DocumentParserService } from './services/document-parser.service';
 import { EmbeddingsService } from './services/embeddings.service';
+import { ManualIngestionPipelineService } from './services/manual-ingestion-pipeline.service';
+import { ManualOriginalDocstoreService } from './services/manual-original-docstore.service';
+import { ManualRetrieverService } from './services/manual-retriever.service';
 import { QdrantService } from './services/qdrant.service';
 import { SmartPdfService } from './services/smart-pdf.service';
 
@@ -24,6 +27,9 @@ import { SmartPdfService } from './services/smart-pdf.service';
 		RagNodeService,
 		SupervisorNodeService,
 		DocumentParserService,
+		ManualIngestionPipelineService,
+		ManualOriginalDocstoreService,
+		ManualRetrieverService,
 		SmartPdfService,
 		EmbeddingsService,
 		QdrantService,
