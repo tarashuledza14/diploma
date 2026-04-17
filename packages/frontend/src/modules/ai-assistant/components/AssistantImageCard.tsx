@@ -1,27 +1,53 @@
-import { Expand } from 'lucide-react';
+import { Expand, ExternalLink } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { buildManualPdfPageUrl } from '../utils/manual-image-metadata';
 import { AssistantImageViewer } from './AssistantImageViewer';
 
 interface AssistantImageCardProps {
 	imageUrl: string;
 	alt?: string;
+	manualPdfUrl?: string | null;
+	pageNumber?: number | null;
 }
 
-export function AssistantImageCard({ imageUrl, alt }: AssistantImageCardProps) {
+export function AssistantImageCard({
+	imageUrl,
+	alt,
+	manualPdfUrl,
+	pageNumber,
+}: AssistantImageCardProps) {
 	const { t } = useTranslation();
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [hasLoadError, setHasLoadError] = useState(false);
 	const [isViewerOpen, setIsViewerOpen] = useState(false);
 	const resolvedAlt = alt ?? t('aiAssistant.image.technicalDiagramAlt');
+	const resolvedPdfPageUrl = manualPdfUrl
+		? buildManualPdfPageUrl(manualPdfUrl, pageNumber ?? null)
+		: null;
+	const openPdfLabel = pageNumber
+		? t('aiAssistant.image.openPdfPage', { page: pageNumber })
+		: t('aiAssistant.image.openPdf');
 
 	return (
 		<>
 			<div className='mt-3 overflow-hidden rounded-lg border border-border bg-background/60'>
-				<div className='border-b border-border px-3 py-2'>
+				<div className='flex items-center justify-between gap-2 border-b border-border px-3 py-2'>
 					<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 						{t('aiAssistant.image.manualDiagram')}
 					</p>
+					{resolvedPdfPageUrl && (
+						<a
+							href={resolvedPdfPageUrl}
+							target='_blank'
+							rel='noreferrer'
+							onClick={event => event.stopPropagation()}
+							className='inline-flex items-center gap-1 text-xs text-primary hover:underline'
+						>
+							<ExternalLink className='h-3.5 w-3.5' />
+							{openPdfLabel}
+						</a>
+					)}
 				</div>
 				<button
 					type='button'
@@ -63,6 +89,8 @@ export function AssistantImageCard({ imageUrl, alt }: AssistantImageCardProps) {
 				onOpenChange={setIsViewerOpen}
 				imageUrl={imageUrl}
 				alt={resolvedAlt}
+				manualPdfUrl={manualPdfUrl}
+				pageNumber={pageNumber}
 			/>
 		</>
 	);

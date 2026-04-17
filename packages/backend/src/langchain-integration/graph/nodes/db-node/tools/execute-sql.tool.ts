@@ -9,7 +9,6 @@ export const createExecuteSqlTool = (
 		async ({ query }: { query: string }) => {
 			try {
 				const q = sanitizeSqlQuery(query);
-				console.log('QQQQQQQQQQQQQQQQ', q);
 				const result = await executeReadOnlyQuery(q);
 				return typeof result === 'string'
 					? result

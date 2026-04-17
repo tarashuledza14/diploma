@@ -1026,14 +1026,9 @@
 		"title": "AI Assistant",
 		"subtitle": "Your intelligent helper for managing the auto service business",
 		"chats": "Chats",
-		"chatsAndActions": "Chats & Actions",
 		"newChat": "New chat",
 		"noChats": "No chats yet",
 		"deleteChatAria": "Delete chat",
-		"tabs": {
-			"actions": "Actions",
-			"history": "History"
-		},
 		"toast": {
 			"chatDeleted": "Chat deleted",
 			"chatDeleteFailed": "Failed to delete chat"
@@ -1065,34 +1060,10 @@
 			"manualDiagram": "Manual Diagram",
 			"technicalDiagramAlt": "Technical diagram from manual",
 			"openInViewer": "Open",
+			"openPdf": "Open PDF",
+			"openPdfPage": "Open PDF page {{page}}",
 			"openOriginal": "Original",
 			"previewLoadFailed": "Failed to load preview. Try opening the original."
-		},
-		"suggestedQueries": {
-			"vehicleHistory": {
-				"label": "Vehicle History",
-				"query": "Show me the service history for vehicle plate ABC-1234"
-			},
-			"overdueOrders": {
-				"label": "Overdue Orders",
-				"query": "What orders are currently overdue?"
-			},
-			"lowStock": {
-				"label": "Low Stock",
-				"query": "Which parts need to be reordered?"
-			},
-			"topClients": {
-				"label": "Top Clients",
-				"query": "Who are our top 5 clients by revenue this month?"
-			},
-			"mechanicLoad": {
-				"label": "Mechanic Load",
-				"query": "How many orders does each mechanic have assigned?"
-			},
-			"recommendations": {
-				"label": "Recommendations",
-				"query": "What services should we recommend for a 2022 BMW X5 at 50,000 km?"
-			}
 		}
 	},
 	"manuals": {

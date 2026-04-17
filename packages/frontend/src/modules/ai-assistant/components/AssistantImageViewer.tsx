@@ -1,12 +1,15 @@
 import { Dialog, DialogContent } from '@/shared/components/ui/dialog';
 import { ExternalLink } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { buildManualPdfPageUrl } from '../utils/manual-image-metadata';
 
 interface AssistantImageViewerProps {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 	imageUrl: string;
 	alt: string;
+	manualPdfUrl?: string | null;
+	pageNumber?: number | null;
 }
 
 export function AssistantImageViewer({
@@ -14,8 +17,16 @@ export function AssistantImageViewer({
 	onOpenChange,
 	imageUrl,
 	alt,
+	manualPdfUrl,
+	pageNumber,
 }: AssistantImageViewerProps) {
 	const { t } = useTranslation();
+	const resolvedPdfPageUrl = manualPdfUrl
+		? buildManualPdfPageUrl(manualPdfUrl, pageNumber ?? null)
+		: null;
+	const openPdfLabel = pageNumber
+		? t('aiAssistant.image.openPdfPage', { page: pageNumber })
+		: t('aiAssistant.image.openPdf');
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
@@ -24,15 +35,28 @@ export function AssistantImageViewer({
 					<p className='truncate text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 						{t('aiAssistant.image.manualDiagram')}
 					</p>
-					<a
-						href={imageUrl}
-						target='_blank'
-						rel='noreferrer'
-						className='inline-flex items-center gap-1 text-xs text-primary hover:underline'
-					>
-						<ExternalLink className='h-3.5 w-3.5' />
-						{t('aiAssistant.image.openOriginal')}
-					</a>
+					<div className='flex items-center gap-3'>
+						{resolvedPdfPageUrl && (
+							<a
+								href={resolvedPdfPageUrl}
+								target='_blank'
+								rel='noreferrer'
+								className='inline-flex items-center gap-1 text-xs text-primary hover:underline'
+							>
+								<ExternalLink className='h-3.5 w-3.5' />
+								{openPdfLabel}
+							</a>
+						)}
+						<a
+							href={imageUrl}
+							target='_blank'
+							rel='noreferrer'
+							className='inline-flex items-center gap-1 text-xs text-primary hover:underline'
+						>
+							<ExternalLink className='h-3.5 w-3.5' />
+							{t('aiAssistant.image.openOriginal')}
+						</a>
+					</div>
 				</div>
 
 				<div className='mt-2 flex max-h-[78vh] min-h-70 w-full items-center justify-center rounded-md bg-black/55 p-2 sm:p-4'>

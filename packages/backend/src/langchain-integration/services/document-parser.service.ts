@@ -74,6 +74,9 @@ export class DocumentParserService {
 			'RAG_DEBUG_SINGLE_PAGE_ONLY',
 		);
 		const debugLogsOnly = this.isFlagEnabled('RAG_DEBUG_LOGS_ONLY');
+		// Temporarily disabled by request: do not render PDF pages to images and do not upload images to S3.
+		// const manualImageStorageEnabled = this.resolveBooleanConfig('RAG_MANUAL_IMAGE_STORAGE_ENABLED', false);
+		const manualImageStorageEnabled = false;
 
 		try {
 			const optimizedPdf = debugSinglePageOnly
@@ -133,7 +136,7 @@ export class DocumentParserService {
 			);
 
 			const langchainDocs: Document[] = [];
-			const pagesWithImages = new Set<number>();
+			const imagePagesFilteredToOriginal = new Map<number, number>();
 			const fullPageImageByPage = new Map<
 				number,
 				{ key: string; url: string }
@@ -151,15 +154,22 @@ export class DocumentParserService {
 			};
 
 			for (const element of elements) {
-				const pageNumber = this.normalizePageNumber(
+				const filteredPageNumber = this.normalizePageNumber(
 					element.metadata?.page_number,
 				);
+				const originalPageNumber = this.mapFilteredPageToOriginalPage(
+					filteredPageNumber,
+					keptRanges,
+				);
+				const pageNumber = originalPageNumber ?? filteredPageNumber;
 				const metadata: Record<string, any> = {
 					vectorRef: manualVectorRef,
 					carModel,
 					organizationId,
 					source: file.originalname,
 					pageNumber,
+					originalPageNumber: pageNumber,
+					filteredPageNumber,
 					type: element.type,
 				};
 
@@ -174,13 +184,21 @@ export class DocumentParserService {
 				}
 
 				if (element.type === 'Image') {
+					if (!manualImageStorageEnabled) {
+						continue;
+					}
+
 					imageStats.detectedImageElements += 1;
-					if (pageNumber === null) {
+					if (filteredPageNumber === null) {
 						imageStats.missingPageNumber += 1;
 						continue;
 					}
 
-					pagesWithImages.add(pageNumber);
+					const resolvedOriginalPage = originalPageNumber ?? filteredPageNumber;
+					imagePagesFilteredToOriginal.set(
+						filteredPageNumber,
+						resolvedOriginalPage,
+					);
 					continue;
 				}
 
@@ -203,14 +221,12 @@ export class DocumentParserService {
 				this.logLangchainDocsDebugPreview(langchainDocs);
 			}
 
-			const imageScanEnabled = this.resolveBooleanConfig(
-				'RAG_UNSTRUCTURED_IMAGE_SCAN_ENABLED',
-				false,
-			);
-			const fullPageImageFallbackEnabled = this.resolveBooleanConfig(
-				'RAG_ENABLE_FULL_PAGE_IMAGE_FALLBACK',
-				true,
-			);
+			const imageScanEnabled =
+				manualImageStorageEnabled &&
+				this.resolveBooleanConfig('RAG_UNSTRUCTURED_IMAGE_SCAN_ENABLED', false);
+			const fullPageImageFallbackEnabled =
+				manualImageStorageEnabled &&
+				this.resolveBooleanConfig('RAG_ENABLE_FULL_PAGE_IMAGE_FALLBACK', true);
 			const fullPageImageFallbackMaxPages = this.resolvePositiveIntegerConfig(
 				'RAG_FULL_PAGE_IMAGE_FALLBACK_MAX_PAGES',
 				120,
@@ -225,7 +241,7 @@ export class DocumentParserService {
 			if (
 				partitionMode === 'hi_res' &&
 				imageScanEnabled &&
-				pagesWithImages.size === 0 &&
+				imagePagesFilteredToOriginal.size === 0 &&
 				candidateImageRanges.length > 0
 			) {
 				const scannedImagePages = await this.detectImagePagesWithHiResScan({
@@ -235,7 +251,10 @@ export class DocumentParserService {
 				});
 
 				for (const scannedPage of scannedImagePages) {
-					pagesWithImages.add(scannedPage);
+					const originalPage =
+						this.mapFilteredPageToOriginalPage(scannedPage, keptRanges) ??
+						scannedPage;
+					imagePagesFilteredToOriginal.set(scannedPage, originalPage);
 				}
 
 				imageStats.detectedImagePagesByScan = scannedImagePages.length;
@@ -245,7 +264,7 @@ export class DocumentParserService {
 			} else if (
 				partitionMode === 'hi_res' &&
 				!imageScanEnabled &&
-				pagesWithImages.size === 0
+				imagePagesFilteredToOriginal.size === 0
 			) {
 				this.logger.log(
 					'Skipping hi-res image scan (RAG_UNSTRUCTURED_IMAGE_SCAN_ENABLED=false) to avoid second full PDF pass.',
@@ -255,25 +274,30 @@ export class DocumentParserService {
 			const shouldActivateFullPageImageFallback =
 				fullPageImageFallbackEnabled &&
 				partitionMode === 'hi_res' &&
-				pagesWithImages.size === 0;
+				imagePagesFilteredToOriginal.size === 0;
 
 			if (shouldActivateFullPageImageFallback) {
 				const fallbackPages = candidateImagePages;
 				for (const fallbackPage of fallbackPages) {
-					pagesWithImages.add(fallbackPage);
+					const originalPage =
+						this.mapFilteredPageToOriginalPage(fallbackPage, keptRanges) ??
+						fallbackPage;
+					imagePagesFilteredToOriginal.set(fallbackPage, originalPage);
 				}
 
 				this.logger.warn(
 					`Unstructured returned 0 images in hi_res mode. Full-page image fallback enabled: rendering ${fallbackPages.length} pages as PNGs (cap=${fullPageImageFallbackMaxPages}).`,
 				);
-			} else if (pagesWithImages.size === 0) {
+			} else if (imagePagesFilteredToOriginal.size === 0) {
 				this.logger.log(
 					`Skipping full-page image fallback (mode=${partitionMode}, enabled=${fullPageImageFallbackEnabled}). Continuing with text-only ingestion.`,
 				);
 			}
 
-			const sortedPagesWithImages = [...pagesWithImages].sort((a, b) => a - b);
-			imageStats.uniqueImagePages = sortedPagesWithImages.length;
+			const sortedFilteredPagesWithImages = [
+				...imagePagesFilteredToOriginal.keys(),
+			].sort((a, b) => a - b);
+			imageStats.uniqueImagePages = sortedFilteredPagesWithImages.length;
 			const useSharedImageRenderer = this.resolveBooleanConfig(
 				'RAG_USE_SHARED_IMAGE_RENDERER',
 				false,
@@ -283,7 +307,7 @@ export class DocumentParserService {
 
 			if (
 				useSharedImageRenderer &&
-				sortedPagesWithImages.length > 0 &&
+				sortedFilteredPagesWithImages.length > 0 &&
 				!debugLogsOnly
 			) {
 				try {
@@ -297,25 +321,29 @@ export class DocumentParserService {
 						`Failed to prepare shared PDF image renderer. Falling back to per-page rendering: ${this.formatErrorForLog(error)}`,
 					);
 				}
-			} else if (sortedPagesWithImages.length > 0 && !debugLogsOnly) {
+			} else if (sortedFilteredPagesWithImages.length > 0 && !debugLogsOnly) {
 				this.logger.log(
 					'Shared PDF image renderer disabled (RAG_USE_SHARED_IMAGE_RENDERER=false). Using per-page renderer for stability.',
 				);
 			}
 
 			try {
-				for (const pageNumber of sortedPagesWithImages) {
-					if (pageNumber > optimizedPdf.filteredPages) {
+				for (const filteredPageNumber of sortedFilteredPagesWithImages) {
+					const originalPageNumber =
+						imagePagesFilteredToOriginal.get(filteredPageNumber) ??
+						filteredPageNumber;
+
+					if (filteredPageNumber > optimizedPdf.filteredPages) {
 						imageStats.outOfRangePages += 1;
 						this.logger.warn(
-							`Skipping image page ${pageNumber}: out of filtered PDF range (1-${optimizedPdf.filteredPages}).`,
+							`Skipping image page filtered=${filteredPageNumber}, original=${originalPageNumber}: out of filtered PDF range (1-${optimizedPdf.filteredPages}).`,
 						);
 						continue;
 					}
 
 					if (debugLogsOnly) {
 						this.logger.log(
-							`[DEBUG] Skipping S3 full-page image upload for page ${pageNumber} (logs-only mode).`,
+							`[DEBUG] Skipping S3 full-page image upload for page filtered=${filteredPageNumber}, original=${originalPageNumber} (logs-only mode).`,
 						);
 						continue;
 					}
@@ -328,35 +356,35 @@ export class DocumentParserService {
 								fullPageImageBuffer =
 									await this.renderFullPagePngFromPreparedDocument(
 										preparedImageRenderer,
-										pageNumber,
+										filteredPageNumber,
 									);
 							} catch (sharedRendererError) {
 								this.logger.warn(
-									`Shared renderer failed on page ${pageNumber}. Switching to per-page renderer: ${this.formatErrorForLog(sharedRendererError)}`,
+									`Shared renderer failed on page filtered=${filteredPageNumber}, original=${originalPageNumber}. Switching to per-page renderer: ${this.formatErrorForLog(sharedRendererError)}`,
 								);
 								preparedImageRenderer = null;
 								await this.cleanupTempFile(preparedImageRendererTempPath);
 								preparedImageRendererTempPath = null;
 								fullPageImageBuffer = await this.renderFullPagePng(
 									optimizedPdf.filteredBuffer,
-									pageNumber,
+									filteredPageNumber,
 								);
 							}
 						} else {
 							fullPageImageBuffer = await this.renderFullPagePng(
 								optimizedPdf.filteredBuffer,
-								pageNumber,
+								filteredPageNumber,
 							);
 						}
 						imageStats.convertedFullPages += 1;
 
 						this.logger.log(
-							`Знайдено схему на сторінці ${pageNumber}. Рендеримо повну сторінку і завантажуємо в S3...`,
+							`Знайдено схему на сторінці original=${originalPageNumber} (filtered=${filteredPageNumber}). Рендеримо повну сторінку і завантажуємо в S3...`,
 						);
 
 						const s3File = {
 							buffer: fullPageImageBuffer,
-							originalname: `${carModel.replace(/\s+/g, '_')}_fullpage_${pageNumber}_${uuidv4().slice(0, 6)}.png`,
+							originalname: `${carModel.replace(/\s+/g, '_')}_fullpage_${originalPageNumber}_${uuidv4().slice(0, 6)}.png`,
 							mimetype: 'image/png',
 						} as Express.Multer.File;
 
@@ -367,14 +395,14 @@ export class DocumentParserService {
 							folder: 'manuals/images',
 						});
 						imageStats.uploadedFullPages += 1;
-						fullPageImageByPage.set(pageNumber, {
+						fullPageImageByPage.set(originalPageNumber, {
 							key: uploadRes.key,
 							url: uploadRes.url,
 						});
 
 						langchainDocs.push(
 							new Document({
-								pageContent: `Повна технічна схема/сторінка з мануалу ${carModel}. Сторінка ${pageNumber}.`,
+								pageContent: `Повна технічна схема/сторінка з мануалу ${carModel}. Сторінка ${originalPageNumber}.`,
 								metadata: {
 									vectorRef: manualVectorRef,
 									carModel,
@@ -383,7 +411,9 @@ export class DocumentParserService {
 									fullPageImageUrl: uploadRes.url,
 									imageKey: uploadRes.key,
 									fullPageImageKey: uploadRes.key,
-									pageNumber,
+									pageNumber: originalPageNumber,
+									originalPageNumber,
+									filteredPageNumber,
 									source: file.originalname,
 									type: 'FullPageImage',
 								},
@@ -392,7 +422,7 @@ export class DocumentParserService {
 					} catch (error) {
 						imageStats.conversionErrors += 1;
 						this.logger.warn(
-							`Failed to render/upload full page image for page ${pageNumber}: ${this.formatErrorForLog(error)}`,
+							`Failed to render/upload full page image for page filtered=${filteredPageNumber}, original=${originalPageNumber}: ${this.formatErrorForLog(error)}`,
 						);
 					}
 				}
@@ -789,6 +819,37 @@ export class DocumentParserService {
 		}
 
 		return Math.floor(pageNumber);
+	}
+
+	private mapFilteredPageToOriginalPage(
+		filteredPageNumber: number | null,
+		keptRanges: Array<[number, number]>,
+	): number | null {
+		if (filteredPageNumber === null) {
+			return null;
+		}
+
+		if (!keptRanges.length) {
+			return filteredPageNumber;
+		}
+
+		let filteredCursor = 1;
+
+		for (const [start, end] of keptRanges) {
+			const rangeLength = end - start + 1;
+			const filteredRangeEnd = filteredCursor + rangeLength - 1;
+
+			if (
+				filteredPageNumber >= filteredCursor &&
+				filteredPageNumber <= filteredRangeEnd
+			) {
+				return start + (filteredPageNumber - filteredCursor);
+			}
+
+			filteredCursor = filteredRangeEnd + 1;
+		}
+
+		return filteredPageNumber;
 	}
 
 	private attachFullPageImageUrlsToTextDocs(

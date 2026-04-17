@@ -19,11 +19,7 @@ import { AssistantChatHeader } from './components/AssistantChatHeader';
 import { AssistantComposer } from './components/AssistantComposer';
 import { AssistantMessages } from './components/AssistantMessages';
 import { AssistantSidebar } from './components/AssistantSidebar';
-import type {
-	AssistantMessage,
-	AssistantTab,
-	ChatSessionSummary,
-} from './types';
+import type { AssistantMessage, ChatSessionSummary } from './types';
 import { sanitizeAssistantContent } from './utils/sanitize-assistant-content';
 
 export function AIAssistantPage() {
@@ -36,7 +32,6 @@ export function AIAssistantPage() {
 	const [isDeletingChat, setIsDeletingChat] = useState(false);
 	const [chatIdToDelete, setChatIdToDelete] = useState<string | null>(null);
 	const [isSidebarOpenMobile, setIsSidebarOpenMobile] = useState(false);
-	const [activeTab, setActiveTab] = useState<AssistantTab>('history');
 	const streamCleanupRef = useRef<null | (() => void)>(null);
 	const titleRefreshTimeoutRef = useRef<number | null>(null);
 
@@ -99,7 +94,6 @@ export function AIAssistantPage() {
 			streamCleanupRef.current = null;
 			setIsLoading(false);
 			setActiveChatId(reusableEmptySession.id);
-			setActiveTab('history');
 			setIsSidebarOpenMobile(false);
 
 			const chatMessages = await ChatService.getMessages(
@@ -112,7 +106,6 @@ export function AIAssistantPage() {
 		const created = await ChatService.createSession(t('aiAssistant.newChat'));
 		setActiveChatId(created.id);
 		setMessages([]);
-		setActiveTab('history');
 		setIsSidebarOpenMobile(false);
 		await refreshSessions(created.id);
 	};
@@ -209,7 +202,6 @@ export function AIAssistantPage() {
 
 		setMessages(prev => [...prev, userMessage, assistantMessage]);
 		setInput('');
-		setActiveTab('history');
 		setIsLoading(true);
 
 		streamCleanupRef.current = streamChatMessage(chatId, query, {
@@ -279,11 +271,6 @@ export function AIAssistantPage() {
 		});
 	};
 
-	const handleSuggestedQuery = (query: string) => {
-		setInput(query);
-		setIsSidebarOpenMobile(false);
-	};
-
 	return (
 		<div className='flex h-full min-h-0 w-full min-w-0 flex-col gap-4 overflow-x-hidden overflow-y-auto sm:gap-6'>
 			<div className='flex items-start justify-between gap-3'>
@@ -310,9 +297,6 @@ export function AIAssistantPage() {
 			<div className='grid min-h-0 w-full min-w-0 flex-1 gap-4 overflow-hidden lg:grid-cols-4 lg:grid-rows-[minmax(0,1fr)] lg:gap-6'>
 				<div className='hidden min-h-0 lg:block'>
 					<AssistantSidebar
-						activeTab={activeTab}
-						onTabChange={setActiveTab}
-						onSuggestedQuery={handleSuggestedQuery}
 						chatSessions={chatSessions}
 						activeChatId={activeChatId}
 						onSelectChat={handleSelectChat}
@@ -341,15 +325,12 @@ export function AIAssistantPage() {
 				<ResponsiveDialogContent className='w-full max-w-none p-0 sm:max-w-lg'>
 					<ResponsiveDialogHeader className='border-b px-4 py-3 text-left'>
 						<ResponsiveDialogTitle>
-							{t('aiAssistant.chatsAndActions')}
+							{t('aiAssistant.chats')}
 						</ResponsiveDialogTitle>
 					</ResponsiveDialogHeader>
 					<div className='p-3'>
 						<AssistantSidebar
 							inModal
-							activeTab={activeTab}
-							onTabChange={setActiveTab}
-							onSuggestedQuery={handleSuggestedQuery}
 							chatSessions={chatSessions}
 							activeChatId={activeChatId}
 							onSelectChat={handleSelectChat}

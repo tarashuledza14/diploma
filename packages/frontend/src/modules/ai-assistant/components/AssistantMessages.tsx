@@ -6,7 +6,6 @@ import ReactMarkdown from 'react-markdown';
 
 import type { AssistantMessage } from '../types';
 import { sanitizeAssistantContent } from '../utils/sanitize-assistant-content';
-import { AssistantImageCard } from './AssistantImageCard';
 import { DynamicDataTable, TableSkeletonLoader } from './DynamicDataTable.tsx';
 
 interface AssistantMessagesProps {
@@ -58,9 +57,27 @@ function createMarkdownComponents(
 		p: ({ children }: { children?: ReactNode }) => (
 			<p className='mb-3 last:mb-0'>{children}</p>
 		),
-		img: ({ src, alt }: { src?: string; alt?: string }) => {
+		a: ({ href, children }: { href?: string; children?: ReactNode }) => {
+			if (!href) {
+				return <>{children}</>;
+			}
+
+			return (
+				<a
+					href={href}
+					target='_blank'
+					rel='noreferrer'
+					className='font-medium text-primary underline underline-offset-2 hover:text-primary/80'
+				>
+					{children}
+				</a>
+			);
+		},
+		img: ({ src }: { src?: string }) => {
 			if (!src) return null;
-			return <AssistantImageCard imageUrl={src} alt={alt} />;
+			// Temporarily disabled: manual diagram previews are hidden until
+			// full image retrieval/rendering flow is restored.
+			return null;
 		},
 		code: ({
 			node,
