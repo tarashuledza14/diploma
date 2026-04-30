@@ -794,6 +794,15 @@
 				"unassigned": "Не призначено",
 				"minMileage": "(мін: {{min}} км)"
 			},
+			"partCategories": {
+				"fluids": "Рідини",
+				"filters": "Фільтри",
+				"brakes": "Гальмівна система",
+				"electrical": "Електрика",
+				"suspension": "Підвіска",
+				"engine": "Двигун",
+				"lighting": "Освітлення"
+			},
 			"actions": {
 				"newWorkOrder": "Нове замовлення",
 				"createWorkOrder": "Створити замовлення",

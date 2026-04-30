@@ -794,6 +794,15 @@
 				"unassigned": "Unassigned",
 				"minMileage": "(min: {{min}} km)"
 			},
+			"partCategories": {
+				"fluids": "Fluids",
+				"filters": "Filters",
+				"brakes": "Brakes",
+				"electrical": "Electrical",
+				"suspension": "Suspension",
+				"engine": "Engine",
+				"lighting": "Lighting"
+			},
 			"actions": {
 				"newWorkOrder": "New Work Order",
 				"createWorkOrder": "Create Work Order",

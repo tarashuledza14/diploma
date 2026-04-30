@@ -307,8 +307,8 @@ export function NewOrderModal({
 			OrdersService.createOrder(payload),
 		onSuccess: async () => {
 			toast.success(t('orders.newOrder.messages.createSuccess'));
-			await queryClient.refetchQueries({
-				queryKey: ordersKeys.list({ filters: [], page: 1, perPage: 500 }),
+			await queryClient.invalidateQueries({
+				queryKey: ordersKeys.lists(),
 			});
 
 			setOpen(false);

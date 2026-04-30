@@ -47,6 +47,8 @@ export interface DispatchBoardData {
 export class DispatchingService {
 	constructor(private readonly db: PrismaService) {}
 
+	private readonly MECHANIC_DAILY_CAPACITY_HOURS = 8;
+
 	private readonly ACTIVE_ORDER_STATUSES: OrderStatus[] = [
 		OrderStatus.NEW,
 		OrderStatus.IN_PROGRESS,
@@ -57,6 +59,14 @@ export class DispatchingService {
 		JobStatus.PENDING,
 		JobStatus.IN_PROGRESS,
 	];
+
+	private isSameUtcCalendarDay(left: Date, right: Date) {
+		return (
+			left.getUTCFullYear() === right.getUTCFullYear() &&
+			left.getUTCMonth() === right.getUTCMonth() &&
+			left.getUTCDate() === right.getUTCDate()
+		);
+	}
 
 	private toDispatchTaskItem(task: {
 		id: string;
@@ -110,33 +120,103 @@ export class DispatchingService {
 				id: true,
 				fullName: true,
 				avatar: true,
-				_count: {
-					select: {
-						serviceJobs: {
-							where: {
-								status: { in: this.ACTIVE_JOB_STATUSES },
-								order: {
-									deletedAt: null,
-									status: { in: this.ACTIVE_ORDER_STATUSES },
-								},
-							},
-						},
-					},
-				},
 			},
 			orderBy: { fullName: 'asc' },
 		});
 
-		return mechanics.map(mechanic => ({
-			id: mechanic.id,
-			fullName: mechanic.fullName,
-			avatar: mechanic.avatar ?? undefined,
-			todayAssignedHours: 0,
-			totalAssignedHours: 0,
-			capacityPercent: 0,
-			isOverloaded: false,
-			activeTasksCount: mechanic._count.serviceJobs,
-		}));
+		if (mechanics.length === 0) {
+			return [];
+		}
+
+		const mechanicIds = mechanics.map(mechanic => mechanic.id);
+		const activeJobs = await this.db.orderService.findMany({
+			where: {
+				mechanicId: {
+					in: mechanicIds,
+				},
+				status: {
+					in: this.ACTIVE_JOB_STATUSES,
+				},
+				order: {
+					deletedAt: null,
+					status: {
+						in: this.ACTIVE_ORDER_STATUSES,
+					},
+				},
+			},
+			select: {
+				mechanicId: true,
+				estimatedHours: true,
+				additionalHours: true,
+				order: {
+					select: {
+						startDate: true,
+					},
+				},
+			},
+		});
+
+		const now = new Date();
+		const workloadByMechanicId = new Map<
+			string,
+			{
+				activeTasksCount: number;
+				todayAssignedHours: number;
+				totalAssignedHours: number;
+			}
+		>();
+
+		for (const job of activeJobs) {
+			if (!job.mechanicId) {
+				continue;
+			}
+
+			const existing = workloadByMechanicId.get(job.mechanicId) ?? {
+				activeTasksCount: 0,
+				todayAssignedHours: 0,
+				totalAssignedHours: 0,
+			};
+
+			const estimatedHours = Number(job.estimatedHours || 0);
+			const additionalHours = Number(job.additionalHours || 0);
+			const totalJobHours = Math.max(0, estimatedHours + additionalHours);
+
+			existing.activeTasksCount += 1;
+			existing.totalAssignedHours += totalJobHours;
+
+			if (this.isSameUtcCalendarDay(job.order.startDate, now)) {
+				existing.todayAssignedHours += totalJobHours;
+			}
+
+			workloadByMechanicId.set(job.mechanicId, existing);
+		}
+
+		return mechanics.map(mechanic => {
+			const currentWorkload = workloadByMechanicId.get(mechanic.id);
+			const totalAssignedHours = Number(
+				(currentWorkload?.totalAssignedHours ?? 0).toFixed(1),
+			);
+			const rawTodayHours = currentWorkload?.todayAssignedHours ?? 0;
+			const effectiveTodayHours =
+				rawTodayHours > 0 ? rawTodayHours : totalAssignedHours;
+			const todayAssignedHours = Number(effectiveTodayHours.toFixed(1));
+			const rawCapacityPercent =
+				this.MECHANIC_DAILY_CAPACITY_HOURS > 0
+					? (effectiveTodayHours / this.MECHANIC_DAILY_CAPACITY_HOURS) * 100
+					: 0;
+			const capacityPercent = Number(Math.round(rawCapacityPercent));
+
+			return {
+				id: mechanic.id,
+				fullName: mechanic.fullName,
+				avatar: mechanic.avatar ?? undefined,
+				todayAssignedHours,
+				totalAssignedHours,
+				capacityPercent,
+				isOverloaded: capacityPercent >= 100,
+				activeTasksCount: currentWorkload?.activeTasksCount ?? 0,
+			};
+		});
 	}
 
 	async getBoard(organizationId: string): Promise<DispatchBoardData> {

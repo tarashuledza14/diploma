@@ -35,6 +35,17 @@ export const ServiceRow: React.FC<ServiceRowProps> = ({
 	const selectedService = services.find(s => s.id === service.serviceId);
 	const hasRequiredCategories = selectedService?.requiredCategories?.length > 0;
 
+	const translatePartCategory = (categoryName: string) => {
+		const normalizedKey = categoryName
+			.trim()
+			.toLowerCase()
+			.replace(/\s+/g, '_');
+		const translationKey = `orders.newOrder.partCategories.${normalizedKey}`;
+		const translated = t(translationKey);
+
+		return translated === translationKey ? categoryName : translated;
+	};
+
 	const getMechanicLabel = (mechanic: any) => {
 		const details: string[] = [];
 
@@ -162,7 +173,7 @@ export const ServiceRow: React.FC<ServiceRowProps> = ({
 							<div className='flex flex-wrap gap-1 mt-1'>
 								{selectedService.requiredCategories.map((category: any) => (
 									<Badge key={category.id} variant='secondary'>
-										{category.name}
+										{translatePartCategory(category.name)}
 									</Badge>
 								))}
 							</div>
