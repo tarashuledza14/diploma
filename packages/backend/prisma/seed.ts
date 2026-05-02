@@ -184,8 +184,8 @@ async function main() {
 	}
 
 	// --- 3. КЛІЄНТИ (Clients) ---
-	const clients = [
-		await prisma.client.create({
+	const clients = await Promise.all([
+		prisma.client.create({
 			data: {
 				fullName: 'Тарас Шевченко',
 				phone: '+380671234567',
@@ -194,27 +194,52 @@ async function main() {
 				organizationId,
 			},
 		}),
-		await prisma.client.create({
+		prisma.client.create({
 			data: {
 				fullName: 'Марія Коваленко',
 				phone: '+380502345678',
+				email: 'maria.kovalenko@ukr.net',
 				organizationId,
 			},
 		}),
-		await prisma.client.create({
+		prisma.client.create({
 			data: {
 				fullName: 'Олександр Петренко',
 				phone: '+380933456789',
 				organizationId,
 			},
 		}),
-	];
+		prisma.client.create({
+			data: {
+				fullName: 'Дмитро Бондаренко',
+				phone: '+380661122334',
+				email: 'dmytro.bond@gmail.com',
+				notes: 'Корпоративний клієнт',
+				organizationId,
+			},
+		}),
+		prisma.client.create({
+			data: {
+				fullName: 'Наталія Іваненко',
+				phone: '+380732233445',
+				organizationId,
+			},
+		}),
+		prisma.client.create({
+			data: {
+				fullName: 'Сергій Мельник',
+				phone: '+380503344556',
+				email: 's.melnyk@mail.com',
+				organizationId,
+			},
+		}),
+	]);
 
 	console.log('✅ Clients created');
 
 	// --- 4. АВТОМОБІЛІ (Vehicles) ---
-	const vehicles = [
-		await prisma.vehicle.create({
+	const vehicles = await Promise.all([
+		prisma.vehicle.create({
 			data: {
 				vin: '1HGBH41JXMN109186',
 				brand: 'VW',
@@ -227,7 +252,7 @@ async function main() {
 				status: VehicleStatus.OUT,
 			},
 		}),
-		await prisma.vehicle.create({
+		prisma.vehicle.create({
 			data: {
 				vin: '2HGBH41JXMN109187',
 				brand: 'BMW',
@@ -240,7 +265,46 @@ async function main() {
 				status: VehicleStatus.PENDING,
 			},
 		}),
-	];
+		prisma.vehicle.create({
+			data: {
+				vin: '3VWFE21C04M000001',
+				brand: 'Toyota',
+				model: 'Camry',
+				year: 2020,
+				plateNumber: 'КК8800РР',
+				mileage: 54000,
+				ownerId: clients[2].id,
+				organizationId,
+				status: VehicleStatus.IN_SERVICE,
+			},
+		}),
+		prisma.vehicle.create({
+			data: {
+				vin: '4T1BF3EK6AU123456',
+				brand: 'Renault',
+				model: 'Logan',
+				year: 2017,
+				plateNumber: 'МН4567ОП',
+				mileage: 98000,
+				ownerId: clients[3].id,
+				organizationId,
+				status: VehicleStatus.IN_SERVICE,
+			},
+		}),
+		prisma.vehicle.create({
+			data: {
+				vin: '5FADP3F21EL001234',
+				brand: 'Ford',
+				model: 'Focus',
+				year: 2016,
+				plateNumber: 'РС2233ТУ',
+				mileage: 145000,
+				ownerId: clients[4].id,
+				organizationId,
+				status: VehicleStatus.PENDING,
+			},
+		}),
+	]);
 
 	console.log('✅ Vehicles created');
 
@@ -432,36 +496,57 @@ async function main() {
 	console.log(`✅ Parts created: ${parts.length}`);
 
 	// --- 6. ПОСЛУГИ (Services) ---
-	const services = [
-		await prisma.service.create({
+	const services = await Promise.all([
+		prisma.service.create({
 			data: {
 				name: 'Заміна мастила',
-				description: 'Комплекс',
+				description: 'Комплексна заміна моторного мастила та фільтру',
 				organizationId,
 				price: 400,
 				estimatedTime: 1.0,
 				categoryId: srvCatMaint.id,
-				// ЗМІНЕНО: Прив'язуємо категорії необхідних матеріалів (Filters та Fluids)
 				requiredCategories: {
 					connect: [{ id: catFilters.id }, { id: catFluids.id }],
 				},
 			},
 		}),
-		await prisma.service.create({
+		prisma.service.create({
 			data: {
-				name: 'Заміна колодок',
-				description: 'Вісь',
+				name: 'Заміна гальмівних колодок',
+				description: 'Заміна передніх або задніх гальмівних колодок',
 				organizationId,
 				price: 500,
 				estimatedTime: 2.0,
 				categoryId: srvCatReplace.id,
-				// ЗМІНЕНО: Прив'язуємо категорію (Brakes)
 				requiredCategories: {
 					connect: [{ id: catBrakes.id }],
 				},
 			},
 		}),
-	];
+		prisma.service.create({
+			data: {
+				name: "Комп'ютерна діагностика",
+				description: 'Зчитування помилок та діагностика всіх систем авто',
+				organizationId,
+				price: 350,
+				estimatedTime: 1.0,
+				categoryId: srvCatDiag.id,
+			},
+		}),
+		prisma.service.create({
+			data: {
+				name: 'Заміна свічок запалювання',
+				description: 'Заміна комплекту свічок запалювання',
+				organizationId,
+				price: 300,
+				estimatedTime: 0.5,
+				categoryId: srvCatReplace.id,
+				requiredCategories: {
+					connect: [{ id: catElectrical.id }],
+				},
+			},
+		}),
+	]);
 
 	console.log(`✅ Services created`);
 	const createOrder = async (
@@ -535,35 +620,123 @@ async function main() {
 		return order;
 	};
 
-	// Створюємо замовлення-приклад, у якому використано Мастило та Фільтр
+	// Замовлення 1: Завершене — заміна мастила (VW Golf, Тарас)
 	await createOrder(
 		OrderStatus.COMPLETED,
 		0, // VW Golf
 		0, // Тарас Шевченко
 		manager1,
 		mechanics[0],
-		'Планова заміна мастила',
+		'Планова заміна моторного мастила та фільтру',
 		[
-			{ type: 'part', idx: 0, qty: 1, price: 187.5 }, // Беремо 1 Фільтр
-			{ type: 'part', idx: 2, qty: 1, price: 1190 }, // Беремо 1 Мастило
+			{ type: 'part', idx: 0, qty: 1, price: 187.5 },
+			{ type: 'part', idx: 2, qty: 1, price: 1190 },
 			{ type: 'service', idx: 0, qty: 1, price: 400 },
 		],
 	);
 
+	// Замовлення 2: В роботі — заміна колодок (BMW X5, Марія)
 	await createOrder(
 		OrderStatus.IN_PROGRESS,
 		1, // BMW X5
 		1, // Марія Коваленко
 		manager1,
 		mechanics[1],
-		'Заміна передніх колодок',
+		'Заміна передніх гальмівних колодок',
 		[
 			{ type: 'part', idx: 1, qty: 1, price: 1800 },
 			{ type: 'service', idx: 1, qty: 1, price: 500 },
 		],
 	);
 
-	console.log(`✅ Orders and Stock Movements created (Sample)`);
+	// Замовлення 3: Нове — діагностика (Toyota Camry, Олександр)
+	await createOrder(
+		OrderStatus.NEW,
+		2, // Toyota Camry
+		2, // Олександр Петренко
+		manager1,
+		null,
+		'Діагностика після перегріву двигуна',
+		[
+			{ type: 'service', idx: 2, qty: 1, price: 350 },
+		],
+	);
+
+	// Замовлення 4: Завершене — заміна свічок (Toyota Camry, Олександр)
+	await createOrder(
+		OrderStatus.COMPLETED,
+		2, // Toyota Camry
+		2, // Олександр Петренко
+		manager1,
+		mechanics[0],
+		'Заміна комплекту свічок запалювання',
+		[
+			{ type: 'part', idx: 3, qty: 4, price: 150 },
+			{ type: 'service', idx: 3, qty: 1, price: 300 },
+		],
+	);
+
+	// Замовлення 5: В роботі — заміна колодок (Renault Logan, Дмитро)
+	await createOrder(
+		OrderStatus.IN_PROGRESS,
+		3, // Renault Logan
+		3, // Дмитро Бондаренко
+		manager1,
+		mechanics[1],
+		'Заміна задніх гальмівних колодок',
+		[
+			{ type: 'part', idx: 1, qty: 1, price: 1800 },
+			{ type: 'service', idx: 1, qty: 1, price: 500 },
+		],
+	);
+
+	// Замовлення 6: Нове — заміна мастила (Ford Focus, Наталія)
+	await createOrder(
+		OrderStatus.NEW,
+		4, // Ford Focus
+		4, // Наталія Іваненко
+		manager1,
+		null,
+		'Планове ТО — заміна мастила',
+		[
+			{ type: 'part', idx: 0, qty: 1, price: 187.5 },
+			{ type: 'part', idx: 2, qty: 1, price: 1190 },
+			{ type: 'service', idx: 0, qty: 1, price: 400 },
+		],
+	);
+
+	// Замовлення 7: Завершене — діагностика + свічки (VW Golf, Тарас)
+	await createOrder(
+		OrderStatus.COMPLETED,
+		0, // VW Golf
+		0, // Тарас Шевченко
+		manager1,
+		mechanics[0],
+		'Діагностика та заміна свічок після троєння двигуна',
+		[
+			{ type: 'service', idx: 2, qty: 1, price: 350 },
+			{ type: 'part', idx: 3, qty: 4, price: 150 },
+			{ type: 'service', idx: 3, qty: 1, price: 300 },
+		],
+	);
+
+	// Замовлення 8: В роботі — заміна мастила + діагностика (BMW X5, Марія)
+	await createOrder(
+		OrderStatus.IN_PROGRESS,
+		1, // BMW X5
+		1, // Марія Коваленко
+		manager1,
+		mechanics[1],
+		'ТО: заміна мастила та комп\'ютерна діагностика',
+		[
+			{ type: 'part', idx: 0, qty: 1, price: 187.5 },
+			{ type: 'part', idx: 2, qty: 1, price: 1190 },
+			{ type: 'service', idx: 0, qty: 1, price: 400 },
+			{ type: 'service', idx: 2, qty: 1, price: 350 },
+		],
+	);
+
+	console.log(`✅ Orders and Stock Movements created (8 orders)`);
 
 	console.log('🎉 Seed completed successfully!');
 }

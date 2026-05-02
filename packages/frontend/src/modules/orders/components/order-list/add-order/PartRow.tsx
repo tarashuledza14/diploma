@@ -69,8 +69,7 @@ export const PartRow: React.FC<PartRowProps> = ({
 						<SelectContent>
 							{parts.map(partItem => (
 								<SelectItem key={partItem.id} value={partItem.id}>
-									{partItem.name} - {formatCurrency(partItem.price)} (Stock:{' '}
-									{partItem.stock})
+									{partItem.name} - {formatCurrency(partItem.price)} ({t('common.inStock')}: {partItem.stock})
 								</SelectItem>
 							))}
 						</SelectContent>

@@ -62,13 +62,18 @@ export function NotificationsProvider({
 			NotificationsApi.getAll(200),
 		]).then(([countResult, itemsResult]) => {
 			if (countResult.status === 'fulfilled') {
+				console.log('📬 Unread count:', countResult.value);
 				setUnreadCount(countResult.value);
 			} else {
+				console.error('❌ Failed to fetch unread count:', countResult.reason);
 				setUnreadCount(0);
 			}
 
 			if (itemsResult.status === 'fulfilled') {
+				console.log('📨 Notifications loaded:', itemsResult.value.length);
 				setItems(itemsResult.value);
+			} else {
+				console.error('❌ Failed to fetch notifications:', itemsResult.reason);
 			}
 		});
 

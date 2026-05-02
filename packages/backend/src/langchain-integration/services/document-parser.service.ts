@@ -57,7 +57,7 @@ export class DocumentParserService {
 	}
 
 	/**
-	 * Головний метод для обробки завантаженого PDF мануалу
+	 * Головний метод для обробки завантаженого PDF посібника
 	 */
 	async processAndStoreManual(
 		file: Express.Multer.File,
@@ -65,7 +65,7 @@ export class DocumentParserService {
 		organizationId: string,
 	) {
 		this.logger.log(
-			`Починаємо AI-парсинг мануалу для: ${carModel} через Unstructured...`,
+			`Починаємо AI-парсинг посібника для: ${carModel} через Unstructured...`,
 		);
 		const manualVectorRef = uuidv4();
 		let vectorsIndexed = false;
@@ -180,7 +180,7 @@ export class DocumentParserService {
 						element.metadata.text_as_html,
 						this.maxHtmlMetadataLength,
 					);
-					pageContent = `Таблиця з мануалу ${carModel}:\n${element.text}`;
+					pageContent = `Таблиця з посібника ${carModel}:\n${element.text}`;
 				}
 
 				if (element.type === 'Image') {
@@ -402,7 +402,7 @@ export class DocumentParserService {
 
 						langchainDocs.push(
 							new Document({
-								pageContent: `Повна технічна схема/сторінка з мануалу ${carModel}. Сторінка ${originalPageNumber}.`,
+								pageContent: `Повна технічна схема/сторінка з посібника ${carModel}. Сторінка ${originalPageNumber}.`,
 								metadata: {
 									vectorRef: manualVectorRef,
 									carModel,
@@ -520,19 +520,19 @@ export class DocumentParserService {
 
 			if (imageStats.uploadedFullPages > 0) {
 				this.logger.log(
-					`Мануал ${carModel} успішно оброблено: зображення (${imageStats.uploadedFullPages}) в S3, вектори в Qdrant!`,
+					`Посібник ${carModel} успішно оброблено: зображення (${imageStats.uploadedFullPages}) в S3, вектори в Qdrant!`,
 				);
 			} else if (!fullPageImageFallbackEnabled) {
 				this.logger.log(
-					`Мануал ${carModel} оброблено без зображень у S3 (uploaded=0). Це очікувано: RAG_ENABLE_FULL_PAGE_IMAGE_FALLBACK=false. Вектори в Qdrant збережено.`,
+					`Посібник ${carModel} оброблено без зображень у S3 (uploaded=0). Це очікувано: RAG_ENABLE_FULL_PAGE_IMAGE_FALLBACK=false. Вектори в Qdrant збережено.`,
 				);
 			} else if (partitionMode !== 'hi_res') {
 				this.logger.log(
-					`Мануал ${carModel} оброблено без зображень у S3 (uploaded=0). Partition mode=${partitionMode}, тому image-елементи могли не бути повернуті. Вектори в Qdrant збережено.`,
+					`Посібник ${carModel} оброблено без зображень у S3 (uploaded=0). Partition mode=${partitionMode}, тому image-елементи могли не бути повернуті. Вектори в Qdrant збережено.`,
 				);
 			} else {
 				this.logger.warn(
-					`Мануал ${carModel} оброблено без зображень у S3 (uploaded=0). Вектори в Qdrant збережено.`,
+					`Посібник ${carModel} оброблено без зображень у S3 (uploaded=0). Вектори в Qdrant збережено.`,
 				);
 			}
 
@@ -580,7 +580,7 @@ export class DocumentParserService {
 			}
 
 			throw new InternalServerErrorException(
-				'Не вдалося розпарсити мануал через Unstructured',
+				'Не вдалося розпарсити посібник через Unstructured',
 			);
 		}
 	}
@@ -638,13 +638,13 @@ export class DocumentParserService {
 		});
 
 		if (!manual) {
-			throw new NotFoundException('Мануал не знайдено');
+			throw new NotFoundException('Посібник не знайдено');
 		}
 
 		const metadata = this.parseManualExternalMetadata(manual.externalId);
 
 		if (!metadata.s3Key) {
-			throw new NotFoundException('Для цього мануалу не знайдено PDF-файл');
+			throw new NotFoundException('Для цього посібника не знайдено PDF-файл');
 		}
 
 		const { url } = await this.dmsService.getPresignedSignedUrl(metadata.s3Key);
@@ -662,7 +662,7 @@ export class DocumentParserService {
 		});
 
 		if (!manual) {
-			throw new NotFoundException('Мануал не знайдено');
+			throw new NotFoundException('Посібник не знайдено');
 		}
 
 		const metadata = this.parseManualExternalMetadata(manual.externalId);

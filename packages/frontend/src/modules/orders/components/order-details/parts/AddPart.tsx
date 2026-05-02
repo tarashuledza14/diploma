@@ -79,8 +79,7 @@ export function AddPart({
 						<SelectContent>
 							{partOptions.map(part => (
 								<SelectItem key={part.id} value={part.id}>
-									{part.name} - {formatCurrency(part.price)} (Stock:{' '}
-									{part.stock})
+									{part.name} - {formatCurrency(part.price)} ({t('common.inStock')}: {part.stock})
 								</SelectItem>
 							))}
 						</SelectContent>

@@ -33,7 +33,10 @@
 		"to": "to",
 		"today": "Today",
 		"select": "Select...",
-		"noResultsFound": "No results found."
+		"noResultsFound": "No results found.",
+		"backToTable": "Back to table",
+		"plate": "Plate",
+		"inStock": "In stock"
 	},
 	"theme": {
 		"toggle": "Toggle theme",

@@ -61,10 +61,10 @@ export class DocumentParserController {
 				role: user.role,
 				title: isDebugMode
 					? 'Smart filter перевірка завершена'
-					: 'Обробка мануалу завершена',
+					: 'Обробка посібника завершена',
 				message: isDebugMode
 					? `Файл "${file.originalname}" (${carModel}) проаналізовано в debug-режимі smart filter.`
-					: `Мануал "${file.originalname}" (${carModel}) успішно оброблено.`,
+					: `Посібник "${file.originalname}" (${carModel}) успішно оброблено.`,
 				metadata: {
 					filename: file.originalname,
 					carModel,
@@ -78,8 +78,8 @@ export class DocumentParserController {
 			await this.notificationsService.notify({
 				userId: user.id,
 				role: user.role,
-				title: 'Обробка мануалу завершена з помилкою',
-				message: `Не вдалося обробити мануал "${file.originalname}" (${carModel}).`,
+				title: 'Обробка посібника завершена з помилкою',
+				message: `Не вдалося обробити посібник "${file.originalname}" (${carModel}).`,
 				metadata: {
 					filename: file.originalname,
 					carModel,
@@ -142,11 +142,11 @@ export class DocumentParserController {
 				userId: user.id,
 				role: user.role,
 				title: storageCleanupPending
-					? 'Мануал видалено (S3 cleanup pending)'
-					: 'Мануал видалено',
+					? 'Посібник видалено (S3 cleanup pending)'
+					: 'Посібник видалено',
 				message: storageCleanupPending
-					? `Мануал "${deletedManual.filename}" видалено з системи, але файл в S3 поки не видалено через відсутній доступ DeleteObject.`
-					: `Мануал "${deletedManual.filename}" успішно видалено.`,
+					? `Посібник "${deletedManual.filename}" видалено з системи, але файл в S3 поки не видалено через відсутній доступ DeleteObject.`
+					: `Посібник "${deletedManual.filename}" успішно видалено.`,
 				metadata: {
 					manualId: deletedManual.id,
 					filename: deletedManual.filename,
@@ -163,8 +163,8 @@ export class DocumentParserController {
 			await this.notificationsService.notify({
 				userId: user.id,
 				role: user.role,
-				title: 'Помилка видалення мануалу',
-				message: `Не вдалося видалити мануал (id: ${id}).`,
+				title: 'Помилка видалення посібника',
+				message: `Не вдалося видалити посібник (id: ${id}).`,
 				metadata: {
 					manualId: id,
 					status: 'failed',

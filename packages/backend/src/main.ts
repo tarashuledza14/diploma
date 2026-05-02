@@ -3,15 +3,18 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-	process.env.LANGSMITH_TRACING = 'false';
-	process.env.LANGCHAIN_TRACING = 'false';
-	process.env.LANGCHAIN_TRACING_V2 = 'false';
-	process.env.LANGSMITH_ENDPOINT = '';
-	process.env.LANGCHAIN_ENDPOINT = '';
-	delete process.env.LANGSMITH_API_KEY;
-	delete process.env.LANGCHAIN_API_KEY;
-	delete process.env.LANGSMITH_PROJECT;
-	delete process.env.LANGCHAIN_PROJECT;
+	// LangSmith tracing — вмикається коли LANGSMITH_API_KEY задано в .env
+	const langsmithKey = process.env.LANGSMITH_API_KEY;
+	if (langsmithKey && langsmithKey !== '...') {
+		process.env.LANGCHAIN_TRACING_V2 = 'true';
+		process.env.LANGCHAIN_API_KEY = langsmithKey;
+		if (process.env.LANGSMITH_PROJECT) {
+			process.env.LANGCHAIN_PROJECT = process.env.LANGSMITH_PROJECT;
+		}
+		console.log(`🔍 LangSmith tracing enabled (project: ${process.env.LANGSMITH_PROJECT ?? 'default'})`);
+	} else {
+		process.env.LANGCHAIN_TRACING_V2 = 'false';
+	}
 
 	const app = await NestFactory.create(AppModule);
 
