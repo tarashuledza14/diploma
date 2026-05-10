@@ -985,7 +985,7 @@ export class OrdersService {
 						userId: input.userId || null,
 						type,
 						quantity: newQty - oldQty,
-						reason: `Order stock delta (${transition})`,
+						reason: `Різниця складу замовлення (${transition})`,
 					});
 				} else if (oldQty > newQty) {
 					events.push({
@@ -994,7 +994,7 @@ export class OrdersService {
 						userId: input.userId || null,
 						type: 'RETURNED',
 						quantity: oldQty - newQty,
-						reason: `Order stock delta (${transition})`,
+						reason: `Різниця складу замовлення (${transition})`,
 					});
 				}
 			}
@@ -1009,7 +1009,7 @@ export class OrdersService {
 				userId: input.userId,
 				map: toMap,
 				type: 'RESERVED',
-				reason: `Order became active (${transition})`,
+				reason: `Замовлення стало активним (${transition})`,
 			});
 			return events;
 		}
@@ -1021,7 +1021,7 @@ export class OrdersService {
 				userId: input.userId,
 				map: toMap,
 				type: 'ISSUED',
-				reason: `Order completed from non-stock state (${transition})`,
+				reason: `Замовлення завершено зі стану без складу (${transition})`,
 			});
 			return events;
 		}
@@ -1033,7 +1033,7 @@ export class OrdersService {
 				userId: input.userId,
 				map: fromMap,
 				type: 'RETURNED',
-				reason: `Order left active state (${transition})`,
+				reason: `Замовлення залишило активний стан (${transition})`,
 			});
 			return events;
 		}
@@ -1045,7 +1045,7 @@ export class OrdersService {
 				userId: input.userId,
 				map: fromMap,
 				type: 'RETURNED',
-				reason: `Order reopened/cancelled after issue (${transition})`,
+				reason: `Замовлення повторно відкрито/скасовано після видачі (${transition})`,
 			});
 			return events;
 		}
@@ -1057,7 +1057,7 @@ export class OrdersService {
 				userId: input.userId,
 				map: toMap,
 				type: 'ISSUED',
-				reason: `Order completed (${transition})`,
+				reason: `Замовлення завершено (${transition})`,
 			});
 
 			for (const [partId, oldQty] of fromMap.entries()) {
@@ -1069,7 +1069,7 @@ export class OrdersService {
 						userId: input.userId || null,
 						type: 'RETURNED',
 						quantity: oldQty - newQty,
-						reason: `Unused reserved quantity returned (${transition})`,
+						reason: `Невикористаний зарезервований залишок повернено (${transition})`,
 					});
 				}
 			}
@@ -1084,7 +1084,7 @@ export class OrdersService {
 				userId: input.userId,
 				map: fromMap,
 				type: 'RETURNED',
-				reason: `Order moved back to active state (${transition})`,
+				reason: `Замовлення повернено в активний стан (${transition})`,
 			});
 
 			this.pushMovementEventsFromMap({
@@ -1093,7 +1093,7 @@ export class OrdersService {
 				userId: input.userId,
 				map: toMap,
 				type: 'RESERVED',
-				reason: `Order moved back to active state (${transition})`,
+				reason: `Замовлення повернено в активний стан (${transition})`,
 			});
 		}
 

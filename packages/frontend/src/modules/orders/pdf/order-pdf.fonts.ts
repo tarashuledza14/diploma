@@ -10,8 +10,8 @@ export function ensureOrderPdfFontsRegistered() {
 	Font.register({
 		family: 'NotoSans',
 		fonts: [
-			{ src: '/fonts/NotoSans-Variable.ttf', fontWeight: 'normal' },
-			{ src: '/fonts/NotoSans-Variable.ttf', fontWeight: 'bold' },
+			{ src: '/fonts/NotoSans-Regular.ttf', fontWeight: 'normal' },
+			{ src: '/fonts/NotoSans-Bold.ttf', fontWeight: 'bold' },
 		],
 	});
 

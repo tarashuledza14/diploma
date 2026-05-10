@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client"
   output   = "./generated/prisma"
@@ -10,10 +7,6 @@ datasource db {
   provider = "postgresql"
 }
 
-// ==========================================
-// ENUMS (Перерахування)
-// ==========================================
-
 enum Role {
   ADMIN
   MANAGER
@@ -21,12 +14,12 @@ enum Role {
 }
 
 enum OrderStatus {
-  NEW // Нове (заявка)
-  IN_PROGRESS // В роботі (механік робить)
-  WAITING_PARTS // Очікує запчастин
-  COMPLETED // Виконано (чекає оплати/видачі)
-  PAID // Оплачено і закрито
-  CANCELLED // Скасовано
+  NEW
+  IN_PROGRESS
+  WAITING_PARTS
+  COMPLETED
+  PAID
+  CANCELLED
 }
 
 enum OrderPriority {
@@ -43,19 +36,19 @@ enum JobStatus {
 }
 
 enum VehicleStatus {
-  OUT // У клієнта (не на території СТО) - це дефолтний статус
-  PENDING // Приїхала, стоїть на парковці/прийманні (очікує майстра)
-  IN_SERVICE // Знаходиться в боксі (на підйомнику, в роботі)
-  TEST_DRIVE // На тест-драйві (перевірка майстром)
-  READY // Готова, стоїть на парковці видачі (чекає клієнта)
+  OUT
+  PENDING
+  IN_SERVICE
+  TEST_DRIVE
+  READY
 }
 
 enum MovementType {
-  RECEIVED // Прихід (зелений на графіку)
-  ISSUED // Видано на ремонт/продаж (синій)
-  RESERVED // Зарезервовано під замовлення (помаранчевий)
-  RETURNED // Повернено з резерву або клієнтом (фіолетовий)
-  ADJUSTMENT // Ручне коригування (через форму Edit Part)
+  RECEIVED
+  ISSUED
+  RESERVED
+  RETURNED
+  ADJUSTMENT
 }
 
 enum ClientType {
@@ -81,15 +74,10 @@ enum InviteLanguage {
   EN
 }
 
-// ==========================================
-// PEOPLE & VEHICLES (Люди та Автомобілі)
-// ==========================================
-
-// 1. Таблиця ТІЛЬКИ для персоналу (Admin, Manager, Mechanic)
 model User {
   id          String    @id @default(cuid())
   email       String    @unique
-  password    String // Обов'язкове поле!
+  password    String
   role        Role      @default(MECHANIC)
   fullName    String
   avatar      String?
@@ -99,10 +87,9 @@ model User {
   organizationId String?       @map("organization_id")
   organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
 
-  // Зв'язки співробітника
   managerOrders  Order[]         @relation("ManagerOrders")
   mechanicOrders Order[]         @relation("MechanicOrders")
-  serviceJobs    OrderService[]  @relation("ServiceMechanic") // Зв'язок з конкретними виконаними роботами
+  serviceJobs    OrderService[]  @relation("ServiceMechanic")
   stockMovements StockMovement[]
   chatSessions   ChatSession[]
   notifications  Notification[]
@@ -158,24 +145,21 @@ model TeamInvite {
   @@map("team_invites")
 }
 
-// 2. Таблиця ТІЛЬКИ для клієнтів (без паролів)
 model Client {
   id       String  @id @default(cuid())
   fullName String
-  phone    String  @unique // Для СТО телефон важливіший за email
+  phone    String  @unique
   email    String?
-  notes    String? // Нотатки про клієнта ("Любить каву", "Проблемний")
+  notes    String?
 
   organizationId String?       @map("organization_id")
   organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
 
-  // Денормалізовані поля для швидкого сортування
   totalSpent   Decimal   @default(0) @map("total_spent")
   totalOrders  Int       @default(0) @map("total_orders")
   vehicleCount Int       @default(0) @map("vehicle_count")
   latestVisit  DateTime? @map("latest_visit")
 
-  // Зв'язки клієнта
   vehicles Vehicle[]
   orders   Order[]
 
@@ -191,15 +175,14 @@ model Client {
   @@map("clients")
 }
 
-// 3. Автомобілі
 model Vehicle {
   id          String  @id @default(cuid())
-  vin         String  @unique // VIN-код унікальний
-  brand       String // Марка (BMW)
-  model       String // Модель (X5)
-  year        Int // Рік випуску
-  plateNumber String? @map("plate_number") // Держ. номер
-  mileage     Int // Поточний загальний пробіг
+  vin         String  @unique
+  brand       String
+  model       String
+  year        Int
+  plateNumber String? @map("plate_number")
+  mileage     Int
 
   ownerId String @map("owner_id")
   owner   Client @relation(fields: [ownerId], references: [id])
@@ -208,8 +191,8 @@ model Vehicle {
   organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
 
   lastService   DateTime?     @map("last_service_date")
-  totalServices Int           @default(0) @map("total_services") // Кількість виконаних робіт
-  notes         String? // Нотатки про авто
+  totalServices Int           @default(0) @map("total_services")
+  notes         String?
   color         String?
   status        VehicleStatus @default(OUT)
 
@@ -222,13 +205,9 @@ model Vehicle {
   @@map("vehicles")
 }
 
-// ==========================================
-// CATALOGS & INVENTORY (Склад та Довідники)
-// ==========================================
-
 model PartCategory {
   id   String @id @default(cuid())
-  name String // Назва категорії (наприклад, "Fluids")
+  name String
 
   parts              Part[]
   requiredByServices Service[] @relation("ServiceToCategory")
@@ -238,7 +217,7 @@ model PartCategory {
 
 model ServiceCategory {
   id       String    @id @default(cuid())
-  name     String // Назва категорії (наприклад, "Діагностика")
+  name     String
   services Service[]
 
   @@map("service_categories")
@@ -327,7 +306,7 @@ model PartInventory {
   quantity      Int
   purchasePrice Decimal  @db.Decimal(10, 2)
   location      String?
-  batchNumber   String? // номер партії
+  batchNumber   String?
   receivedAt    DateTime @default(now())
 
   @@index([partId])
@@ -338,8 +317,8 @@ model StockMovement {
   partId   String       @map("part_id")
   part     Part         @relation(fields: [partId], references: [id], onDelete: Cascade)
   type     MovementType
-  quantity Int // Може бути +10 (прихід) або -2 (видача)
-  reason   String? // Опис
+  quantity Int
+  reason   String?
   userId   String?      @map("user_id")
   user     User?        @relation(fields: [userId], references: [id])
   orderId  String?      @map("order_id")
@@ -362,13 +341,9 @@ model PartPriceRule {
   @@index([partId])
 }
 
-// ==========================================
-// SERVICES & ORDERS (Послуги та Замовлення)
-// ==========================================
-
 model Service {
   id            String  @id @default(cuid())
-  name          String // Назва роботи (Заміна мастила)
+  name          String
   description   String  @db.Text
   price         Decimal @default(0) @map("price") @db.Decimal(10, 2)
   estimatedTime Float   @default(1.0) @map("estimated_time")
@@ -395,9 +370,9 @@ model Order {
   status      OrderStatus @default(NEW)
   description String?     @db.Text
 
-  mileage         Int      @map("vehicle_mileage") // Пробіг на момент ремонту
-  discount        Decimal? @default(0) @db.Decimal(10, 2) // Сума знижки
-  recommendations String?  @db.Text // Рекомендації для клієнта (на майбутнє)
+  mileage         Int      @map("vehicle_mileage")
+  discount        Decimal? @default(0) @db.Decimal(10, 2)
+  recommendations String?  @db.Text
 
   totalAmount Decimal       @default(0) @map("total_amount") @db.Decimal(10, 2)
   priority    OrderPriority @default(MEDIUM)
@@ -434,7 +409,7 @@ model OrderPart {
   part   Part   @relation(fields: [partId], references: [id])
 
   quantity Int     @default(1)
-  price    Decimal @db.Decimal(10, 2) // Фіксація ціни на момент продажу
+  price    Decimal @db.Decimal(10, 2)
 
   @@map("order_parts")
 }
@@ -448,7 +423,7 @@ model OrderService {
   service   Service @relation(fields: [serviceId], references: [id])
 
   mechanicId String? @map("mechanic_id")
-  mechanic   User?   @relation("ServiceMechanic", fields: [mechanicId], references: [id]) // Конкретний виконавець роботи
+  mechanic   User?   @relation("ServiceMechanic", fields: [mechanicId], references: [id])
 
   estimatedHours  Float     @default(1.0) @map("estimated_hours")
   additionalHours Float     @default(0) @map("additional_hours")
@@ -456,21 +431,17 @@ model OrderService {
   status          JobStatus @default(PENDING)
 
   quantity Float   @default(1)
-  price    Decimal @db.Decimal(10, 2) // Фіксація ціни на момент продажу
+  price    Decimal @db.Decimal(10, 2)
 
   @@index([mechanicId, status])
   @@map("order_services")
 }
 
-// ==========================================
-// KNOWLEDGE BASE (База знань AI)
-// ==========================================
-
 model Document {
   id             String        @id @default(cuid())
-  filename       String // Назва файлу (Manual_Golf_5.pdf)
-  content        String        @db.Text // Текст, витягнутий з PDF
-  externalId     String?       @map("external_id") // ID вектора в Pinecone
+  filename       String
+  content        String        @db.Text
+  externalId     String?       @map("external_id")
   organizationId String?       @map("organization_id")
   organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
   createdAt      DateTime      @default(now()) @map("created_at")

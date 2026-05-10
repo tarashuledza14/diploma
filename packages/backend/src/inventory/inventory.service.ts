@@ -89,7 +89,7 @@ export class InventoryService {
 						create: {
 							type: 'RECEIVED',
 							quantity: initialQty,
-							reason: 'Initial stock setup',
+							reason: 'Початкове оприбуткування',
 						},
 					},
 				}),
@@ -223,7 +223,7 @@ export class InventoryService {
 							partId: id,
 							type: 'ADJUSTMENT',
 							quantity: qtyDifference,
-							reason: 'Manual stock adjustment via edit form',
+							reason: 'Ручне коригування залишку через форму редагування',
 						},
 					});
 				}

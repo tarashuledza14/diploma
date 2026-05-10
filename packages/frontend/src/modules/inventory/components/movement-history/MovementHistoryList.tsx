@@ -7,6 +7,7 @@ import {
 } from '@/shared';
 import { ArrowUpDown, Clock, History, Package, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { formatMovementReason } from './movement-reason';
 
 function getMovementBadge(
 	type: StockMovement['type'],
@@ -89,7 +90,9 @@ export function MovementHistoryList({
 											{mov.quantity} {partUnit}
 										</span>
 									</div>
-									<p className='text-sm text-muted-foreground'>{mov.reason}</p>
+									<p className='text-sm text-muted-foreground'>
+										{formatMovementReason(mov.reason)}
+									</p>
 									<div className='flex items-center gap-3 mt-1 text-xs text-muted-foreground'>
 										<span>{formatDate(mov.createdAt)}</span>
 										{mov.order?.id && (
