@@ -48,4 +48,11 @@ export class AppSettingsController {
 	) {
 		return this.appSettingsService.uploadLogo(user.organizationId, file);
 	}
+
+	@UseGuards(JwtAuthGuard, RolesGuard)
+	@Roles(Role.ADMIN)
+	@Patch('complete-onboarding')
+	completeOnboarding(@CurrentUser() user: AuthUser) {
+		return this.appSettingsService.completeOnboarding(user.organizationId);
+	}
 }

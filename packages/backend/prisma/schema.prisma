@@ -521,14 +521,15 @@ model Notification {
 }
 
 model AppSettings {
-  id             String       @id @default(cuid())
-  organizationId String       @unique @map("organization_id")
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  appName        String       @default("AutoCRM") @map("app_name")
-  currency       Currency     @default(UAH) @map("currency")
-  logoKey        String?      @map("logo_key") @db.Text
-  createdAt      DateTime     @default(now()) @map("created_at")
-  updatedAt      DateTime     @updatedAt @map("updated_at")
+  id                    String       @id @default(cuid())
+  organizationId        String       @unique @map("organization_id")
+  organization          Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  appName               String       @default("AutoCRM") @map("app_name")
+  currency              Currency     @default(UAH) @map("currency")
+  logoKey               String?      @map("logo_key") @db.Text
+  isOnboardingCompleted Boolean      @default(true) @map("is_onboarding_completed")
+  createdAt             DateTime     @default(now()) @map("created_at")
+  updatedAt             DateTime     @updatedAt @map("updated_at")
 
   @@map("app_settings")
 }

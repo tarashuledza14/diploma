@@ -63,6 +63,18 @@ export class AuthService {
 
 		return { success: true };
 	}
+
+	async setPassword(userId: string, newPassword: string) {
+		const user = await this.userService.findById(userId);
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+
+		const hashedPassword = await hash(newPassword);
+		await this.userService.updatePassword(user.id, hashedPassword);
+
+		return { success: true };
+	}
 	async register(dto: RegisterDto) {
 		const existUser = await this.userService.findByEmail(dto.email, {
 			includeDeleted: true,

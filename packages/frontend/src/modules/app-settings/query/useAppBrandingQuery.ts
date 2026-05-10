@@ -19,6 +19,7 @@ export function useAppBrandingQuery(options?: UseAppBrandingQueryOptions) {
 				appName: DEFAULT_APP_NAME,
 				currency: 'UAH' as const,
 				logoUrl: null,
+				isOnboardingCompleted: true,
 			},
 	});
 }

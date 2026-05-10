@@ -130,4 +130,14 @@ export class AuthController {
 	) {
 		return this.authService.changePassword(user.id, dto);
 	}
+
+	@Auth()
+	@HttpCode(HttpStatus.OK)
+	@Patch('set-password')
+	setPassword(
+		@CurrentUser() user: AuthUser,
+		@Body('newPassword') newPassword: string,
+	) {
+		return this.authService.setPassword(user.id, newPassword);
+	}
 }

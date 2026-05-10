@@ -89,43 +89,6 @@ export class ManualRetrieverService {
 		return limitedDocuments;
 	}
 
-	async resolveManualImageUrl(metadata: Record<string, unknown>) {
-		const candidateKeys = [
-			typeof metadata.fullPageImageKey === 'string'
-				? metadata.fullPageImageKey
-				: null,
-			typeof metadata.imageKey === 'string' ? metadata.imageKey : null,
-			this.extractS3KeyFromUrl(
-				typeof metadata.fullPageImageUrl === 'string'
-					? metadata.fullPageImageUrl
-					: typeof metadata.imageUrl === 'string'
-						? metadata.imageUrl
-						: '',
-			),
-		].filter((item): item is string => Boolean(item?.trim()));
-
-		for (const key of candidateKeys) {
-			try {
-				const presigned = await this.dmsService.getPresignedSignedUrl(key);
-				if (presigned?.url) {
-					return presigned.url;
-				}
-			} catch {
-				// Ignore and fallback to the next candidate.
-			}
-		}
-
-		if (typeof metadata.fullPageImageUrl === 'string') {
-			return metadata.fullPageImageUrl;
-		}
-
-		if (typeof metadata.imageUrl === 'string') {
-			return metadata.imageUrl;
-		}
-
-		return null;
-	}
-
 	async resolveManualPdfUrl(
 		metadata: Record<string, unknown>,
 		organizationId: string,
@@ -212,20 +175,6 @@ export class ManualRetrieverService {
 			similaritySearch: (query: string, k?: number, _runtimeFilter?: unknown) =>
 				baseVectorStore.similaritySearch(query, k, filter),
 		} as unknown as VectorStoreInterface;
-	}
-
-	private extractS3KeyFromUrl(value: string) {
-		if (!value) {
-			return null;
-		}
-
-		try {
-			const parsed = new URL(value);
-			const key = parsed.pathname.replace(/^\/+/, '');
-			return key || null;
-		} catch {
-			return null;
-		}
 	}
 
 	private parseManualExternalMetadata(

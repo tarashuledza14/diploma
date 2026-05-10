@@ -4,6 +4,7 @@ export interface AppBranding {
 	appName: string;
 	currency: AppCurrency;
 	logoUrl: string | null;
+	isOnboardingCompleted: boolean;
 }
 
 export interface UpdateAppBrandingPayload {

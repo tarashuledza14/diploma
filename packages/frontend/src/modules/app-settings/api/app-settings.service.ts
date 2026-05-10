@@ -36,4 +36,11 @@ export class AppSettingsService {
 
 		return response.data;
 	}
+
+	static async completeOnboarding() {
+		const response = await instance.patch<{ success: boolean }>(
+			`${this.prefix}/complete-onboarding`,
+		);
+		return response.data;
+	}
 }

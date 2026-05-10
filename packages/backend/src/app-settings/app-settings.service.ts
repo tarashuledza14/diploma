@@ -28,8 +28,21 @@ export class AppSettingsService {
 			settings.appName,
 			settings.currency,
 			settings.logoKey,
+			settings.isOnboardingCompleted,
 			tenantId,
 		);
+	}
+
+	async completeOnboarding(organizationId: string | null | undefined) {
+		const tenantId = this.assertOrganizationId(organizationId);
+		await this.ensureOrganizationExists(tenantId);
+
+		await this.db.appSettings.update({
+			where: { organizationId: tenantId },
+			data: { isOnboardingCompleted: true },
+		});
+
+		return { success: true };
 	}
 
 	async updateBranding(
@@ -61,6 +74,7 @@ export class AppSettingsService {
 				appName: true,
 				currency: true,
 				logoKey: true,
+				isOnboardingCompleted: true,
 			},
 		});
 
@@ -68,6 +82,7 @@ export class AppSettingsService {
 			updated.appName,
 			updated.currency,
 			updated.logoKey,
+			updated.isOnboardingCompleted,
 			tenantId,
 		);
 	}
@@ -110,6 +125,7 @@ export class AppSettingsService {
 				appName: true,
 				currency: true,
 				logoKey: true,
+				isOnboardingCompleted: true,
 			},
 		});
 
@@ -117,6 +133,7 @@ export class AppSettingsService {
 			updated.appName,
 			updated.currency,
 			updated.logoKey,
+			updated.isOnboardingCompleted,
 			tenantId,
 		);
 	}
@@ -132,11 +149,13 @@ export class AppSettingsService {
 				appName: this.defaultAppName,
 				currency: Currency.UAH,
 				logoKey: null,
+				isOnboardingCompleted: false,
 			},
 			select: {
 				appName: true,
 				currency: true,
 				logoKey: true,
+				isOnboardingCompleted: true,
 			},
 		});
 	}
@@ -145,6 +164,7 @@ export class AppSettingsService {
 		appName: string,
 		currency: Currency,
 		logoKey: string | null,
+		isOnboardingCompleted: boolean,
 		organizationId: string,
 	) {
 		let logoUrl: string | null = null;
@@ -158,6 +178,7 @@ export class AppSettingsService {
 			appName,
 			currency,
 			logoUrl,
+			isOnboardingCompleted,
 		};
 	}
 

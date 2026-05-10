@@ -5,6 +5,7 @@ import { PageTitle } from '@/app/components/PageTitle';
 import { MainLayout } from '@/layouts';
 import { AIAssistantPage } from '@/modules/ai-assistant/AIAssistantPage';
 import { ProtectedRoute } from '@/modules/auth';
+import { OnboardingPage } from '@/modules/onboarding/OnboardingPage';
 import {
 	ClientsPage,
 	DashboardPage,
@@ -268,6 +269,17 @@ export const router = createBrowserRouter([
 	// 		},
 
 	// 		// 2. Доступно ТІЛЬКИ Менеджерам і Адмінам (Склад і Таблиця замовлень)
+
+	// --- ONBOARDING ---
+	{
+		element: <ProtectedRoute allowedRoles={['ADMIN']} />,
+		children: [
+			{
+				path: '/onboarding',
+				element: <OnboardingPage />,
+			},
+		],
+	},
 
 	// --- 404 Page ---
 	{

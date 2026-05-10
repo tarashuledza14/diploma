@@ -27,6 +27,15 @@ export class AuthAPI {
 		return response.data;
 	}
 
+	static async setPassword(newPassword: string) {
+		const response = await instance.patch<{ success: boolean }>(
+			`${this.PREFIX}/set-password`,
+			{ newPassword },
+		);
+
+		return response.data;
+	}
+
 	static async acceptInvite(payload: {
 		token: string;
 		password: string;

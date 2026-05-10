@@ -424,6 +424,7 @@ export const AppSettingsScalarFieldEnum = {
   appName: 'appName',
   currency: 'currency',
   logoKey: 'logoKey',
+  isOnboardingCompleted: 'isOnboardingCompleted',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
