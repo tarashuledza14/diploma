@@ -44,6 +44,8 @@ jobs:
     - name: Generate Prisma Client
       run: npx prisma generate
       working-directory: packages/backend
+      env:
+        DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/autocrm?schema=public"
 
     - name: Lint Backend
       run: pnpm --filter backend lint
