@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(curl -X DELETE \"http://localhost:6333/collections/car_manuals\")",
-      "Bash(curl -s \"http://localhost:6333/collections\")"
-    ]
-  }
-}

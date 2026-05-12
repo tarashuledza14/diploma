@@ -1,5 +1,5 @@
 {
-	"name": "diploma-monorepo",
+	"name": "autocrm-monorepo",
 	"private": true,
 	"version": "1.0.0",
 	"scripts": {
@@ -9,7 +9,9 @@
 		"backend": "pnpm --filter backend run start:dev",
 		"frontend": "pnpm --filter frontend run dev",
 		"dev": "concurrently \"pnpm run backend\" \"pnpm run frontend\"",
-		"prisma:seed": "pnpm --filter backend run prisma:seed"
+		"prisma:seed": "pnpm --filter backend run prisma:seed",
+		"setup": "docker-compose up -d db qdrant && cd packages/backend && npx prisma db push && pnpm run prisma:seed",
+		"setup:full": "docker-compose up -d db qdrant unstructured-api && cd packages/backend && npx prisma db push && pnpm run prisma:seed"
 	},
 	"devDependencies": {
 		"concurrently": "^9.1.0",
