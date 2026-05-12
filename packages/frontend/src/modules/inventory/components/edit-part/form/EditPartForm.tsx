@@ -14,14 +14,12 @@ import { StockTab } from './tabs/StockTab';
 interface EditPartFormProps {
 	inventoryPart?: InventoryPart;
 	onSubmit: (data: Partial<InventoryPart>) => void; // Віддаємо наверх вже правильний тип
-	isSubmitting: boolean;
 	dictionaries: InventoryDictionaries;
 }
 
 export function EditPartForm({
 	inventoryPart,
 	onSubmit,
-	isSubmitting,
 	dictionaries,
 }: EditPartFormProps) {
 	const { t } = useTranslation();

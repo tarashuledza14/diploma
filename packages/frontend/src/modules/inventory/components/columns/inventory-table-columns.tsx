@@ -72,7 +72,7 @@ export function getInventoryTableColumns({
 						enableHiding: false,
 						enableSorting: false,
 						size: 40,
-					},
+					} as ColumnDef<InventoryPart>,
 				]
 			: []),
 		{

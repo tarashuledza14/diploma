@@ -78,7 +78,6 @@ export function EditPartModal({
 							inventoryPart={inventoryPart}
 							dictionaries={dictionaries}
 							onSubmit={handleSubmit}
-							isSubmitting={loading}
 						/>
 					</div>
 				</ScrollArea>

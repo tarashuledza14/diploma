@@ -146,7 +146,7 @@ function partTableRows(
 function buildWorkOrderHtml(
 	order: OrderDetails,
 	appName: string,
-	currency: AppCurrency,
+	_currency: AppCurrency,
 	language: string | undefined,
 	generatedAt: Date,
 ): string {

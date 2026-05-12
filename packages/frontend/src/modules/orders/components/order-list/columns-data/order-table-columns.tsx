@@ -283,7 +283,7 @@ export function getOrderTableColumns({
 						},
 						enableColumnFilter: true,
 						enableSorting: true,
-					},
+					} as ColumnDef<OrderListItem>,
 				]
 			: []),
 		{

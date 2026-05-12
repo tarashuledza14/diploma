@@ -1,5 +1,3 @@
-export { VehiclesPage } from '../../pages/VehiclesPage';
-export { mockVehicles } from './components/mockVehicles';
-export { VehiclesFilters } from './components/VehiclesFilters';
+export { VehiclePage as VehiclesPage } from '../../pages/VehiclePage';
 export { VehiclesHeader } from './components/VehiclesHeader';
-export { VehiclesTable } from './components/VehiclesTable';
+export { VehicleTable as VehiclesTable } from './components/VehicleTable';

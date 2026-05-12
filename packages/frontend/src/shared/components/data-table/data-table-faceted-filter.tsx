@@ -2,7 +2,12 @@ import type { Column } from '@tanstack/react-table';
 import { Check, PlusCircle, XCircle } from 'lucide-react';
 import * as React from 'react';
 
-import type { Option } from '@/shared/components/data-table/data-table';
+export interface Option {
+	label: string;
+	value: string;
+	icon?: React.ComponentType<{ className?: string }>;
+	count?: number;
+}
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
 import {

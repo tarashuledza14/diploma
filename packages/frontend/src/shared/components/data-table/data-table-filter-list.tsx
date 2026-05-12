@@ -221,7 +221,7 @@ export function DataTableFilterList<TData>({
 		<Sortable
 			value={filters}
 			onValueChange={setFilters}
-			getItemValue={item => item.filterId}
+			getItemValue={item => item.filterId ?? ''}
 		>
 			<Popover open={open} onOpenChange={setOpen}>
 				<PopoverTrigger asChild>
@@ -380,7 +380,7 @@ function DataTableFilterItem<TData>({
 
 			if (REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase())) {
 				event.preventDefault();
-				onFilterRemove(filter.filterId);
+				onFilterRemove(filter.filterId ?? '');
 			}
 		},
 		[
@@ -395,7 +395,7 @@ function DataTableFilterItem<TData>({
 	if (!column) return null;
 
 	return (
-		<SortableItem value={filter.filterId} asChild>
+		<SortableItem value={filter.filterId ?? ''} asChild>
 			<div
 				role='listitem'
 				id={filterItemId}
@@ -468,7 +468,7 @@ function DataTableFilterItem<TData>({
 											key={column.id}
 											value={column.id}
 											onSelect={value => {
-												onFilterUpdate(filter.filterId, {
+												onFilterUpdate(filter.filterId ?? '', {
 													id: value as Extract<keyof TData, string>,
 													variant: column.columnDef.meta?.variant ?? 'text',
 													operator: getDefaultFilterOperator(
@@ -501,7 +501,7 @@ function DataTableFilterItem<TData>({
 					onOpenChange={setShowOperatorSelector}
 					value={filter.operator}
 					onValueChange={(value: FilterOperator) =>
-						onFilterUpdate(filter.filterId, {
+						onFilterUpdate(filter.filterId ?? '', {
 							operator: value,
 							value:
 								value === 'isEmpty' || value === 'isNotEmpty'
@@ -547,7 +547,7 @@ function DataTableFilterItem<TData>({
 					variant='outline'
 					size='icon'
 					className='size-8 rounded'
-					onClick={() => onFilterRemove(filter.filterId)}
+					onClick={() => onFilterRemove(filter.filterId ?? '')}
 				>
 					<Trash2 />
 				</Button>
@@ -633,7 +633,7 @@ function onFilterInputRender<TData>({
 						typeof filter.value === 'string' ? filter.value : undefined
 					}
 					onChange={event =>
-						onFilterUpdate(filter.filterId, {
+						onFilterUpdate(filter.filterId ?? '', {
 							value: event.target.value,
 						})
 					}
@@ -651,7 +651,7 @@ function onFilterInputRender<TData>({
 					onOpenChange={setShowValueSelector}
 					value={filter.value}
 					onValueChange={value =>
-						onFilterUpdate(filter.filterId, {
+						onFilterUpdate(filter.filterId ?? '', {
 							value,
 						})
 					}
@@ -705,7 +705,7 @@ function onFilterInputRender<TData>({
 					onOpenChange={setShowValueSelector}
 					value={selectedValues}
 					onValueChange={value => {
-						onFilterUpdate(filter.filterId, {
+						onFilterUpdate(filter.filterId ?? '', {
 							value,
 						});
 					}}
@@ -825,7 +825,7 @@ function onFilterInputRender<TData>({
 											}
 								}
 								onSelect={date => {
-									onFilterUpdate(filter.filterId, {
+									onFilterUpdate(filter.filterId ?? '', {
 										value: date
 											? [
 													(date.from?.getTime() ?? '').toString(),
@@ -845,7 +845,7 @@ function onFilterInputRender<TData>({
 									dateValue[0] ? new Date(Number(dateValue[0])) : undefined
 								}
 								onSelect={date => {
-									onFilterUpdate(filter.filterId, {
+									onFilterUpdate(filter.filterId ?? '', {
 										value: (date?.getTime() ?? '').toString(),
 									});
 									setShowValueSelector(false);

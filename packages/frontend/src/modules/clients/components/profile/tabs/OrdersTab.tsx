@@ -1,5 +1,5 @@
 import { useCurrencyFormatter } from '@/modules/app-settings';
-import type { Order } from '@/modules/orders/interfaces/order.interface';
+import type { OrderListItem as Order } from '@/modules/orders/interfaces/order.interface';
 import { Badge, Card, CardContent, ScrollArea } from '@/shared/components/ui';
 import { formatDate } from '@/shared/lib/format';
 import { useTranslation } from 'react-i18next';
@@ -49,7 +49,7 @@ export function OrdersTab({
 						<CardContent className='p-3'>
 							<div className='flex items-center justify-between mb-1'>
 								<div className='flex items-center gap-2'>
-									<span className='font-medium'>{order.vehicleId}</span>
+									<span className='font-medium'>{order.vehicle.brand} {order.vehicle.model}</span>
 									<Badge className={getStatusClassName(order.status)}>
 										{getOrderStatusLabel(order.status)}
 									</Badge>
@@ -60,10 +60,9 @@ export function OrdersTab({
 							</div>
 							<div className='flex items-center justify-between text-sm text-muted-foreground'>
 								<span>
-									{order.vehicleId} - {order.description}
+									#{order.orderNumber}
 								</span>
 								<span>
-									{formatDate(order.startDate, { month: 'short' })} -{' '}
 									{order.endDate
 										? formatDate(order.endDate, { month: 'short' })
 										: t('orderStatus.IN_PROGRESS')}

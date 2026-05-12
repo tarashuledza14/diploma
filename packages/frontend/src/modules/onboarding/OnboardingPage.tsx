@@ -31,48 +31,6 @@ import { toast } from 'sonner';
 
 const STEPS = 3;
 
-function StepperIndicator({ current }: { current: number }) {
-	const labels = ['Налаштування', 'Пароль', 'Команда'];
-
-	return (
-		<div className='mb-8 flex items-center'>
-			{Array.from({ length: STEPS }, (_, i) => i + 1).map(step => (
-				<div key={step} className='flex flex-1 items-center'>
-					<div className='flex flex-col items-center gap-1'>
-						<div
-							className={cn(
-								'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 text-sm font-semibold transition-all',
-								current > step
-									? 'border-primary bg-primary text-primary-foreground'
-									: current === step
-										? 'border-primary bg-primary text-primary-foreground'
-										: 'border-muted-foreground/30 text-muted-foreground',
-							)}
-						>
-							{current > step ? <Check className='h-4 w-4' /> : step}
-						</div>
-						<span
-							className={cn(
-								'text-[11px] font-medium',
-								current >= step ? 'text-primary' : 'text-muted-foreground/50',
-							)}
-						>
-							{labels[step - 1]}
-						</span>
-					</div>
-					{step < STEPS && (
-						<div
-							className={cn(
-								'mb-5 h-0.5 flex-1 transition-all',
-								current > step ? 'bg-primary' : 'bg-muted-foreground/20',
-							)}
-						/>
-					)}
-				</div>
-			))}
-		</div>
-	);
-}
 
 function BrandingStep({ onNext }: { onNext: () => void }) {
 	const [appName, setAppName] = useState('');

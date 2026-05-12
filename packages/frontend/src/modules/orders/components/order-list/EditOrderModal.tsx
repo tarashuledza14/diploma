@@ -223,7 +223,7 @@ export function EditOrderModal({
 
 	const clientVehicles = clientId
 		? vehiclesWithCurrent.filter(
-				(vehicle: NewOrderMeta['vehicles'][number]) =>
+				(vehicle: any) =>
 					String(vehicle.clientId) === String(clientId) ||
 					String(vehicle.id) === String(vehicleId),
 			)

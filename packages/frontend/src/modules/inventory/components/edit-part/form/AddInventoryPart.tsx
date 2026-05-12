@@ -45,7 +45,6 @@ export function AddInventoryPart({
 		<>
 			<EditPartForm
 				onSubmit={handleSubmit}
-				isSubmitting={mutation.isPending}
 				dictionaries={dictionaries}
 			/>
 

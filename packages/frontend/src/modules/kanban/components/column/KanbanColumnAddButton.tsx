@@ -4,7 +4,7 @@ import { Plus } from 'lucide-react'
 
 export interface KanbanColumnAddButtonProps {
 	title: string;
-	defaultStatus?: string;
+	defaultStatus?: any;
 }
 
 export function KanbanColumnAddButton({

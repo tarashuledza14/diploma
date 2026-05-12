@@ -75,7 +75,7 @@ export function DataTableRangeFilter<TData>({
 						? numValue >= min && numValue <= (Number(otherValue) || max)
 						: numValue <= max && numValue >= (Number(otherValue) || min)))
 			) {
-				onFilterUpdate(filter.filterId, {
+				onFilterUpdate(filter.filterId ?? '', {
 					value: isMin ? [value, otherValue] : [otherValue, value],
 				});
 			}
