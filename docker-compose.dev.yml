@@ -1,0 +1,70 @@
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: KOSMOdesant567
+      POSTGRES_DB: autocrm
+    ports:
+      - '5433:5432'
+    volumes:
+      - autocrm_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d autocrm"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: packages/backend/Dockerfile
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+      unstructured-api:
+        condition: service_started
+    environment:
+      DATABASE_URL: 'postgresql://postgres:KOSMOdesant567@db:5432/autocrm?schema=public'
+      QDRANT_URL: 'http://qdrant:6333'
+      UNSTRUCTURED_API_URL: 'http://unstructured-api:8000'
+    ports:
+      - '3000:3000'
+    command: >
+      sh -c "npx prisma db push && pnpm run prisma:seed && node dist/src/main.js"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: packages/frontend/Dockerfile
+    restart: always
+    ports:
+      - '80:80'
+    depends_on:
+      - backend
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: crm_qdrant
+    restart: always
+    ports:
+      - '6333:6333'
+      - '6334:6334'
+    volumes:
+      - autocrm_qdrant_data:/qdrant/storage
+
+  unstructured-api:
+    image: downloads.unstructured.io/unstructured-io/unstructured-api:latest
+    container_name: crm_unstructured
+    restart: unless-stopped
+    mem_limit: 8g
+    ports:
+      - '8000:8000'
+
+volumes:
+  autocrm_db_data:
+  autocrm_qdrant_data:
