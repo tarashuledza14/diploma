@@ -1,11 +1,11 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from "class-validator";
 
 export class QuickUpdateOrderDto {
-	@IsString()
-	@IsOptional()
-	mechanicId?: string | null;
+  @IsString()
+  @IsOptional()
+  mechanicId?: string | null;
 
-	@IsString()
-	@IsOptional()
-	endDate?: string | null;
+  @IsString()
+  @IsOptional()
+  endDate?: string | null;
 }

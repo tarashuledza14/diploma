@@ -1,40 +1,34 @@
-import { BaseMessage } from '@langchain/core/messages';
-import { Annotation } from '@langchain/langgraph';
+import { BaseMessage } from "@langchain/core/messages";
+import { Annotation } from "@langchain/langgraph";
 
 export const AgentState = Annotation.Root({
-	
-	messages: Annotation<BaseMessage[]>({
-		reducer: (state, update) => state.concat(update),
-		default: () => [],
-	}),
+  messages: Annotation<BaseMessage[]>({
+    reducer: (state, update) => state.concat(update),
+    default: () => [],
+  }),
 
-	
-	next: Annotation<string>({
-		reducer: (state, update) => update ?? state,
-		default: () => 'supervisor',
-	}),
+  next: Annotation<string>({
+    reducer: (state, update) => update ?? state,
+    default: () => "supervisor",
+  }),
 
-	
-	sender: Annotation<string>({
-		reducer: (state, update) => update ?? state,
-		default: () => 'user',
-	}),
+  sender: Annotation<string>({
+    reducer: (state, update) => update ?? state,
+    default: () => "user",
+  }),
 
-	
-	carContext: Annotation<string | null>({
-		reducer: (state, update) => update ?? state,
-		default: () => null,
-	}),
+  carContext: Annotation<string | null>({
+    reducer: (state, update) => update ?? state,
+    default: () => null,
+  }),
 
-	
-	userRole: Annotation<string>({
-		reducer: (state, update) => update ?? state,
-		default: () => 'MECHANIC',
-	}),
+  userRole: Annotation<string>({
+    reducer: (state, update) => update ?? state,
+    default: () => "MECHANIC",
+  }),
 
-	
-	organizationId: Annotation<string | null>({
-		reducer: (state, update) => update ?? state,
-		default: () => null,
-	}),
+  organizationId: Annotation<string | null>({
+    reducer: (state, update) => update ?? state,
+    default: () => null,
+  }),
 });

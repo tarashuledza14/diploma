@@ -1,16 +1,16 @@
-import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString } from "class-validator";
 
 export class BulkUpdateVehicleDto {
-	@IsArray()
-	@ArrayNotEmpty()
-	@IsString({ each: true })
-	ids: string[];
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsString({ each: true })
+  ids: string[];
 
-	@IsString()
-	@IsNotEmpty()
-	field: string;
+  @IsString()
+  @IsNotEmpty()
+  field: string;
 
-	@IsString()
-	@IsNotEmpty()
-	value: string;
+  @IsString()
+  @IsNotEmpty()
+  value: string;
 }

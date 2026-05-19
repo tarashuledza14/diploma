@@ -1,17 +1,17 @@
-export type AppCurrency = 'UAH' | 'USD' | 'EUR';
+export type AppCurrency = "UAH" | "USD" | "EUR";
 
 export interface AppBranding {
-	appName: string;
-	currency: AppCurrency;
-	logoUrl: string | null;
-	isOnboardingCompleted: boolean;
+  appName: string;
+  currency: AppCurrency;
+  logoUrl: string | null;
+  isOnboardingCompleted: boolean;
 }
 
 export interface UpdateAppBrandingPayload {
-	appName: string;
-	currency: AppCurrency;
+  appName: string;
+  currency: AppCurrency;
 }
 
 export interface UseAppBrandingQueryOptions {
-	enabled?: boolean;
+  enabled?: boolean;
 }

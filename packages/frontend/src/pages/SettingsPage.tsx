@@ -1,508 +1,514 @@
 import {
-	AppCurrency,
-	DEFAULT_APP_NAME,
-	LogoCropperDialog,
-	useAppBrandingQuery,
-	useUpdateBrandingMutation,
-	useUploadLogoMutation,
-} from '@/modules/app-settings';
-import { AuthAPI } from '@/modules/auth/api/auth.api';
+  AppCurrency,
+  DEFAULT_APP_NAME,
+  LogoCropperDialog,
+  useAppBrandingQuery,
+  useUpdateBrandingMutation,
+  useUploadLogoMutation,
+} from "@/modules/app-settings";
+import { AuthAPI } from "@/modules/auth/api/auth.api";
 import {
-	Button,
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-	cn,
-	ColorSwatch,
-	FileUpload,
-	FileUploadDropzone,
-	FileUploadTrigger,
-	Input,
-	Label,
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-	ThemeChromeMode,
-	ThemePreset,
-	useTheme,
-} from '@/shared';
-import { useMutation } from '@tanstack/react-query';
-import { Car, CloudUpload } from 'lucide-react';
-import { FormEvent, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  cn,
+  ColorSwatch,
+  FileUpload,
+  FileUploadDropzone,
+  FileUploadTrigger,
+  Input,
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  ThemeChromeMode,
+  ThemePreset,
+  useTheme,
+} from "@/shared";
+import { useMutation } from "@tanstack/react-query";
+import { Car, CloudUpload } from "lucide-react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
-const currencyOptions: AppCurrency[] = ['UAH', 'USD', 'EUR'];
+const currencyOptions: AppCurrency[] = ["UAH", "USD", "EUR"];
 
 export function SettingsPage() {
-	const { t } = useTranslation();
-	const { preset, setPreset, chromeMode, setChromeMode } = useTheme();
-	const presetOptions: Array<{
-		value: ThemePreset;
-		labelKey: string;
-		swatchColor: string;
-	}> = [
-		{
-			value: 'purple',
-			labelKey: 'theme.preset.options.purple',
-			swatchColor: '#8b5cf6',
-		},
-		{
-			value: 'blue',
-			labelKey: 'theme.preset.options.blue',
-			swatchColor: '#3b82f6',
-		},
-		{
-			value: 'default',
-			labelKey: 'theme.preset.options.default',
-			swatchColor: '#111827',
-		},
-	];
-	const { data, isLoading, isError, refetch } = useAppBrandingQuery();
-	const { mutateAsync: updateBranding, isPending } =
-		useUpdateBrandingMutation();
-	const { mutateAsync: uploadLogo, isPending: isUploadingLogo } =
-		useUploadLogoMutation();
-	const { mutateAsync: changePassword, isPending: isChangingPassword } =
-		useMutation({
-			mutationFn: ({
-				currentPassword,
-				newPassword,
-			}: {
-				currentPassword: string;
-				newPassword: string;
-			}) => AuthAPI.changePassword(currentPassword, newPassword),
-		});
+  const { t } = useTranslation();
+  const { preset, setPreset, chromeMode, setChromeMode } = useTheme();
+  const presetOptions: Array<{
+    value: ThemePreset;
+    labelKey: string;
+    swatchColor: string;
+  }> = [
+    {
+      value: "purple",
+      labelKey: "theme.preset.options.purple",
+      swatchColor: "#8b5cf6",
+    },
+    {
+      value: "blue",
+      labelKey: "theme.preset.options.blue",
+      swatchColor: "#3b82f6",
+    },
+    {
+      value: "default",
+      labelKey: "theme.preset.options.default",
+      swatchColor: "#111827",
+    },
+  ];
+  const { data, isLoading, isError, refetch } = useAppBrandingQuery();
+  const { mutateAsync: updateBranding, isPending } =
+    useUpdateBrandingMutation();
+  const { mutateAsync: uploadLogo, isPending: isUploadingLogo } =
+    useUploadLogoMutation();
+  const { mutateAsync: changePassword, isPending: isChangingPassword } =
+    useMutation({
+      mutationFn: ({
+        currentPassword,
+        newPassword,
+      }: {
+        currentPassword: string;
+        newPassword: string;
+      }) => AuthAPI.changePassword(currentPassword, newPassword),
+    });
 
-	const [appName, setAppName] = useState('');
-	const [currency, setCurrency] = useState<AppCurrency>('UAH');
-	const [selectedLogoFile, setSelectedLogoFile] = useState<File | null>(null);
-	const [currentPassword, setCurrentPassword] = useState('');
-	const [newPassword, setNewPassword] = useState('');
-	const [confirmPassword, setConfirmPassword] = useState('');
-	const [logoUploadFiles, setLogoUploadFiles] = useState<File[]>([]);
-	const [cropSourceFile, setCropSourceFile] = useState<File | null>(null);
-	const [isCropperOpen, setIsCropperOpen] = useState(false);
-	const [isInitialized, setIsInitialized] = useState(false);
+  const [appName, setAppName] = useState("");
+  const [currency, setCurrency] = useState<AppCurrency>("UAH");
+  const [selectedLogoFile, setSelectedLogoFile] = useState<File | null>(null);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [logoUploadFiles, setLogoUploadFiles] = useState<File[]>([]);
+  const [cropSourceFile, setCropSourceFile] = useState<File | null>(null);
+  const [isCropperOpen, setIsCropperOpen] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-	useEffect(() => {
-		if (data && !isInitialized) {
-			setAppName(data.appName);
-			setCurrency(data.currency);
-			setIsInitialized(true);
-		}
-	}, [data, isInitialized]);
+  useEffect(() => {
+    if (data && !isInitialized) {
+      setAppName(data.appName);
+      setCurrency(data.currency);
+      setIsInitialized(true);
+    }
+  }, [data, isInitialized]);
 
-	const hasChanges = useMemo(() => {
-		if (!data) {
-			return false;
-		}
+  const hasChanges = useMemo(() => {
+    if (!data) {
+      return false;
+    }
 
-		return (
-			appName.trim() !== data.appName ||
-			currency !== data.currency ||
-			selectedLogoFile !== null
-		);
-	}, [appName, currency, data, selectedLogoFile]);
+    return (
+      appName.trim() !== data.appName ||
+      currency !== data.currency ||
+      selectedLogoFile !== null
+    );
+  }, [appName, currency, data, selectedLogoFile]);
 
-	const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-		const trimmedAppName = appName.trim();
-		if (!trimmedAppName) {
-			toast.error(t('brandingSettings.errors.appNameRequired'));
-			return;
-		}
+    const trimmedAppName = appName.trim();
+    if (!trimmedAppName) {
+      toast.error(t("brandingSettings.errors.appNameRequired"));
+      return;
+    }
 
-		try {
-			if (trimmedAppName !== data?.appName || currency !== data?.currency) {
-				await updateBranding({
-					appName: trimmedAppName,
-					currency,
-				});
-			}
+    try {
+      if (trimmedAppName !== data?.appName || currency !== data?.currency) {
+        await updateBranding({
+          appName: trimmedAppName,
+          currency,
+        });
+      }
 
-			if (selectedLogoFile) {
-				await uploadLogo(selectedLogoFile);
-				setSelectedLogoFile(null);
-			}
+      if (selectedLogoFile) {
+        await uploadLogo(selectedLogoFile);
+        setSelectedLogoFile(null);
+      }
 
-			toast.success(t('brandingSettings.messages.saved'));
-		} catch {
-			toast.error(t('brandingSettings.errors.saveFailed'));
-		}
-	};
+      toast.success(t("brandingSettings.messages.saved"));
+    } catch {
+      toast.error(t("brandingSettings.errors.saveFailed"));
+    }
+  };
 
-	const previewName = appName.trim() || DEFAULT_APP_NAME;
-	const temporaryPreviewLogo = useMemo(
-		() => (selectedLogoFile ? URL.createObjectURL(selectedLogoFile) : null),
-		[selectedLogoFile],
-	);
+  const previewName = appName.trim() || DEFAULT_APP_NAME;
+  const temporaryPreviewLogo = useMemo(
+    () => (selectedLogoFile ? URL.createObjectURL(selectedLogoFile) : null),
+    [selectedLogoFile],
+  );
 
-	useEffect(() => {
-		return () => {
-			if (temporaryPreviewLogo) {
-				URL.revokeObjectURL(temporaryPreviewLogo);
-			}
-		};
-	}, [temporaryPreviewLogo]);
+  useEffect(() => {
+    return () => {
+      if (temporaryPreviewLogo) {
+        URL.revokeObjectURL(temporaryPreviewLogo);
+      }
+    };
+  }, [temporaryPreviewLogo]);
 
-	const previewLogo = temporaryPreviewLogo ?? data?.logoUrl ?? null;
-	const isSaving = isPending || isUploadingLogo;
+  const previewLogo = temporaryPreviewLogo ?? data?.logoUrl ?? null;
+  const isSaving = isPending || isUploadingLogo;
 
-	const onLogoFileAccept = (file: File) => {
-		setLogoUploadFiles([]);
+  const onLogoFileAccept = (file: File) => {
+    setLogoUploadFiles([]);
 
-		if (!file.type.startsWith('image/')) {
-			toast.error(t('brandingSettings.errors.logoTypeInvalid'));
-			return;
-		}
+    if (!file.type.startsWith("image/")) {
+      toast.error(t("brandingSettings.errors.logoTypeInvalid"));
+      return;
+    }
 
-		setCropSourceFile(file);
-		setIsCropperOpen(true);
-	};
+    setCropSourceFile(file);
+    setIsCropperOpen(true);
+  };
 
-	const onCropperOpenChange = (open: boolean) => {
-		setIsCropperOpen(open);
+  const onCropperOpenChange = (open: boolean) => {
+    setIsCropperOpen(open);
 
-		if (!open) {
-			setLogoUploadFiles([]);
-			setCropSourceFile(null);
-		}
-	};
+    if (!open) {
+      setLogoUploadFiles([]);
+      setCropSourceFile(null);
+    }
+  };
 
-	const onLogoCropped = (file: File) => {
-		setSelectedLogoFile(file);
-		onCropperOpenChange(false);
-	};
+  const onLogoCropped = (file: File) => {
+    setSelectedLogoFile(file);
+    onCropperOpenChange(false);
+  };
 
-	const onPasswordSubmit = async (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+  const onPasswordSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-		if (!currentPassword || !newPassword || !confirmPassword) {
-			toast.error(t('passwordSettings.errors.requiredFields'));
-			return;
-		}
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      toast.error(t("passwordSettings.errors.requiredFields"));
+      return;
+    }
 
-		if (newPassword.length < 8) {
-			toast.error(t('passwordSettings.errors.minLength'));
-			return;
-		}
+    if (newPassword.length < 8) {
+      toast.error(t("passwordSettings.errors.minLength"));
+      return;
+    }
 
-		if (newPassword !== confirmPassword) {
-			toast.error(t('passwordSettings.errors.passwordMismatch'));
-			return;
-		}
+    if (newPassword !== confirmPassword) {
+      toast.error(t("passwordSettings.errors.passwordMismatch"));
+      return;
+    }
 
-		try {
-			await changePassword({ currentPassword, newPassword });
-			setCurrentPassword('');
-			setNewPassword('');
-			setConfirmPassword('');
-			toast.success(t('passwordSettings.messages.updated'));
-		} catch {
-			toast.error(t('passwordSettings.errors.updateFailed'));
-		}
-	};
+    try {
+      await changePassword({ currentPassword, newPassword });
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      toast.success(t("passwordSettings.messages.updated"));
+    } catch {
+      toast.error(t("passwordSettings.errors.updateFailed"));
+    }
+  };
 
-	return (
-		<>
-			<div className='space-y-6'>
-				<div>
-					<h1 className='text-2xl font-semibold'>
-						{t('brandingSettings.title')}
-					</h1>
-					<p className='text-sm text-muted-foreground'>
-						{t('brandingSettings.subtitle')}
-					</p>
-				</div>
+  return (
+    <>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold">
+            {t("brandingSettings.title")}
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            {t("brandingSettings.subtitle")}
+          </p>
+        </div>
 
-				<Card>
-					<CardHeader>
-						<CardTitle>{t('theme.preset.title')}</CardTitle>
-					</CardHeader>
-					<CardContent className='space-y-2'>
-						<Label>{t('theme.preset.label')}</Label>
-						<div
-							role='radiogroup'
-							aria-label={t('theme.preset.label')}
-							className='grid gap-2 sm:grid-cols-3'
-						>
-							{presetOptions.map(option => {
-								const isSelected = preset === option.value;
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("theme.preset.title")}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <Label>{t("theme.preset.label")}</Label>
+            <div
+              role="radiogroup"
+              aria-label={t("theme.preset.label")}
+              className="grid gap-2 sm:grid-cols-3"
+            >
+              {presetOptions.map((option) => {
+                const isSelected = preset === option.value;
 
-								return (
-									<button
-										key={option.value}
-										type='button'
-										role='radio'
-										aria-checked={isSelected}
-										aria-label={t(option.labelKey)}
-										onClick={() => setPreset(option.value)}
-										className={cn(
-											'flex items-center gap-3 rounded-md border px-3 py-2 text-left transition-colors hover:bg-accent/40',
-											isSelected
-												? 'border-primary bg-accent/30 ring-1 ring-primary/30'
-												: 'border-border',
-										)}
-									>
-										<ColorSwatch
-											color={option.swatchColor}
-											size='sm'
-											withoutTransparency
-											className={cn(
-												'shrink-0 border-border',
-												isSelected &&
-													'ring-2 ring-primary ring-offset-1 ring-offset-background',
-											)}
-										/>
-										<span className='text-sm font-medium'>
-											{t(option.labelKey)}
-										</span>
-									</button>
-								);
-							})}
-						</div>
-						<p className='text-xs text-muted-foreground'>
-							{t('theme.preset.description')}
-						</p>
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={isSelected}
+                    aria-label={t(option.labelKey)}
+                    onClick={() => setPreset(option.value)}
+                    className={cn(
+                      "flex items-center gap-3 rounded-md border px-3 py-2 text-left transition-colors hover:bg-accent/40",
+                      isSelected
+                        ? "border-primary bg-accent/30 ring-1 ring-primary/30"
+                        : "border-border",
+                    )}
+                  >
+                    <ColorSwatch
+                      color={option.swatchColor}
+                      size="sm"
+                      withoutTransparency
+                      className={cn(
+                        "shrink-0 border-border",
+                        isSelected &&
+                          "ring-2 ring-primary ring-offset-1 ring-offset-background",
+                      )}
+                    />
+                    <span className="text-sm font-medium">
+                      {t(option.labelKey)}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {t("theme.preset.description")}
+            </p>
 
-						<div className='space-y-2 pt-2'>
-							<Label htmlFor='chromeMode'>{t('theme.chrome.label')}</Label>
-							<Select
-								value={chromeMode}
-								onValueChange={value => setChromeMode(value as ThemeChromeMode)}
-							>
-								<SelectTrigger id='chromeMode'>
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value='linked'>
-										{t('theme.chrome.options.linked')}
-									</SelectItem>
-									<SelectItem value='contrast'>
-										{t('theme.chrome.options.contrast')}
-									</SelectItem>
-								</SelectContent>
-							</Select>
-							<p className='text-xs text-muted-foreground'>
-								{t('theme.chrome.description')}
-							</p>
-						</div>
-					</CardContent>
-				</Card>
+            <div className="space-y-2 pt-2">
+              <Label htmlFor="chromeMode">{t("theme.chrome.label")}</Label>
+              <Select
+                value={chromeMode}
+                onValueChange={(value) =>
+                  setChromeMode(value as ThemeChromeMode)
+                }
+              >
+                <SelectTrigger id="chromeMode">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="linked">
+                    {t("theme.chrome.options.linked")}
+                  </SelectItem>
+                  <SelectItem value="contrast">
+                    {t("theme.chrome.options.contrast")}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                {t("theme.chrome.description")}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
 
-				{isLoading ? (
-					<p className='text-sm text-muted-foreground'>{t('common.loading')}</p>
-				) : isError ? (
-					<div className='rounded-md border border-destructive/30 bg-destructive/5 p-4'>
-						<p className='text-sm text-destructive'>
-							{t('brandingSettings.errors.loadFailed')}
-						</p>
-						<Button
-							type='button'
-							variant='outline'
-							size='sm'
-							className='mt-3'
-							onClick={() => void refetch()}
-						>
-							{t('brandingSettings.actions.retry')}
-						</Button>
-					</div>
-				) : (
-					<div className='space-y-6'>
-						<Card>
-							<CardHeader>
-								<CardTitle>{t('passwordSettings.title')}</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<form className='space-y-4' onSubmit={onPasswordSubmit}>
-									<div className='space-y-2'>
-										<Label htmlFor='currentPassword'>
-											{t('passwordSettings.form.currentPasswordLabel')}
-										</Label>
-										<Input
-											id='currentPassword'
-											type='password'
-											value={currentPassword}
-											onChange={event => setCurrentPassword(event.target.value)}
-											autoComplete='current-password'
-										/>
-									</div>
+        {isLoading ? (
+          <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
+        ) : isError ? (
+          <div className="rounded-md border border-destructive/30 bg-destructive/5 p-4">
+            <p className="text-sm text-destructive">
+              {t("brandingSettings.errors.loadFailed")}
+            </p>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-3"
+              onClick={() => void refetch()}
+            >
+              {t("brandingSettings.actions.retry")}
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("passwordSettings.title")}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form className="space-y-4" onSubmit={onPasswordSubmit}>
+                  <div className="space-y-2">
+                    <Label htmlFor="currentPassword">
+                      {t("passwordSettings.form.currentPasswordLabel")}
+                    </Label>
+                    <Input
+                      id="currentPassword"
+                      type="password"
+                      value={currentPassword}
+                      onChange={(event) =>
+                        setCurrentPassword(event.target.value)
+                      }
+                      autoComplete="current-password"
+                    />
+                  </div>
 
-									<div className='space-y-2'>
-										<Label htmlFor='newPassword'>
-											{t('passwordSettings.form.newPasswordLabel')}
-										</Label>
-										<Input
-											id='newPassword'
-											type='password'
-											value={newPassword}
-											onChange={event => setNewPassword(event.target.value)}
-											autoComplete='new-password'
-										/>
-									</div>
+                  <div className="space-y-2">
+                    <Label htmlFor="newPassword">
+                      {t("passwordSettings.form.newPasswordLabel")}
+                    </Label>
+                    <Input
+                      id="newPassword"
+                      type="password"
+                      value={newPassword}
+                      onChange={(event) => setNewPassword(event.target.value)}
+                      autoComplete="new-password"
+                    />
+                  </div>
 
-									<div className='space-y-2'>
-										<Label htmlFor='confirmPassword'>
-											{t('passwordSettings.form.confirmPasswordLabel')}
-										</Label>
-										<Input
-											id='confirmPassword'
-											type='password'
-											value={confirmPassword}
-											onChange={event => setConfirmPassword(event.target.value)}
-											autoComplete='new-password'
-										/>
-									</div>
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword">
+                      {t("passwordSettings.form.confirmPasswordLabel")}
+                    </Label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(event) =>
+                        setConfirmPassword(event.target.value)
+                      }
+                      autoComplete="new-password"
+                    />
+                  </div>
 
-									<div className='flex justify-end'>
-										<Button type='submit' disabled={isChangingPassword}>
-											{isChangingPassword
-												? t('common.savingChanges')
-												: t('passwordSettings.actions.update')}
-										</Button>
-									</div>
-								</form>
-							</CardContent>
-						</Card>
+                  <div className="flex justify-end">
+                    <Button type="submit" disabled={isChangingPassword}>
+                      {isChangingPassword
+                        ? t("common.savingChanges")
+                        : t("passwordSettings.actions.update")}
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
 
-						<div className='grid gap-6 lg:grid-cols-[1fr_320px]'>
-							<Card>
-								<CardHeader>
-									<CardTitle>{t('brandingSettings.form.title')}</CardTitle>
-								</CardHeader>
-								<CardContent>
-									<form className='space-y-4' onSubmit={onSubmit}>
-										<div className='space-y-2'>
-											<Label htmlFor='appName'>
-												{t('brandingSettings.form.appNameLabel')}
-											</Label>
-											<Input
-												id='appName'
-												value={appName}
-												onChange={event => setAppName(event.target.value)}
-												maxLength={80}
-												required
-											/>
-										</div>
+            <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t("brandingSettings.form.title")}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form className="space-y-4" onSubmit={onSubmit}>
+                    <div className="space-y-2">
+                      <Label htmlFor="appName">
+                        {t("brandingSettings.form.appNameLabel")}
+                      </Label>
+                      <Input
+                        id="appName"
+                        value={appName}
+                        onChange={(event) => setAppName(event.target.value)}
+                        maxLength={80}
+                        required
+                      />
+                    </div>
 
-										<div className='space-y-2'>
-											<Label htmlFor='currency'>
-												{t('brandingSettings.form.currencyLabel')}
-											</Label>
-											<Select
-												value={currency}
-												onValueChange={value =>
-													setCurrency(value as AppCurrency)
-												}
-											>
-												<SelectTrigger id='currency'>
-													<SelectValue />
-												</SelectTrigger>
-												<SelectContent>
-													{currencyOptions.map(option => (
-														<SelectItem key={option} value={option}>
-															{t(
-																`brandingSettings.form.currencyOptions.${option}`,
-															)}
-														</SelectItem>
-													))}
-												</SelectContent>
-											</Select>
-										</div>
+                    <div className="space-y-2">
+                      <Label htmlFor="currency">
+                        {t("brandingSettings.form.currencyLabel")}
+                      </Label>
+                      <Select
+                        value={currency}
+                        onValueChange={(value) =>
+                          setCurrency(value as AppCurrency)
+                        }
+                      >
+                        <SelectTrigger id="currency">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {currencyOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {t(
+                                `brandingSettings.form.currencyOptions.${option}`,
+                              )}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-										<div className='space-y-2'>
-											<Label htmlFor='logoFile'>
-												{t('brandingSettings.form.logoLabel')}
-											</Label>
-											<FileUpload
-												name='logoFile'
-												label={t('brandingSettings.form.logoLabel')}
-												value={logoUploadFiles}
-												onValueChange={setLogoUploadFiles}
-												onFileAccept={onLogoFileAccept}
-												onFileReject={(_, message) => toast.error(message)}
-												accept='image/*'
-												maxFiles={1}
-												multiple={false}
-												disabled={isSaving}
-											>
-												<FileUploadDropzone className='flex-row flex-wrap border-dotted text-center'>
-													<CloudUpload className='size-4' />
-													{t('brandingSettings.form.logoHint')}
-													<FileUploadTrigger asChild>
-														<Button variant='link' size='sm' className='p-0'>
-															{t('common.select')}
-														</Button>
-													</FileUploadTrigger>
-												</FileUploadDropzone>
-											</FileUpload>
-											<p className='text-xs text-muted-foreground'>
-												{t('brandingSettings.form.logoHint')}
-											</p>
-											{selectedLogoFile ? (
-												<p className='text-xs text-primary'>
-													{t('brandingSettings.form.logoSelected', {
-														name: selectedLogoFile.name,
-													})}
-												</p>
-											) : null}
-										</div>
+                    <div className="space-y-2">
+                      <Label htmlFor="logoFile">
+                        {t("brandingSettings.form.logoLabel")}
+                      </Label>
+                      <FileUpload
+                        name="logoFile"
+                        label={t("brandingSettings.form.logoLabel")}
+                        value={logoUploadFiles}
+                        onValueChange={setLogoUploadFiles}
+                        onFileAccept={onLogoFileAccept}
+                        onFileReject={(_, message) => toast.error(message)}
+                        accept="image/*"
+                        maxFiles={1}
+                        multiple={false}
+                        disabled={isSaving}
+                      >
+                        <FileUploadDropzone className="flex-row flex-wrap border-dotted text-center">
+                          <CloudUpload className="size-4" />
+                          {t("brandingSettings.form.logoHint")}
+                          <FileUploadTrigger asChild>
+                            <Button variant="link" size="sm" className="p-0">
+                              {t("common.select")}
+                            </Button>
+                          </FileUploadTrigger>
+                        </FileUploadDropzone>
+                      </FileUpload>
+                      <p className="text-xs text-muted-foreground">
+                        {t("brandingSettings.form.logoHint")}
+                      </p>
+                      {selectedLogoFile ? (
+                        <p className="text-xs text-primary">
+                          {t("brandingSettings.form.logoSelected", {
+                            name: selectedLogoFile.name,
+                          })}
+                        </p>
+                      ) : null}
+                    </div>
 
-										<div className='flex justify-end'>
-											<Button type='submit' disabled={isSaving || !hasChanges}>
-												{isSaving
-													? t('common.savingChanges')
-													: t('common.saveChanges')}
-											</Button>
-										</div>
-									</form>
-								</CardContent>
-							</Card>
+                    <div className="flex justify-end">
+                      <Button type="submit" disabled={isSaving || !hasChanges}>
+                        {isSaving
+                          ? t("common.savingChanges")
+                          : t("common.saveChanges")}
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
 
-							<Card>
-								<CardHeader>
-									<CardTitle>{t('brandingSettings.previewTitle')}</CardTitle>
-								</CardHeader>
-								<CardContent>
-									<div className='flex items-center gap-3 rounded-lg border p-3'>
-										<div className='flex size-10 items-center justify-center overflow-hidden rounded-lg bg-primary text-primary-foreground'>
-											{previewLogo ? (
-												<img
-													src={previewLogo}
-													alt={previewName}
-													className='h-full w-full object-cover'
-												/>
-											) : (
-												<Car className='size-5' />
-											)}
-										</div>
-										<div className='min-w-0'>
-											<p className='truncate text-sm font-semibold'>
-												{previewName}
-											</p>
-											<p className='text-xs text-muted-foreground'>
-												{t('sidebar.brand.plan')}
-											</p>
-										</div>
-									</div>
-								</CardContent>
-							</Card>
-						</div>
-					</div>
-				)}
-			</div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t("brandingSettings.previewTitle")}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-3 rounded-lg border p-3">
+                    <div className="flex size-10 items-center justify-center overflow-hidden rounded-lg bg-primary text-primary-foreground">
+                      {previewLogo ? (
+                        <img
+                          src={previewLogo}
+                          alt={previewName}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <Car className="size-5" />
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold">
+                        {previewName}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {t("sidebar.brand.plan")}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
+      </div>
 
-			<LogoCropperDialog
-				open={isCropperOpen}
-				file={cropSourceFile}
-				onOpenChange={onCropperOpenChange}
-				onApply={onLogoCropped}
-			/>
-		</>
-	);
+      <LogoCropperDialog
+        open={isCropperOpen}
+        file={cropSourceFile}
+        onOpenChange={onCropperOpenChange}
+        onApply={onLogoCropped}
+      />
+    </>
+  );
 }

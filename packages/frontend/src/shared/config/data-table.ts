@@ -1,91 +1,80 @@
 export type DataTableConfig = typeof dataTableConfig;
 
 export const dataTableConfig = {
-	textOperators: [
-		{ label: 'table.filter.operators.contains', value: 'iLike' as const },
-		{
-			label: 'table.filter.operators.doesNotContain',
-			value: 'notILike' as const,
-		},
-		{ label: 'table.filter.operators.is', value: 'eq' as const },
-		{ label: 'table.filter.operators.isNot', value: 'ne' as const },
-		
-		
-	],
-	numericOperators: [
-		{ label: 'table.filter.operators.is', value: 'eq' as const },
-		{ label: 'table.filter.operators.isNot', value: 'ne' as const },
-		{ label: 'table.filter.operators.isLessThan', value: 'lt' as const },
-		{
-			label: 'table.filter.operators.isLessThanOrEqualTo',
-			value: 'lte' as const,
-		},
-		{ label: 'table.filter.operators.isGreaterThan', value: 'gt' as const },
-		{
-			label: 'table.filter.operators.isGreaterThanOrEqualTo',
-			value: 'gte' as const,
-		},
-		{ label: 'table.filter.operators.isBetween', value: 'isBetween' as const },
-		
-		
-	],
-	dateOperators: [
-		{ label: 'table.filter.operators.is', value: 'eq' as const },
-		{ label: 'table.filter.operators.isNot', value: 'ne' as const },
-		{ label: 'table.filter.operators.isBefore', value: 'lt' as const },
-		{ label: 'table.filter.operators.isAfter', value: 'gt' as const },
-		{ label: 'table.filter.operators.isOnOrBefore', value: 'lte' as const },
-		{ label: 'table.filter.operators.isOnOrAfter', value: 'gte' as const },
-		{ label: 'table.filter.operators.isBetween', value: 'isBetween' as const },
-		
-		
-		
-	],
-	selectOperators: [
-		{ label: 'table.filter.operators.is', value: 'eq' as const },
-		{ label: 'table.filter.operators.isNot', value: 'ne' as const },
-		
-		
-	],
-	multiSelectOperators: [
-		{ label: 'table.filter.operators.hasAnyOf', value: 'inArray' as const },
-		{ label: 'table.filter.operators.hasNoneOf', value: 'notInArray' as const },
-		
-		
-	],
-	booleanOperators: [
-		{ label: 'table.filter.operators.is', value: 'eq' as const },
-		{ label: 'table.filter.operators.isNot', value: 'ne' as const },
-	],
-	sortOrders: [
-		{ label: 'table.sort.orders.asc', value: 'asc' as const },
-		{ label: 'table.sort.orders.desc', value: 'desc' as const },
-	],
-	filterVariants: [
-		'text',
-		'number',
-		'range',
-		'date',
-		'dateRange',
-		'boolean',
-		'select',
-		'multiSelect',
-	] as const,
-	operators: [
-		'iLike',
-		'notILike',
-		'eq',
-		'ne',
-		'inArray',
-		'notInArray',
-		'isEmpty',
-		'isNotEmpty',
-		'lt',
-		'lte',
-		'gt',
-		'gte',
-		'isBetween',
-		'isRelativeToToday',
-	] as const,
-	joinOperators: ['and', 'or'] as const,
+  textOperators: [
+    { label: "table.filter.operators.contains", value: "iLike" as const },
+    {
+      label: "table.filter.operators.doesNotContain",
+      value: "notILike" as const,
+    },
+    { label: "table.filter.operators.is", value: "eq" as const },
+    { label: "table.filter.operators.isNot", value: "ne" as const },
+  ],
+  numericOperators: [
+    { label: "table.filter.operators.is", value: "eq" as const },
+    { label: "table.filter.operators.isNot", value: "ne" as const },
+    { label: "table.filter.operators.isLessThan", value: "lt" as const },
+    {
+      label: "table.filter.operators.isLessThanOrEqualTo",
+      value: "lte" as const,
+    },
+    { label: "table.filter.operators.isGreaterThan", value: "gt" as const },
+    {
+      label: "table.filter.operators.isGreaterThanOrEqualTo",
+      value: "gte" as const,
+    },
+    { label: "table.filter.operators.isBetween", value: "isBetween" as const },
+  ],
+  dateOperators: [
+    { label: "table.filter.operators.is", value: "eq" as const },
+    { label: "table.filter.operators.isNot", value: "ne" as const },
+    { label: "table.filter.operators.isBefore", value: "lt" as const },
+    { label: "table.filter.operators.isAfter", value: "gt" as const },
+    { label: "table.filter.operators.isOnOrBefore", value: "lte" as const },
+    { label: "table.filter.operators.isOnOrAfter", value: "gte" as const },
+    { label: "table.filter.operators.isBetween", value: "isBetween" as const },
+  ],
+  selectOperators: [
+    { label: "table.filter.operators.is", value: "eq" as const },
+    { label: "table.filter.operators.isNot", value: "ne" as const },
+  ],
+  multiSelectOperators: [
+    { label: "table.filter.operators.hasAnyOf", value: "inArray" as const },
+    { label: "table.filter.operators.hasNoneOf", value: "notInArray" as const },
+  ],
+  booleanOperators: [
+    { label: "table.filter.operators.is", value: "eq" as const },
+    { label: "table.filter.operators.isNot", value: "ne" as const },
+  ],
+  sortOrders: [
+    { label: "table.sort.orders.asc", value: "asc" as const },
+    { label: "table.sort.orders.desc", value: "desc" as const },
+  ],
+  filterVariants: [
+    "text",
+    "number",
+    "range",
+    "date",
+    "dateRange",
+    "boolean",
+    "select",
+    "multiSelect",
+  ] as const,
+  operators: [
+    "iLike",
+    "notILike",
+    "eq",
+    "ne",
+    "inArray",
+    "notInArray",
+    "isEmpty",
+    "isNotEmpty",
+    "lt",
+    "lte",
+    "gt",
+    "gte",
+    "isBetween",
+    "isRelativeToToday",
+  ] as const,
+  joinOperators: ["and", "or"] as const,
 };

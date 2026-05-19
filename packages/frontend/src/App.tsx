@@ -1,41 +1,7 @@
-import './App.css';
-import { Providers } from './shared';
+import "./App.css";
+import { Providers } from "./shared";
 function App() {
-	
-
-	
-	
-	
-
-	return <Providers />;
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+  return <Providers />;
 }
 
 export default App;

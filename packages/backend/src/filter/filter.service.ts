@@ -1,298 +1,287 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from "@nestjs/common";
 import {
-	FilterItem,
-	FilterVariant,
-	JoinOperator,
-	SortItem,
-} from './dto/filter.dto';
-import { FilterOperators } from './enums/filter.enum';
-import { FilterValue } from './types/filter.types';
+  FilterItem,
+  FilterVariant,
+  JoinOperator,
+  SortItem,
+} from "./dto/filter.dto";
+import { FilterOperators } from "./enums/filter.enum";
+import { FilterValue } from "./types/filter.types";
 
 @Injectable()
 export class FilterService {
-	createFilter(
-		filtersData: FilterItem[] | undefined,
-		joinOperator: JoinOperator | undefined,
-		shouldExcludeDeleted: boolean = true,
-	): Record<string, any> {
-		const deletedAtFilter = shouldExcludeDeleted ? { deletedAt: null } : {};
+  createFilter(
+    filtersData: FilterItem[] | undefined,
+    joinOperator: JoinOperator | undefined,
+    shouldExcludeDeleted: boolean = true,
+  ): Record<string, any> {
+    const deletedAtFilter = shouldExcludeDeleted ? { deletedAt: null } : {};
 
-		if (!filtersData || filtersData.length === 0) {
-			return { AND: [deletedAtFilter] };
-		}
+    if (!filtersData || filtersData.length === 0) {
+      return { AND: [deletedAtFilter] };
+    }
 
-		const otherFilters: Record<string, any>[] = [];
-		for (const item of filtersData) {
-			const value = this.convertValue(item.value, item.variant);
-			switch (item.operator) {
-				case FilterOperators.CONTAINS:
-					otherFilters.push(
-						this.getContainsFilter(item.id, value, item.variant),
-					);
-					break;
-				case FilterOperators.NOT_CONTAIN:
-					otherFilters.push(
-						this.getNotContainFilter(item.id, value, item.variant),
-					);
-					break;
-				case FilterOperators.EQUALS:
-					otherFilters.push(this.getEqualsFilter(item.id, value, item.variant));
-					break;
-				case FilterOperators.NOT_EQUALS:
-					otherFilters.push(this.getNotEquals(item.id, value, item.variant));
-					break;
-				case FilterOperators.IS_BETWEEN:
-					otherFilters.push(this.getIsBetween(item.id, value));
-					break;
-				case FilterOperators.IN_ARRAY:
-					otherFilters.push(this.getInArrayFilter(item.id, value as string[]));
-					break;
-				case FilterOperators.NOT_IN_ARRAY:
-					otherFilters.push(
-						this.getNotInArrayFilter(item.id, value as string[]),
-					);
-					break;
-				default:
-					otherFilters.push(
-						this.generateOperatorFilter(
-							item.id,
-							item.operator,
-							value,
-							item.variant,
-						),
-					);
-			}
-		}
+    const otherFilters: Record<string, any>[] = [];
+    for (const item of filtersData) {
+      const value = this.convertValue(item.value, item.variant);
+      switch (item.operator) {
+        case FilterOperators.CONTAINS:
+          otherFilters.push(
+            this.getContainsFilter(item.id, value, item.variant),
+          );
+          break;
+        case FilterOperators.NOT_CONTAIN:
+          otherFilters.push(
+            this.getNotContainFilter(item.id, value, item.variant),
+          );
+          break;
+        case FilterOperators.EQUALS:
+          otherFilters.push(this.getEqualsFilter(item.id, value, item.variant));
+          break;
+        case FilterOperators.NOT_EQUALS:
+          otherFilters.push(this.getNotEquals(item.id, value, item.variant));
+          break;
+        case FilterOperators.IS_BETWEEN:
+          otherFilters.push(this.getIsBetween(item.id, value));
+          break;
+        case FilterOperators.IN_ARRAY:
+          otherFilters.push(this.getInArrayFilter(item.id, value as string[]));
+          break;
+        case FilterOperators.NOT_IN_ARRAY:
+          otherFilters.push(
+            this.getNotInArrayFilter(item.id, value as string[]),
+          );
+          break;
+        default:
+          otherFilters.push(
+            this.generateOperatorFilter(
+              item.id,
+              item.operator,
+              value,
+              item.variant,
+            ),
+          );
+      }
+    }
 
-		if (otherFilters.length === 0) {
-			return { AND: [deletedAtFilter] };
-		}
+    if (otherFilters.length === 0) {
+      return { AND: [deletedAtFilter] };
+    }
 
-		if ((joinOperator || 'AND') === 'OR') {
-			return {
-				AND: [deletedAtFilter, { OR: otherFilters }],
-			};
-		} else {
-			return {
-				AND: [deletedAtFilter, ...otherFilters],
-			};
-		}
-	}
+    if ((joinOperator || "AND") === "OR") {
+      return {
+        AND: [deletedAtFilter, { OR: otherFilters }],
+      };
+    } else {
+      return {
+        AND: [deletedAtFilter, ...otherFilters],
+      };
+    }
+  }
 
-	getInArrayFilter(field: string, value: string[]) {
-		const filter = {
-			in: value,
-		};
-		return this.buildNestedFilter(field, filter);
-	}
-	getNotInArrayFilter(field: string, value: string[]) {
-		const filter = {
-			in: value,
-		};
-		return { NOT: this.buildNestedFilter(field, filter) };
-	}
+  getInArrayFilter(field: string, value: string[]) {
+    const filter = {
+      in: value,
+    };
+    return this.buildNestedFilter(field, filter);
+  }
+  getNotInArrayFilter(field: string, value: string[]) {
+    const filter = {
+      in: value,
+    };
+    return { NOT: this.buildNestedFilter(field, filter) };
+  }
 
-	private isTextVariant(variant: FilterVariant) {
-		return variant === 'text';
-	}
+  private isTextVariant(variant: FilterVariant) {
+    return variant === "text";
+  }
 
-	convertValue(value: string | string[], variant: FilterVariant) {
-		switch (variant) {
-			case 'number':
-				return Number(value);
-			case 'date':
-				const dateString = Array.isArray(value) ? value[0] : value;
-				return new Date(+dateString);
-			case 'boolean':
-				const str = Array.isArray(value) ? value[0] : value;
-				return str === 'true';
-			default:
-				return value;
-		}
-	}
+  convertValue(value: string | string[], variant: FilterVariant) {
+    switch (variant) {
+      case "number":
+        return Number(value);
+      case "date":
+        const dateString = Array.isArray(value) ? value[0] : value;
+        return new Date(+dateString);
+      case "boolean":
+        const str = Array.isArray(value) ? value[0] : value;
+        return str === "true";
+      default:
+        return value;
+    }
+  }
 
-	getSortFilter(sort: SortItem[]): Record<string, 'asc' | 'desc'>[] {
-		if (!sort || sort.length === 0) {
-			
-			return [];
-		}
+  getSortFilter(sort: SortItem[]): Record<string, "asc" | "desc">[] {
+    if (!sort || sort.length === 0) {
+      return [];
+    }
 
-		return sort.map(sortItem => {
-			const direction = sortItem.desc === 'true' ? 'desc' : 'asc';
-			const keys = sortItem.id.split('.');
-			if (keys.length > 1) {
-				return this.buildNestedSortObject(keys, direction);
-			}
-			return { [sortItem.id]: direction };
-		});
-	}
+    return sort.map((sortItem) => {
+      const direction = sortItem.desc === "true" ? "desc" : "asc";
+      const keys = sortItem.id.split(".");
+      if (keys.length > 1) {
+        return this.buildNestedSortObject(keys, direction);
+      }
+      return { [sortItem.id]: direction };
+    });
+  }
 
-	private buildNestedSortObject(keys: string[], direction: 'asc' | 'desc') {
-		let obj: any = {};
-		let current = obj;
-		for (let i = 0; i < keys.length - 1; i++) {
-			current[keys[i]] = {};
-			current = current[keys[i]];
-		}
-		current[keys[keys.length - 1]] = direction;
-		return obj;
-	}
+  private buildNestedSortObject(keys: string[], direction: "asc" | "desc") {
+    let obj: any = {};
+    let current = obj;
+    for (let i = 0; i < keys.length - 1; i++) {
+      current[keys[i]] = {};
+      current = current[keys[i]];
+    }
+    current[keys[keys.length - 1]] = direction;
+    return obj;
+  }
 
-	
-	
-	
-	
-	private buildNestedFilter(
-		field: string,
-		rule: Record<string, any>,
-	): Record<string, any> {
-		const keys = field.split('.');
+  private buildNestedFilter(
+    field: string,
+    rule: Record<string, any>,
+  ): Record<string, any> {
+    const keys = field.split(".");
 
-		
-		if (keys.length === 1) {
-			return { [field]: rule };
-		}
+    if (keys.length === 1) {
+      return { [field]: rule };
+    }
 
-		const root: any = {};
-		let current = root;
+    const root: any = {};
+    let current = root;
 
-		
-		for (let i = 0; i < keys.length - 1; i++) {
-			current[keys[i]] = {};
-			current = current[keys[i]];
-		}
+    for (let i = 0; i < keys.length - 1; i++) {
+      current[keys[i]] = {};
+      current = current[keys[i]];
+    }
 
-		
-		current[keys[keys.length - 1]] = rule;
+    current[keys[keys.length - 1]] = rule;
 
-		return root;
-	}
+    return root;
+  }
 
-	private getContainsFilter(
-		field: string,
-		value: FilterValue,
-		variant: FilterVariant = 'text',
-	): Record<string, any> {
-		const filter: Record<string, unknown> = { contains: value };
-		if (this.isTextVariant(variant)) filter.mode = 'insensitive';
+  private getContainsFilter(
+    field: string,
+    value: FilterValue,
+    variant: FilterVariant = "text",
+  ): Record<string, any> {
+    const filter: Record<string, unknown> = { contains: value };
+    if (this.isTextVariant(variant)) filter.mode = "insensitive";
 
-		
-		return this.buildNestedFilter(field, filter);
-	}
+    return this.buildNestedFilter(field, filter);
+  }
 
-	private getNotContainFilter(
-		field: string,
-		value: FilterValue,
-		variant: FilterVariant = 'text',
-	): Record<string, any> {
-		const filter: Record<string, unknown> = { contains: value };
-		if (this.isTextVariant(variant)) filter.mode = 'insensitive';
+  private getNotContainFilter(
+    field: string,
+    value: FilterValue,
+    variant: FilterVariant = "text",
+  ): Record<string, any> {
+    const filter: Record<string, unknown> = { contains: value };
+    if (this.isTextVariant(variant)) filter.mode = "insensitive";
 
-		
-		return { NOT: this.buildNestedFilter(field, filter) };
-	}
+    return { NOT: this.buildNestedFilter(field, filter) };
+  }
 
-	private getEqualsFilter(
-		field: string,
-		value: FilterValue,
-		variant: FilterVariant = 'text',
-	): Record<string, any> {
-		if (variant === 'date') {
-			return this.getDateRangeFilter(field, value, false);
-		}
-		const filter: Record<string, unknown> = { equals: value };
-		if (this.isTextVariant(variant)) filter.mode = 'insensitive';
+  private getEqualsFilter(
+    field: string,
+    value: FilterValue,
+    variant: FilterVariant = "text",
+  ): Record<string, any> {
+    if (variant === "date") {
+      return this.getDateRangeFilter(field, value, false);
+    }
+    const filter: Record<string, unknown> = { equals: value };
+    if (this.isTextVariant(variant)) filter.mode = "insensitive";
 
-		return this.buildNestedFilter(field, filter);
-	}
+    return this.buildNestedFilter(field, filter);
+  }
 
-	private getNotEquals(
-		field: string,
-		value: FilterValue,
-		variant: FilterVariant = 'text',
-	): Record<string, any> {
-		if (variant === 'date') {
-			return this.getDateRangeFilter(field, value, true);
-		}
-		const filter: Record<string, unknown> = { equals: value };
-		if (this.isTextVariant(variant)) filter.mode = 'insensitive';
+  private getNotEquals(
+    field: string,
+    value: FilterValue,
+    variant: FilterVariant = "text",
+  ): Record<string, any> {
+    if (variant === "date") {
+      return this.getDateRangeFilter(field, value, true);
+    }
+    const filter: Record<string, unknown> = { equals: value };
+    if (this.isTextVariant(variant)) filter.mode = "insensitive";
 
-		return { NOT: this.buildNestedFilter(field, filter) };
-	}
+    return { NOT: this.buildNestedFilter(field, filter) };
+  }
 
-	private getDateRangeFilter(
-		field: string,
-		value: FilterValue,
-		not: boolean = false,
-	): Record<string, any> {
-		let dateObj: Date | null = null;
-		if (value instanceof Date) {
-			dateObj = value;
-		} else if (typeof value === 'string') {
-			if (/^\d+$/.test(value)) {
-				dateObj = new Date(Number(value));
-			} else {
-				dateObj = new Date(value);
-			}
-		}
-		if (!dateObj || isNaN(dateObj.getTime())) {
-			throw new BadRequestException('Invalid date value for filter');
-		}
+  private getDateRangeFilter(
+    field: string,
+    value: FilterValue,
+    not: boolean = false,
+  ): Record<string, any> {
+    let dateObj: Date | null = null;
+    if (value instanceof Date) {
+      dateObj = value;
+    } else if (typeof value === "string") {
+      if (/^\d+$/.test(value)) {
+        dateObj = new Date(Number(value));
+      } else {
+        dateObj = new Date(value);
+      }
+    }
+    if (!dateObj || isNaN(dateObj.getTime())) {
+      throw new BadRequestException("Invalid date value for filter");
+    }
 
-		const year = dateObj.getFullYear();
-		const month = dateObj.getMonth();
-		const day = dateObj.getDate();
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth();
+    const day = dateObj.getDate();
 
-		const start = new Date(year, month, day, 0, 0, 0, 0);
-		const end = new Date(year, month, day, 23, 59, 59, 999);
+    const start = new Date(year, month, day, 0, 0, 0, 0);
+    const end = new Date(year, month, day, 23, 59, 59, 999);
 
-		const range = { gte: start, lte: end };
+    const range = { gte: start, lte: end };
 
-		
-		const filterObject = this.buildNestedFilter(field, range);
+    const filterObject = this.buildNestedFilter(field, range);
 
-		if (not) {
-			return { NOT: filterObject };
-		}
-		return filterObject;
-	}
+    if (not) {
+      return { NOT: filterObject };
+    }
+    return filterObject;
+  }
 
-	private generateOperatorFilter(
-		field: string,
-		operator: FilterOperators,
-		value: FilterValue,
-		variant: FilterVariant = 'text',
-	): Record<string, any> {
-		const condition = Object.values(FilterOperators).includes(operator);
-		if (!condition) {
-			throw new BadRequestException(`Unsupported filter operator: ${operator}`);
-		}
+  private generateOperatorFilter(
+    field: string,
+    operator: FilterOperators,
+    value: FilterValue,
+    variant: FilterVariant = "text",
+  ): Record<string, any> {
+    const condition = Object.values(FilterOperators).includes(operator);
+    if (!condition) {
+      throw new BadRequestException(`Unsupported filter operator: ${operator}`);
+    }
 
-		if (variant === 'date' && value instanceof Date) {
-			const year = value.getFullYear();
-			const month = value.getMonth();
-			const day = value.getDate();
+    if (variant === "date" && value instanceof Date) {
+      const year = value.getFullYear();
+      const month = value.getMonth();
+      const day = value.getDate();
 
-			if (operator === FilterOperators.GREATER_THAN_OR_EQUALS) {
-				value = new Date(year, month, day, 0, 0, 0, 0);
-			} else if (operator === FilterOperators.GREATER_THAN) {
-				value = new Date(year, month, day + 1, 0, 0, 0, 0);
-			} else if (operator === FilterOperators.LESS_THAN_OR_EQUALS) {
-				value = new Date(year, month, day, 23, 59, 59, 999);
-			} else if (operator === FilterOperators.LESS_THAN) {
-				value = new Date(year, month, day, 0, 0, 0, 0);
-			}
-		}
+      if (operator === FilterOperators.GREATER_THAN_OR_EQUALS) {
+        value = new Date(year, month, day, 0, 0, 0, 0);
+      } else if (operator === FilterOperators.GREATER_THAN) {
+        value = new Date(year, month, day + 1, 0, 0, 0, 0);
+      } else if (operator === FilterOperators.LESS_THAN_OR_EQUALS) {
+        value = new Date(year, month, day, 23, 59, 59, 999);
+      } else if (operator === FilterOperators.LESS_THAN) {
+        value = new Date(year, month, day, 0, 0, 0, 0);
+      }
+    }
 
-		return this.buildNestedFilter(field, { [operator]: value });
-	}
+    return this.buildNestedFilter(field, { [operator]: value });
+  }
 
-	private getIsBetween(field: string, value: FilterValue): Record<string, any> {
-		const rule = {
-			lte: Array.isArray(value) ? Number(value[1]) : Number(value),
-			gte: Array.isArray(value) ? Number(value[0]) : Number(value),
-		};
+  private getIsBetween(field: string, value: FilterValue): Record<string, any> {
+    const rule = {
+      lte: Array.isArray(value) ? Number(value[1]) : Number(value),
+      gte: Array.isArray(value) ? Number(value[0]) : Number(value),
+    };
 
-		return this.buildNestedFilter(field, rule);
-	}
+    return this.buildNestedFilter(field, rule);
+  }
 }

@@ -1,54 +1,54 @@
 export interface NewOrderClient {
-	id: string;
-	name: string;
-	email: string;
-	phone: string;
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
 }
 
 export interface NewOrderVehicle {
-	id: string;
-	clientId: string;
-	make: string;
-	model: string;
-	year: number;
-	licensePlate: string;
-	lastMileage: number;
+  id: string;
+  clientId: string;
+  make: string;
+  model: string;
+  year: number;
+  licensePlate: string;
+  lastMileage: number;
 }
 
 export interface NewOrderServiceMeta {
-	id: string;
-	name: string;
-	price: number;
-	duration: number;
-	requiredCategories?: Array<{
-		id: string;
-		name: string;
-	}>;
+  id: string;
+  name: string;
+  price: number;
+  duration: number;
+  requiredCategories?: Array<{
+    id: string;
+    name: string;
+  }>;
 }
 
 export interface NewOrderMechanic {
-	id: string;
-	name: string;
-	specialty: string;
-	openTasksCount?: number;
-	todayAssignedHours?: number;
-	totalAssignedHours?: number;
-	capacityPercent?: number;
-	isOverloaded?: boolean;
+  id: string;
+  name: string;
+  specialty: string;
+  openTasksCount?: number;
+  todayAssignedHours?: number;
+  totalAssignedHours?: number;
+  capacityPercent?: number;
+  isOverloaded?: boolean;
 }
 
 export interface NewOrderPart {
-	id: string;
-	name: string;
-	price: number;
-	stock: number;
-	category: string;
+  id: string;
+  name: string;
+  price: number;
+  stock: number;
+  category: string;
 }
 
 export interface NewOrderMeta {
-	clients: NewOrderClient[];
-	vehicles: NewOrderVehicle[];
-	services: NewOrderServiceMeta[];
-	mechanics: NewOrderMechanic[];
-	parts: NewOrderPart[];
+  clients: NewOrderClient[];
+  vehicles: NewOrderVehicle[];
+  services: NewOrderServiceMeta[];
+  mechanics: NewOrderMechanic[];
+  parts: NewOrderPart[];
 }

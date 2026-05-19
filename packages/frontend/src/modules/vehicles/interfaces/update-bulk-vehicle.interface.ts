@@ -1,5 +1,5 @@
 export interface UpdateBulkVehiclesDto {
-	ids: string[];
-	field: string;
-	value: any;
+  ids: string[];
+  field: string;
+  value: any;
 }

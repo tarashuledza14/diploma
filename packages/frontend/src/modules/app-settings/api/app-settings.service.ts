@@ -1,46 +1,46 @@
-import { instance } from '@/api';
+import { instance } from "@/api";
 import {
-	AppBranding,
-	UpdateAppBrandingPayload,
-} from '../interfaces/branding.interface';
+  AppBranding,
+  UpdateAppBrandingPayload,
+} from "../interfaces/branding.interface";
 
 export class AppSettingsService {
-	private static readonly prefix = '/app-settings';
+  private static readonly prefix = "/app-settings";
 
-	static async getBranding() {
-		const response = await instance.get<AppBranding>(`${this.prefix}/branding`);
-		return response.data;
-	}
+  static async getBranding() {
+    const response = await instance.get<AppBranding>(`${this.prefix}/branding`);
+    return response.data;
+  }
 
-	static async updateBranding(payload: UpdateAppBrandingPayload) {
-		const response = await instance.patch<AppBranding>(
-			`${this.prefix}/branding`,
-			payload,
-		);
-		return response.data;
-	}
+  static async updateBranding(payload: UpdateAppBrandingPayload) {
+    const response = await instance.patch<AppBranding>(
+      `${this.prefix}/branding`,
+      payload,
+    );
+    return response.data;
+  }
 
-	static async uploadLogo(file: File) {
-		const formData = new FormData();
-		formData.append('file', file);
+  static async uploadLogo(file: File) {
+    const formData = new FormData();
+    formData.append("file", file);
 
-		const response = await instance.post<AppBranding>(
-			`${this.prefix}/logo`,
-			formData,
-			{
-				headers: {
-					'Content-Type': 'multipart/form-data',
-				},
-			},
-		);
+    const response = await instance.post<AppBranding>(
+      `${this.prefix}/logo`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    );
 
-		return response.data;
-	}
+    return response.data;
+  }
 
-	static async completeOnboarding() {
-		const response = await instance.patch<{ success: boolean }>(
-			`${this.prefix}/complete-onboarding`,
-		);
-		return response.data;
-	}
+  static async completeOnboarding() {
+    const response = await instance.patch<{ success: boolean }>(
+      `${this.prefix}/complete-onboarding`,
+    );
+    return response.data;
+  }
 }

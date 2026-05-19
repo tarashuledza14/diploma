@@ -1,912 +1,912 @@
-import type { Column, Table } from '@tanstack/react-table';
+import type { Column, Table } from "@tanstack/react-table";
 import {
-	BadgeCheck,
-	CalendarIcon,
-	Check,
-	ListFilter,
-	Text,
-	X,
-} from 'lucide-react';
-import { useQueryState } from 'nuqs';
-import * as React from 'react';
+  BadgeCheck,
+  CalendarIcon,
+  Check,
+  ListFilter,
+  Text,
+  X,
+} from "lucide-react";
+import { useQueryState } from "nuqs";
+import * as React from "react";
 
-import { useDebouncedCallback } from '@/shared/hooks/use-debounced-callback';
+import { useDebouncedCallback } from "@/shared/hooks/use-debounced-callback";
 
-import { getDefaultFilterOperator, getFilterOperators } from '@/shared';
-import { DataTableRangeFilter } from '@/shared/components/data-table/data-table-range-filter';
-import { Button } from '@/shared/components/ui/button';
-import { Calendar } from '@/shared/components/ui/calendar';
+import { getDefaultFilterOperator, getFilterOperators } from "@/shared";
+import { DataTableRangeFilter } from "@/shared/components/data-table/data-table-range-filter";
+import { Button } from "@/shared/components/ui/button";
+import { Calendar } from "@/shared/components/ui/calendar";
 import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-	CommandList,
-} from '@/shared/components/ui/command';
-import { Input } from '@/shared/components/ui/input';
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/shared/components/ui/command";
+import { Input } from "@/shared/components/ui/input";
 import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from '@/shared/components/ui/popover';
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/shared/components/ui/popover";
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/shared/components/ui/select';
-import { formatDate } from '@/shared/lib/format';
-import { generateId } from '@/shared/lib/id';
-import { getFiltersStateParser } from '@/shared/lib/parsers';
-import { cn } from '@/shared/lib/utils';
-import { ExtendedColumnFilter, FilterOperator } from '@/types/data-table';
-import { useTranslation } from 'react-i18next';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/components/ui/select";
+import { formatDate } from "@/shared/lib/format";
+import { generateId } from "@/shared/lib/id";
+import { getFiltersStateParser } from "@/shared/lib/parsers";
+import { cn } from "@/shared/lib/utils";
+import { ExtendedColumnFilter, FilterOperator } from "@/types/data-table";
+import { useTranslation } from "react-i18next";
 
 const DEBOUNCE_MS = 300;
 const THROTTLE_MS = 50;
-const FILTER_SHORTCUT_KEY = 'f';
-const REMOVE_FILTER_SHORTCUTS = ['backspace', 'delete'];
+const FILTER_SHORTCUT_KEY = "f";
+const REMOVE_FILTER_SHORTCUTS = ["backspace", "delete"];
 
 interface DataTableFilterMenuProps<TData> extends React.ComponentProps<
-	typeof PopoverContent
+  typeof PopoverContent
 > {
-	table: Table<TData>;
-	debounceMs?: number;
-	throttleMs?: number;
-	shallow?: boolean;
-	disabled?: boolean;
+  table: Table<TData>;
+  debounceMs?: number;
+  throttleMs?: number;
+  shallow?: boolean;
+  disabled?: boolean;
 }
 
 export function DataTableFilterMenu<TData>({
-	table,
-	debounceMs = DEBOUNCE_MS,
-	throttleMs = THROTTLE_MS,
-	shallow = true,
-	disabled,
-	...props
+  table,
+  debounceMs = DEBOUNCE_MS,
+  throttleMs = THROTTLE_MS,
+  shallow = true,
+  disabled,
+  ...props
 }: DataTableFilterMenuProps<TData>) {
-	const { t } = useTranslation();
-	const id = React.useId();
+  const { t } = useTranslation();
+  const id = React.useId();
 
-	const columns = React.useMemo(() => {
-		return table
-			.getAllColumns()
-			.filter(column => column.columnDef.enableColumnFilter);
-	}, [table]);
+  const columns = React.useMemo(() => {
+    return table
+      .getAllColumns()
+      .filter((column) => column.columnDef.enableColumnFilter);
+  }, [table]);
 
-	const [open, setOpen] = React.useState(false);
-	const [selectedColumn, setSelectedColumn] =
-		React.useState<Column<TData> | null>(null);
-	const [inputValue, setInputValue] = React.useState('');
-	const triggerRef = React.useRef<HTMLButtonElement>(null);
-	const inputRef = React.useRef<HTMLInputElement>(null);
+  const [open, setOpen] = React.useState(false);
+  const [selectedColumn, setSelectedColumn] =
+    React.useState<Column<TData> | null>(null);
+  const [inputValue, setInputValue] = React.useState("");
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
-	const onOpenChange = React.useCallback((open: boolean) => {
-		setOpen(open);
+  const onOpenChange = React.useCallback((open: boolean) => {
+    setOpen(open);
 
-		if (!open) {
-			setTimeout(() => {
-				setSelectedColumn(null);
-				setInputValue('');
-			}, 100);
-		}
-	}, []);
+    if (!open) {
+      setTimeout(() => {
+        setSelectedColumn(null);
+        setInputValue("");
+      }, 100);
+    }
+  }, []);
 
-	const onInputKeyDown = React.useCallback(
-		(event: React.KeyboardEvent<HTMLInputElement>) => {
-			if (
-				REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase()) &&
-				!inputValue &&
-				selectedColumn
-			) {
-				event.preventDefault();
-				setSelectedColumn(null);
-			}
-		},
-		[inputValue, selectedColumn],
-	);
+  const onInputKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (
+        REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase()) &&
+        !inputValue &&
+        selectedColumn
+      ) {
+        event.preventDefault();
+        setSelectedColumn(null);
+      }
+    },
+    [inputValue, selectedColumn],
+  );
 
-	const [filters, setFilters] = useQueryState(
-		table.options.meta?.queryKeys?.filters ?? 'filters',
-		getFiltersStateParser<TData>(columns.map(field => field.id))
-			.withDefault([])
-			.withOptions({
-				clearOnDefault: true,
-				shallow,
-				throttleMs,
-			}),
-	);
-	const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);
+  const [filters, setFilters] = useQueryState(
+    table.options.meta?.queryKeys?.filters ?? "filters",
+    getFiltersStateParser<TData>(columns.map((field) => field.id))
+      .withDefault([])
+      .withOptions({
+        clearOnDefault: true,
+        shallow,
+        throttleMs,
+      }),
+  );
+  const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);
 
-	const onFilterAdd = React.useCallback(
-		(column: Column<TData>, value: string) => {
-			if (!value.trim() && column.columnDef.meta?.variant !== 'boolean') {
-				return;
-			}
+  const onFilterAdd = React.useCallback(
+    (column: Column<TData>, value: string) => {
+      if (!value.trim() && column.columnDef.meta?.variant !== "boolean") {
+        return;
+      }
 
-			const filterValue =
-				column.columnDef.meta?.variant === 'multiSelect' ? [value] : value;
+      const filterValue =
+        column.columnDef.meta?.variant === "multiSelect" ? [value] : value;
 
-			const newFilter: ExtendedColumnFilter<TData> = {
-				id: column.id as Extract<keyof TData, string>,
-				value: filterValue,
-				variant: column.columnDef.meta?.variant ?? 'text',
-				operator: getDefaultFilterOperator(
-					column.columnDef.meta?.variant ?? 'text',
-				),
-				filterId: generateId({ length: 8 }),
-			};
+      const newFilter: ExtendedColumnFilter<TData> = {
+        id: column.id as Extract<keyof TData, string>,
+        value: filterValue,
+        variant: column.columnDef.meta?.variant ?? "text",
+        operator: getDefaultFilterOperator(
+          column.columnDef.meta?.variant ?? "text",
+        ),
+        filterId: generateId({ length: 8 }),
+      };
 
-			debouncedSetFilters([...filters, newFilter]);
-			setOpen(false);
+      debouncedSetFilters([...filters, newFilter]);
+      setOpen(false);
 
-			setTimeout(() => {
-				setSelectedColumn(null);
-				setInputValue('');
-			}, 100);
-		},
-		[filters, debouncedSetFilters],
-	);
+      setTimeout(() => {
+        setSelectedColumn(null);
+        setInputValue("");
+      }, 100);
+    },
+    [filters, debouncedSetFilters],
+  );
 
-	const onFilterRemove = React.useCallback(
-		(filterId: string) => {
-			const updatedFilters = filters.filter(
-				filter => filter.filterId !== filterId,
-			);
-			debouncedSetFilters(updatedFilters);
-			requestAnimationFrame(() => {
-				triggerRef.current?.focus();
-			});
-		},
-		[filters, debouncedSetFilters],
-	);
+  const onFilterRemove = React.useCallback(
+    (filterId: string) => {
+      const updatedFilters = filters.filter(
+        (filter) => filter.filterId !== filterId,
+      );
+      debouncedSetFilters(updatedFilters);
+      requestAnimationFrame(() => {
+        triggerRef.current?.focus();
+      });
+    },
+    [filters, debouncedSetFilters],
+  );
 
-	const onFilterUpdate = React.useCallback(
-		(
-			filterId: string,
-			updates: Partial<Omit<ExtendedColumnFilter<TData>, 'filterId'>>,
-		) => {
-			debouncedSetFilters(prevFilters => {
-				const updatedFilters = prevFilters.map(filter => {
-					if (filter.filterId === filterId) {
-						return { ...filter, ...updates } as ExtendedColumnFilter<TData>;
-					}
-					return filter;
-				});
-				return updatedFilters;
-			});
-		},
-		[debouncedSetFilters],
-	);
+  const onFilterUpdate = React.useCallback(
+    (
+      filterId: string,
+      updates: Partial<Omit<ExtendedColumnFilter<TData>, "filterId">>,
+    ) => {
+      debouncedSetFilters((prevFilters) => {
+        const updatedFilters = prevFilters.map((filter) => {
+          if (filter.filterId === filterId) {
+            return { ...filter, ...updates } as ExtendedColumnFilter<TData>;
+          }
+          return filter;
+        });
+        return updatedFilters;
+      });
+    },
+    [debouncedSetFilters],
+  );
 
-	const onFiltersReset = React.useCallback(() => {
-		debouncedSetFilters([]);
-	}, [debouncedSetFilters]);
+  const onFiltersReset = React.useCallback(() => {
+    debouncedSetFilters([]);
+  }, [debouncedSetFilters]);
 
-	React.useEffect(() => {
-		function onKeyDown(event: KeyboardEvent) {
-			if (
-				event.target instanceof HTMLInputElement ||
-				event.target instanceof HTMLTextAreaElement ||
-				(event.target instanceof HTMLElement &&
-					event.target.contentEditable === 'true')
-			) {
-				return;
-			}
+  React.useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        (event.target instanceof HTMLElement &&
+          event.target.contentEditable === "true")
+      ) {
+        return;
+      }
 
-			if (
-				event.key.toLowerCase() === FILTER_SHORTCUT_KEY &&
-				(event.ctrlKey || event.metaKey) &&
-				event.shiftKey
-			) {
-				event.preventDefault();
-				setOpen(prev => !prev);
-			}
-		}
+      if (
+        event.key.toLowerCase() === FILTER_SHORTCUT_KEY &&
+        (event.ctrlKey || event.metaKey) &&
+        event.shiftKey
+      ) {
+        event.preventDefault();
+        setOpen((prev) => !prev);
+      }
+    }
 
-		window.addEventListener('keydown', onKeyDown);
-		return () => window.removeEventListener('keydown', onKeyDown);
-	}, []);
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
-	const onTriggerKeyDown = React.useCallback(
-		(event: React.KeyboardEvent<HTMLButtonElement>) => {
-			if (
-				REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase()) &&
-				filters.length > 0
-			) {
-				event.preventDefault();
-				onFilterRemove(filters[filters.length - 1]?.filterId ?? '');
-			}
-		},
-		[filters, onFilterRemove],
-	);
+  const onTriggerKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (
+        REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase()) &&
+        filters.length > 0
+      ) {
+        event.preventDefault();
+        onFilterRemove(filters[filters.length - 1]?.filterId ?? "");
+      }
+    },
+    [filters, onFilterRemove],
+  );
 
-	return (
-		<div role='list' className='flex flex-wrap items-center gap-2'>
-			{filters.map(filter => (
-				<DataTableFilterItem
-					key={filter.filterId}
-					filter={filter}
-					filterItemId={`${id}-filter-${filter.filterId}`}
-					columns={columns}
-					onFilterUpdate={onFilterUpdate}
-					onFilterRemove={onFilterRemove}
-				/>
-			))}
-			{filters.length > 0 && (
-				<Button
-					aria-label={t('table.filter.resetAllAria')}
-					variant='outline'
-					size='icon'
-					className='size-8'
-					onClick={onFiltersReset}
-				>
-					<X />
-				</Button>
-			)}
-			<Popover open={open} onOpenChange={onOpenChange}>
-				<PopoverTrigger asChild>
-					<Button
-						aria-label={t('table.filter.openMenuAria')}
-						variant='outline'
-						size={filters.length > 0 ? 'icon' : 'sm'}
-						className={cn(filters.length > 0 && 'size-8', 'h-8 font-normal')}
-						ref={triggerRef}
-						onKeyDown={onTriggerKeyDown}
-						disabled={disabled}
-					>
-						<ListFilter className='text-muted-foreground' />
-						{filters.length > 0 ? null : t('table.filter.button')}
-					</Button>
-				</PopoverTrigger>
-				<PopoverContent
-					className='w-full max-w-(--radix-popover-content-available-width) p-0'
-					{...props}
-				>
-					<Command loop className='[&_[cmdk-input-wrapper]_svg]:hidden'>
-						<CommandInput
-							ref={inputRef}
-							placeholder={
-								selectedColumn
-									? (selectedColumn.columnDef.meta?.label ?? selectedColumn.id)
-									: t('table.filter.searchFields')
-							}
-							value={inputValue}
-							onValueChange={setInputValue}
-							onKeyDown={onInputKeyDown}
-						/>
-						<CommandList>
-							{selectedColumn ? (
-								<>
-									{selectedColumn.columnDef.meta?.options && (
-										<CommandEmpty>
-											{t('table.filter.noOptionsFound')}
-										</CommandEmpty>
-									)}
-									<FilterValueSelector
-										column={selectedColumn}
-										value={inputValue}
-										t={t}
-										onSelect={value => onFilterAdd(selectedColumn, value)}
-									/>
-								</>
-							) : (
-								<>
-									<CommandEmpty>{t('table.filter.noFieldsFound')}</CommandEmpty>
-									<CommandGroup>
-										{columns.map(column => (
-											<CommandItem
-												key={column.id}
-												value={column.id}
-												onSelect={() => {
-													setSelectedColumn(column);
-													setInputValue('');
-													requestAnimationFrame(() => {
-														inputRef.current?.focus();
-													});
-												}}
-											>
-												{column.columnDef.meta?.icon && (
-													<column.columnDef.meta.icon />
-												)}
-												<span className='truncate'>
-													{column.columnDef.meta?.label ?? column.id}
-												</span>
-											</CommandItem>
-										))}
-									</CommandGroup>
-								</>
-							)}
-						</CommandList>
-					</Command>
-				</PopoverContent>
-			</Popover>
-		</div>
-	);
+  return (
+    <div role="list" className="flex flex-wrap items-center gap-2">
+      {filters.map((filter) => (
+        <DataTableFilterItem
+          key={filter.filterId}
+          filter={filter}
+          filterItemId={`${id}-filter-${filter.filterId}`}
+          columns={columns}
+          onFilterUpdate={onFilterUpdate}
+          onFilterRemove={onFilterRemove}
+        />
+      ))}
+      {filters.length > 0 && (
+        <Button
+          aria-label={t("table.filter.resetAllAria")}
+          variant="outline"
+          size="icon"
+          className="size-8"
+          onClick={onFiltersReset}
+        >
+          <X />
+        </Button>
+      )}
+      <Popover open={open} onOpenChange={onOpenChange}>
+        <PopoverTrigger asChild>
+          <Button
+            aria-label={t("table.filter.openMenuAria")}
+            variant="outline"
+            size={filters.length > 0 ? "icon" : "sm"}
+            className={cn(filters.length > 0 && "size-8", "h-8 font-normal")}
+            ref={triggerRef}
+            onKeyDown={onTriggerKeyDown}
+            disabled={disabled}
+          >
+            <ListFilter className="text-muted-foreground" />
+            {filters.length > 0 ? null : t("table.filter.button")}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
+          className="w-full max-w-(--radix-popover-content-available-width) p-0"
+          {...props}
+        >
+          <Command loop className="[&_[cmdk-input-wrapper]_svg]:hidden">
+            <CommandInput
+              ref={inputRef}
+              placeholder={
+                selectedColumn
+                  ? (selectedColumn.columnDef.meta?.label ?? selectedColumn.id)
+                  : t("table.filter.searchFields")
+              }
+              value={inputValue}
+              onValueChange={setInputValue}
+              onKeyDown={onInputKeyDown}
+            />
+            <CommandList>
+              {selectedColumn ? (
+                <>
+                  {selectedColumn.columnDef.meta?.options && (
+                    <CommandEmpty>
+                      {t("table.filter.noOptionsFound")}
+                    </CommandEmpty>
+                  )}
+                  <FilterValueSelector
+                    column={selectedColumn}
+                    value={inputValue}
+                    t={t}
+                    onSelect={(value) => onFilterAdd(selectedColumn, value)}
+                  />
+                </>
+              ) : (
+                <>
+                  <CommandEmpty>{t("table.filter.noFieldsFound")}</CommandEmpty>
+                  <CommandGroup>
+                    {columns.map((column) => (
+                      <CommandItem
+                        key={column.id}
+                        value={column.id}
+                        onSelect={() => {
+                          setSelectedColumn(column);
+                          setInputValue("");
+                          requestAnimationFrame(() => {
+                            inputRef.current?.focus();
+                          });
+                        }}
+                      >
+                        {column.columnDef.meta?.icon && (
+                          <column.columnDef.meta.icon />
+                        )}
+                        <span className="truncate">
+                          {column.columnDef.meta?.label ?? column.id}
+                        </span>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </>
+              )}
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+    </div>
+  );
 }
 
 interface DataTableFilterItemProps<TData> {
-	filter: ExtendedColumnFilter<TData>;
-	filterItemId: string;
-	columns: Column<TData>[];
-	onFilterUpdate: (
-		filterId: string,
-		updates: Partial<Omit<ExtendedColumnFilter<TData>, 'filterId'>>,
-	) => void;
-	onFilterRemove: (filterId: string) => void;
+  filter: ExtendedColumnFilter<TData>;
+  filterItemId: string;
+  columns: Column<TData>[];
+  onFilterUpdate: (
+    filterId: string,
+    updates: Partial<Omit<ExtendedColumnFilter<TData>, "filterId">>,
+  ) => void;
+  onFilterRemove: (filterId: string) => void;
 }
 
 function DataTableFilterItem<TData>({
-	filter,
-	filterItemId,
-	columns,
-	onFilterUpdate,
-	onFilterRemove,
+  filter,
+  filterItemId,
+  columns,
+  onFilterUpdate,
+  onFilterRemove,
 }: DataTableFilterItemProps<TData>) {
-	const { t } = useTranslation();
-	const [showFieldSelector, setShowFieldSelector] = React.useState(false);
-	const [showOperatorSelector, setShowOperatorSelector] = React.useState(false);
-	const [showValueSelector, setShowValueSelector] = React.useState(false);
+  const { t } = useTranslation();
+  const [showFieldSelector, setShowFieldSelector] = React.useState(false);
+  const [showOperatorSelector, setShowOperatorSelector] = React.useState(false);
+  const [showValueSelector, setShowValueSelector] = React.useState(false);
 
-	const column = columns.find(column => column.id === filter.id);
+  const column = columns.find((column) => column.id === filter.id);
 
-	const operatorListboxId = `${filterItemId}-operator-listbox`;
-	const inputId = `${filterItemId}-input`;
+  const operatorListboxId = `${filterItemId}-operator-listbox`;
+  const inputId = `${filterItemId}-input`;
 
-	const columnMeta = column?.columnDef.meta;
-	const filterOperators = getFilterOperators(filter.variant);
+  const columnMeta = column?.columnDef.meta;
+  const filterOperators = getFilterOperators(filter.variant);
 
-	const onItemKeyDown = React.useCallback(
-		(event: React.KeyboardEvent<HTMLDivElement>) => {
-			if (
-				event.target instanceof HTMLInputElement ||
-				event.target instanceof HTMLTextAreaElement
-			) {
-				return;
-			}
+  const onItemKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
 
-			if (showFieldSelector || showOperatorSelector || showValueSelector) {
-				return;
-			}
+      if (showFieldSelector || showOperatorSelector || showValueSelector) {
+        return;
+      }
 
-			if (REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase())) {
-				event.preventDefault();
-				onFilterRemove(filter.filterId as string);
-			}
-		},
-		[
-			filter.filterId,
-			showFieldSelector,
-			showOperatorSelector,
-			showValueSelector,
-			onFilterRemove,
-		],
-	);
+      if (REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase())) {
+        event.preventDefault();
+        onFilterRemove(filter.filterId as string);
+      }
+    },
+    [
+      filter.filterId,
+      showFieldSelector,
+      showOperatorSelector,
+      showValueSelector,
+      onFilterRemove,
+    ],
+  );
 
-	if (!column) return null;
+  if (!column) return null;
 
-	return (
-		<div
-			key={filter.filterId}
-			role='listitem'
-			id={filterItemId}
-			className='flex h-8 items-center rounded-md bg-background'
-			onKeyDown={onItemKeyDown}
-		>
-			<Popover open={showFieldSelector} onOpenChange={setShowFieldSelector}>
-				<PopoverTrigger asChild>
-					<Button
-						variant='ghost'
-						size='sm'
-						className='rounded-none rounded-l-md border border-r-0 font-normal dark:bg-input/30'
-					>
-						{columnMeta?.icon && (
-							<columnMeta.icon className='text-muted-foreground' />
-						)}
-						{columnMeta?.label ?? column.id}
-					</Button>
-				</PopoverTrigger>
-				<PopoverContent align='start' className='w-48 p-0'>
-					<Command loop>
-						<CommandInput placeholder={t('table.filter.searchFields')} />
-						<CommandList>
-							<CommandEmpty>{t('table.filter.noFieldsFound')}</CommandEmpty>
-							<CommandGroup>
-								{columns.map(column => (
-									<CommandItem
-										key={column.id}
-										value={column.id}
-										onSelect={() => {
-											onFilterUpdate(filter.filterId as string, {
-												id: column.id as Extract<keyof TData, string>,
-												variant: column.columnDef.meta?.variant ?? 'text',
-												operator: getDefaultFilterOperator(
-													column.columnDef.meta?.variant ?? 'text',
-												),
-												value: '',
-											});
+  return (
+    <div
+      key={filter.filterId}
+      role="listitem"
+      id={filterItemId}
+      className="flex h-8 items-center rounded-md bg-background"
+      onKeyDown={onItemKeyDown}
+    >
+      <Popover open={showFieldSelector} onOpenChange={setShowFieldSelector}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="rounded-none rounded-l-md border border-r-0 font-normal dark:bg-input/30"
+          >
+            {columnMeta?.icon && (
+              <columnMeta.icon className="text-muted-foreground" />
+            )}
+            {columnMeta?.label ?? column.id}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent align="start" className="w-48 p-0">
+          <Command loop>
+            <CommandInput placeholder={t("table.filter.searchFields")} />
+            <CommandList>
+              <CommandEmpty>{t("table.filter.noFieldsFound")}</CommandEmpty>
+              <CommandGroup>
+                {columns.map((column) => (
+                  <CommandItem
+                    key={column.id}
+                    value={column.id}
+                    onSelect={() => {
+                      onFilterUpdate(filter.filterId as string, {
+                        id: column.id as Extract<keyof TData, string>,
+                        variant: column.columnDef.meta?.variant ?? "text",
+                        operator: getDefaultFilterOperator(
+                          column.columnDef.meta?.variant ?? "text",
+                        ),
+                        value: "",
+                      });
 
-											setShowFieldSelector(false);
-										}}
-									>
-										{column.columnDef.meta?.icon && (
-											<column.columnDef.meta.icon />
-										)}
-										<span className='truncate'>
-											{column.columnDef.meta?.label ?? column.id}
-										</span>
-										<Check
-											className={cn(
-												'ml-auto',
-												column.id === filter.id ? 'opacity-100' : 'opacity-0',
-											)}
-										/>
-									</CommandItem>
-								))}
-							</CommandGroup>
-						</CommandList>
-					</Command>
-				</PopoverContent>
-			</Popover>
-			<Select
-				open={showOperatorSelector}
-				onOpenChange={setShowOperatorSelector}
-				value={filter.operator}
-				onValueChange={(value: FilterOperator) =>
-					onFilterUpdate(filter.filterId as string, {
-						operator: value,
-						value:
-							value === 'isEmpty' || value === 'isNotEmpty' ? '' : filter.value,
-					})
-				}
-			>
-				<SelectTrigger
-					aria-controls={operatorListboxId}
-					className='h-8 rounded-none border-r-0 px-2.5 lowercase data-size:h-8 [&_svg]:hidden'
-				>
-					<SelectValue placeholder={filter.operator} />
-				</SelectTrigger>
-				<SelectContent id={operatorListboxId}>
-					{filterOperators.map(operator => (
-						<SelectItem
-							key={operator.value}
-							className='lowercase'
-							value={operator.value}
-						>
-							{t(operator.label)}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
-			{onFilterInputRender({
-				filter,
-				column,
-				inputId,
-				onFilterUpdate,
-				showValueSelector,
-				t,
-				setShowValueSelector,
-			})}
-			<Button
-				aria-controls={filterItemId}
-				variant='ghost'
-				size='sm'
-				className='h-full rounded-none rounded-r-md border border-l-0 px-1.5 font-normal dark:bg-input/30'
-				onClick={() => onFilterRemove(filter.filterId as string)}
-			>
-				<X className='size-3.5' />
-			</Button>
-		</div>
-	);
+                      setShowFieldSelector(false);
+                    }}
+                  >
+                    {column.columnDef.meta?.icon && (
+                      <column.columnDef.meta.icon />
+                    )}
+                    <span className="truncate">
+                      {column.columnDef.meta?.label ?? column.id}
+                    </span>
+                    <Check
+                      className={cn(
+                        "ml-auto",
+                        column.id === filter.id ? "opacity-100" : "opacity-0",
+                      )}
+                    />
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+      <Select
+        open={showOperatorSelector}
+        onOpenChange={setShowOperatorSelector}
+        value={filter.operator}
+        onValueChange={(value: FilterOperator) =>
+          onFilterUpdate(filter.filterId as string, {
+            operator: value,
+            value:
+              value === "isEmpty" || value === "isNotEmpty" ? "" : filter.value,
+          })
+        }
+      >
+        <SelectTrigger
+          aria-controls={operatorListboxId}
+          className="h-8 rounded-none border-r-0 px-2.5 lowercase data-size:h-8 [&_svg]:hidden"
+        >
+          <SelectValue placeholder={filter.operator} />
+        </SelectTrigger>
+        <SelectContent id={operatorListboxId}>
+          {filterOperators.map((operator) => (
+            <SelectItem
+              key={operator.value}
+              className="lowercase"
+              value={operator.value}
+            >
+              {t(operator.label)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      {onFilterInputRender({
+        filter,
+        column,
+        inputId,
+        onFilterUpdate,
+        showValueSelector,
+        t,
+        setShowValueSelector,
+      })}
+      <Button
+        aria-controls={filterItemId}
+        variant="ghost"
+        size="sm"
+        className="h-full rounded-none rounded-r-md border border-l-0 px-1.5 font-normal dark:bg-input/30"
+        onClick={() => onFilterRemove(filter.filterId as string)}
+      >
+        <X className="size-3.5" />
+      </Button>
+    </div>
+  );
 }
 
 interface FilterValueSelectorProps<TData> {
-	column: Column<TData>;
-	value: string;
-	t: (key: string, options?: Record<string, unknown>) => string;
-	onSelect: (value: string) => void;
+  column: Column<TData>;
+  value: string;
+  t: (key: string, options?: Record<string, unknown>) => string;
+  onSelect: (value: string) => void;
 }
 
 function FilterValueSelector<TData>({
-	column,
-	value,
-	t,
-	onSelect,
+  column,
+  value,
+  t,
+  onSelect,
 }: FilterValueSelectorProps<TData>) {
-	const variant = column.columnDef.meta?.variant ?? 'text';
+  const variant = column.columnDef.meta?.variant ?? "text";
 
-	switch (variant) {
-		case 'boolean':
-			return (
-				<CommandGroup>
-					<CommandItem value='true' onSelect={() => onSelect('true')}>
-						{t('table.filter.true')}
-					</CommandItem>
-					<CommandItem value='false' onSelect={() => onSelect('false')}>
-						{t('table.filter.false')}
-					</CommandItem>
-				</CommandGroup>
-			);
+  switch (variant) {
+    case "boolean":
+      return (
+        <CommandGroup>
+          <CommandItem value="true" onSelect={() => onSelect("true")}>
+            {t("table.filter.true")}
+          </CommandItem>
+          <CommandItem value="false" onSelect={() => onSelect("false")}>
+            {t("table.filter.false")}
+          </CommandItem>
+        </CommandGroup>
+      );
 
-		case 'select':
-		case 'multiSelect':
-			return (
-				<CommandGroup>
-					{column.columnDef.meta?.options?.map(option => (
-						<CommandItem
-							key={option.value}
-							value={option.value}
-							onSelect={() => onSelect(option.value)}
-						>
-							{option.icon && <option.icon />}
-							<span className='truncate'>{option.label}</span>
-							{option.count && (
-								<span className='ml-auto font-mono text-xs'>
-									{option.count}
-								</span>
-							)}
-						</CommandItem>
-					))}
-				</CommandGroup>
-			);
+    case "select":
+    case "multiSelect":
+      return (
+        <CommandGroup>
+          {column.columnDef.meta?.options?.map((option) => (
+            <CommandItem
+              key={option.value}
+              value={option.value}
+              onSelect={() => onSelect(option.value)}
+            >
+              {option.icon && <option.icon />}
+              <span className="truncate">{option.label}</span>
+              {option.count && (
+                <span className="ml-auto font-mono text-xs">
+                  {option.count}
+                </span>
+              )}
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      );
 
-		case 'date':
-		case 'dateRange':
-			return (
-				<Calendar
-					autoFocus
-					captionLayout='dropdown'
-					mode='single'
-					selected={value ? new Date(value) : undefined}
-					onSelect={date => onSelect(date?.getTime().toString() ?? '')}
-				/>
-			);
+    case "date":
+    case "dateRange":
+      return (
+        <Calendar
+          autoFocus
+          captionLayout="dropdown"
+          mode="single"
+          selected={value ? new Date(value) : undefined}
+          onSelect={(date) => onSelect(date?.getTime().toString() ?? "")}
+        />
+      );
 
-		default: {
-			const isEmpty = !value.trim();
+    default: {
+      const isEmpty = !value.trim();
 
-			return (
-				<CommandGroup>
-					<CommandItem
-						value={value}
-						onSelect={() => onSelect(value)}
-						disabled={isEmpty}
-					>
-						{isEmpty ? (
-							<>
-								<Text />
-								<span>{t('table.filter.typeToAdd')}</span>
-							</>
-						) : (
-							<>
-								<BadgeCheck />
-								<span className='truncate'>
-									{t('table.filter.filterBy', { value })}
-								</span>
-							</>
-						)}
-					</CommandItem>
-				</CommandGroup>
-			);
-		}
-	}
+      return (
+        <CommandGroup>
+          <CommandItem
+            value={value}
+            onSelect={() => onSelect(value)}
+            disabled={isEmpty}
+          >
+            {isEmpty ? (
+              <>
+                <Text />
+                <span>{t("table.filter.typeToAdd")}</span>
+              </>
+            ) : (
+              <>
+                <BadgeCheck />
+                <span className="truncate">
+                  {t("table.filter.filterBy", { value })}
+                </span>
+              </>
+            )}
+          </CommandItem>
+        </CommandGroup>
+      );
+    }
+  }
 }
 
 function onFilterInputRender<TData>({
-	filter,
-	column,
-	inputId,
-	onFilterUpdate,
-	showValueSelector,
-	t,
-	setShowValueSelector,
+  filter,
+  column,
+  inputId,
+  onFilterUpdate,
+  showValueSelector,
+  t,
+  setShowValueSelector,
 }: {
-	filter: ExtendedColumnFilter<TData>;
-	column: Column<TData>;
-	inputId: string;
-	onFilterUpdate: (
-		filterId: string,
-		updates: Partial<Omit<ExtendedColumnFilter<TData>, 'filterId'>>,
-	) => void;
-	showValueSelector: boolean;
-	t: (key: string, options?: Record<string, unknown>) => string;
-	setShowValueSelector: (value: boolean) => void;
+  filter: ExtendedColumnFilter<TData>;
+  column: Column<TData>;
+  inputId: string;
+  onFilterUpdate: (
+    filterId: string,
+    updates: Partial<Omit<ExtendedColumnFilter<TData>, "filterId">>,
+  ) => void;
+  showValueSelector: boolean;
+  t: (key: string, options?: Record<string, unknown>) => string;
+  setShowValueSelector: (value: boolean) => void;
 }) {
-	if (filter.operator === 'isEmpty' || filter.operator === 'isNotEmpty') {
-		return (
-			<div
-				id={inputId}
-				role='status'
-				aria-label={`${column.columnDef.meta?.label} ${t(
-					filter.operator === 'isEmpty'
-						? 'table.filter.aria.empty'
-						: 'table.filter.aria.notEmpty',
-				)}`}
-				aria-live='polite'
-				className='h-full w-16 rounded-none border bg-transparent px-1.5 py-0.5 text-muted-foreground dark:bg-input/30'
-			/>
-		);
-	}
+  if (filter.operator === "isEmpty" || filter.operator === "isNotEmpty") {
+    return (
+      <div
+        id={inputId}
+        role="status"
+        aria-label={`${column.columnDef.meta?.label} ${t(
+          filter.operator === "isEmpty"
+            ? "table.filter.aria.empty"
+            : "table.filter.aria.notEmpty",
+        )}`}
+        aria-live="polite"
+        className="h-full w-16 rounded-none border bg-transparent px-1.5 py-0.5 text-muted-foreground dark:bg-input/30"
+      />
+    );
+  }
 
-	switch (filter.variant) {
-		case 'text':
-		case 'number':
-		case 'range': {
-			if (
-				(filter.variant === 'range' && filter.operator === 'isBetween') ||
-				filter.operator === 'isBetween'
-			) {
-				return (
-					<DataTableRangeFilter
-						filter={filter}
-						column={column}
-						inputId={inputId}
-						onFilterUpdate={onFilterUpdate}
-						className="size-full max-w-28 gap-0 **:data-[slot='range-min']:border-r-0 [&_input]:rounded-none [&_input]:px-1.5"
-					/>
-				);
-			}
+  switch (filter.variant) {
+    case "text":
+    case "number":
+    case "range": {
+      if (
+        (filter.variant === "range" && filter.operator === "isBetween") ||
+        filter.operator === "isBetween"
+      ) {
+        return (
+          <DataTableRangeFilter
+            filter={filter}
+            column={column}
+            inputId={inputId}
+            onFilterUpdate={onFilterUpdate}
+            className="size-full max-w-28 gap-0 **:data-[slot='range-min']:border-r-0 [&_input]:rounded-none [&_input]:px-1.5"
+          />
+        );
+      }
 
-			const isNumber =
-				filter.variant === 'number' || filter.variant === 'range';
+      const isNumber =
+        filter.variant === "number" || filter.variant === "range";
 
-			return (
-				<Input
-					id={inputId}
-					type={isNumber ? 'number' : 'text'}
-					inputMode={isNumber ? 'numeric' : undefined}
-					className='h-full w-24 rounded-none px-1.5'
-					defaultValue={typeof filter.value === 'string' ? filter.value : ''}
-					placeholder={
-						column.columnDef.meta?.placeholder ?? t('table.filter.enterValue')
-					}
-					onChange={event =>
-						onFilterUpdate(filter.filterId as string, {
-							value: event.target.value,
-						})
-					}
-				/>
-			);
-		}
+      return (
+        <Input
+          id={inputId}
+          type={isNumber ? "number" : "text"}
+          inputMode={isNumber ? "numeric" : undefined}
+          className="h-full w-24 rounded-none px-1.5"
+          defaultValue={typeof filter.value === "string" ? filter.value : ""}
+          placeholder={
+            column.columnDef.meta?.placeholder ?? t("table.filter.enterValue")
+          }
+          onChange={(event) =>
+            onFilterUpdate(filter.filterId as string, {
+              value: event.target.value,
+            })
+          }
+        />
+      );
+    }
 
-		case 'boolean': {
-			const inputListboxId = `${inputId}-listbox`;
-			const options = column.columnDef.meta?.options ?? [];
-			return (
-				<Select
-					open={showValueSelector}
-					onOpenChange={setShowValueSelector}
-					value={typeof filter.value === 'string' ? filter.value : 'true'}
-					onValueChange={(value: 'true' | 'false') =>
-						onFilterUpdate(filter.filterId as string, { value })
-					}
-				>
-					<SelectTrigger
-						id={inputId}
-						aria-controls={inputListboxId}
-						className='rounded-none bg-transparent px-1.5 py-0.5 [&_svg]:hidden'
-					>
-						<SelectValue
-							placeholder={
-								filter.value ? t('table.filter.true') : t('table.filter.false')
-							}
-						/>
-					</SelectTrigger>
-					<SelectContent id={inputListboxId}>
-						{options.length > 0 ? (
-							options.map(option => (
-								<SelectItem key={option.value} value={option.value}>
-									{option.label}
-								</SelectItem>
-							))
-						) : (
-							<>
-								<SelectItem value='true'>{t('table.filter.true')}</SelectItem>
-								<SelectItem value='false'>{t('table.filter.false')}</SelectItem>
-							</>
-						)}
-					</SelectContent>
-				</Select>
-			);
-		}
+    case "boolean": {
+      const inputListboxId = `${inputId}-listbox`;
+      const options = column.columnDef.meta?.options ?? [];
+      return (
+        <Select
+          open={showValueSelector}
+          onOpenChange={setShowValueSelector}
+          value={typeof filter.value === "string" ? filter.value : "true"}
+          onValueChange={(value: "true" | "false") =>
+            onFilterUpdate(filter.filterId as string, { value })
+          }
+        >
+          <SelectTrigger
+            id={inputId}
+            aria-controls={inputListboxId}
+            className="rounded-none bg-transparent px-1.5 py-0.5 [&_svg]:hidden"
+          >
+            <SelectValue
+              placeholder={
+                filter.value ? t("table.filter.true") : t("table.filter.false")
+              }
+            />
+          </SelectTrigger>
+          <SelectContent id={inputListboxId}>
+            {options.length > 0 ? (
+              options.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))
+            ) : (
+              <>
+                <SelectItem value="true">{t("table.filter.true")}</SelectItem>
+                <SelectItem value="false">{t("table.filter.false")}</SelectItem>
+              </>
+            )}
+          </SelectContent>
+        </Select>
+      );
+    }
 
-		case 'select':
-		case 'multiSelect': {
-			const inputListboxId = `${inputId}-listbox`;
+    case "select":
+    case "multiSelect": {
+      const inputListboxId = `${inputId}-listbox`;
 
-			const options = column.columnDef.meta?.options ?? [];
-			const selectedValues = Array.isArray(filter.value)
-				? filter.value
-				: [filter.value];
+      const options = column.columnDef.meta?.options ?? [];
+      const selectedValues = Array.isArray(filter.value)
+        ? filter.value
+        : [filter.value];
 
-			const selectedOptions = options.filter(option =>
-				selectedValues.includes(option.value),
-			);
+      const selectedOptions = options.filter((option) =>
+        selectedValues.includes(option.value),
+      );
 
-			return (
-				<Popover open={showValueSelector} onOpenChange={setShowValueSelector}>
-					<PopoverTrigger asChild>
-						<Button
-							id={inputId}
-							aria-controls={inputListboxId}
-							variant='ghost'
-							size='sm'
-							className='h-full min-w-16 rounded-none border px-1.5 font-normal dark:bg-input/30'
-						>
-							{selectedOptions.length === 0 ? (
-								filter.variant === 'multiSelect' ? (
-									t('table.filter.selectOptions')
-								) : (
-									t('table.filter.selectOption')
-								)
-							) : (
-								<>
-									<div className='flex items-center -space-x-2 rtl:space-x-reverse'>
-										{selectedOptions.map(selectedOption =>
-											selectedOption.icon ? (
-												<div
-													key={selectedOption.value}
-													className='rounded-full border bg-background p-0.5'
-												>
-													<selectedOption.icon className='size-3.5' />
-												</div>
-											) : null,
-										)}
-									</div>
-									<span className='truncate'>
-										{selectedOptions.length > 1
-											? t('table.filter.selectedCount', {
-													count: selectedOptions.length,
-												})
-											: selectedOptions[0]?.label}
-									</span>
-								</>
-							)}
-						</Button>
-					</PopoverTrigger>
-					<PopoverContent
-						id={inputListboxId}
-						align='start'
-						className='w-48 p-0'
-					>
-						<Command>
-							<CommandInput placeholder={t('table.filter.searchOptions')} />
-							<CommandList>
-								<CommandEmpty>{t('table.filter.noOptionsFound')}</CommandEmpty>
-								<CommandGroup>
-									{options.map(option => (
-										<CommandItem
-											key={option.value}
-											value={option.value}
-											onSelect={() => {
-												const value =
-													filter.variant === 'multiSelect'
-														? selectedValues.includes(option.value)
-															? selectedValues.filter(v => v !== option.value)
-															: [...selectedValues, option.value]
-														: option.value;
-												onFilterUpdate(filter.filterId as string, { value });
-											}}
-										>
-											{option.icon && <option.icon />}
-											<span className='truncate'>{option.label}</span>
-											{filter.variant === 'multiSelect' && (
-												<Check
-													className={cn(
-														'ml-auto',
-														selectedValues.includes(option.value)
-															? 'opacity-100'
-															: 'opacity-0',
-													)}
-												/>
-											)}
-										</CommandItem>
-									))}
-								</CommandGroup>
-							</CommandList>
-						</Command>
-					</PopoverContent>
-				</Popover>
-			);
-		}
+      return (
+        <Popover open={showValueSelector} onOpenChange={setShowValueSelector}>
+          <PopoverTrigger asChild>
+            <Button
+              id={inputId}
+              aria-controls={inputListboxId}
+              variant="ghost"
+              size="sm"
+              className="h-full min-w-16 rounded-none border px-1.5 font-normal dark:bg-input/30"
+            >
+              {selectedOptions.length === 0 ? (
+                filter.variant === "multiSelect" ? (
+                  t("table.filter.selectOptions")
+                ) : (
+                  t("table.filter.selectOption")
+                )
+              ) : (
+                <>
+                  <div className="flex items-center -space-x-2 rtl:space-x-reverse">
+                    {selectedOptions.map((selectedOption) =>
+                      selectedOption.icon ? (
+                        <div
+                          key={selectedOption.value}
+                          className="rounded-full border bg-background p-0.5"
+                        >
+                          <selectedOption.icon className="size-3.5" />
+                        </div>
+                      ) : null,
+                    )}
+                  </div>
+                  <span className="truncate">
+                    {selectedOptions.length > 1
+                      ? t("table.filter.selectedCount", {
+                          count: selectedOptions.length,
+                        })
+                      : selectedOptions[0]?.label}
+                  </span>
+                </>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            id={inputListboxId}
+            align="start"
+            className="w-48 p-0"
+          >
+            <Command>
+              <CommandInput placeholder={t("table.filter.searchOptions")} />
+              <CommandList>
+                <CommandEmpty>{t("table.filter.noOptionsFound")}</CommandEmpty>
+                <CommandGroup>
+                  {options.map((option) => (
+                    <CommandItem
+                      key={option.value}
+                      value={option.value}
+                      onSelect={() => {
+                        const value =
+                          filter.variant === "multiSelect"
+                            ? selectedValues.includes(option.value)
+                              ? selectedValues.filter((v) => v !== option.value)
+                              : [...selectedValues, option.value]
+                            : option.value;
+                        onFilterUpdate(filter.filterId as string, { value });
+                      }}
+                    >
+                      {option.icon && <option.icon />}
+                      <span className="truncate">{option.label}</span>
+                      {filter.variant === "multiSelect" && (
+                        <Check
+                          className={cn(
+                            "ml-auto",
+                            selectedValues.includes(option.value)
+                              ? "opacity-100"
+                              : "opacity-0",
+                          )}
+                        />
+                      )}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      );
+    }
 
-		case 'date':
-		case 'dateRange': {
-			const inputListboxId = `${inputId}-listbox`;
+    case "date":
+    case "dateRange": {
+      const inputListboxId = `${inputId}-listbox`;
 
-			const dateValue = Array.isArray(filter.value)
-				? filter.value.filter(Boolean)
-				: [filter.value, filter.value].filter(Boolean);
+      const dateValue = Array.isArray(filter.value)
+        ? filter.value.filter(Boolean)
+        : [filter.value, filter.value].filter(Boolean);
 
-			const startDate = dateValue[0]
-				? new Date(Number(dateValue[0]))
-				: undefined;
-			const endDate = dateValue[1] ? new Date(Number(dateValue[1])) : undefined;
+      const startDate = dateValue[0]
+        ? new Date(Number(dateValue[0]))
+        : undefined;
+      const endDate = dateValue[1] ? new Date(Number(dateValue[1])) : undefined;
 
-			const isSameDate =
-				startDate &&
-				endDate &&
-				startDate.toDateString() === endDate.toDateString();
+      const isSameDate =
+        startDate &&
+        endDate &&
+        startDate.toDateString() === endDate.toDateString();
 
-			const displayValue =
-				filter.operator === 'isBetween' && dateValue.length === 2 && !isSameDate
-					? `${formatDate(startDate, { month: 'short' })} - ${formatDate(endDate, { month: 'short' })}`
-					: startDate
-						? formatDate(startDate, { month: 'short' })
-						: t('table.filter.pickDate');
+      const displayValue =
+        filter.operator === "isBetween" && dateValue.length === 2 && !isSameDate
+          ? `${formatDate(startDate, { month: "short" })} - ${formatDate(endDate, { month: "short" })}`
+          : startDate
+            ? formatDate(startDate, { month: "short" })
+            : t("table.filter.pickDate");
 
-			return (
-				<Popover open={showValueSelector} onOpenChange={setShowValueSelector}>
-					<PopoverTrigger asChild>
-						<Button
-							id={inputId}
-							aria-controls={inputListboxId}
-							variant='ghost'
-							size='sm'
-							className={cn(
-								'h-full rounded-none border px-1.5 font-normal dark:bg-input/30',
-								!filter.value && 'text-muted-foreground',
-							)}
-						>
-							<CalendarIcon className='size-3.5' />
-							<span className='truncate'>{displayValue}</span>
-						</Button>
-					</PopoverTrigger>
-					<PopoverContent
-						id={inputListboxId}
-						align='start'
-						className='w-auto p-0'
-					>
-						{filter.operator === 'isBetween' ? (
-							<Calendar
-								autoFocus
-								captionLayout='dropdown'
-								mode='range'
-								selected={
-									dateValue.length === 2
-										? {
-												from: new Date(Number(dateValue[0])),
-												to: new Date(Number(dateValue[1])),
-											}
-										: {
-												from: new Date(),
-												to: new Date(),
-											}
-								}
-								onSelect={date => {
-									onFilterUpdate(filter.filterId as string, {
-										value: date
-											? [
-													(date.from?.getTime() ?? '').toString(),
-													(date.to?.getTime() ?? '').toString(),
-												]
-											: [],
-									});
-								}}
-							/>
-						) : (
-							<Calendar
-								autoFocus
-								captionLayout='dropdown'
-								mode='single'
-								selected={
-									dateValue[0] ? new Date(Number(dateValue[0])) : undefined
-								}
-								onSelect={date => {
-									onFilterUpdate(filter.filterId as string, {
-										value: (date?.getTime() ?? '').toString(),
-									});
-								}}
-							/>
-						)}
-					</PopoverContent>
-				</Popover>
-			);
-		}
+      return (
+        <Popover open={showValueSelector} onOpenChange={setShowValueSelector}>
+          <PopoverTrigger asChild>
+            <Button
+              id={inputId}
+              aria-controls={inputListboxId}
+              variant="ghost"
+              size="sm"
+              className={cn(
+                "h-full rounded-none border px-1.5 font-normal dark:bg-input/30",
+                !filter.value && "text-muted-foreground",
+              )}
+            >
+              <CalendarIcon className="size-3.5" />
+              <span className="truncate">{displayValue}</span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            id={inputListboxId}
+            align="start"
+            className="w-auto p-0"
+          >
+            {filter.operator === "isBetween" ? (
+              <Calendar
+                autoFocus
+                captionLayout="dropdown"
+                mode="range"
+                selected={
+                  dateValue.length === 2
+                    ? {
+                        from: new Date(Number(dateValue[0])),
+                        to: new Date(Number(dateValue[1])),
+                      }
+                    : {
+                        from: new Date(),
+                        to: new Date(),
+                      }
+                }
+                onSelect={(date) => {
+                  onFilterUpdate(filter.filterId as string, {
+                    value: date
+                      ? [
+                          (date.from?.getTime() ?? "").toString(),
+                          (date.to?.getTime() ?? "").toString(),
+                        ]
+                      : [],
+                  });
+                }}
+              />
+            ) : (
+              <Calendar
+                autoFocus
+                captionLayout="dropdown"
+                mode="single"
+                selected={
+                  dateValue[0] ? new Date(Number(dateValue[0])) : undefined
+                }
+                onSelect={(date) => {
+                  onFilterUpdate(filter.filterId as string, {
+                    value: (date?.getTime() ?? "").toString(),
+                  });
+                }}
+              />
+            )}
+          </PopoverContent>
+        </Popover>
+      );
+    }
 
-		default:
-			return null;
-	}
+    default:
+      return null;
+  }
 }

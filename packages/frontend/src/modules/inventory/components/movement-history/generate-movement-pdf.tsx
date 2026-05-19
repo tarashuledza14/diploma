@@ -1,56 +1,56 @@
-import { StockMovement } from '@/modules/inventory/interfaces/get-inventory.interfaces';
+import { StockMovement } from "@/modules/inventory/interfaces/get-inventory.interfaces";
 
 const formatDateSimple = (date: Date | string | number) => {
-	const d = new Date(date);
-	return d.toLocaleDateString('uk-UA', {
-		year: 'numeric',
-		month: 'long',
-		day: 'numeric',
-	});
+  const d = new Date(date);
+  return d.toLocaleDateString("uk-UA", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 };
 
-const getMovementTypeLabel = (type: StockMovement['type']) => {
-	switch (type) {
-		case 'RECEIVED':
-			return 'Надходження';
-		case 'ISSUED':
-			return 'Видано';
-		case 'RESERVED':
-			return 'Зарезервовано';
-		case 'RETURNED':
-			return 'Повернено';
-		default:
-			return type;
-	}
+const getMovementTypeLabel = (type: StockMovement["type"]) => {
+  switch (type) {
+    case "RECEIVED":
+      return "Надходження";
+    case "ISSUED":
+      return "Видано";
+    case "RESERVED":
+      return "Зарезервовано";
+    case "RETURNED":
+      return "Повернено";
+    default:
+      return type;
+  }
 };
 
-const getMovementColor = (type: StockMovement['type']) => {
-	switch (type) {
-		case 'RECEIVED':
-			return '#16a34a';
-		case 'ISSUED':
-			return '#2563eb';
-		case 'RESERVED':
-			return '#d97706';
-		case 'RETURNED':
-			return '#9333ea';
-		default:
-			return '#6b7280';
-	}
+const getMovementColor = (type: StockMovement["type"]) => {
+  switch (type) {
+    case "RECEIVED":
+      return "#16a34a";
+    case "ISSUED":
+      return "#2563eb";
+    case "RESERVED":
+      return "#d97706";
+    case "RETURNED":
+      return "#9333ea";
+    default:
+      return "#6b7280";
+  }
 };
 
 export async function generateMovementHistoryPDF(
-	partName: string,
-	partSku: string,
-	history: StockMovement[],
-	stats: {
-		received: number;
-		issued: number;
-		reserved: number;
-		returned: number;
-	},
+  partName: string,
+  partSku: string,
+  history: StockMovement[],
+  stats: {
+    received: number;
+    issued: number;
+    reserved: number;
+    returned: number;
+  },
 ) {
-	const html = `
+  const html = `
 		<!DOCTYPE html>
 		<html lang="uk-UA">
 		<head>
@@ -173,47 +173,47 @@ export async function generateMovementHistoryPDF(
 			<div class="history-title">Деталі рухів</div>
 
 			${
-				history.length === 0
-					? '<div class="empty-state">Немає записів</div>'
-					: history
-							.map(
-								(mov) =>
-									`
+        history.length === 0
+          ? '<div class="empty-state">Немає записів</div>'
+          : history
+              .map(
+                (mov) =>
+                  `
 							<div class="history-item" style="border-left-color: ${getMovementColor(mov.type)};">
 								<div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
 									<div class="movement-type" style="color: ${getMovementColor(mov.type)};">
 										${getMovementTypeLabel(mov.type)}
 									</div>
 									<div class="quantity">
-										${mov.type === 'RECEIVED' || mov.type === 'RETURNED' ? '+' : '-'}${Math.abs(mov.quantity)}
+										${mov.type === "RECEIVED" || mov.type === "RETURNED" ? "+" : "-"}${Math.abs(mov.quantity)}
 									</div>
 								</div>
 								<div class="reason">${mov.reason}</div>
 								<div class="metadata">
 									<span>${formatDateSimple(mov.createdAt)}</span>
-									${mov.order?.id ? `<span>${mov.order.id}</span>` : ''}
-									${mov.user?.fullName ? `<span>${mov.user.fullName}</span>` : ''}
+									${mov.order?.id ? `<span>${mov.order.id}</span>` : ""}
+									${mov.user?.fullName ? `<span>${mov.user.fullName}</span>` : ""}
 								</div>
 							</div>
 						`,
-							)
-							.join('')
-			}
+              )
+              .join("")
+      }
 		</body>
 		</html>
 	`;
 
-	const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-	const url = URL.createObjectURL(blob);
-	const printWindow = window.open(url, '_blank');
+  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const printWindow = window.open(url, "_blank");
 
-	if (printWindow) {
-		printWindow.addEventListener('load', () => {
-			printWindow.print();
-			setTimeout(() => {
-				printWindow.close();
-				URL.revokeObjectURL(url);
-			}, 500);
-		});
-	}
+  if (printWindow) {
+    printWindow.addEventListener("load", () => {
+      printWindow.print();
+      setTimeout(() => {
+        printWindow.close();
+        URL.revokeObjectURL(url);
+      }, 500);
+    });
+  }
 }

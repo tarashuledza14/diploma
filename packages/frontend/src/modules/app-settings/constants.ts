@@ -1,1 +1,1 @@
-export const DEFAULT_APP_NAME = 'AutoCRM';
+export const DEFAULT_APP_NAME = "AutoCRM";

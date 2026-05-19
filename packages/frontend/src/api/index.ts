@@ -1,1 +1,1 @@
-export { instance } from '@/api/interceptor';
+export { instance } from "@/api/interceptor";

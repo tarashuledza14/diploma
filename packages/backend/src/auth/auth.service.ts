@@ -1,254 +1,254 @@
 import {
-	BadRequestException,
-	Injectable,
-	NotFoundException,
-	UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { hash, verify } from 'argon2';
-import { createHash } from 'crypto';
-import { CookieOptions, Response } from 'express';
-import { User } from 'prisma/generated/prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { UserService } from 'src/user/user.service';
-import { AcceptInviteDto } from './dto/accept-invite.dto';
-import { AuthDto, RegisterDto } from './dto/auth.dto';
-import { ChangePasswordDto } from './dto/change-password.dto';
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { hash, verify } from "argon2";
+import { createHash } from "crypto";
+import { CookieOptions, Response } from "express";
+import { User } from "prisma/generated/prisma/client";
+import { PrismaService } from "src/prisma/prisma.service";
+import { UserService } from "src/user/user.service";
+import { AcceptInviteDto } from "./dto/accept-invite.dto";
+import { AuthDto, RegisterDto } from "./dto/auth.dto";
+import { ChangePasswordDto } from "./dto/change-password.dto";
 
 @Injectable()
 export class AuthService {
-	readonly EXPIRE_DAY_REFRESH_TOKEN = 14;
-	readonly REFRESH_TOKEN_NAME = 'refreshToken';
+  readonly EXPIRE_DAY_REFRESH_TOKEN = 14;
+  readonly REFRESH_TOKEN_NAME = "refreshToken";
 
-	constructor(
-		private userService: UserService,
-		private jwtService: JwtService,
-		private readonly db: PrismaService,
-	) {}
+  constructor(
+    private userService: UserService,
+    private jwtService: JwtService,
+    private readonly db: PrismaService,
+  ) {}
 
-	async login(dto: AuthDto) {
-		const user = await this.validateUser(dto);
-		const updatedUser = await this.userService.updateLastLoginAt(user.id);
-		const tokens = await this.issueTokens(updatedUser.id);
+  async login(dto: AuthDto) {
+    const user = await this.validateUser(dto);
+    const updatedUser = await this.userService.updateLastLoginAt(user.id);
+    const tokens = await this.issueTokens(updatedUser.id);
 
-		return {
-			user: this.returnUserFields(updatedUser),
-			...tokens,
-		};
-	}
+    return {
+      user: this.returnUserFields(updatedUser),
+      ...tokens,
+    };
+  }
 
-	async changePassword(userId: string, dto: ChangePasswordDto) {
-		const user = await this.userService.findById(userId);
-		if (!user) {
-			throw new NotFoundException('User not found');
-		}
+  async changePassword(userId: string, dto: ChangePasswordDto) {
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
 
-		const isValidCurrentPassword = await verify(
-			user.password,
-			dto.currentPassword,
-		);
-		if (!isValidCurrentPassword) {
-			throw new BadRequestException('Current password is incorrect');
-		}
+    const isValidCurrentPassword = await verify(
+      user.password,
+      dto.currentPassword,
+    );
+    if (!isValidCurrentPassword) {
+      throw new BadRequestException("Current password is incorrect");
+    }
 
-		const isSamePassword = await verify(user.password, dto.newPassword);
-		if (isSamePassword) {
-			throw new BadRequestException(
-				'New password must be different from current password',
-			);
-		}
+    const isSamePassword = await verify(user.password, dto.newPassword);
+    if (isSamePassword) {
+      throw new BadRequestException(
+        "New password must be different from current password",
+      );
+    }
 
-		const hashedPassword = await hash(dto.newPassword);
-		await this.userService.updatePassword(user.id, hashedPassword);
+    const hashedPassword = await hash(dto.newPassword);
+    await this.userService.updatePassword(user.id, hashedPassword);
 
-		return { success: true };
-	}
+    return { success: true };
+  }
 
-	async setPassword(userId: string, newPassword: string) {
-		const user = await this.userService.findById(userId);
-		if (!user) {
-			throw new NotFoundException('User not found');
-		}
+  async setPassword(userId: string, newPassword: string) {
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
 
-		const hashedPassword = await hash(newPassword);
-		await this.userService.updatePassword(user.id, hashedPassword);
+    const hashedPassword = await hash(newPassword);
+    await this.userService.updatePassword(user.id, hashedPassword);
 
-		return { success: true };
-	}
-	async register(dto: RegisterDto) {
-		const existUser = await this.userService.findByEmail(dto.email, {
-			includeDeleted: true,
-		});
-		if (existUser) throw new BadRequestException('User already exist!');
-		const hashedPassword = await hash(dto.password);
-		const user = await this.userService.create({
-			...dto,
-			password: hashedPassword,
-		});
+    return { success: true };
+  }
+  async register(dto: RegisterDto) {
+    const existUser = await this.userService.findByEmail(dto.email, {
+      includeDeleted: true,
+    });
+    if (existUser) throw new BadRequestException("User already exist!");
+    const hashedPassword = await hash(dto.password);
+    const user = await this.userService.create({
+      ...dto,
+      password: hashedPassword,
+    });
 
-		const tokens = await this.issueTokens(user.id);
+    const tokens = await this.issueTokens(user.id);
 
-		return {
-			user: this.returnUserFields(user),
-			...tokens,
-		};
-	}
+    return {
+      user: this.returnUserFields(user),
+      ...tokens,
+    };
+  }
 
-	async acceptInvite(dto: AcceptInviteDto) {
-		const tokenHash = this.hashInviteToken(dto.token);
-		const invite = await this.db.teamInvite.findUnique({
-			where: {
-				tokenHash,
-			},
-			include: {
-				user: true,
-			},
-		});
+  async acceptInvite(dto: AcceptInviteDto) {
+    const tokenHash = this.hashInviteToken(dto.token);
+    const invite = await this.db.teamInvite.findUnique({
+      where: {
+        tokenHash,
+      },
+      include: {
+        user: true,
+      },
+    });
 
-		if (!invite || invite.usedAt || invite.revokedAt) {
-			throw new BadRequestException('Invite token is invalid');
-		}
+    if (!invite || invite.usedAt || invite.revokedAt) {
+      throw new BadRequestException("Invite token is invalid");
+    }
 
-		if (invite.expiresAt.getTime() < Date.now()) {
-			throw new BadRequestException('Invite token has expired');
-		}
+    if (invite.expiresAt.getTime() < Date.now()) {
+      throw new BadRequestException("Invite token has expired");
+    }
 
-		if (invite.user.deletedAt) {
-			throw new BadRequestException('Invited user is blocked');
-		}
+    if (invite.user.deletedAt) {
+      throw new BadRequestException("Invited user is blocked");
+    }
 
-		const hashedPassword = await hash(dto.password);
-		const fullName = dto.fullName?.trim();
+    const hashedPassword = await hash(dto.password);
+    const fullName = dto.fullName?.trim();
 
-		const updatedUser = await this.db.$transaction(async tx => {
-			const user = await tx.user.update({
-				where: {
-					id: invite.userId,
-				},
-				data: {
-					password: hashedPassword,
-					...(fullName ? { fullName } : {}),
-					lastLoginAt: new Date(),
-				},
-			});
+    const updatedUser = await this.db.$transaction(async (tx) => {
+      const user = await tx.user.update({
+        where: {
+          id: invite.userId,
+        },
+        data: {
+          password: hashedPassword,
+          ...(fullName ? { fullName } : {}),
+          lastLoginAt: new Date(),
+        },
+      });
 
-			await tx.teamInvite.update({
-				where: {
-					id: invite.id,
-				},
-				data: {
-					usedAt: new Date(),
-				},
-			});
+      await tx.teamInvite.update({
+        where: {
+          id: invite.id,
+        },
+        data: {
+          usedAt: new Date(),
+        },
+      });
 
-			await tx.teamInvite.updateMany({
-				where: {
-					userId: invite.userId,
-					id: {
-						not: invite.id,
-					},
-					usedAt: null,
-					revokedAt: null,
-				},
-				data: {
-					revokedAt: new Date(),
-				},
-			});
+      await tx.teamInvite.updateMany({
+        where: {
+          userId: invite.userId,
+          id: {
+            not: invite.id,
+          },
+          usedAt: null,
+          revokedAt: null,
+        },
+        data: {
+          revokedAt: new Date(),
+        },
+      });
 
-			return user;
-		});
+      return user;
+    });
 
-		const tokens = await this.issueTokens(updatedUser.id);
+    const tokens = await this.issueTokens(updatedUser.id);
 
-		return {
-			user: this.returnUserFields(updatedUser),
-			...tokens,
-		};
-	}
+    return {
+      user: this.returnUserFields(updatedUser),
+      ...tokens,
+    };
+  }
 
-	async getNewTokens(refreshToken: string) {
-		const result = await this.jwtService.verifyAsync(refreshToken);
-		if (!result) throw new UnauthorizedException('Invalid refresh token');
+  async getNewTokens(refreshToken: string) {
+    const result = await this.jwtService.verifyAsync(refreshToken);
+    if (!result) throw new UnauthorizedException("Invalid refresh token");
 
-		const user = await this.userService.findById(result.id);
-		if (!user) {
-			throw new UnauthorizedException('User not found');
-		}
+    const user = await this.userService.findById(result.id);
+    if (!user) {
+      throw new UnauthorizedException("User not found");
+    }
 
-		const tokens = await this.issueTokens(user.id);
+    const tokens = await this.issueTokens(user.id);
 
-		return {
-			user: this.returnUserFields(user),
-			...tokens,
-		};
-	}
-	addRefreshTokenToResponse(res: Response, refreshToken: string) {
-		const expireIn = new Date();
-		expireIn.setDate(expireIn.getDate() + this.EXPIRE_DAY_REFRESH_TOKEN);
+    return {
+      user: this.returnUserFields(user),
+      ...tokens,
+    };
+  }
+  addRefreshTokenToResponse(res: Response, refreshToken: string) {
+    const expireIn = new Date();
+    expireIn.setDate(expireIn.getDate() + this.EXPIRE_DAY_REFRESH_TOKEN);
 
-		res.cookie(
-			this.REFRESH_TOKEN_NAME,
-			refreshToken,
-			this.getRefreshTokenCookieOptions(expireIn),
-		);
-	}
-	removeRefreshTokenToResponse(res: Response) {
-		res.cookie(
-			this.REFRESH_TOKEN_NAME,
-			'',
-			this.getRefreshTokenCookieOptions(new Date(0)),
-		);
-	}
+    res.cookie(
+      this.REFRESH_TOKEN_NAME,
+      refreshToken,
+      this.getRefreshTokenCookieOptions(expireIn),
+    );
+  }
+  removeRefreshTokenToResponse(res: Response) {
+    res.cookie(
+      this.REFRESH_TOKEN_NAME,
+      "",
+      this.getRefreshTokenCookieOptions(new Date(0)),
+    );
+  }
 
-	private getRefreshTokenCookieOptions(expires: Date): CookieOptions {
-		const isProduction = process.env.NODE_ENV === 'production';
-		const cookieDomain = process.env.AUTH_COOKIE_DOMAIN;
+  private getRefreshTokenCookieOptions(expires: Date): CookieOptions {
+    const isProduction = process.env.NODE_ENV === "production";
+    const cookieDomain = process.env.AUTH_COOKIE_DOMAIN;
 
-		return {
-			httpOnly: true,
-			expires,
-			path: '/',
-			secure: isProduction,
-			sameSite: isProduction ? 'none' : 'lax',
-			...(cookieDomain ? { domain: cookieDomain } : {}),
-		};
-	}
+    return {
+      httpOnly: true,
+      expires,
+      path: "/",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+      ...(cookieDomain ? { domain: cookieDomain } : {}),
+    };
+  }
 
-	private async issueTokens(userId: string) {
-		const data = { id: userId };
+  private async issueTokens(userId: string) {
+    const data = { id: userId };
 
-		const accessToken = this.jwtService.sign(data, {
-			expiresIn: '1h',
-		});
-		const refreshToken = this.jwtService.sign(data, {
-			expiresIn: '14d',
-		});
+    const accessToken = this.jwtService.sign(data, {
+      expiresIn: "1h",
+    });
+    const refreshToken = this.jwtService.sign(data, {
+      expiresIn: "14d",
+    });
 
-		return { accessToken, refreshToken };
-	}
-	private async validateUser(dto: AuthDto) {
-		const user = await this.userService.findByEmail(dto.email);
-		if (!user) throw new NotFoundException('User not found');
+    return { accessToken, refreshToken };
+  }
+  private async validateUser(dto: AuthDto) {
+    const user = await this.userService.findByEmail(dto.email);
+    if (!user) throw new NotFoundException("User not found");
 
-		const isValid = await verify(user.password, dto.password);
+    const isValid = await verify(user.password, dto.password);
 
-		if (!isValid) throw new UnauthorizedException('User not authorized');
+    if (!isValid) throw new UnauthorizedException("User not authorized");
 
-		return user;
-	}
+    return user;
+  }
 
-	private hashInviteToken(token: string): string {
-		return createHash('sha256').update(token).digest('hex');
-	}
+  private hashInviteToken(token: string): string {
+    return createHash("sha256").update(token).digest("hex");
+  }
 
-	private returnUserFields(user: User) {
-		return {
-			id: user.id,
-			fullName: user.fullName,
-			email: user.email,
-			role: user.role,
-			roles: user.role,
-			organizationId: user.organizationId,
-		};
-	}
+  private returnUserFields(user: User) {
+    return {
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+      roles: user.role,
+      organizationId: user.organizationId,
+    };
+  }
 }

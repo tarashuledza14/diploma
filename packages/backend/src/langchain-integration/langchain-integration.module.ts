@@ -1,39 +1,39 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { DmsModule } from 'src/dms/dms.module';
-import { NotificationsModule } from 'src/notifications/notifications.module';
-import { PrismaModule } from 'src/prisma/prisma.module';
-import { ChatController } from './controllers/chat.controller';
-import { DocumentController } from './controllers/document.controller';
-import { LangchainIntegrationService } from './graph/langchain-integration.service';
-import { DbNodeService } from './graph/nodes/db-node/db.node';
-import { RagNodeService } from './graph/nodes/rag-node/rag.node';
-import { SupervisorNodeService } from './graph/nodes/supervisor.node';
-import { DocumentParserController } from './services/document-parser.controller';
-import { DocumentParserService } from './services/document-parser.service';
-import { EmbeddingsService } from './services/embeddings.service';
-import { ManualIngestionPipelineService } from './services/manual-ingestion-pipeline.service';
-import { ManualOriginalDocstoreService } from './services/manual-original-docstore.service';
-import { ManualRetrieverService } from './services/manual-retriever.service';
-import { QdrantService } from './services/qdrant.service';
-import { SmartPdfService } from './services/smart-pdf.service';
+import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import { DmsModule } from "src/dms/dms.module";
+import { NotificationsModule } from "src/notifications/notifications.module";
+import { PrismaModule } from "src/prisma/prisma.module";
+import { ChatController } from "./controllers/chat.controller";
+import { DocumentController } from "./controllers/document.controller";
+import { LangchainIntegrationService } from "./graph/langchain-integration.service";
+import { DbNodeService } from "./graph/nodes/db-node/db.node";
+import { RagNodeService } from "./graph/nodes/rag-node/rag.node";
+import { SupervisorNodeService } from "./graph/nodes/supervisor.node";
+import { DocumentParserController } from "./services/document-parser.controller";
+import { DocumentParserService } from "./services/document-parser.service";
+import { EmbeddingsService } from "./services/embeddings.service";
+import { ManualIngestionPipelineService } from "./services/manual-ingestion-pipeline.service";
+import { ManualOriginalDocstoreService } from "./services/manual-original-docstore.service";
+import { ManualRetrieverService } from "./services/manual-retriever.service";
+import { QdrantService } from "./services/qdrant.service";
+import { SmartPdfService } from "./services/smart-pdf.service";
 
 @Module({
-	imports: [ConfigModule, PrismaModule, DmsModule, NotificationsModule],
-	controllers: [DocumentController, ChatController, DocumentParserController],
-	providers: [
-		LangchainIntegrationService,
-		DbNodeService,
-		RagNodeService,
-		SupervisorNodeService,
-		DocumentParserService,
-		ManualIngestionPipelineService,
-		ManualOriginalDocstoreService,
-		ManualRetrieverService,
-		SmartPdfService,
-		EmbeddingsService,
-		QdrantService,
-	],
-	exports: [EmbeddingsService, QdrantService],
+  imports: [ConfigModule, PrismaModule, DmsModule, NotificationsModule],
+  controllers: [DocumentController, ChatController, DocumentParserController],
+  providers: [
+    LangchainIntegrationService,
+    DbNodeService,
+    RagNodeService,
+    SupervisorNodeService,
+    DocumentParserService,
+    ManualIngestionPipelineService,
+    ManualOriginalDocstoreService,
+    ManualRetrieverService,
+    SmartPdfService,
+    EmbeddingsService,
+    QdrantService,
+  ],
+  exports: [EmbeddingsService, QdrantService],
 })
 export class LangchainIntegrationModule {}

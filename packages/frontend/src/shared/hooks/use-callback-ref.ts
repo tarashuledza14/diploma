@@ -1,6 +1,5 @@
 import * as React from "react";
 
-
 function useCallbackRef<T extends (...args: never[]) => unknown>(
   callback: T | undefined,
 ): T {
@@ -10,7 +9,6 @@ function useCallbackRef<T extends (...args: never[]) => unknown>(
     callbackRef.current = callback;
   });
 
-  
   return React.useMemo(
     () => ((...args) => callbackRef.current?.(...args)) as T,
     [],

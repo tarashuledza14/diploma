@@ -52,7 +52,8 @@ function getHasAlpha(v: string): boolean {
 }
 
 interface ColorSwatchProps
-  extends Omit<React.ComponentProps<"div">, "children">,
+  extends
+    Omit<React.ComponentProps<"div">, "children">,
     VariantProps<typeof colorSwatchVariants> {
   color?: string;
   asChild?: boolean;

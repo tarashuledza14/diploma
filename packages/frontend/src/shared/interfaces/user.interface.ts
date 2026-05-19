@@ -1,10 +1,10 @@
-export type UserRole = 'ADMIN' | 'MANAGER' | 'MECHANIC';
+export type UserRole = "ADMIN" | "MANAGER" | "MECHANIC";
 
 export interface User {
-	id: string;
-	fullName: string;
-	email: string;
-	role: UserRole;
-	roles?: UserRole;
-	organizationId?: string | null;
+  id: string;
+  fullName: string;
+  email: string;
+  role: UserRole;
+  roles?: UserRole;
+  organizationId?: string | null;
 }

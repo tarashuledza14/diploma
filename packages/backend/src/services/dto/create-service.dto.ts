@@ -1,27 +1,33 @@
-import { IsArray, IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from "class-validator";
 
 export class CreateServiceDto {
-	@IsString()
-	name: string;
+  @IsString()
+  name: string;
 
-	@IsString()
-	description: string;
+  @IsString()
+  description: string;
 
-	@IsNumber()
-	price: number;
+  @IsNumber()
+  price: number;
 
-	@IsNumber()
-	estimatedTime: number;
+  @IsNumber()
+  estimatedTime: number;
 
-	@IsBoolean()
-	status: boolean;
+  @IsBoolean()
+  status: boolean;
 
-	@IsOptional()
-	@IsString()
-	categoryId?: string;
+  @IsOptional()
+  @IsString()
+  categoryId?: string;
 
-	@IsOptional()
-	@IsArray()
-	@IsString({ each: true })
-	requiredCategoryIds?: string[];
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  requiredCategoryIds?: string[];
 }

@@ -1,4 +1,4 @@
 export {
-	KanbanColumnsList,
-	KanbanPageHeader,
-} from '@/modules/orders/components/order-kanban';
+  KanbanColumnsList,
+  KanbanPageHeader,
+} from "@/modules/orders/components/order-kanban";

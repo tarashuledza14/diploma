@@ -1,51 +1,51 @@
 import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from '@/shared/components/ui';
-import { AlertTriangle, CheckCircle2, Clock } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import type { DashboardAlert } from '../types';
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/shared/components/ui";
+import { AlertTriangle, CheckCircle2, Clock } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import type { DashboardAlert } from "../types";
 
 interface AlertsCardProps {
-	alerts: DashboardAlert[];
+  alerts: DashboardAlert[];
 }
 
 export function AlertsCard({ alerts }: AlertsCardProps) {
-	const { t } = useTranslation();
-	return (
-		<Card>
-			<CardHeader>
-				<CardTitle className='flex items-center gap-2'>
-					<AlertTriangle className='h-5 w-5' />
-					{t('dashboard.alerts.title')}
-				</CardTitle>
-			</CardHeader>
-			<CardContent className='space-y-3'>
-				{alerts.length === 0 && (
-					<div className='rounded-lg border p-3 text-sm text-muted-foreground'>
-						{t('dashboard.alerts.empty')}
-					</div>
-				)}
-				{alerts.map((alert, index) => (
-					<Link key={index} to={alert.link}>
-						<div className='flex items-start gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50'>
-							{alert.type === 'warning' && (
-								<AlertTriangle className='mt-0.5 h-4 w-4 text-amber-500' />
-							)}
-							{alert.type === 'info' && (
-								<Clock className='mt-0.5 h-4 w-4 text-blue-500' />
-							)}
-							{alert.type === 'success' && (
-								<CheckCircle2 className='mt-0.5 h-4 w-4 text-green-500' />
-							)}
-							<span className='text-sm'>{alert.message}</span>
-						</div>
-					</Link>
-				))}
-			</CardContent>
-		</Card>
-	);
+  const { t } = useTranslation();
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <AlertTriangle className="h-5 w-5" />
+          {t("dashboard.alerts.title")}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {alerts.length === 0 && (
+          <div className="rounded-lg border p-3 text-sm text-muted-foreground">
+            {t("dashboard.alerts.empty")}
+          </div>
+        )}
+        {alerts.map((alert, index) => (
+          <Link key={index} to={alert.link}>
+            <div className="flex items-start gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50">
+              {alert.type === "warning" && (
+                <AlertTriangle className="mt-0.5 h-4 w-4 text-amber-500" />
+              )}
+              {alert.type === "info" && (
+                <Clock className="mt-0.5 h-4 w-4 text-blue-500" />
+              )}
+              {alert.type === "success" && (
+                <CheckCircle2 className="mt-0.5 h-4 w-4 text-green-500" />
+              )}
+              <span className="text-sm">{alert.message}</span>
+            </div>
+          </Link>
+        ))}
+      </CardContent>
+    </Card>
+  );
 }

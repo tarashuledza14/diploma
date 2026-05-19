@@ -1,66 +1,66 @@
-import { IntersectionType } from '@nestjs/mapped-types';
-import { Transform, Type } from 'class-transformer';
+import { IntersectionType } from "@nestjs/mapped-types";
+import { Transform, Type } from "class-transformer";
 import {
-	IsArray,
-	IsEnum,
-	IsOptional,
-	IsString,
-	ValidateNested,
-} from 'class-validator';
-import { PaginationDto } from 'src/pagination/pagination.dto';
-import { FilterOperators } from '../enums/filter.enum';
+  IsArray,
+  IsEnum,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from "class-validator";
+import { PaginationDto } from "src/pagination/pagination.dto";
+import { FilterOperators } from "../enums/filter.enum";
 
 export class FilterDto {
-	@IsOptional()
-	@IsArray()
-	@ValidateNested({ each: true })
-	@Type(() => FilterItem)
-	filters?: FilterItem[] = [];
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => FilterItem)
+  filters?: FilterItem[] = [];
 
-	@IsOptional()
-	@IsEnum(['AND', 'OR'])
-	@Transform(({ value }) => {
-		return value?.toUpperCase?.() ?? value;
-	})
-	joinOperator?: JoinOperator = 'AND';
+  @IsOptional()
+  @IsEnum(["AND", "OR"])
+  @Transform(({ value }) => {
+    return value?.toUpperCase?.() ?? value;
+  })
+  joinOperator?: JoinOperator = "AND";
 }
 
-export type JoinOperator = 'AND' | 'OR';
+export type JoinOperator = "AND" | "OR";
 
 export class SortDto {
-	@IsOptional()
-	@IsArray()
-	@ValidateNested({ each: true })
-	@Type(() => SortItem)
-	sort?: SortItem[] = [];
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => SortItem)
+  sort?: SortItem[] = [];
 }
 
 export class CombinedFilterAndPagination extends IntersectionType(
-	PaginationDto,
-	FilterDto,
-	SortDto,
+  PaginationDto,
+  FilterDto,
+  SortDto,
 ) {}
 export class SortItem {
-	@IsString()
-	id: string;
+  @IsString()
+  id: string;
 
-	@IsOptional()
-	@IsString()
-	desc?: string;
+  @IsOptional()
+  @IsString()
+  desc?: string;
 }
 
-export type FilterVariant = 'text' | 'number' | 'date' | 'boolean';
+export type FilterVariant = "text" | "number" | "date" | "boolean";
 export class FilterItem {
-	@IsString()
-	id: string;
+  @IsString()
+  id: string;
 
-	@IsString({ each: true })
-	value: string | string[];
+  @IsString({ each: true })
+  value: string | string[];
 
-	@IsOptional()
-	@IsString()
-	operator?: FilterOperators;
+  @IsOptional()
+  @IsString()
+  operator?: FilterOperators;
 
-	@IsString()
-	variant: FilterVariant;
+  @IsString()
+  variant: FilterVariant;
 }

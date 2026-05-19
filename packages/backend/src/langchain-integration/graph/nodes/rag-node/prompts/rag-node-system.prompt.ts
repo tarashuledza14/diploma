@@ -1,18 +1,17 @@
-
 export function getRagNodeSystemPrompt({
-	language = 'uk',
-	carModel = '',
-	version = 'v1',
+  language = "uk",
+  carModel = "",
+  version = "v1",
 }: {
-	language?: string;
-	carModel?: string;
-	version?: string;
+  language?: string;
+  carModel?: string;
+  version?: string;
 } = {}): string {
-	const carModelHint = carModel.trim()
-		? `Primary vehicle context from previous messages: ${carModel.trim()}.`
-		: 'Primary vehicle context from previous messages is unknown.';
+  const carModelHint = carModel.trim()
+    ? `Primary vehicle context from previous messages: ${carModel.trim()}.`
+    : "Primary vehicle context from previous messages is unknown.";
 
-	return `You are an expert mechanic AI assistant for an auto service center.
+  return `You are an expert mechanic AI assistant for an auto service center.
 Prompt version: ${version}
 Preferred response language: ${language}
 ${carModelHint}

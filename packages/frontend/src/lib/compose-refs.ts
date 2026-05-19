@@ -23,10 +23,6 @@ function composeRefs<T>(...refs: PossibleRef<T>[]): React.RefCallback<T> {
       return cleanup;
     });
 
-    
-    
-    
-    
     if (hasCleanup) {
       return () => {
         for (let i = 0; i < cleanups.length; i++) {
@@ -43,7 +39,6 @@ function composeRefs<T>(...refs: PossibleRef<T>[]): React.RefCallback<T> {
 }
 
 function useComposedRefs<T>(...refs: PossibleRef<T>[]): React.RefCallback<T> {
-  
   return React.useCallback(composeRefs(...refs), refs);
 }
 

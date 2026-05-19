@@ -1,336 +1,334 @@
 import {
-	DeleteObjectCommand,
-	GetObjectCommand,
-	HeadObjectCommand,
-	PutObjectCommand,
-	S3Client,
-} from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+  DeleteObjectCommand,
+  GetObjectCommand,
+  HeadObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import {
-	BadRequestException,
-	ForbiddenException,
-	Injectable,
-	InternalServerErrorException,
-	Logger,
-} from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { v4 as uuidv4 } from 'uuid';
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { v4 as uuidv4 } from "uuid";
 
 @Injectable()
 export class DmsService {
-	private client: S3Client;
-	private bucketName: string;
-	private readonly logger = new Logger(DmsService.name);
+  private client: S3Client;
+  private bucketName: string;
+  private readonly logger = new Logger(DmsService.name);
 
-	constructor(private configService: ConfigService) {
-		const s3_region = this.configService.get<string>('S3_REGION');
-		this.bucketName = this.configService.get<string>('S3_BUCKET_NAME');
+  constructor(private configService: ConfigService) {
+    const s3_region = this.configService.get<string>("S3_REGION");
+    this.bucketName = this.configService.get<string>("S3_BUCKET_NAME");
 
-		if (!s3_region || !this.bucketName) {
-			throw new Error(
-				'S3_REGION or S3_BUCKET_NAME not found in environment variables',
-			);
-		}
+    if (!s3_region || !this.bucketName) {
+      throw new Error(
+        "S3_REGION or S3_BUCKET_NAME not found in environment variables",
+      );
+    }
 
-		this.client = new S3Client({
-			region: s3_region,
-			credentials: {
-				accessKeyId: this.configService.get<string>('S3_ACCESS_KEY'),
-				secretAccessKey: this.configService.get<string>('S3_SECRET_ACCESS_KEY'),
-			},
-			
-			
-		});
-	}
+    this.client = new S3Client({
+      region: s3_region,
+      credentials: {
+        accessKeyId: this.configService.get<string>("S3_ACCESS_KEY"),
+        secretAccessKey: this.configService.get<string>("S3_SECRET_ACCESS_KEY"),
+      },
+    });
+  }
 
-	async uploadTenantFile(
-		file: Express.Multer.File,
-		tenantId: string,
-		folder = 'branding',
-	) {
-		if (!tenantId?.trim()) {
-			throw new BadRequestException('tenantId is required');
-		}
+  async uploadTenantFile(
+    file: Express.Multer.File,
+    tenantId: string,
+    folder = "branding",
+  ) {
+    if (!tenantId?.trim()) {
+      throw new BadRequestException("tenantId is required");
+    }
 
-		if (!file) {
-			throw new BadRequestException('file is required');
-		}
+    if (!file) {
+      throw new BadRequestException("file is required");
+    }
 
-		const key = this.buildTenantKey(tenantId, folder, file.originalname);
+    const key = this.buildTenantKey(tenantId, folder, file.originalname);
 
-		try {
-			await this.client.send(
-				new PutObjectCommand({
-					Bucket: this.bucketName,
-					Key: key,
-					Body: file.buffer,
-					ContentType: file.mimetype,
-					Metadata: {
-						originalName: encodeURIComponent(file.originalname),
-						tenantId,
-					},
-				}),
-			);
+    try {
+      await this.client.send(
+        new PutObjectCommand({
+          Bucket: this.bucketName,
+          Key: key,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+          Metadata: {
+            originalName: encodeURIComponent(file.originalname),
+            tenantId,
+          },
+        }),
+      );
 
-			this.logger.log(`Tenant file uploaded: ${key}`);
-			return { key };
-		} catch (error) {
-			if (this.isPutAccessDenied(error)) {
-				this.logger.warn(
-					`S3 put access denied for tenant key ${key}: ${this.formatErrorForLog(error)}`,
-				);
-				throw new ForbiddenException('S3 PutObject access denied');
-			}
+      this.logger.log(`Tenant file uploaded: ${key}`);
+      return { key };
+    } catch (error) {
+      if (this.isPutAccessDenied(error)) {
+        this.logger.warn(
+          `S3 put access denied for tenant key ${key}: ${this.formatErrorForLog(error)}`,
+        );
+        throw new ForbiddenException("S3 PutObject access denied");
+      }
 
-			this.logger.error('S3 tenant upload error:', error);
-			throw new InternalServerErrorException('File upload to storage failed');
-		}
-	}
+      this.logger.error("S3 tenant upload error:", error);
+      throw new InternalServerErrorException("File upload to storage failed");
+    }
+  }
 
-	async getPresignedUrl(key: string, expiresInSeconds = 3600) {
-		if (!key?.trim()) {
-			throw new BadRequestException('key is required');
-		}
+  async getPresignedUrl(key: string, expiresInSeconds = 3600) {
+    if (!key?.trim()) {
+      throw new BadRequestException("key is required");
+    }
 
-		try {
-			await this.client.send(
-				new HeadObjectCommand({
-					Bucket: this.bucketName,
-					Key: key,
-				}),
-			);
+    try {
+      await this.client.send(
+        new HeadObjectCommand({
+          Bucket: this.bucketName,
+          Key: key,
+        }),
+      );
 
-			const command = new GetObjectCommand({
-				Bucket: this.bucketName,
-				Key: key,
-			});
+      const command = new GetObjectCommand({
+        Bucket: this.bucketName,
+        Key: key,
+      });
 
-			const url = await getSignedUrl(this.client, command, {
-				expiresIn: expiresInSeconds,
-			});
+      const url = await getSignedUrl(this.client, command, {
+        expiresIn: expiresInSeconds,
+      });
 
-			return { url };
-		} catch (error) {
-			if (this.isGetAccessDenied(error)) {
-				this.logger.warn(
-					`S3 get access denied for key ${key}: ${this.formatErrorForLog(error)}`,
-				);
-				throw new ForbiddenException('S3 GetObject access denied');
-			}
+      return { url };
+    } catch (error) {
+      if (this.isGetAccessDenied(error)) {
+        this.logger.warn(
+          `S3 get access denied for key ${key}: ${this.formatErrorForLog(error)}`,
+        );
+        throw new ForbiddenException("S3 GetObject access denied");
+      }
 
-			this.logger.error('S3 presigned URL error:', error);
-			throw new InternalServerErrorException('Failed to generate file link');
-		}
-	}
+      this.logger.error("S3 presigned URL error:", error);
+      throw new InternalServerErrorException("Failed to generate file link");
+    }
+  }
 
-	async uploadSingleFile({
-		file,
-		isPublic = false,
-		tenantId,
-		folder,
-	}: {
-		file: Express.Multer.File;
-		isPublic?: boolean;
-		tenantId?: string | null;
-		folder?: string;
-	}) {
-		try {
-			const safeOriginalName = file.originalname.replace(/\s+/g, '_');
-			const key = tenantId?.trim()
-				? this.buildTenantKey(tenantId, folder || 'manuals', safeOriginalName)
-				: `${uuidv4()}-${safeOriginalName}`;
-			const basePutInput = {
-				Bucket: this.bucketName,
-				Key: key,
-				Body: file.buffer,
-				ContentType: file.mimetype,
-				Metadata: {
-					originalName: encodeURIComponent(file.originalname),
-					...(tenantId?.trim() ? { tenantId } : {}),
-				},
-			};
+  async uploadSingleFile({
+    file,
+    isPublic = false,
+    tenantId,
+    folder,
+  }: {
+    file: Express.Multer.File;
+    isPublic?: boolean;
+    tenantId?: string | null;
+    folder?: string;
+  }) {
+    try {
+      const safeOriginalName = file.originalname.replace(/\s+/g, "_");
+      const key = tenantId?.trim()
+        ? this.buildTenantKey(tenantId, folder || "manuals", safeOriginalName)
+        : `${uuidv4()}-${safeOriginalName}`;
+      const basePutInput = {
+        Bucket: this.bucketName,
+        Key: key,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+        Metadata: {
+          originalName: encodeURIComponent(file.originalname),
+          ...(tenantId?.trim() ? { tenantId } : {}),
+        },
+      };
 
-			if (isPublic) {
-				try {
-					await this.client.send(
-						new PutObjectCommand({
-							...basePutInput,
-							ACL: 'public-read',
-						}),
-					);
-				} catch (error) {
-					if (!this.isAclNotSupported(error)) {
-						throw error;
-					}
+      if (isPublic) {
+        try {
+          await this.client.send(
+            new PutObjectCommand({
+              ...basePutInput,
+              ACL: "public-read",
+            }),
+          );
+        } catch (error) {
+          if (!this.isAclNotSupported(error)) {
+            throw error;
+          }
 
-					this.logger.warn(
-						`Bucket does not allow ACLs. Retrying upload without ACL for key ${key}.`,
-					);
+          this.logger.warn(
+            `Bucket does not allow ACLs. Retrying upload without ACL for key ${key}.`,
+          );
 
-					await this.client.send(new PutObjectCommand(basePutInput));
-				}
-			} else {
-				await this.client.send(new PutObjectCommand(basePutInput));
-			}
+          await this.client.send(new PutObjectCommand(basePutInput));
+        }
+      } else {
+        await this.client.send(new PutObjectCommand(basePutInput));
+      }
 
-			this.logger.log(`File uploaded: ${key}`);
+      this.logger.log(`File uploaded: ${key}`);
 
-			return {
-				url: isPublic
-					? await this.getFileUrl(key)
-					: (await this.getPresignedSignedUrl(key)).url,
-				key,
-				isPublic,
-			};
-		} catch (error) {
-			if (this.isPutAccessDenied(error)) {
-				this.logger.warn(
-					`S3 put access denied: ${this.formatErrorForLog(error)}`,
-				);
-				throw new ForbiddenException('S3 PutObject access denied');
-			}
+      return {
+        url: isPublic
+          ? await this.getFileUrl(key)
+          : (await this.getPresignedSignedUrl(key)).url,
+        key,
+        isPublic,
+      };
+    } catch (error) {
+      if (this.isPutAccessDenied(error)) {
+        this.logger.warn(
+          `S3 put access denied: ${this.formatErrorForLog(error)}`,
+        );
+        throw new ForbiddenException("S3 PutObject access denied");
+      }
 
-			this.logger.error('S3 upload error:', error);
-			throw new InternalServerErrorException('File upload to storage failed');
-		}
-	}
+      this.logger.error("S3 upload error:", error);
+      throw new InternalServerErrorException("File upload to storage failed");
+    }
+  }
 
-	async getFileUrl(key: string) {
-		const region = this.configService.get<string>('S3_REGION');
-		return `https://${this.bucketName}.s3.${region}.amazonaws.com/${key}`;
-	}
+  async getFileUrl(key: string) {
+    const region = this.configService.get<string>("S3_REGION");
+    return `https://${this.bucketName}.s3.${region}.amazonaws.com/${key}`;
+  }
 
-	async getPresignedSignedUrl(key: string) {
-		return this.getPresignedUrl(key, 60 * 60 * 24);
-	}
+  async getPresignedSignedUrl(key: string) {
+    return this.getPresignedUrl(key, 60 * 60 * 24);
+  }
 
-	private buildTenantKey(
-		tenantId: string,
-		folder: string,
-		originalName: string,
-	) {
-		const safeTenant = tenantId.replace(/[^a-zA-Z0-9_-]/g, '');
-		const safeFolder = (folder || 'branding').replace(/[^a-zA-Z0-9/_-]/g, '');
-		const fileName =
-			originalName
-				.replace(/\\/g, '/')
-				.split('/')
-				.pop()
-				?.replace(/\s+/g, '_')
-				.replace(/[^a-zA-Z0-9._-]/g, '') || 'file';
+  private buildTenantKey(
+    tenantId: string,
+    folder: string,
+    originalName: string,
+  ) {
+    const safeTenant = tenantId.replace(/[^a-zA-Z0-9_-]/g, "");
+    const safeFolder = (folder || "branding").replace(/[^a-zA-Z0-9/_-]/g, "");
+    const fileName =
+      originalName
+        .replace(/\\/g, "/")
+        .split("/")
+        .pop()
+        ?.replace(/\s+/g, "_")
+        .replace(/[^a-zA-Z0-9._-]/g, "") || "file";
 
-		return `tenants/${safeTenant}/${safeFolder}/${uuidv4()}-${fileName}`;
-	}
+    return `tenants/${safeTenant}/${safeFolder}/${uuidv4()}-${fileName}`;
+  }
 
-	async deleteFile(key: string) {
-		try {
-			const command = new DeleteObjectCommand({
-				Bucket: this.bucketName,
-				Key: key,
-			});
+  async deleteFile(key: string) {
+    try {
+      const command = new DeleteObjectCommand({
+        Bucket: this.bucketName,
+        Key: key,
+      });
 
-			await this.client.send(command);
-			this.logger.log(`File deleted: ${key}`);
+      await this.client.send(command);
+      this.logger.log(`File deleted: ${key}`);
 
-			return { message: 'File deleted successfully' };
-		} catch (error) {
-			if (this.isDeleteAccessDenied(error)) {
-				this.logger.warn(
-					`S3 delete access denied for key ${key}: ${this.formatErrorForLog(error)}`,
-				);
-				throw new ForbiddenException('S3 DeleteObject access denied');
-			}
+      return { message: "File deleted successfully" };
+    } catch (error) {
+      if (this.isDeleteAccessDenied(error)) {
+        this.logger.warn(
+          `S3 delete access denied for key ${key}: ${this.formatErrorForLog(error)}`,
+        );
+        throw new ForbiddenException("S3 DeleteObject access denied");
+      }
 
-			this.logger.error('S3 delete error:', error);
-			throw new InternalServerErrorException('Failed to delete file');
-		}
-	}
+      this.logger.error("S3 delete error:", error);
+      throw new InternalServerErrorException("Failed to delete file");
+    }
+  }
 
-	private isDeleteAccessDenied(error: unknown) {
-		if (!error || typeof error !== 'object') {
-			return false;
-		}
+  private isDeleteAccessDenied(error: unknown) {
+    if (!error || typeof error !== "object") {
+      return false;
+    }
 
-		const e = error as {
-			name?: string;
-			message?: string;
-		};
+    const e = error as {
+      name?: string;
+      message?: string;
+    };
 
-		const message = (e.message || '').toLowerCase();
+    const message = (e.message || "").toLowerCase();
 
-		return (
-			e.name === 'AccessDenied' ||
-			(message.includes('accessdenied') && message.includes('deleteobject')) ||
-			(message.includes('not authorized') && message.includes('deleteobject'))
-		);
-	}
+    return (
+      e.name === "AccessDenied" ||
+      (message.includes("accessdenied") && message.includes("deleteobject")) ||
+      (message.includes("not authorized") && message.includes("deleteobject"))
+    );
+  }
 
-	private isGetAccessDenied(error: unknown) {
-		if (!error || typeof error !== 'object') {
-			return false;
-		}
+  private isGetAccessDenied(error: unknown) {
+    if (!error || typeof error !== "object") {
+      return false;
+    }
 
-		const e = error as {
-			name?: string;
-			message?: string;
-		};
+    const e = error as {
+      name?: string;
+      message?: string;
+    };
 
-		const message = (e.message || '').toLowerCase();
+    const message = (e.message || "").toLowerCase();
 
-		return (
-			e.name === 'AccessDenied' ||
-			(message.includes('accessdenied') && message.includes('getobject')) ||
-			(message.includes('not authorized') && message.includes('getobject'))
-		);
-	}
+    return (
+      e.name === "AccessDenied" ||
+      (message.includes("accessdenied") && message.includes("getobject")) ||
+      (message.includes("not authorized") && message.includes("getobject"))
+    );
+  }
 
-	private isPutAccessDenied(error: unknown) {
-		if (!error || typeof error !== 'object') {
-			return false;
-		}
+  private isPutAccessDenied(error: unknown) {
+    if (!error || typeof error !== "object") {
+      return false;
+    }
 
-		const e = error as {
-			name?: string;
-			message?: string;
-		};
+    const e = error as {
+      name?: string;
+      message?: string;
+    };
 
-		const message = (e.message || '').toLowerCase();
+    const message = (e.message || "").toLowerCase();
 
-		return (
-			e.name === 'AccessDenied' ||
-			(message.includes('accessdenied') && message.includes('putobject')) ||
-			(message.includes('not authorized') && message.includes('putobject'))
-		);
-	}
+    return (
+      e.name === "AccessDenied" ||
+      (message.includes("accessdenied") && message.includes("putobject")) ||
+      (message.includes("not authorized") && message.includes("putobject"))
+    );
+  }
 
-	private isAclNotSupported(error: unknown) {
-		if (!error || typeof error !== 'object') {
-			return false;
-		}
+  private isAclNotSupported(error: unknown) {
+    if (!error || typeof error !== "object") {
+      return false;
+    }
 
-		const e = error as {
-			name?: string;
-			message?: string;
-		};
+    const e = error as {
+      name?: string;
+      message?: string;
+    };
 
-		const message = (e.message || '').toLowerCase();
+    const message = (e.message || "").toLowerCase();
 
-		return (
-			e.name === 'AccessControlListNotSupported' ||
-			message.includes('accesscontrollistnotsupported') ||
-			message.includes('bucket does not allow acls')
-		);
-	}
+    return (
+      e.name === "AccessControlListNotSupported" ||
+      message.includes("accesscontrollistnotsupported") ||
+      message.includes("bucket does not allow acls")
+    );
+  }
 
-	private formatErrorForLog(error: unknown) {
-		if (!error) {
-			return 'Unknown error';
-		}
+  private formatErrorForLog(error: unknown) {
+    if (!error) {
+      return "Unknown error";
+    }
 
-		if (error instanceof Error) {
-			return error.message;
-		}
+    if (error instanceof Error) {
+      return error.message;
+    }
 
-		return String(error);
-	}
+    return String(error);
+  }
 }

@@ -1,17 +1,17 @@
-import { User } from '@/shared/interfaces/user.interface';
+import { User } from "@/shared/interfaces/user.interface";
 
 export interface ITokens {
-	accessToken: string;
+  accessToken: string;
 }
 
 export interface IAuthResponse extends ITokens {
-	user: User;
+  user: User;
 }
 export interface ILogin {
-	email: string;
-	password: string;
+  email: string;
+  password: string;
 }
 export interface IRegister extends ILogin {
-	name: string;
+  name: string;
 }
 export type IAuthForm = ILogin | IRegister;

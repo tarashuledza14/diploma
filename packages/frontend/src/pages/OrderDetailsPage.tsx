@@ -1,723 +1,723 @@
-import { useUserStore } from '@/modules/auth';
-import { EditClientDialog } from '@/modules/clients/components/EditClientDialog';
-import { Client } from '@/modules/clients/interfaces/client.interface';
-import { Tabs, TabsContent } from '@/shared/components/ui';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'sonner';
-import { OrdersService, UpdateOrderPayload } from '../modules/orders/api';
-import { GeneralInfoTab } from '../modules/orders/components/order-details/general-info/GeneralInfoTab';
-import { OrderDetailsHeader } from '../modules/orders/components/order-details/OrderDetailsHeader';
-import { PartsTab } from '../modules/orders/components/order-details/parts/PartsTab';
-import { ServicesTab } from '../modules/orders/components/order-details/services/ServicesTab';
-import { TabsNav } from '../modules/orders/components/order-details/tabs/TabsNav';
-import { EditOrderModal } from '../modules/orders/components/order-list/EditOrderModal';
-import { NewOrderMeta } from '../modules/orders/interfaces/new-order-meta.interface';
+import { useUserStore } from "@/modules/auth";
+import { EditClientDialog } from "@/modules/clients/components/EditClientDialog";
+import { Client } from "@/modules/clients/interfaces/client.interface";
+import { Tabs, TabsContent } from "@/shared/components/ui";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { OrdersService, UpdateOrderPayload } from "../modules/orders/api";
+import { GeneralInfoTab } from "../modules/orders/components/order-details/general-info/GeneralInfoTab";
+import { OrderDetailsHeader } from "../modules/orders/components/order-details/OrderDetailsHeader";
+import { PartsTab } from "../modules/orders/components/order-details/parts/PartsTab";
+import { ServicesTab } from "../modules/orders/components/order-details/services/ServicesTab";
+import { TabsNav } from "../modules/orders/components/order-details/tabs/TabsNav";
+import { EditOrderModal } from "../modules/orders/components/order-list/EditOrderModal";
+import { NewOrderMeta } from "../modules/orders/interfaces/new-order-meta.interface";
 import {
-	OrderPartItem,
-	OrderServiceItem,
-} from '../modules/orders/interfaces/new-order.interface';
+  OrderPartItem,
+  OrderServiceItem,
+} from "../modules/orders/interfaces/new-order.interface";
 import {
-	OrderDetails,
-	OrderDetailsPart,
-	OrderDetailsService,
-} from '../modules/orders/interfaces/order-details.interface';
+  OrderDetails,
+  OrderDetailsPart,
+  OrderDetailsService,
+} from "../modules/orders/interfaces/order-details.interface";
 import {
-	OrderPriority,
-	OrderStatus,
-} from '../modules/orders/interfaces/order.enums';
-import { ordersKeys } from '../modules/orders/queries/keys';
-import { useOrderDetailsQuery } from '../modules/orders/query/useOrderDetailsQuery';
-import { EditVehicleDialog } from '../modules/vehicles/components/EditVehicleDialog';
-import { VehicleStatus } from '../modules/vehicles/enums/vehicle-status.enum';
-import { VehicleWithOwnerInfo } from '../modules/vehicles/interfaces/get-vehicle.interface';
+  OrderPriority,
+  OrderStatus,
+} from "../modules/orders/interfaces/order.enums";
+import { ordersKeys } from "../modules/orders/queries/keys";
+import { useOrderDetailsQuery } from "../modules/orders/query/useOrderDetailsQuery";
+import { EditVehicleDialog } from "../modules/vehicles/components/EditVehicleDialog";
+import { VehicleStatus } from "../modules/vehicles/enums/vehicle-status.enum";
+import { VehicleWithOwnerInfo } from "../modules/vehicles/interfaces/get-vehicle.interface";
 
 const normalizePriority = (value?: string) =>
-	String(value ?? OrderPriority.MEDIUM).toUpperCase() as OrderPriority;
+  String(value ?? OrderPriority.MEDIUM).toUpperCase() as OrderPriority;
 
 const normalizeStatus = (value?: string) =>
-	String(value ?? OrderStatus.NEW).toUpperCase() as OrderStatus;
+  String(value ?? OrderStatus.NEW).toUpperCase() as OrderStatus;
 
 const toEditOrderSource = (order: OrderDetails) => ({
-	id: order.id,
-	priority: normalizePriority(order.priority),
-	status: normalizeStatus(order.status),
-	client: {
-		id: order.client?.id ?? '',
-	},
-	vehicle: {
-		id: order.vehicle?.id ?? '',
-	},
+  id: order.id,
+  priority: normalizePriority(order.priority),
+  status: normalizeStatus(order.status),
+  client: {
+    id: order.client?.id ?? "",
+  },
+  vehicle: {
+    id: order.vehicle?.id ?? "",
+  },
 });
 
 interface ServicePartGroup {
-	serviceId: string;
-	serviceName: string;
-	parts: OrderDetailsPart[];
+  serviceId: string;
+  serviceName: string;
+  parts: OrderDetailsPart[];
 }
 
 interface ServiceRow {
-	serviceId: string;
-	serviceName: string;
+  serviceId: string;
+  serviceName: string;
 }
 
 interface ServiceRecommendations {
-	serviceId: string;
-	partIds: Set<string>;
+  serviceId: string;
+  partIds: Set<string>;
 }
 
 export function OrderDetailsPage() {
-	const { t } = useTranslation();
-	const role = useUserStore(state => state.user?.role);
-	const isMechanic = role === 'MECHANIC';
-	const { id } = useParams<{ id: string }>();
-	const navigate = useNavigate();
-	const { data: order, isLoading, error } = useOrderDetailsQuery(id);
-	const queryClient = useQueryClient();
-	const [isEditOpen, setIsEditOpen] = useState(false);
-	const [isClientEditOpen, setIsClientEditOpen] = useState(false);
-	const [isVehicleEditOpen, setIsVehicleEditOpen] = useState(false);
-	const [autoFilledPartIds, setAutoFilledPartIds] = useState<Set<string>>(
-		new Set(),
-	);
-
-	const { data: meta } = useQuery<NewOrderMeta>({
-		queryKey: ordersKeys.meta(),
-		queryFn: () => OrdersService.getNewOrderMeta(),
-		enabled: !!order,
-	});
-
-	const servicesMeta = meta?.services ?? [];
-	const mechanicsMeta = meta?.mechanics ?? [];
-	const partsMeta = meta?.parts ?? [];
-
-	const serviceIdByName = useMemo(
-		() => new Map(servicesMeta.map(service => [service.name, service.id])),
-		[servicesMeta],
-	);
-	const partIdByName = useMemo(
-		() => new Map(partsMeta.map(part => [part.name, part.id])),
-		[partsMeta],
-	);
-
-	const mappedServices = useMemo<OrderServiceItem[]>(() => {
-		if (!order) {
-			return [];
-		}
-
-		return (order.services ?? [])
-			.map((service: OrderDetailsService) => ({
-				serviceId: service.serviceId ?? serviceIdByName.get(service.name) ?? '',
-				mechanicId: service.mechanicId ?? undefined,
-			}))
-			.filter((service: OrderServiceItem) => Boolean(service.serviceId));
-	}, [order, serviceIdByName]);
-
-	const mappedParts = useMemo<OrderPartItem[]>(() => {
-		if (!order) {
-			return [];
-		}
-
-		return (order.parts ?? [])
-			.map((part: OrderDetailsPart) => ({
-				partId: part.partId ?? partIdByName.get(part.name) ?? '',
-				quantity: part.quantity,
-			}))
-			.filter((part: OrderPartItem) => Boolean(part.partId));
-	}, [order, partIdByName]);
-
-	const serviceRows = useMemo<ServiceRow[]>(
-		() =>
-			(order?.services ?? [])
-				.map((service: OrderDetailsService) => ({
-					serviceId:
-						service.serviceId ?? serviceIdByName.get(service.name) ?? '',
-					serviceName: service.name,
-				}))
-				.filter((item: ServiceRow) => Boolean(item.serviceId)),
-		[order, serviceIdByName],
-	);
-
-	const { data: recommendedPartsByService = {} } = useQuery({
-		queryKey: [
-			...ordersKeys.all,
-			'recommended-parts-map',
-			order?.vehicle?.id,
-			serviceRows.map((row: ServiceRow) => row.serviceId).join(','),
-		],
-		queryFn: async () => {
-			if (!order?.vehicle?.id || serviceRows.length === 0) {
-				return {} as Record<string, Set<string>>;
-			}
-
-			const uniqueServiceIds: string[] = Array.from(
-				new Set(serviceRows.map((row: ServiceRow) => row.serviceId)),
-			);
-
-			const recommendations: ServiceRecommendations[] = await Promise.all(
-				uniqueServiceIds.map(async (serviceId: string) => {
-					try {
-						const rec =
-							(await OrdersService.getRecommendedParts(
-								order.vehicle!.id,
-								serviceId,
-							)) ?? [];
-						return {
-							serviceId,
-							partIds: new Set<string>(
-								rec
-									.map((part: any) => part?.id)
-									.filter((partId: string | undefined) => Boolean(partId)),
-							),
-						};
-					} catch {
-						return { serviceId, partIds: new Set<string>() };
-					}
-				}),
-			);
-
-			return recommendations.reduce(
-				(acc: Record<string, Set<string>>, item: ServiceRecommendations) => {
-					acc[item.serviceId] = item.partIds;
-					return acc;
-				},
-				{} as Record<string, Set<string>>,
-			);
-		},
-		enabled: Boolean(order?.vehicle?.id && serviceRows.length > 0),
-	});
-
-	const servicePartGroups = useMemo<ServicePartGroup[]>(() => {
-		const currentParts = order?.parts ?? [];
-		const uniqueServiceMap = new Map<string, string>();
-
-		serviceRows.forEach((row: ServiceRow) => {
-			if (!uniqueServiceMap.has(row.serviceId)) {
-				uniqueServiceMap.set(row.serviceId, row.serviceName);
-			}
-		});
-
-		return Array.from(uniqueServiceMap.entries())
-			.map(([serviceId, serviceName]) => {
-				const relatedPartIds =
-					recommendedPartsByService[serviceId] ?? new Set();
-				const parts = currentParts.filter((part: OrderDetailsPart) => {
-					const partId = part.partId ?? partIdByName.get(part.name) ?? '';
-					return partId ? relatedPartIds.has(partId) : false;
-				});
-
-				return {
-					serviceId,
-					serviceName,
-					parts,
-				};
-			})
-			.filter(group => group.parts.length > 0);
-	}, [order, serviceRows, recommendedPartsByService, partIdByName]);
-
-	const unassignedParts = useMemo<OrderDetailsPart[]>(() => {
-		const assignedPartIds = new Set<string>();
-
-		servicePartGroups.forEach(group => {
-			group.parts.forEach((part: OrderDetailsPart) => {
-				const partId = part.partId ?? partIdByName.get(part.name) ?? '';
-				if (partId) {
-					assignedPartIds.add(partId);
-				}
-			});
-		});
-
-		return (order?.parts ?? []).filter((part: OrderDetailsPart) => {
-			const partId = part.partId ?? partIdByName.get(part.name) ?? '';
-			return !partId || !assignedPartIds.has(partId);
-		});
-	}, [order, servicePartGroups, partIdByName]);
-
-	const selectedClientForEdit = useMemo<Client | undefined>(() => {
-		if (!order?.client) {
-			return undefined;
-		}
-
-		return {
-			id: order.client.id,
-			fullName: order.client.fullName ?? order.client.name ?? '',
-			email: order.client.email ?? '',
-			phone: order.client.phone ?? '',
-			avatar: order.client.avatar ?? '',
-			vehicleCount: 0,
-			totalOrders: 0,
-			totalSpent: 0,
-			status: 'ACTIVE',
-			latestVisit: '',
-			notes: order.client.notes ?? undefined,
-		};
-	}, [order]);
-
-	const selectedVehicleForEdit = useMemo<
-		VehicleWithOwnerInfo | undefined
-	>(() => {
-		if (!order?.vehicle || !order.client?.id) {
-			return undefined;
-		}
-
-		const rawStatus = (order.vehicle as { status?: VehicleStatus }).status;
-		const status =
-			rawStatus && Object.values(VehicleStatus).includes(rawStatus)
-				? rawStatus
-				: VehicleStatus.OUT;
-
-		return {
-			id: order.vehicle.id,
-			vin: order.vehicle.vin,
-			brand: order.vehicle.brand ?? order.vehicle.make,
-			model: order.vehicle.model,
-			year: order.vehicle.year,
-			plateNumber: order.vehicle.plateNumber ?? order.vehicle.plate ?? null,
-			mileage: order.vehicle.mileage ?? 0,
-			ownerId: order.client.id,
-			lastService: null,
-			color: order.vehicle.color ?? null,
-			notes: order.vehicle.notes ?? null,
-			status,
-			totalServices: order.services?.length ?? 0,
-			deletedAt: null,
-			createdAt: order.createdAt ? new Date(order.createdAt) : new Date(),
-			owner: {
-				id: order.client.id,
-				fullName: order.client.fullName ?? order.client.name ?? '',
-			},
-		};
-	}, [order]);
-
-	const buildPayload = (
-		services: OrderServiceItem[],
-		parts: OrderPartItem[],
-	): UpdateOrderPayload | null => {
-		if (!order?.client?.id || !order?.vehicle?.id || !order.id) {
-			return null;
-		}
-
-		return {
-			clientId: order.client.id,
-			vehicleId: order.vehicle.id,
-			mileage: order.mileage ?? order.vehicle.mileage ?? 0,
-			priority: normalizePriority(order.priority),
-			services,
-			parts,
-			notes: order.notes ?? '',
-			status: normalizeStatus(order.status),
-			endDate: order.dueDate ? String(order.dueDate).split('T')[0] : undefined,
-		};
-	};
-
-	const { mutateAsync: updateOrderItems, isPending: isUpdating } = useMutation({
-		mutationKey: [...ordersKeys.all, 'mutations', 'order-details-update', id],
-		mutationFn: async (data: {
-			services: OrderServiceItem[];
-			parts: OrderPartItem[];
-		}) => {
-			if (!order?.id) {
-				throw new Error(t('orders.messages.notFound'));
-			}
-
-			const payload = buildPayload(data.services, data.parts);
-			if (!payload) {
-				throw new Error(t('orders.messages.clientVehicleDataMissing'));
-			}
-
-			return OrdersService.updateOrder(order.id, payload);
-		},
-		onSuccess: async () => {
-			await Promise.all([
-				queryClient.invalidateQueries({ queryKey: ordersKeys.all }),
-				id
-					? queryClient.invalidateQueries({ queryKey: ordersKeys.detail(id) })
-					: Promise.resolve(),
-			]);
-		},
-		onError: (mutationError: any) => {
-			const message =
-				mutationError?.response?.data?.message ||
-				mutationError?.message ||
-				t('orders.messages.updateItemsError');
-			toast.error(message);
-		},
-	});
-
-	const { mutate: updateOrderStatus, isPending: isUpdatingStatus } =
-		useMutation({
-			mutationKey: [...ordersKeys.all, 'mutations', 'order-details-status', id],
-			mutationFn: async (status: OrderStatus) => {
-				if (!order?.id) {
-					throw new Error(t('orders.messages.notFound'));
-				}
-
-				await OrdersService.updateBulk([order.id], { status });
-			},
-			onSuccess: async () => {
-				toast.success(t('orders.messages.statusUpdated'));
-				await Promise.all([
-					queryClient.invalidateQueries({ queryKey: ordersKeys.lists() }),
-					id
-						? queryClient.invalidateQueries({ queryKey: ordersKeys.detail(id) })
-						: Promise.resolve(),
-				]);
-			},
-			onError: (mutationError: any) => {
-				const message =
-					mutationError?.response?.data?.message ||
-					mutationError?.message ||
-					t('orders.messages.updateStatusError');
-				toast.error(message);
-			},
-		});
-
-	const handleStatusChange = (status: string) => {
-		if (!order) {
-			return;
-		}
-
-		if (
-			isMechanic &&
-			![OrderStatus.IN_PROGRESS, OrderStatus.COMPLETED].includes(
-				status as OrderStatus,
-			)
-		) {
-			return;
-		}
-
-		if (String(order.status) === status) {
-			return;
-		}
-
-		updateOrderStatus(status as OrderStatus);
-	};
-
-	const { mutate: completeOrder, isPending: isCompletingOrder } = useMutation({
-		mutationKey: [...ordersKeys.all, 'mutations', 'order-details-complete', id],
-		mutationFn: async () => {
-			if (!order?.id) {
-				throw new Error(t('orders.messages.notFound'));
-			}
-
-			await OrdersService.updateBulk([order.id], {
-				status: OrderStatus.COMPLETED,
-			});
-		},
-		onSuccess: async () => {
-			toast.success(t('orders.messages.completed'));
-			await queryClient.invalidateQueries({ queryKey: ordersKeys.all });
-			navigate('/orders');
-		},
-		onError: (mutationError: any) => {
-			const message =
-				mutationError?.response?.data?.message ||
-				mutationError?.message ||
-				t('orders.messages.completeError');
-			toast.error(message);
-		},
-	});
-
-	const handleCompleteOrder = () => {
-		if (!order) {
-			return;
-		}
-
-		if (String(order.status) === OrderStatus.COMPLETED) {
-			navigate('/orders');
-			return;
-		}
-
-		completeOrder();
-	};
-
-	const applyRecommendedParts = async (
-		services: OrderServiceItem[],
-		parts: OrderPartItem[],
-	) => {
-		if (!order?.vehicle?.id) {
-			return { parts, nextAutoFilled: new Set<string>() };
-		}
-
-		const activeServiceIds = services
-			.map(service => service.serviceId)
-			.filter(Boolean);
-
-		if (activeServiceIds.length === 0) {
-			const manualParts = parts.filter(
-				part => !autoFilledPartIds.has(part.partId),
-			);
-			return { parts: manualParts, nextAutoFilled: new Set<string>() };
-		}
-
-		const servicePartsResults = await Promise.all(
-			activeServiceIds.map(async serviceId => {
-				try {
-					return (
-						(await OrdersService.getRecommendedParts(
-							order.vehicle!.id,
-							serviceId,
-						)) ?? []
-					);
-				} catch {
-					return [];
-				}
-			}),
-		);
-
-		const recommendedPartIds = new Set<string>();
-		servicePartsResults.flat().forEach((part: any) => {
-			if (part?.id) {
-				recommendedPartIds.add(part.id);
-			}
-		});
-
-		const manualParts = parts.filter(
-			part => !autoFilledPartIds.has(part.partId),
-		);
-		const recommendedParts = Array.from(recommendedPartIds)
-			.map(partId => partsMeta.find(part => part.id === partId))
-			.filter(Boolean)
-			.map(part => ({
-				partId: part!.id,
-				quantity: 1,
-			}));
-
-		return {
-			parts: [...manualParts, ...recommendedParts],
-			nextAutoFilled: recommendedPartIds,
-		};
-	};
-
-	const handleAddService = async (serviceId: string) => {
-		if (isMechanic) {
-			return;
-		}
-
-		const nextServices = [
-			...mappedServices,
-			{ serviceId, mechanicId: undefined },
-		];
-		const { parts: nextParts, nextAutoFilled } = await applyRecommendedParts(
-			nextServices,
-			mappedParts,
-		);
-
-		await updateOrderItems({ services: nextServices, parts: nextParts });
-		setAutoFilledPartIds(nextAutoFilled);
-		toast.success(t('orders.messages.serviceAdded'));
-	};
-
-	const handleRemoveService = async (serviceRowId: string) => {
-		if (isMechanic) {
-			return;
-		}
-
-		if (!order) {
-			return;
-		}
-
-		const removedService = (order.services ?? []).find(
-			(service: OrderDetailsService) => service.id === serviceRowId,
-		);
-		const removedServiceId =
-			removedService?.serviceId ??
-			(removedService ? (serviceIdByName.get(removedService.name) ?? '') : '');
-
-		const nextServices = (order.services ?? [])
-			.filter((service: OrderDetailsService) => service.id !== serviceRowId)
-			.map((service: OrderDetailsService) => ({
-				serviceId: service.serviceId ?? serviceIdByName.get(service.name) ?? '',
-				mechanicId: service.mechanicId ?? undefined,
-			}))
-			.filter((service: OrderServiceItem) => Boolean(service.serviceId));
-
-		const remainingRecommendedPartIds = new Set<string>();
-		nextServices.forEach((service: OrderServiceItem) => {
-			(
-				recommendedPartsByService[service.serviceId] ?? new Set<string>()
-			).forEach(partId => {
-				remainingRecommendedPartIds.add(partId);
-			});
-		});
-
-		const removedRecommendedPartIds = removedServiceId
-			? (recommendedPartsByService[removedServiceId] ?? new Set<string>())
-			: new Set<string>();
-
-		const nextParts = mappedParts.filter(part => {
-			if (!removedRecommendedPartIds.has(part.partId)) {
-				return true;
-			}
-
-			return remainingRecommendedPartIds.has(part.partId);
-		});
-
-		await updateOrderItems({ services: nextServices, parts: nextParts });
-		setAutoFilledPartIds(remainingRecommendedPartIds);
-		toast.success(t('orders.messages.serviceRemoved'));
-	};
-
-	const handleAddPart = async (partId: string, quantity: number) => {
-		if (isMechanic) {
-			return;
-		}
-
-		const nextParts = [...mappedParts];
-		const partIndex = nextParts.findIndex(part => part.partId === partId);
-
-		if (partIndex >= 0) {
-			nextParts[partIndex] = {
-				...nextParts[partIndex],
-				quantity: nextParts[partIndex].quantity + quantity,
-			};
-		} else {
-			nextParts.push({ partId, quantity });
-		}
-
-		await updateOrderItems({ services: mappedServices, parts: nextParts });
-		toast.success(t('orders.messages.partAdded'));
-	};
-
-	const handleRemovePart = async (partId: string) => {
-		if (isMechanic) {
-			return;
-		}
-
-		const nextParts = mappedParts.filter(part => part.partId !== partId);
-
-		await updateOrderItems({ services: mappedServices, parts: nextParts });
-		if (autoFilledPartIds.has(partId)) {
-			setAutoFilledPartIds(prev => {
-				const updated = new Set(prev);
-				updated.delete(partId);
-				return updated;
-			});
-		}
-		toast.success(t('orders.messages.partRemoved'));
-	};
-
-	const handleUpdatePartQuantity = async (partId: string, quantity: number) => {
-		if (isMechanic) {
-			return;
-		}
-
-		const safeQuantity = Math.max(1, quantity);
-		const nextParts = mappedParts.map(part =>
-			part.partId === partId ? { ...part, quantity: safeQuantity } : part,
-		);
-
-		await updateOrderItems({ services: mappedServices, parts: nextParts });
-	};
-
-	if (isLoading) {
-		return (
-			<div className='flex h-full items-center justify-center'>
-				<p className='text-muted-foreground'>{t('common.loading')}</p>
-			</div>
-		);
-	}
-
-	if (error || !order) {
-		return (
-			<div className='flex h-full items-center justify-center'>
-				<p className='text-destructive'>
-					{error instanceof Error
-						? error.message
-						: t('orders.messages.notFound')}
-				</p>
-			</div>
-		);
-	}
-
-	const services = order.services ?? [];
-	const parts = order.parts ?? [];
-	const servicesTotal = services.reduce(
-		(sum: number, s: OrderDetailsService) =>
-			sum + (s.price ?? 0) * (s.quantity ?? 1),
-		0,
-	);
-	const partsTotal = parts.reduce(
-		(sum: number, p: OrderDetailsPart) =>
-			sum + (p.quantity ?? 0) * (p.unitPrice ?? 0),
-		0,
-	);
-	const grandTotal = servicesTotal + partsTotal;
-
-	return (
-		<div className='flex h-full flex-col'>
-			<OrderDetailsHeader
-				order={order}
-				onStatusChange={handleStatusChange}
-				onEditOrder={() => setIsEditOpen(true)}
-				onCompleteOrder={handleCompleteOrder}
-				allowedStatuses={
-					isMechanic
-						? [OrderStatus.IN_PROGRESS, OrderStatus.COMPLETED]
-						: undefined
-				}
-				canManageOrder={!isMechanic}
-				isUpdatingStatus={isUpdatingStatus}
-				isCompletingOrder={isCompletingOrder}
-			/>
-			<Tabs defaultValue='general' className='flex-1'>
-				<TabsNav servicesCount={services.length} partsCount={parts.length} />
-				<TabsContent value='general' className='flex-1'>
-					<GeneralInfoTab
-						order={order}
-						onEditClient={() => setIsClientEditOpen(true)}
-						onEditVehicle={() => setIsVehicleEditOpen(true)}
-						canEdit={!isMechanic}
-						mechanics={mechanicsMeta}
-					/>
-				</TabsContent>
-				<TabsContent value='services' className='flex-1'>
-					<ServicesTab
-						services={services}
-						servicesTotal={servicesTotal}
-						serviceOptions={servicesMeta}
-						onAddService={handleAddService}
-						onRemoveService={handleRemoveService}
-						canManageServices={!isMechanic}
-						showFinancials={!isMechanic}
-						isUpdating={isUpdating}
-					/>
-				</TabsContent>
-				<TabsContent value='parts' className='flex-1'>
-					<PartsTab
-						parts={parts}
-						partsTotal={partsTotal}
-						servicesTotal={servicesTotal}
-						grandTotal={grandTotal}
-						servicePartGroups={servicePartGroups}
-						unassignedParts={unassignedParts}
-						partOptions={partsMeta}
-						onAddPart={handleAddPart}
-						onRemovePart={handleRemovePart}
-						onQuantityChange={handleUpdatePartQuantity}
-						canManageParts={!isMechanic}
-						showFinancials={!isMechanic}
-						isUpdating={isUpdating}
-					/>
-				</TabsContent>
-			</Tabs>
-			<EditOrderModal
-				open={!isMechanic && isEditOpen}
-				onOpenChange={setIsEditOpen}
-				order={toEditOrderSource(order)}
-			/>
-			<EditClientDialog
-				open={!isMechanic && isClientEditOpen}
-				onOpenChange={setIsClientEditOpen}
-				selectedClient={selectedClientForEdit}
-			/>
-			<EditVehicleDialog
-				open={!isMechanic && isVehicleEditOpen}
-				onOpenChange={setIsVehicleEditOpen}
-				selectedVehicle={selectedVehicleForEdit}
-			/>
-		</div>
-	);
+  const { t } = useTranslation();
+  const role = useUserStore((state) => state.user?.role);
+  const isMechanic = role === "MECHANIC";
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { data: order, isLoading, error } = useOrderDetailsQuery(id);
+  const queryClient = useQueryClient();
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isClientEditOpen, setIsClientEditOpen] = useState(false);
+  const [isVehicleEditOpen, setIsVehicleEditOpen] = useState(false);
+  const [autoFilledPartIds, setAutoFilledPartIds] = useState<Set<string>>(
+    new Set(),
+  );
+
+  const { data: meta } = useQuery<NewOrderMeta>({
+    queryKey: ordersKeys.meta(),
+    queryFn: () => OrdersService.getNewOrderMeta(),
+    enabled: !!order,
+  });
+
+  const servicesMeta = meta?.services ?? [];
+  const mechanicsMeta = meta?.mechanics ?? [];
+  const partsMeta = meta?.parts ?? [];
+
+  const serviceIdByName = useMemo(
+    () => new Map(servicesMeta.map((service) => [service.name, service.id])),
+    [servicesMeta],
+  );
+  const partIdByName = useMemo(
+    () => new Map(partsMeta.map((part) => [part.name, part.id])),
+    [partsMeta],
+  );
+
+  const mappedServices = useMemo<OrderServiceItem[]>(() => {
+    if (!order) {
+      return [];
+    }
+
+    return (order.services ?? [])
+      .map((service: OrderDetailsService) => ({
+        serviceId: service.serviceId ?? serviceIdByName.get(service.name) ?? "",
+        mechanicId: service.mechanicId ?? undefined,
+      }))
+      .filter((service: OrderServiceItem) => Boolean(service.serviceId));
+  }, [order, serviceIdByName]);
+
+  const mappedParts = useMemo<OrderPartItem[]>(() => {
+    if (!order) {
+      return [];
+    }
+
+    return (order.parts ?? [])
+      .map((part: OrderDetailsPart) => ({
+        partId: part.partId ?? partIdByName.get(part.name) ?? "",
+        quantity: part.quantity,
+      }))
+      .filter((part: OrderPartItem) => Boolean(part.partId));
+  }, [order, partIdByName]);
+
+  const serviceRows = useMemo<ServiceRow[]>(
+    () =>
+      (order?.services ?? [])
+        .map((service: OrderDetailsService) => ({
+          serviceId:
+            service.serviceId ?? serviceIdByName.get(service.name) ?? "",
+          serviceName: service.name,
+        }))
+        .filter((item: ServiceRow) => Boolean(item.serviceId)),
+    [order, serviceIdByName],
+  );
+
+  const { data: recommendedPartsByService = {} } = useQuery({
+    queryKey: [
+      ...ordersKeys.all,
+      "recommended-parts-map",
+      order?.vehicle?.id,
+      serviceRows.map((row: ServiceRow) => row.serviceId).join(","),
+    ],
+    queryFn: async () => {
+      if (!order?.vehicle?.id || serviceRows.length === 0) {
+        return {} as Record<string, Set<string>>;
+      }
+
+      const uniqueServiceIds: string[] = Array.from(
+        new Set(serviceRows.map((row: ServiceRow) => row.serviceId)),
+      );
+
+      const recommendations: ServiceRecommendations[] = await Promise.all(
+        uniqueServiceIds.map(async (serviceId: string) => {
+          try {
+            const rec =
+              (await OrdersService.getRecommendedParts(
+                order.vehicle!.id,
+                serviceId,
+              )) ?? [];
+            return {
+              serviceId,
+              partIds: new Set<string>(
+                rec
+                  .map((part: any) => part?.id)
+                  .filter((partId: string | undefined) => Boolean(partId)),
+              ),
+            };
+          } catch {
+            return { serviceId, partIds: new Set<string>() };
+          }
+        }),
+      );
+
+      return recommendations.reduce(
+        (acc: Record<string, Set<string>>, item: ServiceRecommendations) => {
+          acc[item.serviceId] = item.partIds;
+          return acc;
+        },
+        {} as Record<string, Set<string>>,
+      );
+    },
+    enabled: Boolean(order?.vehicle?.id && serviceRows.length > 0),
+  });
+
+  const servicePartGroups = useMemo<ServicePartGroup[]>(() => {
+    const currentParts = order?.parts ?? [];
+    const uniqueServiceMap = new Map<string, string>();
+
+    serviceRows.forEach((row: ServiceRow) => {
+      if (!uniqueServiceMap.has(row.serviceId)) {
+        uniqueServiceMap.set(row.serviceId, row.serviceName);
+      }
+    });
+
+    return Array.from(uniqueServiceMap.entries())
+      .map(([serviceId, serviceName]) => {
+        const relatedPartIds =
+          recommendedPartsByService[serviceId] ?? new Set();
+        const parts = currentParts.filter((part: OrderDetailsPart) => {
+          const partId = part.partId ?? partIdByName.get(part.name) ?? "";
+          return partId ? relatedPartIds.has(partId) : false;
+        });
+
+        return {
+          serviceId,
+          serviceName,
+          parts,
+        };
+      })
+      .filter((group) => group.parts.length > 0);
+  }, [order, serviceRows, recommendedPartsByService, partIdByName]);
+
+  const unassignedParts = useMemo<OrderDetailsPart[]>(() => {
+    const assignedPartIds = new Set<string>();
+
+    servicePartGroups.forEach((group) => {
+      group.parts.forEach((part: OrderDetailsPart) => {
+        const partId = part.partId ?? partIdByName.get(part.name) ?? "";
+        if (partId) {
+          assignedPartIds.add(partId);
+        }
+      });
+    });
+
+    return (order?.parts ?? []).filter((part: OrderDetailsPart) => {
+      const partId = part.partId ?? partIdByName.get(part.name) ?? "";
+      return !partId || !assignedPartIds.has(partId);
+    });
+  }, [order, servicePartGroups, partIdByName]);
+
+  const selectedClientForEdit = useMemo<Client | undefined>(() => {
+    if (!order?.client) {
+      return undefined;
+    }
+
+    return {
+      id: order.client.id,
+      fullName: order.client.fullName ?? order.client.name ?? "",
+      email: order.client.email ?? "",
+      phone: order.client.phone ?? "",
+      avatar: order.client.avatar ?? "",
+      vehicleCount: 0,
+      totalOrders: 0,
+      totalSpent: 0,
+      status: "ACTIVE",
+      latestVisit: "",
+      notes: order.client.notes ?? undefined,
+    };
+  }, [order]);
+
+  const selectedVehicleForEdit = useMemo<
+    VehicleWithOwnerInfo | undefined
+  >(() => {
+    if (!order?.vehicle || !order.client?.id) {
+      return undefined;
+    }
+
+    const rawStatus = (order.vehicle as { status?: VehicleStatus }).status;
+    const status =
+      rawStatus && Object.values(VehicleStatus).includes(rawStatus)
+        ? rawStatus
+        : VehicleStatus.OUT;
+
+    return {
+      id: order.vehicle.id,
+      vin: order.vehicle.vin,
+      brand: order.vehicle.brand ?? order.vehicle.make,
+      model: order.vehicle.model,
+      year: order.vehicle.year,
+      plateNumber: order.vehicle.plateNumber ?? order.vehicle.plate ?? null,
+      mileage: order.vehicle.mileage ?? 0,
+      ownerId: order.client.id,
+      lastService: null,
+      color: order.vehicle.color ?? null,
+      notes: order.vehicle.notes ?? null,
+      status,
+      totalServices: order.services?.length ?? 0,
+      deletedAt: null,
+      createdAt: order.createdAt ? new Date(order.createdAt) : new Date(),
+      owner: {
+        id: order.client.id,
+        fullName: order.client.fullName ?? order.client.name ?? "",
+      },
+    };
+  }, [order]);
+
+  const buildPayload = (
+    services: OrderServiceItem[],
+    parts: OrderPartItem[],
+  ): UpdateOrderPayload | null => {
+    if (!order?.client?.id || !order?.vehicle?.id || !order.id) {
+      return null;
+    }
+
+    return {
+      clientId: order.client.id,
+      vehicleId: order.vehicle.id,
+      mileage: order.mileage ?? order.vehicle.mileage ?? 0,
+      priority: normalizePriority(order.priority),
+      services,
+      parts,
+      notes: order.notes ?? "",
+      status: normalizeStatus(order.status),
+      endDate: order.dueDate ? String(order.dueDate).split("T")[0] : undefined,
+    };
+  };
+
+  const { mutateAsync: updateOrderItems, isPending: isUpdating } = useMutation({
+    mutationKey: [...ordersKeys.all, "mutations", "order-details-update", id],
+    mutationFn: async (data: {
+      services: OrderServiceItem[];
+      parts: OrderPartItem[];
+    }) => {
+      if (!order?.id) {
+        throw new Error(t("orders.messages.notFound"));
+      }
+
+      const payload = buildPayload(data.services, data.parts);
+      if (!payload) {
+        throw new Error(t("orders.messages.clientVehicleDataMissing"));
+      }
+
+      return OrdersService.updateOrder(order.id, payload);
+    },
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ordersKeys.all }),
+        id
+          ? queryClient.invalidateQueries({ queryKey: ordersKeys.detail(id) })
+          : Promise.resolve(),
+      ]);
+    },
+    onError: (mutationError: any) => {
+      const message =
+        mutationError?.response?.data?.message ||
+        mutationError?.message ||
+        t("orders.messages.updateItemsError");
+      toast.error(message);
+    },
+  });
+
+  const { mutate: updateOrderStatus, isPending: isUpdatingStatus } =
+    useMutation({
+      mutationKey: [...ordersKeys.all, "mutations", "order-details-status", id],
+      mutationFn: async (status: OrderStatus) => {
+        if (!order?.id) {
+          throw new Error(t("orders.messages.notFound"));
+        }
+
+        await OrdersService.updateBulk([order.id], { status });
+      },
+      onSuccess: async () => {
+        toast.success(t("orders.messages.statusUpdated"));
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ordersKeys.lists() }),
+          id
+            ? queryClient.invalidateQueries({ queryKey: ordersKeys.detail(id) })
+            : Promise.resolve(),
+        ]);
+      },
+      onError: (mutationError: any) => {
+        const message =
+          mutationError?.response?.data?.message ||
+          mutationError?.message ||
+          t("orders.messages.updateStatusError");
+        toast.error(message);
+      },
+    });
+
+  const handleStatusChange = (status: string) => {
+    if (!order) {
+      return;
+    }
+
+    if (
+      isMechanic &&
+      ![OrderStatus.IN_PROGRESS, OrderStatus.COMPLETED].includes(
+        status as OrderStatus,
+      )
+    ) {
+      return;
+    }
+
+    if (String(order.status) === status) {
+      return;
+    }
+
+    updateOrderStatus(status as OrderStatus);
+  };
+
+  const { mutate: completeOrder, isPending: isCompletingOrder } = useMutation({
+    mutationKey: [...ordersKeys.all, "mutations", "order-details-complete", id],
+    mutationFn: async () => {
+      if (!order?.id) {
+        throw new Error(t("orders.messages.notFound"));
+      }
+
+      await OrdersService.updateBulk([order.id], {
+        status: OrderStatus.COMPLETED,
+      });
+    },
+    onSuccess: async () => {
+      toast.success(t("orders.messages.completed"));
+      await queryClient.invalidateQueries({ queryKey: ordersKeys.all });
+      navigate("/orders");
+    },
+    onError: (mutationError: any) => {
+      const message =
+        mutationError?.response?.data?.message ||
+        mutationError?.message ||
+        t("orders.messages.completeError");
+      toast.error(message);
+    },
+  });
+
+  const handleCompleteOrder = () => {
+    if (!order) {
+      return;
+    }
+
+    if (String(order.status) === OrderStatus.COMPLETED) {
+      navigate("/orders");
+      return;
+    }
+
+    completeOrder();
+  };
+
+  const applyRecommendedParts = async (
+    services: OrderServiceItem[],
+    parts: OrderPartItem[],
+  ) => {
+    if (!order?.vehicle?.id) {
+      return { parts, nextAutoFilled: new Set<string>() };
+    }
+
+    const activeServiceIds = services
+      .map((service) => service.serviceId)
+      .filter(Boolean);
+
+    if (activeServiceIds.length === 0) {
+      const manualParts = parts.filter(
+        (part) => !autoFilledPartIds.has(part.partId),
+      );
+      return { parts: manualParts, nextAutoFilled: new Set<string>() };
+    }
+
+    const servicePartsResults = await Promise.all(
+      activeServiceIds.map(async (serviceId) => {
+        try {
+          return (
+            (await OrdersService.getRecommendedParts(
+              order.vehicle!.id,
+              serviceId,
+            )) ?? []
+          );
+        } catch {
+          return [];
+        }
+      }),
+    );
+
+    const recommendedPartIds = new Set<string>();
+    servicePartsResults.flat().forEach((part: any) => {
+      if (part?.id) {
+        recommendedPartIds.add(part.id);
+      }
+    });
+
+    const manualParts = parts.filter(
+      (part) => !autoFilledPartIds.has(part.partId),
+    );
+    const recommendedParts = Array.from(recommendedPartIds)
+      .map((partId) => partsMeta.find((part) => part.id === partId))
+      .filter(Boolean)
+      .map((part) => ({
+        partId: part!.id,
+        quantity: 1,
+      }));
+
+    return {
+      parts: [...manualParts, ...recommendedParts],
+      nextAutoFilled: recommendedPartIds,
+    };
+  };
+
+  const handleAddService = async (serviceId: string) => {
+    if (isMechanic) {
+      return;
+    }
+
+    const nextServices = [
+      ...mappedServices,
+      { serviceId, mechanicId: undefined },
+    ];
+    const { parts: nextParts, nextAutoFilled } = await applyRecommendedParts(
+      nextServices,
+      mappedParts,
+    );
+
+    await updateOrderItems({ services: nextServices, parts: nextParts });
+    setAutoFilledPartIds(nextAutoFilled);
+    toast.success(t("orders.messages.serviceAdded"));
+  };
+
+  const handleRemoveService = async (serviceRowId: string) => {
+    if (isMechanic) {
+      return;
+    }
+
+    if (!order) {
+      return;
+    }
+
+    const removedService = (order.services ?? []).find(
+      (service: OrderDetailsService) => service.id === serviceRowId,
+    );
+    const removedServiceId =
+      removedService?.serviceId ??
+      (removedService ? (serviceIdByName.get(removedService.name) ?? "") : "");
+
+    const nextServices = (order.services ?? [])
+      .filter((service: OrderDetailsService) => service.id !== serviceRowId)
+      .map((service: OrderDetailsService) => ({
+        serviceId: service.serviceId ?? serviceIdByName.get(service.name) ?? "",
+        mechanicId: service.mechanicId ?? undefined,
+      }))
+      .filter((service: OrderServiceItem) => Boolean(service.serviceId));
+
+    const remainingRecommendedPartIds = new Set<string>();
+    nextServices.forEach((service: OrderServiceItem) => {
+      (
+        recommendedPartsByService[service.serviceId] ?? new Set<string>()
+      ).forEach((partId) => {
+        remainingRecommendedPartIds.add(partId);
+      });
+    });
+
+    const removedRecommendedPartIds = removedServiceId
+      ? (recommendedPartsByService[removedServiceId] ?? new Set<string>())
+      : new Set<string>();
+
+    const nextParts = mappedParts.filter((part) => {
+      if (!removedRecommendedPartIds.has(part.partId)) {
+        return true;
+      }
+
+      return remainingRecommendedPartIds.has(part.partId);
+    });
+
+    await updateOrderItems({ services: nextServices, parts: nextParts });
+    setAutoFilledPartIds(remainingRecommendedPartIds);
+    toast.success(t("orders.messages.serviceRemoved"));
+  };
+
+  const handleAddPart = async (partId: string, quantity: number) => {
+    if (isMechanic) {
+      return;
+    }
+
+    const nextParts = [...mappedParts];
+    const partIndex = nextParts.findIndex((part) => part.partId === partId);
+
+    if (partIndex >= 0) {
+      nextParts[partIndex] = {
+        ...nextParts[partIndex],
+        quantity: nextParts[partIndex].quantity + quantity,
+      };
+    } else {
+      nextParts.push({ partId, quantity });
+    }
+
+    await updateOrderItems({ services: mappedServices, parts: nextParts });
+    toast.success(t("orders.messages.partAdded"));
+  };
+
+  const handleRemovePart = async (partId: string) => {
+    if (isMechanic) {
+      return;
+    }
+
+    const nextParts = mappedParts.filter((part) => part.partId !== partId);
+
+    await updateOrderItems({ services: mappedServices, parts: nextParts });
+    if (autoFilledPartIds.has(partId)) {
+      setAutoFilledPartIds((prev) => {
+        const updated = new Set(prev);
+        updated.delete(partId);
+        return updated;
+      });
+    }
+    toast.success(t("orders.messages.partRemoved"));
+  };
+
+  const handleUpdatePartQuantity = async (partId: string, quantity: number) => {
+    if (isMechanic) {
+      return;
+    }
+
+    const safeQuantity = Math.max(1, quantity);
+    const nextParts = mappedParts.map((part) =>
+      part.partId === partId ? { ...part, quantity: safeQuantity } : part,
+    );
+
+    await updateOrderItems({ services: mappedServices, parts: nextParts });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-muted-foreground">{t("common.loading")}</p>
+      </div>
+    );
+  }
+
+  if (error || !order) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-destructive">
+          {error instanceof Error
+            ? error.message
+            : t("orders.messages.notFound")}
+        </p>
+      </div>
+    );
+  }
+
+  const services = order.services ?? [];
+  const parts = order.parts ?? [];
+  const servicesTotal = services.reduce(
+    (sum: number, s: OrderDetailsService) =>
+      sum + (s.price ?? 0) * (s.quantity ?? 1),
+    0,
+  );
+  const partsTotal = parts.reduce(
+    (sum: number, p: OrderDetailsPart) =>
+      sum + (p.quantity ?? 0) * (p.unitPrice ?? 0),
+    0,
+  );
+  const grandTotal = servicesTotal + partsTotal;
+
+  return (
+    <div className="flex h-full flex-col">
+      <OrderDetailsHeader
+        order={order}
+        onStatusChange={handleStatusChange}
+        onEditOrder={() => setIsEditOpen(true)}
+        onCompleteOrder={handleCompleteOrder}
+        allowedStatuses={
+          isMechanic
+            ? [OrderStatus.IN_PROGRESS, OrderStatus.COMPLETED]
+            : undefined
+        }
+        canManageOrder={!isMechanic}
+        isUpdatingStatus={isUpdatingStatus}
+        isCompletingOrder={isCompletingOrder}
+      />
+      <Tabs defaultValue="general" className="flex-1">
+        <TabsNav servicesCount={services.length} partsCount={parts.length} />
+        <TabsContent value="general" className="flex-1">
+          <GeneralInfoTab
+            order={order}
+            onEditClient={() => setIsClientEditOpen(true)}
+            onEditVehicle={() => setIsVehicleEditOpen(true)}
+            canEdit={!isMechanic}
+            mechanics={mechanicsMeta}
+          />
+        </TabsContent>
+        <TabsContent value="services" className="flex-1">
+          <ServicesTab
+            services={services}
+            servicesTotal={servicesTotal}
+            serviceOptions={servicesMeta}
+            onAddService={handleAddService}
+            onRemoveService={handleRemoveService}
+            canManageServices={!isMechanic}
+            showFinancials={!isMechanic}
+            isUpdating={isUpdating}
+          />
+        </TabsContent>
+        <TabsContent value="parts" className="flex-1">
+          <PartsTab
+            parts={parts}
+            partsTotal={partsTotal}
+            servicesTotal={servicesTotal}
+            grandTotal={grandTotal}
+            servicePartGroups={servicePartGroups}
+            unassignedParts={unassignedParts}
+            partOptions={partsMeta}
+            onAddPart={handleAddPart}
+            onRemovePart={handleRemovePart}
+            onQuantityChange={handleUpdatePartQuantity}
+            canManageParts={!isMechanic}
+            showFinancials={!isMechanic}
+            isUpdating={isUpdating}
+          />
+        </TabsContent>
+      </Tabs>
+      <EditOrderModal
+        open={!isMechanic && isEditOpen}
+        onOpenChange={setIsEditOpen}
+        order={toEditOrderSource(order)}
+      />
+      <EditClientDialog
+        open={!isMechanic && isClientEditOpen}
+        onOpenChange={setIsClientEditOpen}
+        selectedClient={selectedClientForEdit}
+      />
+      <EditVehicleDialog
+        open={!isMechanic && isVehicleEditOpen}
+        onOpenChange={setIsVehicleEditOpen}
+        selectedVehicle={selectedVehicleForEdit}
+      />
+    </div>
+  );
 }

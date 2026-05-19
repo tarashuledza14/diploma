@@ -1,7 +1,7 @@
-import { Controller } from '@nestjs/common';
-import { DmsService } from './dms.service';
+import { Controller } from "@nestjs/common";
+import { DmsService } from "./dms.service";
 
-@Controller('dms')
+@Controller("dms")
 export class DmsController {
   constructor(private readonly dmsService: DmsService) {}
 }

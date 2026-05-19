@@ -1,13 +1,13 @@
-export { OrderDetailsPage } from '../../pages/OrderDetailsPage';
-export { OrdersPage } from '../../pages/OrdersPage';
+export { OrderDetailsPage } from "../../pages/OrderDetailsPage";
+export { OrdersPage } from "../../pages/OrdersPage";
 
-export { KanbanColumnsList, KanbanPageHeader } from './components/order-kanban';
-export { mockOrders } from './components/order-list/mockOrders';
+export { KanbanColumnsList, KanbanPageHeader } from "./components/order-kanban";
+export { mockOrders } from "./components/order-list/mockOrders";
 export {
-	priorityColors,
-	statusColors,
-} from './components/order-list/orderColors';
-export { OrdersFilters } from './components/order-list/OrdersFilters';
-export { OrdersTable } from './components/order-list/OrdersTable';
-export { PageHeader } from './components/order-list/PageHeader';
-export * from './interfaces/order.interface';
+  priorityColors,
+  statusColors,
+} from "./components/order-list/orderColors";
+export { OrdersFilters } from "./components/order-list/OrdersFilters";
+export { OrdersTable } from "./components/order-list/OrdersTable";
+export { PageHeader } from "./components/order-list/PageHeader";
+export * from "./interfaces/order.interface";
