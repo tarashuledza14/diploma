@@ -182,12 +182,7 @@ export class ManualIngestionPipelineService {
 			};
 		}
 
-		/**
-		 * Linkage contract:
-		 * - docstore keeps ORIGINAL full chunk by doc_id
-		 * - vector store keeps SUMMARY with the same metadata.doc_id
-		 * MultiVectorRetriever later resolves summary hits -> doc_id -> original chunk.
-		 */
+		
 		await this.docstore.mset(originalDocsForStore);
 
 		for (

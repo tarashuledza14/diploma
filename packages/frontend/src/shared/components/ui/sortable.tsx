@@ -87,11 +87,7 @@ function useSortableContext(consumerName: string) {
 }
 
 interface GetItemValue<T> {
-	/**
-	 * Callback that returns a unique identifier for each sortable item. Required for array of objects.
-	 * @example getItemValue={(item) => item.id}
-	 */
-	getItemValue: (item: T) => UniqueIdentifier;
+		getItemValue: (item: T) => UniqueIdentifier;
 }
 
 type SortableRootProps<T> = DndContextProps &
@@ -571,7 +567,7 @@ export {
 	SortableItem as Item,
 	SortableItemHandle as ItemHandle,
 	SortableOverlay as Overlay,
-	//
+	
 	SortableRoot as Root,
 	SortableRoot as Sortable,
 	SortableContent,

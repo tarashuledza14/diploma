@@ -13,7 +13,7 @@ import { StockTab } from './tabs/StockTab';
 
 interface EditPartFormProps {
 	inventoryPart?: InventoryPart;
-	onSubmit: (data: Partial<InventoryPart>) => void; // Віддаємо наверх вже правильний тип
+	onSubmit: (data: Partial<InventoryPart>) => void; 
 	dictionaries: InventoryDictionaries;
 }
 
@@ -23,7 +23,7 @@ export function EditPartForm({
 	dictionaries,
 }: EditPartFormProps) {
 	const { t } = useTranslation();
-	// Якщо це редагування, розпаковуємо масиви назад у плоскі поля
+	
 	const defaultValues: Partial<PartFormData> | undefined = inventoryPart
 		? {
 				...inventoryPart,
@@ -46,15 +46,15 @@ export function EditPartForm({
 		defaultValues,
 	});
 
-	// 2. Трансформуємо плоскі дані ПЕРЕД відправкою на бекенд
+	
 	const handleFormSubmit = (formData: PartFormData) => {
-		// Зводимо priceCategory до енумів бекенду
+		
 		const clientType =
 			formData.priceCategory === 'SPECIAL'
 				? 'VIP'
 				: formData.priceCategory || 'RETAIL';
 
-		// Формуємо payload у тому вигляді, який чекає нова схема Prisma
+		
 		const payload: Partial<InventoryPart> = {
 			id: inventoryPart?.id,
 			name: formData.name,

@@ -12,7 +12,7 @@ import { PDFParse } from 'pdf-parse';
 import { DmsService } from 'src/dms/dms.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UnstructuredClient } from 'unstructured-client';
-// import { Strategy } from 'unstructured-client/dist/commonjs/sdk/models/shared';
+
 import { v4 as uuidv4 } from 'uuid';
 import { ManualIngestionPipelineService } from './manual-ingestion-pipeline.service';
 import { QdrantService } from './qdrant.service';
@@ -41,7 +41,7 @@ export class DocumentParserService {
 		private readonly smartPdfService: SmartPdfService,
 		private readonly manualIngestionPipelineService: ManualIngestionPipelineService,
 	) {
-		// Підключаємося до нашого локального Docker-контейнера (або хмарного API)
+		
 		const serverURL =
 			this.configService.get<string>('UNSTRUCTURED_API_URL') ||
 			'http://localhost:8000';
@@ -51,9 +51,7 @@ export class DocumentParserService {
 		});
 	}
 
-	/**
-	 * Головний метод для обробки завантаженого PDF посібника
-	 */
+	
 	async processAndStoreManual(
 		file: Express.Multer.File,
 		carModel: string,
@@ -470,7 +468,7 @@ export class DocumentParserService {
 				};
 			}
 		} catch {
-			// Backward compatibility: in legacy records externalId may contain only an S3 key.
+			
 		}
 
 		return {

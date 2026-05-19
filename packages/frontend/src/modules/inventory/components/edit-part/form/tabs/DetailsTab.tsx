@@ -57,7 +57,7 @@ export function DetailsTab({ control }: DetailsTabProps) {
 					<Button variant='outline' className='w-full bg-transparent'>
 						<ImageIcon className='mr-2 h-4 w-4' />
 						{t('inventory.form.details.uploadPhoto')}
-						{/* TODO: file upload */}
+						{}
 					</Button>
 				</div>
 			</div>

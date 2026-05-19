@@ -18,7 +18,7 @@ export const orderStatusColors: Record<string, string> = {
 	COMPLETED: softBadgePalette.green,
 	PAID: softBadgePalette.emerald,
 	CANCELLED: softBadgePalette.red,
-	// legacy lowercase (mock data)
+	
 	new: softBadgePalette.blue,
 	in_progress: softBadgePalette.amber,
 	waiting_parts: softBadgePalette.orange,
@@ -29,7 +29,7 @@ export const orderPriorityColors: Record<string, string> = {
 	LOW: softBadgePalette.green,
 	MEDIUM: softBadgePalette.amber,
 	HIGH: softBadgePalette.red,
-	// legacy lowercase
+	
 	low: softBadgePalette.green,
 	medium: softBadgePalette.amber,
 	high: softBadgePalette.red,

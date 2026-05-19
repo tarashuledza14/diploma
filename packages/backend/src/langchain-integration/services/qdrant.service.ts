@@ -10,7 +10,7 @@ export class QdrantService implements OnModuleInit {
 	private readonly collectionName = 'car_manuals';
 	private client: QdrantClient;
 
-	// Робимо public, щоб наш RAG-агент міг дістати цей стор для пошуку
+	
 	public vectorStore: QdrantVectorStore;
 
 	constructor(
@@ -24,7 +24,7 @@ export class QdrantService implements OnModuleInit {
 		this.client = new QdrantClient({ url: qdrantUrl });
 
 		try {
-			// КРОК 1: Нативний клієнт для перевірки/створення бази
+			
 			const response = await this.client.getCollections();
 			const exists = response.collections.some(
 				c => c.name === this.collectionName,
@@ -36,15 +36,15 @@ export class QdrantService implements OnModuleInit {
 				);
 				await this.client.createCollection(this.collectionName, {
 					vectors: {
-						size: 1536, // Розмір вектора OpenAI
+						size: 1536, 
 						distance: 'Cosine',
 					},
 				});
 			}
 
-			// КРОК 2: Твоя LangChain обгортка! Тепер вона підключиться безпечно.
+			
 			this.vectorStore = await QdrantVectorStore.fromExistingCollection(
-				this.embeddingsService.embeddings, // Твій сервіс з OpenAI Embeddings
+				this.embeddingsService.embeddings, 
 				{
 					url: qdrantUrl,
 					collectionName: this.collectionName,

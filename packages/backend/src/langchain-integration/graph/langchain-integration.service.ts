@@ -57,7 +57,7 @@ function sanitizeAssistantText(rawText: string): string {
 		.trim();
 }
 
-/** Остання відповідь асистента без проміжних викликів інструментів (для збереження в чат). */
+
 function extractAssistantReplyFromMessages(
 	messages: any[] | undefined,
 ): string {

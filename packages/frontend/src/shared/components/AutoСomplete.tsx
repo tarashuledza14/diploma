@@ -87,7 +87,7 @@ export function AutoComplete<T extends Option>({
 				className='w-(--radix-popover-trigger-width) p-0'
 				align='start'
 			>
-				{/* shouldFilter={false} ОБОВ'ЯЗКОВО, бо фільтруємо на бекенді */}
+				{}
 				<Command shouldFilter={false}>
 					<CommandInput
 						placeholder={resolvedPlaceholder}

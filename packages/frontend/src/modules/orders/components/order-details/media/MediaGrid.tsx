@@ -35,7 +35,7 @@ export function MediaGrid({ media, onDelete, onDownload }: MediaGridProps) {
 					<div className='relative aspect-video bg-muted'>
 						{file.type === 'image' ? (
 							<div className='flex h-full items-center justify-center'>
-								{/* TODO: Display actual image thumbnail */}
+								{}
 							</div>
 						) : (
 							<div className='flex h-full items-center justify-center'>

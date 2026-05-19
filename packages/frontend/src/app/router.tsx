@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
-// import { DashboardLayout } from '@/components/layouts/DashboardLayout';
-// import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
+
+
 import { PageTitle } from '@/app/components/PageTitle';
 import { MainLayout } from '@/layouts';
 import { AIAssistantPage } from '@/modules/ai-assistant/AIAssistantPage';
@@ -26,15 +26,15 @@ import { ServicesPage } from '@/pages/ServicesPage';
 import { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 
-// Ліниве завантаження сторінок (Code Splitting)
-// const LoginPage = lazy(() => import('@/pages/LoginPage'));
-// const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
-// const OrdersPage = lazy(() => import('@/pages/orders/OrdersListPage'));
-// const KanbanPage = lazy(() => import('@/pages/orders/KanbanPage'));
-// const OrderDetailsPage = lazy(() => import('@/pages/orders/OrderDetailsPage'));
-// const InventoryPage = lazy(() => import('@/pages/inventory/InventoryPage'));
 
-// Компонент завантаження, поки вантажиться сторінка
+
+
+
+
+
+
+
+
 function Loading() {
 	const { t } = useTranslation();
 	return <div className='p-10 text-center'>{t('router.loading')}</div>;
@@ -46,7 +46,7 @@ function NotFoundPage() {
 }
 
 export const router = createBrowserRouter([
-	// --- ПУБЛІЧНІ МАРШРУТИ ---
+	
 	{
 		path: '/login',
 		element: (
@@ -68,7 +68,7 @@ export const router = createBrowserRouter([
 		),
 	},
 
-	//   // --- ЗАХИЩЕНІ МАРШРУТИ (Всередині DashboardLayout) ---
+	
 	{
 		element: <MainLayout />,
 		children: [
@@ -263,14 +263,14 @@ export const router = createBrowserRouter([
 			},
 		],
 	},
-	//
-	//
-	// 			],
-	// 		},
+	
+	
+	
+	
 
-	// 		// 2. Доступно ТІЛЬКИ Менеджерам і Адмінам (Склад і Таблиця замовлень)
+	
 
-	// --- ONBOARDING ---
+	
 	{
 		element: <ProtectedRoute allowedRoles={['ADMIN']} />,
 		children: [
@@ -281,7 +281,7 @@ export const router = createBrowserRouter([
 		],
 	},
 
-	// --- 404 Page ---
+	
 	{
 		path: '*',
 		element: (

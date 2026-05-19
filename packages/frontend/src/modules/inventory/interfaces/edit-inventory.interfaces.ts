@@ -12,14 +12,14 @@ export interface PartFormData {
 	warrantyKm?: number | null;
 	notes?: string | null;
 
-	// Плоскі поля зі вкладок Stock та Finance
+	
 	purchasePrice?: number;
 	retailPrice?: number;
 	priceCategory?: string;
 	location?: string | null;
 	unit?: string | null;
 	quantityAvailable?: number;
-	quantityReserved?: number; // Залишили для відображення (read-only)
+	quantityReserved?: number; 
 	minStock?: number | null;
 	weight?: string | null;
 	dimensions?: string | null;

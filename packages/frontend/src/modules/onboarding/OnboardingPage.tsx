@@ -359,7 +359,7 @@ export function OnboardingPage() {
 
 	return (
 		<div className='flex h-dvh w-full'>
-			{/* Left panel */}
+			{}
 			<div className='hidden w-105 shrink-0 flex-col justify-between bg-foreground p-10 text-background lg:flex'>
 				<div className='text-lg font-semibold tracking-tight'>AutoCRM</div>
 
@@ -410,7 +410,7 @@ export function OnboardingPage() {
 				</p>
 			</div>
 
-			{/* Right panel */}
+			{}
 			<div className='flex flex-1 flex-col items-center justify-center overflow-y-auto p-8'>
 				<div className='w-full max-w-sm'>
 					<div className='mb-8'>

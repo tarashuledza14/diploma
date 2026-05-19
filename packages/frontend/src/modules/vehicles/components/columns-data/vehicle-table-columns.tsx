@@ -114,9 +114,9 @@ export function getVehicleTableColumns({
 				placeholder: t('vehicles.filters.searchBrand'),
 				variant: 'text',
 			},
-			enableColumnFilter: true, // Вмикаємо, щоб з'явилось у списку фільтрів
+			enableColumnFilter: true, 
 			enableSorting: true,
-			enableHiding: true, // Дозволяємо приховувати
+			enableHiding: true, 
 		},
 		{
 			id: 'model',
@@ -126,9 +126,9 @@ export function getVehicleTableColumns({
 				placeholder: t('vehicles.filters.searchModel'),
 				variant: 'text',
 			},
-			enableColumnFilter: true, // Вмикаємо, щоб з'явилось у списку фільтрів
+			enableColumnFilter: true, 
 			enableSorting: true,
-			enableHiding: true, // Дозволяємо приховувати
+			enableHiding: true, 
 		},
 		{
 			id: 'year',
@@ -138,9 +138,9 @@ export function getVehicleTableColumns({
 				placeholder: t('vehicles.filters.searchYear'),
 				variant: 'number',
 			},
-			enableColumnFilter: true, // Вмикаємо, щоб з'явилось у списку фільтрів
+			enableColumnFilter: true, 
 			enableSorting: true,
-			enableHiding: true, // Дозволяємо приховувати
+			enableHiding: true, 
 		},
 		{
 			id: 'vin',
@@ -156,9 +156,9 @@ export function getVehicleTableColumns({
 				placeholder: t('vehicles.filters.searchPlateVin'),
 				variant: 'text',
 			},
-			enableColumnFilter: true, // Вмикаємо, щоб з'явилось у списку фільтрів
+			enableColumnFilter: true, 
 			enableSorting: true,
-			enableHiding: true, // Дозволяємо приховувати
+			enableHiding: true, 
 		},
 		{
 			id: 'owner.fullName',

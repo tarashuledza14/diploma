@@ -27,7 +27,7 @@ export class DocumentParserController {
 
 	@Auth(Role.ADMIN, Role.MANAGER)
 	@Post('upload')
-	@UseInterceptors(FileInterceptor('file')) // 'file' - це назва поля у Postman
+	@UseInterceptors(FileInterceptor('file')) 
 	async uploadManual(
 		@UploadedFile() file: Express.Multer.File,
 		@Body('carModel') carModel: string,
@@ -47,7 +47,7 @@ export class DocumentParserController {
 		const organizationId = this.requireOrganizationId(user);
 
 		try {
-			// Віддаємо файл нашому AI-парсеру
+			
 			const result = await this.parserService.processAndStoreManual(
 				file,
 				carModel,

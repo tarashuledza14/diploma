@@ -38,8 +38,8 @@ export class DmsService {
 				accessKeyId: this.configService.get<string>('S3_ACCESS_KEY'),
 				secretAccessKey: this.configService.get<string>('S3_SECRET_ACCESS_KEY'),
 			},
-			// Keep bucket private and serve access via presigned URLs.
-			// forcePathStyle: true, // Uncomment for local MinIO, keep commented for AWS S3
+			
+			
 		});
 	}
 

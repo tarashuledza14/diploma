@@ -1,4 +1,4 @@
-// import { mockClients } from '@/modules/clients';
+
 import { ClientService } from '@/modules/clients';
 import { AutoComplete } from '@/shared';
 import {

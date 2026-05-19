@@ -43,12 +43,7 @@ export function ClientHeader({
 						<Phone className='h-4 w-4 text-muted-foreground' />
 						{selectedClient.phone}
 					</div>
-					{/* {selectedClient.address && (
-						<div className='flex items-center gap-1'>
-							<MapPin className='h-4 w-4 text-muted-foreground' />
-							{selectedClient.address}, {selectedClient.city}
-						</div>
-					)} */}
+					{}
 				</div>
 			</div>
 			<Button variant='outline' size='sm' onClick={onEditClick}>

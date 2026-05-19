@@ -181,7 +181,7 @@ export function getInventoryTableColumns({
 		},
 		{
 			id: 'location',
-			// Збираємо унікальні локації з усіх партій на складі для пошуку/сортування
+			
 			accessorFn: row => {
 				const locations =
 					row.inventory?.map(i => i.location).filter(Boolean) || [];
@@ -212,7 +212,7 @@ export function getInventoryTableColumns({
 		},
 		{
 			id: 'stock',
-			// Вираховуємо загальну кількість для правильного сортування
+			
 			accessorFn: row =>
 				row.inventory?.reduce((sum, item) => sum + item.quantity, 0) || 0,
 			header: ({ column }) => (
@@ -280,7 +280,7 @@ export function getInventoryTableColumns({
 		},
 		{
 			id: 'retailPrice',
-			// Шукаємо роздрібну ціну для сортування
+			
 			accessorFn: row => {
 				const retailRule =
 					row.priceRules?.find(r => r.clientType === 'RETAIL') ||
@@ -294,14 +294,14 @@ export function getInventoryTableColumns({
 				/>
 			),
 			cell: ({ row }) => {
-				// Беремо роздрібну ціну
+				
 				const retailRule =
 					row.original.priceRules?.find(r => r.clientType === 'RETAIL') ||
 					row.original.priceRules?.[0];
 				const retailPrice = retailRule?.fixedPrice;
 				const markup = retailRule?.markupPercent;
 
-				// Беремо закупівельну ціну з останньої партії
+				
 				const latestInventory = row.original.inventory?.[0];
 				const purchasePrice = latestInventory?.purchasePrice;
 

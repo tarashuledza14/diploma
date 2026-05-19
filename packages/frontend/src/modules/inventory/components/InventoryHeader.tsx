@@ -30,10 +30,7 @@ export function InventoryHeader({
 				<p className='text-muted-foreground'>{t('inventory.subtitle')}</p>
 			</div>
 			<div className='flex gap-2'>
-				{/* <Button variant='outline'>
-					<ShoppingCart className='mr-2 h-4 w-4' />
-					Order Parts
-				</Button> */}
+				{}
 				{canManageInventory && (
 					<ResponsiveDialog open={open} onOpenChange={setOpen}>
 						<ResponsiveDialogTrigger asChild>

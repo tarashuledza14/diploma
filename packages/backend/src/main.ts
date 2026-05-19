@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-	// LangSmith tracing — вмикається коли LANGSMITH_API_KEY задано в .env
+	
 	const langsmithKey = process.env.LANGSMITH_API_KEY;
 	if (langsmithKey && langsmithKey !== '...') {
 		process.env.LANGCHAIN_TRACING_V2 = 'true';

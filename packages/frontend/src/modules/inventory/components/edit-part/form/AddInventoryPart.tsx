@@ -59,7 +59,7 @@ export function AddInventoryPart({
 				</Button>
 				<Button
 					type='submit'
-					form='edit-part-form' // Має збігатися з ID форми всередині EditPartForm
+					form='edit-part-form' 
 					disabled={mutation.isPending}
 				>
 					{mutation.isPending

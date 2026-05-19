@@ -83,7 +83,7 @@ export class InventoryService {
 				...(inventory?.length && { inventory: { create: inventory } }),
 				...(priceRules?.length && { priceRules: { create: priceRules } }),
 
-				// ДОДАНО: Створення запису про рух товару (Прихід)
+				
 				...(initialQty > 0 && {
 					movements: {
 						create: {
@@ -104,7 +104,7 @@ export class InventoryService {
 	}
 
 	async updatePart(
-		data: any, // Приймаємо дані
+		data: any, 
 		actor: AuthUser,
 	) {
 		const organizationId = this.assertOrganizationId(actor);
@@ -389,7 +389,7 @@ export class InventoryService {
 		};
 	}
 
-	// ДОДАНО: Метод для вікна Movement History
+	
 	async getPartMovementHistory(partId: string, actor: AuthUser) {
 		const organizationId = this.assertOrganizationId(actor);
 
@@ -412,7 +412,7 @@ export class InventoryService {
 					organizationId,
 				},
 			},
-			orderBy: { createdAt: 'desc' }, // Нові зверху
+			orderBy: { createdAt: 'desc' }, 
 			include: {
 				user: { select: { fullName: true } },
 				order: { select: { id: true } },

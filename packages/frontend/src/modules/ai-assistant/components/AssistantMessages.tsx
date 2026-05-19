@@ -75,8 +75,8 @@ function createMarkdownComponents(
 		},
 		img: ({ src }: { src?: string }) => {
 			if (!src) return null;
-			// Temporarily disabled: manual diagram previews are hidden until
-			// full image retrieval/rendering flow is restored.
+			
+			
 			return null;
 		},
 		code: ({

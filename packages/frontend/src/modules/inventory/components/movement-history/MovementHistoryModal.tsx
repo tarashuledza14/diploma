@@ -92,7 +92,7 @@ export function MovementHistoryModal({
 							</Button>
 						</ResponsiveDialogHeader>
 
-						{/* Summary */}
+						{}
 						<div className='grid grid-cols-4 gap-3'>
 							<div className='rounded-lg border p-2.5 text-center'>
 								<p className='text-[11px] text-muted-foreground'>

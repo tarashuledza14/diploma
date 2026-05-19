@@ -35,11 +35,11 @@ export function InventoryTable({
 	const [rowAction, setRowAction] =
 		useState<DataTableRowAction<InventoryPart> | null>(null);
 
-	// const { data: dictionaries } = useSuspenseQuery({
-	// 	queryKey: inventoryKeys.dictionaries(),
-	// 	queryFn: () => InventoryService.getAllDictionaries(),
-	// 	staleTime: Infinity,
-	// });
+	
+	
+	
+	
+	
 
 	const columns = useMemo(
 		() =>

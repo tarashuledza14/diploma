@@ -9,8 +9,8 @@ export const dataTableConfig = {
 		},
 		{ label: 'table.filter.operators.is', value: 'eq' as const },
 		{ label: 'table.filter.operators.isNot', value: 'ne' as const },
-		// { label: "Is empty", value: "isEmpty" as const },
-		// { label: "Is not empty", value: "isNotEmpty" as const },
+		
+		
 	],
 	numericOperators: [
 		{ label: 'table.filter.operators.is', value: 'eq' as const },
@@ -26,8 +26,8 @@ export const dataTableConfig = {
 			value: 'gte' as const,
 		},
 		{ label: 'table.filter.operators.isBetween', value: 'isBetween' as const },
-		// { label: "Is empty", value: "isEmpty" as const },
-		// { label: "Is not empty", value: "isNotEmpty" as const },
+		
+		
 	],
 	dateOperators: [
 		{ label: 'table.filter.operators.is', value: 'eq' as const },
@@ -37,21 +37,21 @@ export const dataTableConfig = {
 		{ label: 'table.filter.operators.isOnOrBefore', value: 'lte' as const },
 		{ label: 'table.filter.operators.isOnOrAfter', value: 'gte' as const },
 		{ label: 'table.filter.operators.isBetween', value: 'isBetween' as const },
-		// { label: 'Is relative to today', value: 'isRelativeToToday' as const },
-		// { label: "Is empty", value: "isEmpty" as const },
-		// { label: "Is not empty", value: "isNotEmpty" as const },
+		
+		
+		
 	],
 	selectOperators: [
 		{ label: 'table.filter.operators.is', value: 'eq' as const },
 		{ label: 'table.filter.operators.isNot', value: 'ne' as const },
-		// { label: "Is empty", value: "isEmpty" as const },
-		// { label: "Is not empty", value: "isNotEmpty" as const },
+		
+		
 	],
 	multiSelectOperators: [
 		{ label: 'table.filter.operators.hasAnyOf', value: 'inArray' as const },
 		{ label: 'table.filter.operators.hasNoneOf', value: 'notInArray' as const },
-		// { label: "Is empty", value: "isEmpty" as const },
-		// { label: "Is not empty", value: "isNotEmpty" as const },
+		
+		
 	],
 	booleanOperators: [
 		{ label: 'table.filter.operators.is', value: 'eq' as const },

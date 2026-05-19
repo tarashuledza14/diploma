@@ -11,8 +11,8 @@ export function SearchBar() {
 				type='search'
 				placeholder={t('search.globalPlaceholder')}
 				className='pl-10'
-				// TODO: Implement global search with debounce
-				// onChange={(e) => debouncedSearch(e.target.value)}
+				
+				
 			/>
 		</div>
 	);

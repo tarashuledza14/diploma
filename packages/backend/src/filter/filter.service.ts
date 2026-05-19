@@ -113,7 +113,7 @@ export class FilterService {
 
 	getSortFilter(sort: SortItem[]): Record<string, 'asc' | 'desc'>[] {
 		if (!sort || sort.length === 0) {
-			// return [{ createdAt: 'desc' }];
+			
 			return [];
 		}
 
@@ -138,17 +138,17 @@ export class FilterService {
 		return obj;
 	}
 
-	// --- НОВИЙ МЕТОД ДЛЯ ФІЛЬТРАЦІЇ ---
-	// Створює вкладену структуру для фільтрів, наприклад:
-	// field: "category.name", rule: { contains: "foo" }
-	// перетворює на: { category: { name: { contains: "foo" } } }
+	
+	
+	
+	
 	private buildNestedFilter(
 		field: string,
 		rule: Record<string, any>,
 	): Record<string, any> {
 		const keys = field.split('.');
 
-		// Якщо вкладеності немає, повертаємо простий об'єкт
+		
 		if (keys.length === 1) {
 			return { [field]: rule };
 		}
@@ -156,13 +156,13 @@ export class FilterService {
 		const root: any = {};
 		let current = root;
 
-		// Проходимо по ключах до передостаннього
+		
 		for (let i = 0; i < keys.length - 1; i++) {
 			current[keys[i]] = {};
 			current = current[keys[i]];
 		}
 
-		// Присвоюємо правило останньому ключу
+		
 		current[keys[keys.length - 1]] = rule;
 
 		return root;
@@ -176,7 +176,7 @@ export class FilterService {
 		const filter: Record<string, unknown> = { contains: value };
 		if (this.isTextVariant(variant)) filter.mode = 'insensitive';
 
-		// Використовуємо новий білдер
+		
 		return this.buildNestedFilter(field, filter);
 	}
 
@@ -188,7 +188,7 @@ export class FilterService {
 		const filter: Record<string, unknown> = { contains: value };
 		if (this.isTextVariant(variant)) filter.mode = 'insensitive';
 
-		// NOT обгортає вже побудовану вкладену структуру
+		
 		return { NOT: this.buildNestedFilter(field, filter) };
 	}
 
@@ -248,7 +248,7 @@ export class FilterService {
 
 		const range = { gte: start, lte: end };
 
-		// Будуємо вкладеність для діапазону
+		
 		const filterObject = this.buildNestedFilter(field, range);
 
 		if (not) {

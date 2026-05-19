@@ -28,9 +28,9 @@ import React from 'react';
 import { Client } from '../interfaces/client.interface';
 
 interface GetClientTableColumnsProps {
-	// statusCounts: Record<Client['status'], number>;
-	// priorityCounts: Record<Client['priority'], number>;
-	// estimatedHoursRange: { min: number; max: number };
+	
+	
+	
 	setRowAction: React.Dispatch<
 		React.SetStateAction<DataTableRowAction<Client> | null>
 	>;
@@ -120,9 +120,9 @@ export function getClientTableColumns({
 				placeholder: t('clients.filters.searchEmail'),
 				variant: 'text',
 			},
-			enableColumnFilter: true, // Вмикаємо, щоб з'явилось у списку фільтрів
+			enableColumnFilter: true, 
 			enableSorting: true,
-			enableHiding: true, // Дозволяємо приховувати
+			enableHiding: true, 
 		},
 		{
 			id: 'phone',

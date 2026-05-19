@@ -112,7 +112,7 @@ export class ManualRetrieverService {
 					return presigned.url;
 				}
 			} catch {
-				// Ignore and fallback to the next candidate.
+				
 			}
 		}
 
@@ -194,7 +194,7 @@ export class ManualRetrieverService {
 				};
 			}
 		} catch {
-			// Backward compatibility: in legacy records externalId may contain only an S3 key.
+			
 		}
 
 		return {

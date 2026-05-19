@@ -30,15 +30,15 @@ export class InventoryService {
 		return response.data;
 	}
 
-	// Створення нової запчастини
+	
 	static async createPart(data: Partial<InventoryPart>) {
 		const response = await instance.post<InventoryPart>(`${this.prefix}`, data);
 		return response.data;
 	}
 
-	// Оновлення запчастини
+	
 	static async updatePart(data: Partial<InventoryPart>) {
-		// Краще передавати ID в URL, як це зазвичай робиться в REST: /inventory/parts/:id
+		
 		const response = await instance.put<InventoryPart>(`${this.prefix}`, data);
 		return response.data;
 	}

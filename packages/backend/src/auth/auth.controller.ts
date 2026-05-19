@@ -97,7 +97,7 @@ export class AuthController {
 		this.authService.addRefreshTokenToResponse(res, refreshToken);
 		return response;
 	}
-	// @UsePipes(new ValidationPipe())
+	
 	@HttpCode(200)
 	@Throttle({ default: { limit: 20, ttl: 60_000 } })
 	@Post('access-token')

@@ -401,7 +401,7 @@ export class TeamService {
 				});
 			});
 		} catch {
-			// ignore cleanup failures to preserve original error surface
+			
 		}
 	}
 

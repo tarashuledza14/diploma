@@ -1,7 +1,4 @@
-/**
- * Returns the system prompt for the RAG node.
- * Accepts context for future localization, car model, etc.
- */
+
 export function getRagNodeSystemPrompt({
 	language = 'uk',
 	carModel = '',

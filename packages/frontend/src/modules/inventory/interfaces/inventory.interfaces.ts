@@ -1,4 +1,4 @@
-// 1. Enums
+
 export enum PartCondition {
 	NEW = 'NEW',
 	USED = 'USED',
@@ -11,7 +11,7 @@ export enum ClientType {
 	VIP = 'VIP',
 }
 
-// 2. Допоміжні інтерфейси для зв'язків
+
 export interface PartCategory {
 	id: string;
 	name: string;
@@ -33,18 +33,18 @@ export interface PartsSupplier {
 	contact?: string | null;
 }
 
-// ДОДАНО: Інтерфейс для залишків на складі
+
 export interface PartInventory {
 	id: string;
 	partId: string;
 	quantity: number;
-	purchasePrice: number | string; // Залежить від того, як бекенд серіалізує Decimal
+	purchasePrice: number | string; 
 	location?: string | null;
 	batchNumber?: string | null;
 	receivedAt: string;
 }
 
-// ДОДАНО: Інтерфейс для правил ціноутворення
+
 export interface PartPriceRule {
 	id: string;
 	partId: string;
@@ -54,32 +54,32 @@ export interface PartPriceRule {
 	createdAt: string;
 }
 
-// 3. Основний інтерфейс (Inventory / Part)
+
 export interface InventoryPart {
 	id: string;
 
-	// Основна інформація
+	
 	name: string;
 	sku: string;
 	code?: string | null;
 	oem?: string | null;
 	barcode?: string | null;
 
-	// Зв'язки (Relations)
+	
 	category?: PartCategory | null;
 	brand?: PartsBrand | null;
 	manufacturer?: Manufacturer | null;
 	supplier?: PartsSupplier | null;
 	supplierContact?: string | null;
 
-	// Характеристики
+	
 	compatibility: string[];
 	crossNumbers: string[];
 	unit?: string | null;
 	condition?: PartCondition | null;
 	minStock?: number | null;
 
-	// Деталі товару
+	
 	warrantyMonths?: number | null;
 	warrantyKm?: number | null;
 	weight?: string | null;
@@ -87,16 +87,16 @@ export interface InventoryPart {
 	photo?: string | null;
 	notes?: string | null;
 
-	// Дати
+	
 	createdAt?: string | null;
 	updatedAt?: string | null;
 
-	// ДОДАНО: Зв'язки з новими таблицями
+	
 	inventory?: PartInventory[];
 	priceRules?: PartPriceRule[];
 }
 
-// 4. Інтерфейси для довідників та статистики
+
 export interface InventoryDictionaries {
 	brands: PartsBrand[];
 	categories: PartCategory[];
@@ -108,7 +108,7 @@ export interface InventoryStats {
 	totalParts: number;
 	lowStock: number;
 	outOfStock: number;
-	retailPrice: number; // Оновлено відповідно до бекенду
-	purchasePrice: number; // ДОДАНО: кількість зарезервованих запчастин
+	retailPrice: number; 
+	purchasePrice: number; 
 	quantityReserved: number;
 }
