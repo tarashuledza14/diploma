@@ -11,7 +11,10 @@
 		"dev": "concurrently \"pnpm run backend\" \"pnpm run frontend\"",
 		"prisma:seed": "pnpm --filter backend run prisma:seed",
 		"setup": "docker-compose up -d db qdrant && cd packages/backend && npx prisma db push && pnpm run prisma:seed",
-		"setup:full": "docker-compose up -d db qdrant unstructured-api && cd packages/backend && npx prisma db push && pnpm run prisma:seed"
+		"setup:full": "docker-compose up -d db qdrant unstructured-api && cd packages/backend && npx prisma db push && pnpm run prisma:seed",
+		"dev:docker": "docker-compose -f docker-compose.dev.yml up",
+		"dev:docker:build": "docker-compose -f docker-compose.dev.yml up --build",
+		"dev:docker:full": "docker-compose -f docker-compose.dev.full.yml up --build"
 	},
 	"devDependencies": {
 		"concurrently": "^9.1.0",

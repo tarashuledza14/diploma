@@ -9,7 +9,7 @@ import { getContentType } from './api.helper';
 import { errorCatch } from './error';
 
 const options: CreateAxiosDefaults = {
-	baseURL: 'http://localhost:4200/api',
+	baseURL: '/api',
 	headers: getContentType(),
 	withCredentials: true,
 };

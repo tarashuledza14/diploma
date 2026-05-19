@@ -26,6 +26,8 @@ services:
         condition: service_healthy
       qdrant:
         condition: service_started
+      unstructured-api:
+        condition: service_started
     environment:
       DATABASE_URL: 'postgresql://postgres:KOSMOdesant567@db:5432/autocrm?schema=public'
       QDRANT_URL: 'http://qdrant:6333'
@@ -54,6 +56,14 @@ services:
       - '6334:6334'
     volumes:
       - autocrm_qdrant_data:/qdrant/storage
+
+  unstructured-api:
+    image: downloads.unstructured.io/unstructured-io/unstructured-api:latest
+    container_name: crm_unstructured
+    restart: unless-stopped
+    mem_limit: 8g
+    ports:
+      - '8000:8000'
 
 volumes:
   autocrm_db_data:

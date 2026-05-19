@@ -157,6 +157,12 @@ type SeedOrder = {
 };
 
 async function main() {
+	const existingUsers = await prisma.user.count();
+	if (existingUsers > 0) {
+		console.log('⏭️  Database already seeded, skipping...');
+		return;
+	}
+
 	await clearDatabase();
 	console.log('🚀 Starting seed...');
 
