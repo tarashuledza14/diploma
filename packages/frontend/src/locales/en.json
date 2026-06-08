@@ -1217,7 +1217,7 @@
 	},
 	"dispatch": {
 		"title": "Dispatch",
-		"subtitle": "Plan team capacity for active orders only (NEW, IN_PROGRESS, WAITING_PARTS)",
+		"subtitle": "Plan team capacity for active orders only",
 		"boardMode": "Planning mode on kanban board",
 		"mechanicsTitle": "Mechanics workload",
 		"mechanicsSubtitle": "Check crew availability before assigning new requests",

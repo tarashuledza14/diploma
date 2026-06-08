@@ -25,7 +25,7 @@ const POOL_COLUMN_ID = "pool";
 
 function sumHours(tasks: DispatchTaskItem[]) {
   return tasks.reduce((sum, task) => {
-    return sum + Number(task.estimatedHours ?? 0);
+    return sum + Number(task.estimatedHours ?? 0) + Number(task.additionalHours ?? 0);
   }, 0);
 }
 

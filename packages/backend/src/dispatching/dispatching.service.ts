@@ -24,6 +24,7 @@ export interface DispatchTaskItem {
   orderNumber: number;
   serviceName: string;
   estimatedHours: number;
+  additionalHours: number;
   status: JobStatus;
   deadline: string | null;
   mechanicId: string | null;
@@ -73,6 +74,7 @@ export class DispatchingService {
     mechanicId: string | null;
     status: JobStatus;
     estimatedHours: number;
+    additionalHours: number;
     deadline: Date | null;
     service: { name: string };
     order: {
@@ -97,6 +99,7 @@ export class DispatchingService {
       serviceName: task.service.name,
       status: task.status,
       estimatedHours: Number(task.estimatedHours.toFixed(2)),
+      additionalHours: Number(task.additionalHours.toFixed(2)),
       deadline: task.deadline ? task.deadline.toISOString() : null,
       vehicleLabel,
       vehiclePlate: task.order.vehicle.plateNumber,
@@ -281,6 +284,7 @@ export class DispatchingService {
               mechanicId: true,
               status: true,
               estimatedHours: true,
+              additionalHours: true,
               deadline: true,
               service: { select: { name: true } },
               order: {
@@ -315,6 +319,7 @@ export class DispatchingService {
           mechanicId: true,
           status: true,
           estimatedHours: true,
+          additionalHours: true,
           deadline: true,
           service: { select: { name: true } },
           order: {

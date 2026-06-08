@@ -16,7 +16,7 @@ export function DispatchTaskCard({
   showEditIcon,
 }: DispatchTaskCardProps) {
   const { t } = useTranslation();
-  const shownHours = Number(task.estimatedHours ?? 0);
+  const shownHours = Number(task.estimatedHours ?? 0) + Number(task.additionalHours ?? 0);
   const shouldShowEditIcon = showEditIcon ?? Boolean(onEditPlanning);
 
   const deadlineBadge = useMemo(() => {

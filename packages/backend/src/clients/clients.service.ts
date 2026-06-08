@@ -30,12 +30,9 @@ export class ClientsService {
   async create(data: CreateClientDto, actor: AuthUser) {
     const organizationId = this.assertOrganizationId(actor);
     try {
-      return this.db.client.create({
-        data: {
-          ...data,
-          organizationId,
-        },
-      });
+      return this.db.withOrg(organizationId, (tx) =>
+        tx.client.create({ data: { ...data, organizationId } }),
+      );
     } catch (error) {
       console.error("Error creating client:", error);
       throw error;
@@ -49,21 +46,17 @@ export class ClientsService {
   ) {
     const organizationId = this.assertOrganizationId(actor);
     try {
-      const client = await this.db.client.findFirst({
-        where: {
-          id: clientId,
-          organizationId,
-        },
-        select: { id: true },
-      });
+      return this.db.withOrg(organizationId, async (tx) => {
+        const client = await tx.client.findFirst({
+          where: { id: clientId, organizationId },
+          select: { id: true },
+        });
 
-      if (!client) {
-        throw new NotFoundException("Client not found");
-      }
+        if (!client) {
+          throw new NotFoundException("Client not found");
+        }
 
-      return this.db.client.update({
-        where: { id: clientId },
-        data,
+        return tx.client.update({ where: { id: clientId }, data });
       });
     } catch (error) {
       console.error("Error updating client:", error);
@@ -73,25 +66,22 @@ export class ClientsService {
       throw new BadRequestException("Failed to update client");
     }
   }
+
   async getClientDetails(clientId: string, actor: AuthUser) {
     const organizationId = this.assertOrganizationId(actor);
     try {
-      const client = await this.db.client.findFirst({
-        where: {
-          id: clientId,
-          organizationId,
-        },
-        include: {
-          vehicles: true,
-          orders: true,
-        },
+      return this.db.withOrg(organizationId, async (tx) => {
+        const client = await tx.client.findFirst({
+          where: { id: clientId, organizationId },
+          include: { vehicles: true, orders: true },
+        });
+
+        if (!client) {
+          throw new NotFoundException("Client not found");
+        }
+
+        return client;
       });
-
-      if (!client) {
-        throw new NotFoundException("Client not found");
-      }
-
-      return client;
     } catch (error) {
       console.error("Error fetching client details:", error);
       if (error instanceof NotFoundException) {
@@ -103,78 +93,73 @@ export class ClientsService {
 
   async delete(clientId: string, actor: AuthUser) {
     const organizationId = this.assertOrganizationId(actor);
-    const client = await this.db.client.findFirst({
-      where: {
-        id: clientId,
-        organizationId,
-      },
-      select: { id: true },
-    });
+    return this.db.withOrg(organizationId, async (tx) => {
+      const client = await tx.client.findFirst({
+        where: { id: clientId, organizationId },
+        select: { id: true },
+      });
 
-    if (!client) {
-      throw new NotFoundException("Client not found");
-    }
+      if (!client) {
+        throw new NotFoundException("Client not found");
+      }
 
-    return this.db.client.update({
-      where: { id: clientId },
-      data: { deletedAt: new Date() },
+      return tx.client.update({
+        where: { id: clientId },
+        data: { deletedAt: new Date() },
+      });
     });
   }
+
   async deleteBulk(clientIds: string[], actor: AuthUser) {
     const organizationId = this.assertOrganizationId(actor);
-    return this.db.client.updateMany({
-      where: {
-        id: { in: clientIds },
-        organizationId,
-      },
-      data: { deletedAt: new Date() },
-    });
+    return this.db.withOrg(organizationId, (tx) =>
+      tx.client.updateMany({
+        where: { id: { in: clientIds }, organizationId },
+        data: { deletedAt: new Date() },
+      }),
+    );
   }
 
   async getClients(input: GetClientsDto, actor: AuthUser) {
     const organizationId = this.assertOrganizationId(actor);
     console.log("client data", input);
     try {
-      const { skip: offset, perPage } = this.paginationService.getPagination({
-        page: input.page,
-        perPage: input.perPage,
-      });
-      const filters = this.filterService.createFilter(
-        input.filters,
-        input.joinOperator,
-      );
-      const where = {
-        AND: [
-          filters,
-          {
-            organizationId,
-            deletedAt: null,
-          },
-        ],
-      };
-      console.log("filters", JSON.stringify(filters));
-      const sorts = this.filterService.getSortFilter(input.sort || []);
-      const orderBy = sorts.length ? sorts : [{ fullName: "asc" as const }];
-      const [clients, total] = await Promise.all([
-        this.db.client.findMany({
-          skip: offset,
-          where,
-          take: input.perPage,
-          orderBy,
-        }),
-        this.db.client.count({ where }),
-      ]);
+      return this.db.withOrg(organizationId, async (tx) => {
+        const { skip: offset, perPage } = this.paginationService.getPagination({
+          page: input.page,
+          perPage: input.perPage,
+        });
+        const filters = this.filterService.createFilter(
+          input.filters,
+          input.joinOperator,
+        );
+        const where = {
+          AND: [filters, { organizationId, deletedAt: null }],
+        };
+        console.log("filters", JSON.stringify(filters));
+        const sorts = this.filterService.getSortFilter(input.sort || []);
+        const orderBy = sorts.length ? sorts : [{ fullName: "asc" as const }];
+        const [clients, total] = await Promise.all([
+          tx.client.findMany({
+            skip: offset,
+            where,
+            take: input.perPage,
+            orderBy,
+          }),
+          tx.client.count({ where }),
+        ]);
 
-      const pageCount = this.paginationService.getPageCount(total, perPage);
-      return {
-        data: clients.map((client) => ({
-          ...client,
-          email: client.email || "",
-          totalSpent: Number(client.totalSpent),
-        })),
-        pageCount,
-        total,
-      };
+        const pageCount = this.paginationService.getPageCount(total, perPage);
+        return {
+          data: clients.map((client) => ({
+            ...client,
+            email: client.email || "",
+            totalSpent: Number(client.totalSpent),
+          })),
+          pageCount,
+          total,
+        };
+      });
     } catch (error) {
       console.error("Error fetching clients:", error);
       return { data: [], pageCount: 0, total: 0 };

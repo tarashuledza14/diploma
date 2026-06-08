@@ -1583,6 +1583,7 @@ async function main() {
         },
       ],
     },
+          createdAt: hoursAgo(41),
   ] as const;
 
   for (const chatSeed of chatSessionsSeed) {

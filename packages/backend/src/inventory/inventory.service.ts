@@ -64,42 +64,40 @@ export class InventoryService {
       0,
     );
 
-    return this.db.part.create({
-      data: {
-        ...rest,
-        organization: {
-          connect: {
-            id: organizationId,
-          },
-        },
-        category: { connect: { id: category.id } },
-        brand: { connect: { id: brand.id } },
+    return this.db.withOrg(organizationId, (tx) =>
+      tx.part.create({
+        data: {
+          ...rest,
+          organization: { connect: { id: organizationId } },
+          category: { connect: { id: category.id } },
+          brand: { connect: { id: brand.id } },
 
-        ...(manufacturer?.id && {
-          manufacturer: { connect: { id: manufacturer.id } },
-        }),
-        ...(supplier?.id && { supplier: { connect: { id: supplier.id } } }),
+          ...(manufacturer?.id && {
+            manufacturer: { connect: { id: manufacturer.id } },
+          }),
+          ...(supplier?.id && { supplier: { connect: { id: supplier.id } } }),
 
-        ...(inventory?.length && { inventory: { create: inventory } }),
-        ...(priceRules?.length && { priceRules: { create: priceRules } }),
+          ...(inventory?.length && { inventory: { create: inventory } }),
+          ...(priceRules?.length && { priceRules: { create: priceRules } }),
 
-        ...(initialQty > 0 && {
-          movements: {
-            create: {
-              type: "RECEIVED",
-              quantity: initialQty,
-              reason: "Початкове оприбуткування",
+          ...(initialQty > 0 && {
+            movements: {
+              create: {
+                type: "RECEIVED",
+                quantity: initialQty,
+                reason: "Початкове оприбуткування",
+              },
             },
-          },
-        }),
-      },
-      include: {
-        category: true,
-        brand: true,
-        inventory: true,
-        priceRules: true,
-      },
-    });
+          }),
+        },
+        include: {
+          category: true,
+          brand: true,
+          inventory: true,
+          priceRules: true,
+        },
+      }),
+    );
   }
 
   async updatePart(data: any, actor: AuthUser) {
@@ -132,13 +130,11 @@ export class InventoryService {
       throw new BadRequestException("Inventory quantity cannot be negative");
     }
 
-    const { updatedPart, qtyDifference } = await this.db.$transaction(
+    const { updatedPart, qtyDifference } = await this.db.withOrg(
+      organizationId,
       async (tx) => {
         const currentPart = await tx.part.findFirst({
-          where: {
-            id,
-            organizationId,
-          },
+          where: { id, organizationId },
           include: { inventory: true },
         });
 
@@ -154,12 +150,7 @@ export class InventoryService {
         const qtyDifference = newQty - oldQty;
 
         if (qtyDifference > 0) {
-          await this.addStockToLatestBatch(
-            tx,
-            id,
-            qtyDifference,
-            inventoryInput,
-          );
+          await this.addStockToLatestBatch(tx, id, qtyDifference, inventoryInput);
         } else if (qtyDifference < 0) {
           await this.consumeStockFromBatches(tx, id, Math.abs(qtyDifference));
         }
@@ -242,132 +233,123 @@ export class InventoryService {
 
   async getAll(input: GetInventoryDto, actor: AuthUser) {
     const organizationId = this.assertOrganizationId(actor);
-    const { skip, perPage } = this.paginationService.getPagination({
-      page: input.page,
-      perPage: input.perPage,
+    return this.db.withOrg(organizationId, async (tx) => {
+      const { skip, perPage } = this.paginationService.getPagination({
+        page: input.page,
+        perPage: input.perPage,
+      });
+
+      const filter = this.filterService.createFilter(
+        input.filters,
+        input.joinOperator,
+        false,
+      );
+      const scopedFilter = {
+        AND: [filter, { organizationId }],
+      };
+
+      const sortFilter = this.filterService.getSortFilter(input.sort);
+
+      const [parts, total] = await Promise.all([
+        tx.part.findMany({
+          where: scopedFilter,
+          orderBy: sortFilter,
+          skip,
+          take: perPage,
+          include: {
+            category: true,
+            brand: true,
+            manufacturer: true,
+            supplier: true,
+            inventory: true,
+            priceRules: true,
+          },
+          omit: {
+            categoryId: true,
+            brandId: true,
+            manufacturerId: true,
+            supplierId: true,
+          },
+        }),
+        tx.part.count({ where: scopedFilter }),
+      ]);
+
+      return {
+        data: parts,
+        total,
+        pageCount: this.paginationService.getPageCount(total, perPage),
+      };
     });
-
-    const filter = this.filterService.createFilter(
-      input.filters,
-      input.joinOperator,
-      false,
-    );
-    const scopedFilter = {
-      AND: [
-        filter,
-        {
-          organizationId,
-        },
-      ],
-    };
-
-    const sortFilter = this.filterService.getSortFilter(input.sort);
-
-    const [parts, total] = await Promise.all([
-      this.db.part.findMany({
-        where: scopedFilter,
-        orderBy: sortFilter,
-        skip,
-        take: perPage,
-        include: {
-          category: true,
-          brand: true,
-          manufacturer: true,
-          supplier: true,
-          inventory: true,
-          priceRules: true,
-        },
-        omit: {
-          categoryId: true,
-          brandId: true,
-          manufacturerId: true,
-          supplierId: true,
-        },
-      }),
-      this.db.part.count({ where: scopedFilter }),
-    ]);
-
-    return {
-      data: parts,
-      total,
-      pageCount: this.paginationService.getPageCount(total, perPage),
-    };
   }
 
   async getStatistics(actor: AuthUser) {
     const organizationId = this.assertOrganizationId(actor);
-    const parts = await this.db.part.findMany({
-      where: {
-        organizationId,
-      },
-      select: {
-        minStock: true,
-        inventory: {
-          select: { quantity: true, purchasePrice: true },
-        },
-        priceRules: {
-          select: { clientType: true, fixedPrice: true },
-        },
-        orderParts: {
-          where: {
-            order: {
-              deletedAt: null,
-              status: {
-                in: ["NEW", "IN_PROGRESS", "WAITING_PARTS"],
+    return this.db.withOrg(organizationId, async (tx) => {
+      const parts = await tx.part.findMany({
+        where: { organizationId },
+        select: {
+          minStock: true,
+          inventory: { select: { quantity: true, purchasePrice: true } },
+          priceRules: { select: { clientType: true, fixedPrice: true } },
+          orderParts: {
+            where: {
+              order: {
+                deletedAt: null,
+                status: { in: ["NEW", "IN_PROGRESS", "WAITING_PARTS"] },
               },
             },
+            select: { quantity: true },
           },
-          select: { quantity: true },
         },
-      },
-    });
-
-    let totalParts = parts.length;
-    let lowStock = 0;
-    let outOfStock = 0;
-    let purchasePrice = 0;
-    let retailPrice = 0;
-    let quantityReserved = 0;
-
-    parts.forEach((part) => {
-      const partQuantity = part.inventory.reduce(
-        (sum, item) => sum + item.quantity,
-        0,
-      );
-
-      if (partQuantity === 0) {
-        outOfStock++;
-      } else if (partQuantity <= (part.minStock || 5)) {
-        lowStock++;
-      }
-
-      part.inventory.forEach((inv) => {
-        purchasePrice += inv.quantity * Number(inv.purchasePrice || 0);
       });
 
-      const retailRule =
-        part.priceRules.find((r) => r.clientType === "RETAIL") ||
-        part.priceRules[0];
-      const partRetailPrice = retailRule?.fixedPrice
-        ? Number(retailRule.fixedPrice)
-        : 0;
-      retailPrice += partQuantity * partRetailPrice;
+      let totalParts = parts.length;
+      let lowStock = 0;
+      let outOfStock = 0;
+      let purchasePrice = 0;
+      let retailPrice = 0;
+      let quantityReserved = 0;
 
-      const reserved = part.orderParts.reduce(
-        (sum, op) => sum + op.quantity,
-        0,
-      );
-      quantityReserved += reserved;
+      parts.forEach((part) => {
+        const partQuantity = part.inventory.reduce(
+          (sum, item) => sum + item.quantity,
+          0,
+        );
+
+        if (partQuantity === 0) {
+          outOfStock++;
+        } else if (partQuantity <= (part.minStock || 5)) {
+          lowStock++;
+        }
+
+        part.inventory.forEach((inv) => {
+          purchasePrice += inv.quantity * Number(inv.purchasePrice || 0);
+        });
+
+        const retailRule =
+          part.priceRules.find((r) => r.clientType === "RETAIL") ||
+          part.priceRules[0];
+        const partRetailPrice = retailRule?.fixedPrice
+          ? Number(retailRule.fixedPrice)
+          : 0;
+        retailPrice += partQuantity * partRetailPrice;
+
+        const reserved = part.orderParts.reduce(
+          (sum, op) => sum + op.quantity,
+          0,
+        );
+        quantityReserved += reserved;
+      });
+
+      return {
+        totalParts,
+        lowStock,
+        outOfStock,
+        purchasePrice,
+        retailPrice,
+        quantityReserved,
+      };
     });
-
-    return {
-      totalParts,
-      lowStock,
-      outOfStock,
-      purchasePrice,
-      retailPrice,
-      quantityReserved,
-    };
   }
 
   async getAllDictionaries() {
@@ -377,108 +359,77 @@ export class InventoryService {
       this.db.partsManufacturer.findMany(),
       this.db.partsSupplier.findMany(),
     ]);
-    return {
-      brands,
-      categories,
-      manufacturers,
-      suppliers,
-    };
+    return { brands, categories, manufacturers, suppliers };
   }
 
   async getPartMovementHistory(partId: string, actor: AuthUser) {
     const organizationId = this.assertOrganizationId(actor);
 
-    const part = await this.db.part.findFirst({
-      where: {
-        id: partId,
-        organizationId,
-      },
-      select: { id: true },
-    });
+    return this.db.withOrg(organizationId, async (tx) => {
+      const part = await tx.part.findFirst({
+        where: { id: partId, organizationId },
+        select: { id: true },
+      });
 
-    if (!part) {
-      throw new NotFoundException("Part not found");
-    }
+      if (!part) {
+        throw new NotFoundException("Part not found");
+      }
 
-    const movements = await this.db.stockMovement.findMany({
-      where: {
-        partId,
-        part: {
-          organizationId,
+      const movements = await tx.stockMovement.findMany({
+        where: { partId, part: { organizationId } },
+        orderBy: { createdAt: "desc" },
+        include: {
+          user: { select: { fullName: true } },
+          order: { select: { id: true } },
         },
-      },
-      orderBy: { createdAt: "desc" },
-      include: {
-        user: { select: { fullName: true } },
-        order: { select: { id: true } },
-      },
+      });
+
+      const stats = {
+        received: 0,
+        issued: 0,
+        reserved: 0,
+        returned: 0,
+        adjustment: 0,
+      };
+
+      movements.forEach((m) => {
+        if (m.type === "RECEIVED") stats.received += m.quantity;
+        if (m.type === "ISSUED") stats.issued += Math.abs(m.quantity);
+        if (m.type === "RESERVED") stats.reserved += Math.abs(m.quantity);
+        if (m.type === "RETURNED") stats.returned += Math.abs(m.quantity);
+        if (m.type === "ADJUSTMENT") stats.adjustment += m.quantity;
+      });
+
+      return { stats, history: movements };
     });
-
-    const stats = {
-      received: 0,
-      issued: 0,
-      reserved: 0,
-      returned: 0,
-      adjustment: 0,
-    };
-
-    movements.forEach((m) => {
-      if (m.type === "RECEIVED") stats.received += m.quantity;
-      if (m.type === "ISSUED") stats.issued += Math.abs(m.quantity);
-      if (m.type === "RESERVED") stats.reserved += Math.abs(m.quantity);
-      if (m.type === "RETURNED") stats.returned += Math.abs(m.quantity);
-      if (m.type === "ADJUSTMENT") stats.adjustment += m.quantity;
-    });
-
-    return {
-      stats,
-      history: movements,
-    };
   }
+
   async deleteBulk(ids: string[], actor: AuthUser) {
     const organizationId = this.assertOrganizationId(actor);
     if (!ids?.length) {
       throw new BadRequestException("ids are required for bulk delete");
     }
 
-    const partsWithMovements = await this.db.stockMovement.groupBy({
-      by: ["partId"],
-      where: {
-        partId: { in: ids },
-        part: {
-          organizationId,
-        },
-      },
-    });
+    await this.db.withOrg(organizationId, async (tx) => {
+      const partsWithMovements = await tx.stockMovement.groupBy({
+        by: ["partId"],
+        where: { partId: { in: ids }, part: { organizationId } },
+      });
 
-    if (partsWithMovements.length) {
-      throw new BadRequestException(
-        "Cannot delete parts with stock movement history. Remove them from catalog manually or archive them instead.",
-      );
-    }
+      if (partsWithMovements.length) {
+        throw new BadRequestException(
+          "Cannot delete parts with stock movement history. Remove them from catalog manually or archive them instead.",
+        );
+      }
 
-    await this.db.$transaction(async (tx) => {
       await tx.partInventory.deleteMany({
-        where: {
-          partId: { in: ids },
-          part: {
-            organizationId,
-          },
-        },
+        where: { partId: { in: ids }, part: { organizationId } },
       });
       await tx.partPriceRule.deleteMany({
-        where: {
-          partId: { in: ids },
-          part: {
-            organizationId,
-          },
-        },
+        where: { partId: { in: ids }, part: { organizationId } },
       });
       await tx.part.deleteMany({
-        where: {
-          id: { in: ids },
-          organizationId,
-        },
+        where: { id: { in: ids }, organizationId },
       });
     });
   }
@@ -508,9 +459,7 @@ export class InventoryService {
 
       await tx.partInventory.update({
         where: { id: batch.id },
-        data: {
-          quantity: { decrement: toConsume },
-        },
+        data: { quantity: { decrement: toConsume } },
       });
 
       remaining -= toConsume;
@@ -605,15 +554,9 @@ export class InventoryService {
     const relatedOrders = await this.db.order.findMany({
       where: {
         deletedAt: null,
-        client: {
-          organizationId,
-        },
+        client: { organizationId },
         status: OrderStatus.WAITING_PARTS,
-        parts: {
-          some: {
-            partId,
-          },
-        },
+        parts: { some: { partId } },
         OR: [
           { mechanicId: { not: null } },
           { services: { some: { mechanicId: { not: null } } } },
@@ -622,11 +565,7 @@ export class InventoryService {
       select: {
         orderNumber: true,
         mechanicId: true,
-        services: {
-          select: {
-            mechanicId: true,
-          },
-        },
+        services: { select: { mechanicId: true } },
       },
     });
 
@@ -657,10 +596,7 @@ export class InventoryService {
         role: Role.MECHANIC,
         deletedAt: null,
       },
-      select: {
-        id: true,
-        role: true,
-      },
+      select: { id: true, role: true },
     });
 
     const orderNumbers = [
